@@ -1,6 +1,6 @@
 /*TODO
 	Rotation
-	Friction 1 = Stillstand
+	Friction stops after jump
 	Moving Camera -> what will be rendered?
 	Events (Contact Listener)
 		World Events
@@ -99,7 +99,7 @@ public class Kane extends Game {
 	@Override
 	public void leftArrowPressed() {
 		if (-player.getVel().getX() <= 300) {
-			player.getAcc().sub(new Vec2f(20 / DELTATIME, 0));
+			player.getAcc().sub(new Vec2f(40 / DELTATIME, 0));
 		}
 
 	}
@@ -112,7 +112,7 @@ public class Kane extends Game {
 	@Override
 	public void rightArrowPressed() {
 		if (player.getVel().getX() <= 300) {
-			player.getAcc().add(new Vec2f(20 / DELTATIME, 0));
+			player.getAcc().add(new Vec2f(40 / DELTATIME, 0));
 		}
 		System.out.println(player.getVel());
 	}

@@ -20,8 +20,8 @@ public class TestingArea extends Game {
 	// TODO Testing
 	// Scenarios+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-	Material mStatic = new Material(0, 0.5f);
-	Material mDynamic = new Material(1, 0.1f);
+	Material mStatic = new Material(0, 1f);
+	Material mDynamic = new Material(1, 0.7f);
 
 	public TestingArea(String title) {
 		super(title);

@@ -10,6 +10,7 @@ public class Contact {
 	private final float distance;
 	private final Vec2f point;
 	private float impulse;
+	private float perpImpulse;
 	private float frictionImpulse;
 	private final Vec2f supportA;
 	private final Vec2f suppertB;
@@ -66,6 +67,14 @@ public class Contact {
 
 	public Vec2f getSuppertB() {
 		return suppertB;
+	}
+
+	public float getPerpImpulse() {
+		return perpImpulse;
+	}
+
+	public void setPerpImpulse(float perpImpulse) {
+		this.perpImpulse = perpImpulse;
 	}
 	
 }
