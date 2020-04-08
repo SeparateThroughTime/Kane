@@ -61,7 +61,7 @@ public class CirclePolygonContactGenerator implements ContactGenerator {
 		
 		Contact newContact = new Contact(bestNormal.mult(-1), bestD, bestPointOnB);
 		if (acceptor.accept(newContact)) {
-			shapePair.addContact(newContact);
+			shapePair.setContact(newContact);
 		}
 
 //		Contact newContact = new Contact(normal, nearestIntervalD, contactPoint);

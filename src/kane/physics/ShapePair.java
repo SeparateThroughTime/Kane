@@ -7,14 +7,15 @@ public class ShapePair {
 
 	private Shape shapeA;
 	private Shape shapeB;
-	private final Contact[] contacts;
-	private int numContacts;
-	private final int MAX_CONTACTS = 2;
+	private Contact contact;
+	private boolean penetraion;
+	private boolean collideable;
 
 	public ShapePair(Shape shapeA, Shape shapeB) {
 		this.shapeA = shapeA;
 		this.shapeB = shapeB;
-		contacts = new Contact[MAX_CONTACTS];
+		contact = null;
+		setCollideable(true);
 	}
 
 	public void flipShapes() {
@@ -31,29 +32,27 @@ public class ShapePair {
 		return shapeB;
 	}
 
-	public Contact[] getContacts() {
-		return contacts;
+	public Contact getContact() {
+		return contact;
 	}
 
-	public int getNumContacts() {
-		return numContacts;
+	public void setContact(Contact contact) {
+		this.contact = contact;
 	}
 
-	public boolean addContact(Contact contact) {
-		if (numContacts < MAX_CONTACTS) {
-			contacts[numContacts++] = contact;
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	
-	public void zeroContacts() {
-		numContacts = 0;
+	public void setPenetration(boolean b) {
+		penetraion = b;
 	}
 
-	public int getMAX_CONTACTS() {
-		return MAX_CONTACTS;
+	public boolean isPenetration() {
+		return penetraion;
+	}
+
+	public boolean isCollideable() {
+		return collideable;
+	}
+
+	public void setCollideable(boolean collideable) {
+		this.collideable = collideable;
 	}
 }

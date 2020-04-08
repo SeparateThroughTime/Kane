@@ -52,7 +52,7 @@ public class CircleBoxContactGenerator implements ContactGenerator{
 		
 		Contact newContact = new Contact(new Vec2f(normal).mult(-1), d, closestPoint.addMult(normal, d));
 		if(acceptor.accept(newContact)) {
-			shapePair.addContact(newContact);
+			shapePair.setContact(newContact);
 		}
 	}
 

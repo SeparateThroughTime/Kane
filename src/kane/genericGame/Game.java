@@ -3,11 +3,6 @@ package kane.genericGame;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
@@ -15,19 +10,15 @@ import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 
+import kane.genericGame.renderer.Renderer;
 import kane.genericGame.userInteraction.Keyboard;
 import kane.genericGame.userInteraction.KeyboardInterface;
 import kane.genericGame.userInteraction.Mouse;
 import kane.genericGame.userInteraction.MouseInterface;
-import kane.math.Vec2f;
-import kane.math.Vec2i;
-import kane.physics.Body;
+import kane.physics.ContactListener;
 import kane.physics.Physics;
-import kane.physics.Shape;
-import kane.physics.ShapeType;
-import kane.physics.shapes.Circle;
 
-public abstract class Game implements WindowListener, KeyboardInterface, MouseInterface{
+public abstract class Game implements WindowListener, KeyboardInterface, MouseInterface, ContactListener{
 
 	private final String TITLE;
 	protected final int WIDTH = 800;
@@ -52,16 +43,16 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	protected Renderer renderer;
 
 	protected abstract void initGame();
+	protected abstract void mechanicsLoop();
 
 	public Game(String title) {
 		// init Window
-
 		TITLE = title;
 		
 		frameBuffer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		frameBufferData = ((DataBufferInt) frameBuffer.getRaster().getDataBuffer()).getData();
 		
-		physics = new Physics(HEIGHT, WIDTH, DELTATIME);
+		physics = new Physics(HEIGHT, WIDTH, DELTATIME, this);
 		renderer = new Renderer(WIDTH, HEIGHT, frameBufferData, physics);
 		mouseListener = new Mouse(physics, HEIGHT, this);
 		keyListener = new Keyboard(DELTATIME, renderer, physics, this);
@@ -106,6 +97,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 			accumulatedTime += frameTime;
 			while (accumulatedTime >= DELTATIME) {
 				userInteraction(DELTATIME);
+				mechanicsLoop();
 				physics.step(DELTATIME);
 				accumulatedTime -= DELTATIME;
 			}

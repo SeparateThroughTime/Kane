@@ -122,7 +122,7 @@ public class LineSegmentPolygonContactGenerator implements ContactGenerator{
 
 		Contact newContact = new Contact(normal, nearestIntervalD, contactPoint);
 		if (acceptor.accept(newContact)) {
-			shapePair.addContact(newContact);
+			shapePair.setContact(newContact);
 		}
 		
 	}

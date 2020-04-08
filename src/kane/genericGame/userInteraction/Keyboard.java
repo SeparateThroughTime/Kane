@@ -3,7 +3,7 @@ package kane.genericGame.userInteraction;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import kane.genericGame.Renderer;
+import kane.genericGame.renderer.Renderer;
 import kane.math.Vec2f;
 import kane.physics.Body;
 import kane.physics.Physics;

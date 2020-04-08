@@ -2,6 +2,7 @@ package kane.physics.shapes;
 
 import kane.math.Vec2f;
 import kane.physics.Body;
+import kane.physics.Material;
 import kane.physics.Shape;
 import kane.physics.ShapeType;
 
@@ -11,8 +12,8 @@ public class Plane extends Shape{
 	private float distance;
 	private float len;
 
-	public Plane(Vec2f normal, float distance, float len, Body body, int color) {
-		super(0, 0, ShapeType.PLANE, body, color);
+	public Plane(Vec2f normal, float distance, float len, Body body, int color, Material material) {
+		super(0, 0, ShapeType.PLANE, body, color, material);
 		this.normal = normal.normalize();
 		this.distance = distance;
 		this.len = len;

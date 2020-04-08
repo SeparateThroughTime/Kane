@@ -13,6 +13,7 @@ import kane.physics.shapes.Box;
 import kane.physics.shapes.Circle;
 import kane.physics.shapes.LineSegment;
 import kane.physics.shapes.Plane;
+import kane.physics.shapes.Point;
 import kane.physics.shapes.Polygon;
 
 public class TestingArea extends Game {
@@ -36,7 +37,7 @@ public class TestingArea extends Game {
 
 	private int activeScenario = 0;
 
-	private void scene0() {
+	private void scene1() {
 		// Circle - Plane
 		physics.setGravity(new Vec2f(0, 0));
 
@@ -68,9 +69,14 @@ public class TestingArea extends Game {
 		body.addShape(new Circle(30, 30, 0, 0xFF0000, body));
 		body.addShape(new Circle(30, -30, 0, 0xFF0000, body));
 		physics.addBody(body);
+		
+		body = new Body(WIDTH / 2 + 100, HEIGHT / 2 + 100, mDynamic);
+		body.addShape(new Point(0, 0, body, 0xffffff));
+		physics.addBody(body);
+
 	}
 
-	private void scene1() {
+	private void scene0() {
 		// Circle - Line
 		physics.setGravity(new Vec2f(0, 0));
 
@@ -81,8 +87,13 @@ public class TestingArea extends Game {
 		body.addShape(new Plane(new Vec2f(-1, 0), -(WIDTH - 1) + 30, HEIGHT - 1, body, 0x0000FF));
 		physics.addBody(body);
 
-		body = new Body(WIDTH / 2 + 100, HEIGHT / 2 - 100, mDynamic);
-		body.addShape(new Polygon(0, 0, body, 0xFFFF00, 1000, 30f));
+		body = new Body(WIDTH / 2 + 100, HEIGHT / 2 + 100, mDynamic);
+		body.addShape(new Point(0, 0, body, 0xffffff));
+		physics.addBody(body);
+		
+		body = new Body(0, 0, mStatic);
+		body.addShape(new LineSegment(new Vec2f(30, 500), new Vec2f(700, 300), body, 0x00FF00));
+		body.addShape(new LineSegment(new Vec2f(90, 100), new Vec2f(800, 250), body, 0x00FF00));
 		physics.addBody(body);
 	}
 
@@ -148,8 +159,6 @@ public class TestingArea extends Game {
 		Body body = new Body(0, 0, mStatic);
 		body.addShape(new Plane(new Vec2f(0, 1), 30, WIDTH - 1, body, 0x0000FF));
 		body.addShape(new Plane(new Vec2f(0.75f, 0.75f), 400, 300, body, 0x0000FF));
-		body.addShape(new Plane(new Vec2f(1, 0), 30, -(HEIGHT - 1), body, 0x0000FF));
-		body.addShape(new Plane(new Vec2f(-1, 0), -(WIDTH - 1) + 30, HEIGHT - 1, body, 0x0000FF));
 		physics.addBody(body);
 
 		body = new Body(WIDTH / 2 + 100, HEIGHT / 2 + 100, mDynamic);

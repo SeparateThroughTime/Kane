@@ -3,6 +3,7 @@ package kane.physics.shapes;
 import kane.math.Scalar;
 import kane.math.Vec2f;
 import kane.physics.Body;
+import kane.physics.Material;
 import kane.physics.Shape;
 import kane.physics.ShapeType;
 
@@ -14,8 +15,8 @@ public class Polygon extends Shape {
 	private final int numPoints;
 	private float angle;
 
-	public Polygon(int relPosX, int RelPosY, Body body, int color, Vec2f[] points) {
-		super(relPosX, RelPosY, ShapeType.POLYGON, body, color);
+	public Polygon(int relPosX, int RelPosY, Body body, int color, Vec2f[] points, Material material) {
+		super(relPosX, RelPosY, ShapeType.POLYGON, body, color, material);
 		numPoints = points.length;
 		this.points = new Vec2f[numPoints];
 		this.pointsAlign = new Vec2f[numPoints];
@@ -26,8 +27,8 @@ public class Polygon extends Shape {
 		this.angle = 0;
 	}
 	
-	public Polygon(int relPosX, int RelPosY, Body body, int color, int numPoints, float radius) {
-		super(relPosX, RelPosY, ShapeType.POLYGON, body, color);
+	public Polygon(int relPosX, int RelPosY, Body body, int color, int numPoints, float radius, Material material) {
+		super(relPosX, RelPosY, ShapeType.POLYGON, body, color, material);
 		this.numPoints = numPoints;
 		this.points = new Vec2f[numPoints];
 		this.pointsAlign = new Vec2f[numPoints];

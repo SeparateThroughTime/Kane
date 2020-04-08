@@ -25,7 +25,7 @@ public class PlaneCircleContactGenerator implements ContactGenerator {
 		
 		Contact newContact = new Contact(planeA.getNormal(), d, closestPointOnPlane, new Vec2f(), supportB);
 		if (acceptor.accept(newContact)) {
-			shapePair.addContact(newContact);
+			shapePair.setContact(newContact);
 		}
 	}
 }

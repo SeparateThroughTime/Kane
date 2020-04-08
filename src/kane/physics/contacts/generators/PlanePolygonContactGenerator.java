@@ -48,7 +48,7 @@ public class PlanePolygonContactGenerator implements ContactGenerator{
 		
 		Contact newContact = new Contact(planeA.getNormal(), -projDistance, closestPointOnPlane, new Vec2f(), supportB);
 		if (acceptor.accept(newContact)) {
-			shapePair.addContact(newContact);
+			shapePair.setContact(newContact);
 		}
 		
 	}

@@ -10,7 +10,8 @@ public enum ShapeType {
 	//moving shapes
 	CIRCLE(2),
 	BOX(3),
-	POLYGON(4);
+	POINT(4),
+	POLYGON(5);
 	
 	public int id;
 	

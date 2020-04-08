@@ -1,8 +1,4 @@
-package kane.genericGame;
-
-import javax.swing.text.StyleContext.SmallAttributeSet;
-import javax.swing.text.StyledEditorKit.ForegroundAction;
-import javax.swing.text.html.StyleSheet.BoxPainter;
+package kane.genericGame.renderer;
 
 import kane.math.Scalar;
 import kane.math.Vec2f;
@@ -13,12 +9,11 @@ import kane.physics.Shape;
 import kane.physics.ShapePair;
 import kane.physics.ShapeType;
 import kane.physics.contacts.Contact;
-import kane.physics.contacts.GeneratorFunctions;
-import kane.physics.contacts.generators.BoxBoxContactGenerator;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.Circle;
 import kane.physics.shapes.LineSegment;
 import kane.physics.shapes.Plane;
+import kane.physics.shapes.Point;
 import kane.physics.shapes.Polygon;
 
 public class Renderer {
@@ -27,6 +22,12 @@ public class Renderer {
 	private final int HEIGHT;
 	private int[] frameBufferData;
 	private final Physics physics;
+	private Shape[] renderedShapes;
+	private int numRenderedShapes;
+	private AABB window;
+	private Vec2f windowRad;
+	private Body camera;
+	private Vec2f zeroPoint;
 
 	public boolean showContacts = false;
 	public boolean showAABBs = false;
@@ -36,25 +37,27 @@ public class Renderer {
 		this.HEIGHT = height;
 		this.frameBufferData = frameBufferData;
 		this.physics = physics;
-
+		this.camera = null;
+		this.windowRad = new Vec2f(WIDTH * 0.5f, HEIGHT * 0.5f);
+		this.zeroPoint = new Vec2f();
 	}
 
 	public boolean testing = false;
 
 	public void testingArea() {
-		//TODO Versuch gescheitert...
-		//Nächster Versuch: LineSegmentCircle für jeder Linie des Polis iterieren und mit kleinstem D Kontakt erstellen.
-		
+		// TODO delete
+
 		// Declarations
 		Circle circleA = (Circle) physics.getBodies(2).getShape(0);
 		Polygon poliB = (Polygon) physics.getBodies(1).getShape(0);
 
-
-
 	}
 
 	public void renderGame() {
+
 		clear(0x000000);
+		updateCamera();
+		chooseRenderedBodies();
 		drawBodies();
 		displayAABBs();
 		displayContacts();
@@ -66,6 +69,29 @@ public class Renderer {
 
 	}
 
+	private void updateCamera() {
+		Vec2f min = new Vec2f(camera.getPos()).sub(windowRad);
+		Vec2f max = new Vec2f(camera.getPos()).add(windowRad);
+		window = new AABB(min, max);
+		zeroPoint = min;
+	}
+
+	private void chooseRenderedBodies() {
+		numRenderedShapes = 0;
+		renderedShapes = new Shape[physics.getNumBodies() * Body.MAX_SHAPES];
+		for (int i = 0; i < physics.getNumBodies(); i++) {
+			Body body = physics.getBodies(i);
+			for (int j = 0; j < body.getNumShapes(); j++) {
+				Shape shape = body.getShape(j);
+				if (shape.getAABB().overlaps(window)) {
+					if (shape.isVisible()) {
+						renderedShapes[numRenderedShapes++] = shape;
+					}
+				}
+			}
+		}
+	}
+
 	private void clear(int color) {
 		// all black
 		for (int i = 0; i < WIDTH * HEIGHT; i++) {
@@ -75,48 +101,50 @@ public class Renderer {
 
 	private void drawBodies() {
 		// draw bodies
-		for (int i = 0; i < physics.getNumBodies(); i++) {
-			Body body = physics.getBodies(i);
-			for (int j = 0; j < body.getNumShapes(); j++) {
-				Shape shape = body.getShape(j);
-				if (ShapeType.PLANE.equals(shape.getType())) {
-					Plane plane = (Plane) shape;
-					// draws planes
-					Vec2f startPoint = plane.getPoint();
-					Vec2f perp = new Vec2f(plane.getNormal()).perpRight();
-					Vec2f endPoint = new Vec2f(startPoint).addMult(perp, plane.getLen());
-					drawLine(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY(), plane.getColor());
+		for (int i = 0; i < numRenderedShapes; i++) {
+			Shape shape = renderedShapes[i];
+			if (ShapeType.PLANE.equals(shape.getType())) {
+				Plane plane = (Plane) shape;
+				// draws planes
+				Vec2f startPoint = plane.getPoint();
+				Vec2f perp = new Vec2f(plane.getNormal()).perpRight();
+				Vec2f endPoint = new Vec2f(startPoint).addMult(perp, plane.getLen());
+				drawLine(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY(), plane.getColor());
 
-					// draws normal of planes
-					Vec2f center = new Vec2f(startPoint).addMult(perp, plane.getLen() * 0.5f);
-					drawNormal(center, plane.getNormal());
-				}
-
-				if (ShapeType.LINESEGMENT.equals(shape.getType())) {
-					LineSegment lineSegment = (LineSegment) shape;
-					Vec2f startPoint = new Vec2f(lineSegment.getAbsPos()).add(lineSegment.getRelPosA());
-					Vec2f endPoint = new Vec2f(lineSegment.getAbsPos()).add(lineSegment.getRelPosB());
-					drawLine(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY(),
-							lineSegment.getColor());
-				}
-
-				if (ShapeType.CIRCLE.equals(shape.getType())) {
-					Circle circle = (Circle) shape;
-					drawCircle(circle.getAbsPos().getX(), circle.getAbsPos().getY(), circle.getRad(), circle.getColor(),
-							false);
-				}
-
-				if (ShapeType.BOX.equals(shape.getType())) {
-					Box box = (Box) shape;
-					drawRect(box, box.getColor(), false);
-				}
-
-				if (ShapeType.POLYGON.equals(shape.getType())) {
-					Polygon pol = (Polygon) shape;
-					drawPolygon(pol, pol.getColor());
-
-				}
+				// draws normal of planes
+				Vec2f center = new Vec2f(startPoint).addMult(perp, plane.getLen() * 0.5f);
+				drawNormal(center, plane.getNormal());
 			}
+
+			if (ShapeType.LINESEGMENT.equals(shape.getType())) {
+				LineSegment lineSegment = (LineSegment) shape;
+				Vec2f startPoint = new Vec2f(lineSegment.getAbsPos()).add(lineSegment.getRelPosA());
+				Vec2f endPoint = new Vec2f(lineSegment.getAbsPos()).add(lineSegment.getRelPosB());
+				drawLine(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY(),
+						lineSegment.getColor());
+			}
+
+			if (ShapeType.CIRCLE.equals(shape.getType())) {
+				Circle circle = (Circle) shape;
+				drawCircle(circle.getAbsPos().getX(), circle.getAbsPos().getY(), circle.getRad(), circle.getColor(),
+						false);
+			}
+
+			if (ShapeType.BOX.equals(shape.getType())) {
+				Box box = (Box) shape;
+				drawRect(box, box.getColor(), false);
+			}
+
+			if (ShapeType.POLYGON.equals(shape.getType())) {
+				Polygon pol = (Polygon) shape;
+				drawPolygon(pol, pol.getColor());
+			}
+
+			if (ShapeType.POINT.equals(shape.getType())) {
+				Point point = (Point) shape;
+				drawPoint(point.getAbsPos(), 2, point.getColor());
+			}
+
 		}
 	}
 
@@ -140,15 +168,13 @@ public class Renderer {
 		if (showContacts) {
 			for (int i = 0; i < physics.getNumShapePairs(); i++) {
 				ShapePair shapePair = physics.getShapePairs(i);
-				for (int j = 0; j < shapePair.getNumContacts(); j++) {
-					Contact contact = shapePair.getContacts()[j];
-					Vec2f normal = contact.getNormal();
-					Vec2f closestPointOnPlane = contact.getPoint();
-					Vec2f closestPointOnBox = new Vec2f(closestPointOnPlane).addMult(normal, contact.getDistance());
-					drawCircle(closestPointOnPlane.getX(), closestPointOnPlane.getY(), 4f, 0xff00ff, true);
-					drawCircle(closestPointOnBox.getX(), closestPointOnBox.getY(), 4f, 0xffff00, true);
-					drawNormal(closestPointOnPlane, normal);
-				}
+				Contact contact = shapePair.getContact();
+				Vec2f normal = contact.getNormal();
+				Vec2f closestPointOnPlane = contact.getPoint();
+				Vec2f closestPointOnBox = new Vec2f(closestPointOnPlane).addMult(normal, contact.getDistance());
+				drawCircle(closestPointOnPlane.getX(), closestPointOnPlane.getY(), 4f, 0xff00ff, true);
+				drawCircle(closestPointOnBox.getX(), closestPointOnBox.getY(), 4f, 0xffff00, true);
+				drawNormal(closestPointOnPlane, normal);
 			}
 		}
 	}
@@ -221,29 +247,25 @@ public class Renderer {
 		int maxY = Math.max(y0, y1);
 		int minY = Math.min(y0, y1);
 
-		// check if rect is in window
-		if (!(maxX < 0 || maxY < 0 || minX > WIDTH || minY > HEIGHT)) {
-			// cut parts that are not in window
-			maxX = Math.min(WIDTH - 1, maxX);
-			minX = Math.max(0, minX);
-			maxY = Math.min(HEIGHT - 1, maxY);
-			minY = Math.max(0, minY);
+		// cut parts that are not in window
+		maxX = Math.min(WIDTH - 1, maxX);
+		minX = Math.max(0, minX);
+		maxY = Math.min(HEIGHT - 1, maxY);
+		minY = Math.max(0, minY);
 
-			// draw rect
-			if (filled) {
-				for (int x = minX; x <= maxX; x++) {
-					for (int y = minY; y <= maxY; y++) {
-						setPixel(x, y, color);
-					}
+		// draw rect
+		if (filled) {
+			for (int x = minX; x <= maxX; x++) {
+				for (int y = minY; y <= maxY; y++) {
+					setPixel(x, y, color);
 				}
-			} else {
-				drawLine(x0, y0, x0, y1, color);
-				drawLine(x0, y0, x1, y0, color);
-				drawLine(x0, y1, x1, y1, color);
-				drawLine(x1, y0, x1, y1, color);
 			}
+		} else {
+			drawLine(x0, y0, x0, y1, color);
+			drawLine(x0, y0, x1, y0, color);
+			drawLine(x0, y1, x1, y1, color);
+			drawLine(x1, y0, x1, y1, color);
 		}
-
 	}
 
 	private void drawRect(float x0, float y0, float x1, float y1, int color, boolean filled) {
@@ -297,12 +319,16 @@ public class Renderer {
 	}
 
 	private void setPixel(int x, int y, int color) {
+		x -= zeroPoint.getX();
+		y -= zeroPoint.getY();
 		int index = Scalar.getY(y, HEIGHT) * WIDTH + x;
 		frameBufferData[index] = color;
 	}
 
 	private void setPixelSave(int x, int y, int color) {
 		// TODO remove this later. To slow.
+		x -= zeroPoint.getX();
+		y -= zeroPoint.getY();
 		if (!(x < 0 || y < 0 || x > WIDTH - 1 || y > HEIGHT - 1)) {
 			int index = Scalar.getY(y, HEIGHT) * WIDTH + x;
 			frameBufferData[index] = color;
@@ -311,7 +337,7 @@ public class Renderer {
 
 	private void setPixelSave(float x, float y, int color) {
 		// TODO remove this later. To slow.
-		setPixel(Scalar.round(x), Scalar.round(y), color);
+		setPixelSave(Scalar.round(x), Scalar.round(y), color);
 	}
 
 	private void drawNormal(Vec2f pos, Vec2f normal) {
@@ -327,5 +353,9 @@ public class Renderer {
 		drawLine(pos.getX(), pos.getY(), arrowTip.getX(), arrowTip.getY(), 0xFFFFFF);
 		drawLine(arrowTip.getX(), arrowTip.getY(), leftArmPos.getX(), leftArmPos.getY(), 0xFFFFFF);
 		drawLine(arrowTip.getX(), arrowTip.getY(), rightArmPos.getX(), rightArmPos.getY(), 0xFFFFFF);
+	}
+
+	public void setCamera(Body camera) {
+		this.camera = camera;
 	}
 }

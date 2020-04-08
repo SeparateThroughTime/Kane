@@ -134,7 +134,7 @@ public class PolygonPolygonContactGenerator implements ContactGenerator{
 
 		Contact newContact = new Contact(normal, nearestIntervalD, contactPoint, supportA, supportB);
 		if (acceptor.accept(newContact)) {
-			shapePair.addContact(newContact);
+			shapePair.setContact(newContact);
 		}
 		
 	}

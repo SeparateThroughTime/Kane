@@ -18,6 +18,11 @@ public class Vec2f {
 		x = v.getX();
 		y = v.getY();
 	}
+	
+	public Vec2f(Vec2i v) {
+		x = v.getX();
+		y = v.getY();
+	}
 
 	public float getX() {
 		return x;
@@ -55,6 +60,12 @@ public class Vec2f {
 	}
 
 	public Vec2f add(Vec2f v) {
+		x += v.getX();
+		y += v.getY();
+		return this;
+	}
+	
+	public Vec2f add(Vec2i v) {
 		x += v.getX();
 		y += v.getY();
 		return this;

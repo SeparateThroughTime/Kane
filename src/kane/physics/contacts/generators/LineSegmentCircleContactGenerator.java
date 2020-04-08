@@ -33,7 +33,7 @@ public class LineSegmentCircleContactGenerator implements ContactGenerator{
 		
 		Contact newContact = new Contact(normal, d, pointOnA);
 		if (acceptor.accept(newContact)) {
-			shapePair.addContact(newContact);
+			shapePair.setContact(newContact);
 		}
 		
 	}

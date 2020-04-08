@@ -3,6 +3,7 @@ package kane.physics.shapes;
 import kane.math.Scalar;
 import kane.math.Vec2f;
 import kane.physics.Body;
+import kane.physics.Material;
 import kane.physics.Shape;
 import kane.physics.ShapeType;
 
@@ -10,8 +11,8 @@ public class Circle extends Shape {
 //Its a circle.
 	private final float rad;
 
-	public Circle(float rad, int relPosX, int relPosY, int color, Body body) {
-		super(relPosX, relPosY, ShapeType.CIRCLE, body, color);
+	public Circle(float rad, int relPosX, int relPosY, int color, Body body, Material material) {
+		super(relPosX, relPosY, ShapeType.CIRCLE, body, color, material);
 		this.rad = rad;
 	}
 

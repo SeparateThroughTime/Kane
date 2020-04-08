@@ -5,6 +5,9 @@ import kane.math.Vec2f;
 public class Body {
 //This is a abstract class for all shapes.
 
+	public final int ID;
+	private static int numBodies = 0;
+	
 	protected final Vec2f pos;
 	protected final Vec2f vel;
 	protected final Vec2f acc;
@@ -12,26 +15,25 @@ public class Body {
 	protected boolean rotateByCollision;
 	protected float rotationFactor;
 	protected float invMass;
-	protected final Material material;
 
 	protected final Shape[] shapes;
-	protected final int MAX_SHAPES;
+	public static final int MAX_SHAPES = 10;
 	protected int numShapes;
 
-	public Body(int posX, int posY, Material material) {
-		this.material = material;
+	public Body(int posX, int posY) {
 		invMass = 0;
 		vel = new Vec2f();
 		acc = new Vec2f();
 		pos = new Vec2f(posX, posY);
-		MAX_SHAPES = 5;
 		shapes = new Shape[MAX_SHAPES];
 		numShapes = 0;
 		this.rotateByCollision = false;
+		this.ID = numBodies;
+		numBodies++;
 	}
 	
 	public Body(int posX, int posY, Material material, boolean rotateByCollision){
-		this(posX, posY, material);
+		this(posX, posY);
 		this.rotateByCollision = rotateByCollision;
 	}
 	
@@ -49,22 +51,15 @@ public class Body {
 	}
 
 	public void updateMass() {
-		boolean staticObj = false;
-		float bodyVol = 0;
+		float mass = 0;
 		for (int i = 0; i < numShapes; i++) {
 			Shape shape = shapes[i];
 			float shapeVol = shape.getVolume();
-			bodyVol += shapeVol;
-			if (shapeVol == 0) {
-				invMass = 0;
-				staticObj = true;
-				break;
-			}
+			mass += shapeVol * shape.getMaterial().getDensity();
 		}
-		if (staticObj) {
+		if (mass == 0) {
 			invMass = 0;
 		} else {
-			float mass = bodyVol * material.getDensity();
 			invMass = 1 / mass;
 		}
 	}
@@ -129,10 +124,6 @@ public class Body {
 
 	public float getImpulseRatio() {
 		return invMass;
-	}
-	
-	public Material getMaterial() {
-		return material;
 	}
 	
 	public float getRotationFactor() {
