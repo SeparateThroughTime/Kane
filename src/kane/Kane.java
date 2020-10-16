@@ -1,20 +1,19 @@
 /*TODO
+
 	Rotation
-	Events (Contact Listener)
-		World Events
-		Items
-		Inventory
-	Level Ends/ Player dies -> Next level/ Restart
-	Resizable Window
 	Sprites
+	Items/Inventory
 	Visual Effects
 	Sounds
+	Renderer -> Remove Jittering
 	Object Editor
 		Ermitteln des besten Mittelpunkts
+	Level Ends/ Player dies -> Next level/ Restart
 	Level Editor
 	Event Editor?
 	Campaign Editor
 	StartMenu
+	Save
 	
 
 */
@@ -26,12 +25,15 @@ import kane.physics.Body;
 import kane.physics.Material;
 import kane.physics.Shape;
 import kane.physics.ShapePair;
-import kane.physics.contacts.AvtiveAttributes;
+import kane.physics.contacts.ActiveAttributes;
 import kane.physics.contacts.PassiveAttributes;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.LineSegment;
-import kane.physics.shapes.Point;
+import kane.physics.shapes.Polygon;
 
+/**
+ * This is the game "Kane".
+ */
 public class Kane extends Game {
 
 	public Kane(String title) {
@@ -47,9 +49,10 @@ public class Kane extends Game {
 	Material mStatic = new Material(0, 1f);
 	Material mDynamic = new Material(1, 0.7f);
 	Material mEvent = new Material(0, 0);
-	Material mCamera = new Material(1, 0);
+	Material mInterface = new Material(1, 0);
 	Body player;
-	Body camera;
+	Body gameInterface;
+	Body sword;
 	Vec2f playerRunAcc;
 	int playerRunSpeed;
 	Vec2f playerJumpAcc;
@@ -66,8 +69,8 @@ public class Kane extends Game {
 
 //		physics.setGravity(new Vec2f(0, 0));
 
-		mapLen = WIDTH * 3;
-		mapHeight = HEIGHT;
+		mapLen = 400 * 3;
+		mapHeight = resSpecs.GAME_HEIGHT;
 
 		// Set Vars
 		playerRunAcc = new Vec2f(40 / DELTATIME, 0);
@@ -79,7 +82,7 @@ public class Kane extends Game {
 
 		// Create World
 		Body body = new Body(0, 0);
-		body.addShape(new LineSegment(new Vec2f(30, 0), new Vec2f(30, HEIGHT), body, 0x0000ff, mStatic));
+		body.addShape(new LineSegment(new Vec2f(30, 0), new Vec2f(30, resSpecs.GAME_HEIGHT), body, 0x0000ff, mStatic));
 		body.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
 		physics.addBody(body);
 
@@ -90,7 +93,7 @@ public class Kane extends Game {
 
 		body = new Body(0, 0);
 		body.addShape(
-				new LineSegment(new Vec2f(mapLen - 30, 0), new Vec2f(mapLen - 30, HEIGHT), body, 0x0000ff, mStatic));
+				new LineSegment(new Vec2f(mapLen - 30, 0), new Vec2f(mapLen - 30, resSpecs.GAME_HEIGHT), body, 0x0000ff, mStatic));
 		body.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
 		physics.addBody(body);
 
@@ -101,71 +104,50 @@ public class Kane extends Game {
 		body.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
 		player.addShape(new Box(0, -15, player, new Vec2f(9, 5), 0xffffff, mEvent));
 		player.getShape(1).setCollision(false);
-		player.getShape(1).addActiveAttribute(AvtiveAttributes.PLAYER_FEETS);
+		player.getShape(1).addActiveAttribute(ActiveAttributes.PLAYER_FEETS);
 		physics.addBody(player);
 
-		// Create camera
-		camera = new Body(WIDTH / 2, HEIGHT / 2);
-//		camera.setVisible(false);
-		camera.addShape(new Point(0, 0, camera, 0x0000ff, mCamera));
-		camera.getShape(0).setCollision(false);
-		camera.getShape(0).setVisible(false);
-		// Left Box
-		camera.addShape(new Box(-(int) (WIDTH * 0.3125f), 0, camera, new Vec2f(WIDTH * 0.1875f, HEIGHT * 0.5f),
-				0x00ff00, mCamera));
-		camera.getShape(1).setCollision(false);
-		camera.getShape(1).addActiveAttribute(AvtiveAttributes.CAMERA_LEFT);
-		camera.getShape(1).setVisible(false);
-		// Right Box
-		camera.addShape(new Box((int) (WIDTH * 0.3125f), 0, camera, new Vec2f(WIDTH * 0.1875f, HEIGHT * 0.5f), 0x00ff00,
-				mCamera));
-		camera.getShape(2).setCollision(false);
-		camera.getShape(2).addActiveAttribute(AvtiveAttributes.CAMERA_RIGHT);
-		camera.getShape(2).setVisible(false);
-		// Lower Box
-		camera.addShape(new Box(0, -(int) (HEIGHT * 0.3125f), camera, new Vec2f(WIDTH * 0.5f, HEIGHT * 0.1875f),
-				0x00ff00, mCamera));
-		camera.getShape(3).setCollision(false);
-		camera.getShape(3).addActiveAttribute(AvtiveAttributes.CAMERA_DOWN);
-		camera.getShape(3).setVisible(false);
-		// Upper Box
-		camera.addShape(new Box(0, (int) (HEIGHT * 0.3125f), camera, new Vec2f(WIDTH * 0.5f, HEIGHT * 0.1875f),
-				0x00ff00, mCamera));
-		camera.getShape(4).setCollision(false);
-		camera.getShape(4).addActiveAttribute(AvtiveAttributes.CAMERA_UP);
-		camera.getShape(4).setVisible(false);
-		// Mid X Box
-		camera.addShape(new Box(0, 0, camera, new Vec2f(WIDTH * 0.125f, HEIGHT * 0.5f), 0xff0000, mCamera));
-		camera.getShape(5).setCollision(false);
-		camera.getShape(5).addActiveAttribute(AvtiveAttributes.CAMERA_MID_X);
-		camera.getShape(5).setVisible(false);
-		// Mid Y Box
-		camera.addShape(new Box(0, 0, camera, new Vec2f(WIDTH * 0.5f, HEIGHT * 0.125f), 0xff0000, mCamera));
-		camera.getShape(6).setCollision(false);
-		camera.getShape(6).addActiveAttribute(AvtiveAttributes.CAMERA_MID_Y);
-		camera.getShape(6).setVisible(false);
-		physics.addBody(camera);
-		renderer.setCamera(camera);
+		// Inventory
+		gameInterface = new Body(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2);
+		gameInterface.addShape(
+				new Box(0, 0, gameInterface, new Vec2f(resSpecs.gameWidth / 2 - 10, resSpecs.GAME_HEIGHT / 2 - 10), 0xffffff, mInterface));
+		gameInterface.getShape(0).setVisible(false);
+		gameInterface.getShape(0).setCollision(false);
+		gameInterface.getShape(0).addPassiveAttribute(PassiveAttributes.INVENTORY);
+		physics.addBody(gameInterface);
+
+		// Sword
+		sword = new Body(200, 130);
+		Vec2f points[] = new Vec2f[4];
+		points[0] = new Vec2f(-3, -10);
+		points[1] = new Vec2f(3, -10);
+		points[2] = new Vec2f(3, 10);
+		points[3] = new Vec2f(-3, 10);
+		sword.addShape(new Polygon(0, 0, sword, 0xffff00, points, mDynamic));
+		physics.addBody(sword);
+
 	}
-	
+
 	@Override
 	protected void mechanicsLoop() {
-		Vec2f cameraPos = camera.getPos();
-		if (cameraPos.getX() - WIDTH * 0.5f < 0) {
-			cameraPos.setX(WIDTH * 0.5f);
-			camera.getAcc().setX(0);
+		Vec2f cameraPos = renderer.getCamera().getPos();
+		if (cameraPos.getX() - resSpecs.gameWidth * 0.5f < 0) {
+			cameraPos.setX(resSpecs.gameWidth * 0.5f);
+			renderer.getCamera().getAcc().setX(0);
+			renderer.getCamera().getVel().setX(0);
+		} else if (cameraPos.getX() + resSpecs.gameWidth * 0.5f > mapLen) {
+			cameraPos.setX(mapLen - resSpecs.gameWidth * 0.5f);
+			renderer.getCamera().getAcc().setX(0);
+			renderer.getCamera().getVel().setX(0);
 		}
-		else if (cameraPos.getX() + WIDTH * 0.5f > mapLen) {
-			cameraPos.setX(mapLen - WIDTH * 0.5f);
-			camera.getAcc().setX(0);
-		}
-		if (cameraPos.getY() - HEIGHT * 0.5f < 0) {
-			cameraPos.setY(HEIGHT * 0.5f);
-			camera.getAcc().setY(0);
-		}
-		else if (cameraPos.getY() + HEIGHT * 0.5f > mapHeight) {
-			cameraPos.setY(mapHeight - HEIGHT * 0.5f);
-			camera.getAcc().setY(0);
+		if (cameraPos.getY() - resSpecs.GAME_HEIGHT * 0.5f < 0) {
+			cameraPos.setY(resSpecs.GAME_HEIGHT * 0.5f);
+			renderer.getCamera().getAcc().setY(0);
+			renderer.getCamera().getVel().setY(0);
+		} else if (cameraPos.getY() + resSpecs.GAME_HEIGHT * 0.5f > mapHeight) {
+			cameraPos.setY(mapHeight - resSpecs.GAME_HEIGHT * 0.5f);
+			renderer.getCamera().getAcc().setY(0);
+			renderer.getCamera().getVel().setY(0);
 		}
 	}
 
@@ -198,11 +180,12 @@ public class Kane extends Game {
 
 	@Override
 	public void leftArrowPressed() {
-		player.getAcc().sub(playerRunAcc);
-		if (-player.getVel().getX() > playerRunSpeed) {
-			player.getVel().setX(-playerRunSpeed);
+		if (!pause) {
+			player.getAcc().sub(playerRunAcc);
+			if (-player.getVel().getX() > playerRunSpeed) {
+				player.getVel().setX(-playerRunSpeed);
+			}
 		}
-
 	}
 
 	@Override
@@ -212,9 +195,11 @@ public class Kane extends Game {
 
 	@Override
 	public void rightArrowPressed() {
-		player.getAcc().add(playerRunAcc);
-		if (player.getVel().getX() > playerRunSpeed) {
-			player.getVel().setX(playerRunSpeed);
+		if (!pause) {
+			player.getAcc().add(playerRunAcc);
+			if (player.getVel().getX() > playerRunSpeed) {
+				player.getVel().setX(playerRunSpeed);
+			}
 		}
 	}
 
@@ -317,8 +302,10 @@ public class Kane extends Game {
 
 	@Override
 	public void spaceClick() {
-		if (playerCanJump) {
-			player.getAcc().add(playerJumpAcc);
+		if (!pause) {
+			if (playerCanJump) {
+				player.getAcc().add(playerJumpAcc);
+			}
 		}
 	}
 
@@ -339,7 +326,7 @@ public class Kane extends Game {
 
 	@Override
 	public void escClick() {
-
+		pause = !pause;
 	}
 
 	@Override
@@ -358,6 +345,30 @@ public class Kane extends Game {
 	}
 
 	@Override
+	public void iPressed() {
+
+	}
+
+	@Override
+	public void iReleased() {
+
+	}
+
+	boolean showInterface = false;
+
+	@Override
+	public void iClick() {
+		showInterface = !showInterface;
+		for (int i = 0; i < gameInterface.getNumShapes(); i++) {
+			Shape shape = gameInterface.getShape(i);
+			if (shape.hasPassiveAtrribute(PassiveAttributes.INVENTORY)) {
+				shape.setVisible(showInterface);
+			}
+		}
+
+	}
+
+	@Override
 	public void penetration(ShapePair pair) {
 		for (int i = 0; i < 2; i++) {
 			Shape activeShape;
@@ -370,39 +381,35 @@ public class Kane extends Game {
 				passiveShape = pair.getShapeA();
 			}
 			for (int j = 0; j < activeShape.getNumActiveAttributes(); j++) {
-				AvtiveAttributes activeE = activeShape.getActiveAttribute(j);
+				ActiveAttributes activeE = activeShape.getActiveAttribute(j);
 				for (int k = 0; k < passiveShape.getNumPassiveAttributes(); k++) {
 					PassiveAttributes passiveE = passiveShape.getPassiveAttribute(j);
 					// Here starts the Eventmanagement
-					if (activeE == AvtiveAttributes.CAMERA_RIGHT && passiveE == PassiveAttributes.PLAYER_ALL) {
-						camera.getAcc().add(cameraMovementAccX);
-						if (camera.getVel().getX() > playerRunSpeed) {
-							camera.getVel().setX(playerRunSpeed);
+					if (activeE == ActiveAttributes.CAMERA_RIGHT && passiveE == PassiveAttributes.PLAYER_ALL) {
+						renderer.getCamera().getAcc().add(cameraMovementAccX);
+						if (renderer.getCamera().getVel().getX() > playerRunSpeed) {
+							renderer.getCamera().getVel().setX(playerRunSpeed);
 						}
-					}
-					if (activeE == AvtiveAttributes.CAMERA_LEFT && passiveE == PassiveAttributes.PLAYER_ALL) {
-						camera.getAcc().sub(cameraMovementAccX);
-						if (-camera.getVel().getX() > playerRunSpeed) {
-							camera.getVel().setX(-playerRunSpeed);
+					} else if (activeE == ActiveAttributes.CAMERA_LEFT && passiveE == PassiveAttributes.PLAYER_ALL) {
+						renderer.getCamera().getAcc().sub(cameraMovementAccX);
+						if (-renderer.getCamera().getVel().getX() > playerRunSpeed) {
+							renderer.getCamera().getVel().setX(-playerRunSpeed);
 						}
+					} else if (activeE == ActiveAttributes.CAMERA_MID_X && passiveE == PassiveAttributes.PLAYER_ALL) {
+						renderer.getCamera().getVel().setX(gameInterface.getVel().getX() * 0.9f);
 					}
-					if (activeE == AvtiveAttributes.CAMERA_MID_X && passiveE == PassiveAttributes.PLAYER_ALL) {
-						camera.getVel().setX(camera.getVel().getX()*0.5f);
-					}
-					if (activeE == AvtiveAttributes.CAMERA_UP && passiveE == PassiveAttributes.PLAYER_ALL) {
-						camera.getAcc().add(cameraMovementAccY);
-						if (camera.getVel().getY() > cameraMovementSpeedY) {
-							camera.getVel().setY(cameraMovementSpeedY);
+					if (activeE == ActiveAttributes.CAMERA_UP && passiveE == PassiveAttributes.PLAYER_ALL) {
+						renderer.getCamera().getAcc().add(cameraMovementAccY);
+						if (renderer.getCamera().getVel().getY() > cameraMovementSpeedY) {
+							renderer.getCamera().getVel().setY(cameraMovementSpeedY);
 						}
-					}
-					if (activeE == AvtiveAttributes.CAMERA_DOWN && passiveE == PassiveAttributes.PLAYER_ALL) {
-						camera.getAcc().sub(cameraMovementAccY);
-						if (-camera.getVel().getY() > cameraMovementSpeedY) {
-							camera.getVel().setY(-cameraMovementSpeedY);
+					} else if (activeE == ActiveAttributes.CAMERA_DOWN && passiveE == PassiveAttributes.PLAYER_ALL) {
+						renderer.getCamera().getAcc().sub(cameraMovementAccY);
+						if (-renderer.getCamera().getVel().getY() > cameraMovementSpeedY) {
+							renderer.getCamera().getVel().setY(-cameraMovementSpeedY);
 						}
-					}
-					if (activeE == AvtiveAttributes.CAMERA_MID_Y && passiveE == PassiveAttributes.PLAYER_ALL) {
-						camera.getVel().setY(camera.getVel().getY()*0.5f);
+					} else if (activeE == ActiveAttributes.CAMERA_MID_Y && passiveE == PassiveAttributes.PLAYER_ALL) {
+						renderer.getCamera().getVel().setY(gameInterface.getVel().getY() * 0.5f);
 					}
 				}
 
@@ -423,11 +430,11 @@ public class Kane extends Game {
 				passiveShape = pair.getShapeA();
 			}
 			for (int j = 0; j < activeShape.getNumActiveAttributes(); j++) {
-				AvtiveAttributes activeE = activeShape.getActiveAttribute(j);
+				ActiveAttributes activeE = activeShape.getActiveAttribute(j);
 				for (int k = 0; k < passiveShape.getNumPassiveAttributes(); k++) {
 					PassiveAttributes passiveE = passiveShape.getPassiveAttribute(j);
 					// Here starts the Eventmanagement
-					if (activeE == AvtiveAttributes.PLAYER_FEETS && passiveE == PassiveAttributes.PHYSICAL) {
+					if (activeE == ActiveAttributes.PLAYER_FEETS && passiveE == PassiveAttributes.PHYSICAL) {
 						playerCanJump = true;
 					}
 				}
@@ -448,16 +455,15 @@ public class Kane extends Game {
 				passiveShape = pair.getShapeA();
 			}
 			for (int j = 0; j < activeShape.getNumActiveAttributes(); j++) {
-				AvtiveAttributes activeE = activeShape.getActiveAttribute(j);
+				ActiveAttributes activeE = activeShape.getActiveAttribute(j);
 				for (int k = 0; k < passiveShape.getNumPassiveAttributes(); k++) {
 					PassiveAttributes passiveE = passiveShape.getPassiveAttribute(j);
 					// Here starts the Eventmanagement
-					if (activeE == AvtiveAttributes.PLAYER_FEETS && passiveE == PassiveAttributes.PHYSICAL) {
+					if (activeE == ActiveAttributes.PLAYER_FEETS && passiveE == PassiveAttributes.PHYSICAL) {
 						playerCanJump = false;
 					}
 				}
 			}
 		}
-
 	}
 }

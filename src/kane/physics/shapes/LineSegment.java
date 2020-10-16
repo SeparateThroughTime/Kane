@@ -6,11 +6,22 @@ import kane.physics.Material;
 import kane.physics.Shape;
 import kane.physics.ShapeType;
 
+/**
+ * This is a Shape of the Type LineSegment
+ */
 public class LineSegment extends Shape{
 	
 	private Vec2f relPosA;
 	private Vec2f relPosB;
 	
+	/**
+	 * 
+	 * @param relPosA -position of the first point in relation to the body
+	 * @param relPosB -position of the second point in relation to the body
+	 * @param body
+	 * @param color -0xrrggbb
+	 * @param material
+	 */
 	public LineSegment(Vec2f relPosA, Vec2f relPosB, Body body, int color, Material material) {
 		super(0, 0, ShapeType.LINESEGMENT, body, color, material);
 		this.relPosA = relPosA;
@@ -33,16 +44,27 @@ public class LineSegment extends Shape{
 		return 0;
 	}
 	
+	/**
+	 * Get relative position of point A.
+	 * @return
+	 */
 	public Vec2f getRelPosA() {
 		return relPosA;
 	}
 	
+	/**
+	 * Get relative position of point B.
+	 * @return
+	 */
 	public Vec2f getRelPosB() {
 		return relPosB;
 	}
 	
+	/**
+	 * Get center of line segment.
+	 * @return
+	 */
 	public Vec2f getCenter() {
-		//Returns the center
 		return new Vec2f(relPosA).add(relPosB).mult(0.5f).add(new Vec2f (body.getPos()));
 	}
 

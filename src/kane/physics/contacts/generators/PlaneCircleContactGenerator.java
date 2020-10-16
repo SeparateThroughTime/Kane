@@ -8,8 +8,10 @@ import kane.physics.contacts.ContactGenerator;
 import kane.physics.shapes.Circle;
 import kane.physics.shapes.Plane;
 
+/**
+ * This is a generator for contacts between a plane and a circle
+ */
 public class PlaneCircleContactGenerator implements ContactGenerator {
-	// This is generates the Contacts between a Plane and a Circle.
 
 	@Override
 	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {

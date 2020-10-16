@@ -2,8 +2,9 @@ package kane.physics.contacts;
 
 import kane.physics.ShapePair;
 
+/**
+ * This is the interface for the different Contact Generators.
+ */
 public interface ContactGenerator {
-//This is the interface for the differen Contact Generators.
-
 	public void generate(ShapePair shapePair, ContactAcceptor acceptor);
 }

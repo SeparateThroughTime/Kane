@@ -1,7 +1,9 @@
 package kane.physics;
 
+/**
+ * A list of different types for shapes.
+ */
 public enum ShapeType {
-//Different Types for Shapes
 	
 	//static shapes
 	PLANE(0),

@@ -1,9 +1,9 @@
 package kane.genericGame.userInteraction;
 
+/**
+ * This is an interface with all methods for keyboard interaction.
+ */
 public interface KeyboardInterface {
-	
-	public boolean spaceClick = false;
-	public boolean shiftClick = false;
 	
 	public void leftArrowPressed();
 	public void leftArrowReleased();
@@ -37,4 +37,7 @@ public interface KeyboardInterface {
 	public void shiftReleased();
 	public void shiftClick();
 	public void escClick();
+	public void iPressed();
+	public void iReleased();
+	public void iClick();
 }

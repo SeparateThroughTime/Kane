@@ -9,6 +9,9 @@ import kane.physics.contacts.ContactGenerator;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.Point;
 
+/**
+ * This is a generator for contacts between a box and a point
+ */
 public class BoxPointContactGenerator implements ContactGenerator {
 
 	@Override

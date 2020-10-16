@@ -22,12 +22,18 @@ import kane.physics.contacts.generators.PlanePolygonContactGenerator;
 import kane.physics.contacts.generators.PointPolygonContactGenerator;
 import kane.physics.contacts.generators.PolygonPolygonContactGenerator;
 
+/**
+ * The ContactGeneratorFactory manages all the different Contact Generations between the different Body Types.
+ */
 public class ContactGeneratorFactory {
-//This class manages all the different Contact Generations between the different Body Types.
 
 	private ContactGenerator[][] generators;
 	private ContactListener contactListener;
 
+	/**
+	 * 
+	 * @param contactListener
+	 */
 	public ContactGeneratorFactory(ContactListener contactListener) {
 		this.contactListener = contactListener;
 
@@ -56,9 +62,13 @@ public class ContactGeneratorFactory {
 		generators[ShapeType.POINT.id][ShapeType.POLYGON.id] = new PointPolygonContactGenerator();
 	}
 
+	/**
+	 * Needs to run every frame. It updates the contacts array.
+	 * @param acceptor
+	 * @param shapepairs
+	 * @param numShapePairs
+	 */
 	public void generate(ContactAcceptor acceptor, ShapePair[] shapepairs, int numShapePairs) {
-		// This method needs to run every frame. It updates the contacts array.
-
 		for (int i = 0; i < numShapePairs; i++) {
 			ShapePair shapePair = shapepairs[i];
 			Shape shapeA = shapePair.getShapeA();

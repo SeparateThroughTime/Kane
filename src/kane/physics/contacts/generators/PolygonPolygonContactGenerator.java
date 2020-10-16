@@ -8,6 +8,9 @@ import kane.physics.contacts.ContactGenerator;
 import kane.physics.contacts.GeneratorFunctions;
 import kane.physics.shapes.Polygon;
 
+/**
+ * This is a generator for contacts between two polygons
+ */
 public class PolygonPolygonContactGenerator implements ContactGenerator{
 
 	@Override

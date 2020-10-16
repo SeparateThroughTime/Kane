@@ -7,15 +7,30 @@ import kane.physics.Material;
 import kane.physics.Shape;
 import kane.physics.ShapeType;
 
+/**
+ * This is a Shape of the Type Circle
+ */
 public class Circle extends Shape {
-//Its a circle.
 	private final float rad;
 
+	/**
+	 * 
+	 * @param rad -radius
+	 * @param relPosX -position of x in relation to the body
+	 * @param relPosY -position of y in relation to the body
+	 * @param color -0xrrggbb
+	 * @param body
+	 * @param material
+	 */
 	public Circle(float rad, int relPosX, int relPosY, int color, Body body, Material material) {
 		super(relPosX, relPosY, ShapeType.CIRCLE, body, color, material);
 		this.rad = rad;
 	}
 
+	/**
+	 * Get the radius of the circle
+	 * @return
+	 */
 	public float getRad() {
 		return rad;
 	}

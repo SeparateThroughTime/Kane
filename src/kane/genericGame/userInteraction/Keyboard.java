@@ -3,13 +3,9 @@ package kane.genericGame.userInteraction;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import kane.genericGame.renderer.Renderer;
-import kane.math.Vec2f;
-import kane.physics.Body;
-import kane.physics.Physics;
-import kane.physics.Shape;
-import kane.physics.ShapeType;
-
+/**
+ * The Keyboard is managing all actions, when keys on the hw-keyboard are pressed.
+ */
 public class Keyboard implements KeyListener{
 	
 	private final int NUM_BUTTONS = 128;
@@ -17,16 +13,14 @@ public class Keyboard implements KeyListener{
 	protected boolean[] click = new boolean[NUM_BUTTONS];
 	protected boolean[] clickAgain = new boolean[NUM_BUTTONS];
 	
-	private final float DELTATIME;
-	private final Renderer renderer;
-	private final Physics physics;
 	private KeyboardInterface keyInt;
 	
-	public Keyboard(float deltaTime, Renderer renderer, Physics physics, KeyboardInterface keyInt) {
+	/**
+	 * 
+	 * @param keyInt -Specifies the used KeyboardInterface.
+	 */
+	public Keyboard(KeyboardInterface keyInt) {
 		generateChooseAction();
-		this.DELTATIME = deltaTime;
-		this.physics = physics;
-		this.renderer = renderer;
 		this.keyInt = keyInt;
 		
 		for (int i = 0; i < NUM_BUTTONS; i++) {
@@ -34,8 +28,10 @@ public class Keyboard implements KeyListener{
 		}
 	}
 
+	/**
+	 * This needs to run every frame. It updates the pushed Buttons on the Keyboard.
+	 */
 	public void update() {
-
 		for (int i = 0; i < keyState.length; i++) {
 			if(keyState[i]) {
 				chooseActionPressed[i].choose();
@@ -48,6 +44,10 @@ public class Keyboard implements KeyListener{
 		}
 	}
 	
+	/**
+	 * Set the KeyboardInterface
+	 * @param keyInt -New KeyboardInterface
+	 */
 	public void setKeyInt(KeyboardInterface keyInt) {
 		this.keyInt = keyInt;
 	}
@@ -74,13 +74,16 @@ public class Keyboard implements KeyListener{
 		}
 		
 		
-		// To choose wich method is used in update
+		// To choose which method is used in update
 		private interface ChooseAction {
+			/**
+			 * This is a dummy for deciding, which actual method is used in update.
+			 * Though java is not able to manage an array with methods, this will do the same.
+			 */
 			public void choose();
 		}
 
 		//@formatter:off
-		//left up right down 37 38 39 40          113 114
 		private ChooseAction[] chooseActionClick = new ChooseAction[NUM_BUTTONS];
 		private ChooseAction[] chooseActionPressed = new ChooseAction[NUM_BUTTONS];
 		private ChooseAction[] chooseActionReleased = new ChooseAction[NUM_BUTTONS];
@@ -128,6 +131,10 @@ public class Keyboard implements KeyListener{
 			chooseActionClick[32] = new ChooseAction() { public void choose() {keyInt.spaceClick();}};
 			
 			chooseActionClick[27] = new ChooseAction() { public void choose() {keyInt.escClick();}};
+			
+			chooseActionPressed[73] = new ChooseAction() { public void choose() {keyInt.iPressed();}};
+			chooseActionReleased[73] = new ChooseAction() { public void choose() {keyInt.iReleased();}};
+			chooseActionClick[73] = new ChooseAction() { public void choose() {keyInt.iClick();}};
 		}
 		//@formatter:on
 }

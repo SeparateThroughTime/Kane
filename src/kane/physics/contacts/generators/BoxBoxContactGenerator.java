@@ -8,6 +8,9 @@ import kane.physics.contacts.ContactAcceptor;
 import kane.physics.contacts.ContactGenerator;
 import kane.physics.shapes.Box;
 
+/**
+ * This is a generator for contacts between two boxes
+ */
 public class BoxBoxContactGenerator implements ContactGenerator {
 
 	@Override

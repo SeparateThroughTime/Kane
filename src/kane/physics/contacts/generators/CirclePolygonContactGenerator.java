@@ -5,11 +5,12 @@ import kane.physics.ShapePair;
 import kane.physics.contacts.Contact;
 import kane.physics.contacts.ContactAcceptor;
 import kane.physics.contacts.ContactGenerator;
-import kane.physics.contacts.GeneratorFunctions;
-import kane.physics.shapes.Box;
 import kane.physics.shapes.Circle;
 import kane.physics.shapes.Polygon;
 
+/**
+ * This is a generator for contacts between circle and a polygon
+ */
 public class CirclePolygonContactGenerator implements ContactGenerator {
 
 	@Override

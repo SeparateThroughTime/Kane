@@ -9,6 +9,9 @@ import kane.physics.contacts.GeneratorFunctions;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.Polygon;
 
+/**
+ * This is a generator for contacts between a box and a polygon
+ */
 public class BoxPolygonContactGenerator implements ContactGenerator {
 
 	@Override

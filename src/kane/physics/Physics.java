@@ -4,10 +4,11 @@ import kane.math.Scalar;
 import kane.math.Vec2f;
 import kane.physics.contacts.ContactGeneratorFactory;
 import kane.physics.contacts.ContactSolver;
-import kane.physics.contacts.ContactSolver;
 
+/**
+ * This is the physics engine. It manages all physics stuff.
+ */
 public class Physics {
-//Manages all physics stuff
 
 	private final int MAX_BODIES = 1000;
 	private Body[] bodies;
@@ -26,11 +27,15 @@ public class Physics {
 
 	private ContactGeneratorFactory cgf;
 	private ContactSolver contactSolver;
-	private ContactListener contactListener;
 
 	private Vec2f gravity = new Vec2f(0, -10f);
 
-	public Physics(int Height, int Width, float deltaTime, ContactListener contactListener) {
+	/**
+	 * 
+	 * @param deltaTime -time between each frame
+	 * @param contactListener
+	 */
+	public Physics(float deltaTime, ContactListener contactListener) {
 		bodies = new Body[MAX_BODIES];
 		numBodies = 0;
 		aabbOverlaps = new boolean[MAX_BODIES][Body.MAX_SHAPES][MAX_BODIES][Body.MAX_SHAPES];
@@ -39,13 +44,15 @@ public class Physics {
 		shapePairs = new ShapePair[MAX_SHAPEPAIRS];
 		numShapePairs = 0;
 
-		this.contactListener = contactListener;
 		cgf = new ContactGeneratorFactory(contactListener);
 		contactSolver = new ContactSolver(deltaTime, 4, 1);
 	}
 
+	/**
+	 * This need to run every frame. Its the main part of the physics engine, where everything is happening.
+	 * @param deltaTime -time between each frame
+	 */
 	public void step(float deltaTime) {
-		// This needs to run every frame.
 
 		// Gravity
 		for (int i = 0; i < numBodies; i++) {
@@ -84,12 +91,22 @@ public class Physics {
 							if (shapeA.getAABB().overlaps(shapeB.getAABB())) {
 								aabbOverlaps[i][j][k][l] = true;
 								shapePairIds[i][j][k][l] = numShapePairs;
+								// Workaround "interchanged Body IDs"
+								// In this if, the ID of Body A is always smaller than the ID of Body B
+								// (Tested). But in some cases there are still shapepairs where its interchanged. I
+								// don't no, why they exist. But with this workaround, the algorithm for
+								// managing the shapepairs can handle it.
+								aabbOverlaps[k][l][i][j] = true;
+								shapePairIds[k][l][i][j] = numShapePairs;
 								shapePairs[numShapePairs++] = new ShapePair(shapeA, shapeB);
 							}
 						} else {
 							if (!shapeA.getAABB().overlaps(shapeB.getAABB())) {
 								aabbOverlaps[i][j][k][l] = false;
 								shapePairs[shapePairIds[i][j][k][l]] = null;
+								// Workaround "interchanged Body IDs"
+								aabbOverlaps[k][l][i][j] = false;
+								shapePairs[shapePairIds[k][l][i][j]] = null;
 							}
 						}
 					}
@@ -109,6 +126,8 @@ public class Physics {
 				int k = shapePairs[m].getShapeB().getBody().ID;
 				int l = shapePairs[m].getShapeB().ID;
 				shapePairIds[i][j][k][l] = m - countGaps;
+				// Workaround "interchanged Body IDs"
+				shapePairIds[k][l][i][j] = m - countGaps;
 			}
 		}
 		numShapePairs -= countGaps;
@@ -133,44 +152,88 @@ public class Physics {
 		contactSolver.solvePosition(shapePairs, numShapePairs);
 	}
 
+	/**
+	 * Add a body to the engine
+	 * @param body
+	 * @return
+	 */
 	public Physics addBody(Body body) {
 		bodies[numBodies++] = body;
 		return this;
 	}
 
+	/**
+	 * Get maximum of number of bodies.
+	 * @return
+	 */
 	public int getMAX_BODIES() {
 		return MAX_BODIES;
 	}
 
+	/**
+	 * Get a body with index.
+	 * @param index
+	 * @return
+	 */
 	public Body getBodies(int index) {
 		return bodies[index];
 	}
 
+	/**
+	 * Get the number of bodies.
+	 * @return
+	 */
 	public int getNumBodies() {
 		return numBodies;
 	}
 
+	/**
+	 * get a shapePair with collision with specific index.
+	 * @param index
+	 * @return
+	 */
 	public ShapePair getShapePairs(int index) {
 		return shapePairs[index];
 	}
 
+	/**
+	 * Get number of ShapePairs.
+	 * @return
+	 */
 	public int getNumShapePairs() {
 		return numShapePairs;
 	}
 
+	/**
+	 * Set gravity
+	 * @param gravity
+	 * @return
+	 */
 	public Vec2f setGravity(Vec2f gravity) {
 		this.gravity = gravity;
 		return this.gravity;
 	}
-	
+
+	/**
+	 * Get gravity.
+	 * @return
+	 */
 	public Vec2f getGravity() {
 		return this.gravity;
 	}
 
+	/**
+	 * delete all bodies in the engine.
+	 */
 	public void clearBodies() {
 		for (int i = 0; i < bodies.length; i++) {
 			bodies[i] = null;
 		}
 		numBodies = 0;
+		Body.resetNumBodies();
+		for (int i = 0; i < getNumShapePairs(); i++) {
+			shapePairs[i] = null;
+		}
+		numShapePairs = 0;
 	}
 }

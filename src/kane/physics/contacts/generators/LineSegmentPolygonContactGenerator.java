@@ -9,6 +9,9 @@ import kane.physics.contacts.GeneratorFunctions;
 import kane.physics.shapes.LineSegment;
 import kane.physics.shapes.Polygon;
 
+/**
+ * This is a generator for contacts between a line segment and a polygon
+ */
 public class LineSegmentPolygonContactGenerator implements ContactGenerator{
 
 	@Override

@@ -8,6 +8,9 @@ import kane.physics.contacts.ContactGenerator;
 import kane.physics.shapes.Circle;
 import kane.physics.shapes.LineSegment;
 
+/**
+ * This is a generator for contacts between a line segment and a circle
+ */
 public class LineSegmentCircleContactGenerator implements ContactGenerator{
 
 	@Override

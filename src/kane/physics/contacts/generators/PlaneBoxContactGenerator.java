@@ -8,6 +8,9 @@ import kane.physics.contacts.ContactGenerator;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.Plane;
 
+/**
+ * This is a generator for contacts between a plane and a box
+ */
 public class PlaneBoxContactGenerator implements ContactGenerator{
 
 	@Override

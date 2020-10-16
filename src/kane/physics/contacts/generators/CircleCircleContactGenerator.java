@@ -1,13 +1,15 @@
 package kane.physics.contacts.generators;
 
 import kane.math.Vec2f;
-import kane.physics.Body;
 import kane.physics.ShapePair;
 import kane.physics.contacts.Contact;
 import kane.physics.contacts.ContactAcceptor;
 import kane.physics.contacts.ContactGenerator;
 import kane.physics.shapes.Circle;
 
+/**
+ * This is a generator for contacts between two circles
+ */
 public class CircleCircleContactGenerator implements ContactGenerator {
 //This is generates the Contacts between to Circles.
 

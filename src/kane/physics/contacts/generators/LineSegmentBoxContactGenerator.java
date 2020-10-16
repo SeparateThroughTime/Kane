@@ -9,6 +9,9 @@ import kane.physics.contacts.GeneratorFunctions;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.LineSegment;
 
+/**
+ * This is a generator for contacts between a line segment and a box
+ */
 public class LineSegmentBoxContactGenerator implements ContactGenerator{
 
 	@Override

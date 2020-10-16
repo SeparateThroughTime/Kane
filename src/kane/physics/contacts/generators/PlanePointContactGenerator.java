@@ -5,12 +5,13 @@ import kane.physics.ShapePair;
 import kane.physics.contacts.Contact;
 import kane.physics.contacts.ContactAcceptor;
 import kane.physics.contacts.ContactGenerator;
-import kane.physics.shapes.Circle;
 import kane.physics.shapes.Plane;
 import kane.physics.shapes.Point;
 
+/**
+ * This is a generator for contacts between a plane and a point
+ */
 public class PlanePointContactGenerator implements ContactGenerator {
-	// This is generates the Contacts between a Plane and a Circle.
 
 	@Override
 	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {

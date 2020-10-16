@@ -5,10 +5,12 @@ import kane.math.Vec2f;
 import kane.physics.Body;
 import kane.physics.Shape;
 import kane.physics.ShapePair;
-import kane.physics.ShapeType;
 
+/**
+ * The ContactSolver solves the contacts.
+ * It alters velocity and position of the bodies.
+ */
 public class ContactSolver implements ContactAcceptor {
-//
 	protected int velocityIterations;
 	protected int positionIterations;
 	protected final float deltaTime;
@@ -19,6 +21,11 @@ public class ContactSolver implements ContactAcceptor {
 		this.deltaTime = deltaTime;
 	}
 
+	/**
+	 * Alter velocity
+	 * @param shapePairs
+	 * @param numShapePairs
+	 */
 	public void solveVelocity(ShapePair[] shapePairs, int numShapePairs) {
 		// Generates new Velocity for Objects
 		for (int i = 0; i < velocityIterations; i++) {
@@ -42,7 +49,7 @@ public class ContactSolver implements ContactAcceptor {
 					float velToRemove = projVelAB + contact.getDistance() / deltaTime;
 					float impulse = Math.min(velToRemove * impulseRatioAB, 0f);
 
-					// I really don't unterstand this part... explained in:
+					// I don't unterstand this part... explained in:
 					// https://www.youtube.com/watch?v=jusFm0oSNF0&list=PLYG-GfK4ITZ5X2dciKXT_COJrzQAI4oxL&index=29
 					// UPDATE: Seems to be pretty useless.
 					// TODO: If no bugs appear: delete this. Also delete impulse in contacts
@@ -90,9 +97,12 @@ public class ContactSolver implements ContactAcceptor {
 
 	}
 
+	/**
+	 * Alter position. With this method, no correction of position is needed
+	 * @param shapePairs
+	 * @param numShapePairs
+	 */
 	public void solvePosition(ShapePair[] shapePairs, int numShapePairs) {
-		// This method doesnt need correction of the position.
-
 	}
 
 	@Override

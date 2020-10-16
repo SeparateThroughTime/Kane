@@ -1,7 +1,6 @@
 package kane.physics.contacts.generators;
 
 import kane.math.Vec2f;
-import kane.physics.Body;
 import kane.physics.ShapePair;
 import kane.physics.contacts.Contact;
 import kane.physics.contacts.ContactAcceptor;
@@ -9,6 +8,9 @@ import kane.physics.contacts.ContactGenerator;
 import kane.physics.shapes.Circle;
 import kane.physics.shapes.Point;
 
+/**
+ * This is a generator for contacts between a circle and a point
+ */
 public class CirclePointContactGenerator implements ContactGenerator {
 //This is generates the Contacts between to Circles.
 

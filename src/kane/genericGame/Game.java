@@ -10,19 +10,23 @@ import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 
-import kane.genericGame.renderer.Renderer;
 import kane.genericGame.userInteraction.Keyboard;
 import kane.genericGame.userInteraction.KeyboardInterface;
 import kane.genericGame.userInteraction.Mouse;
 import kane.genericGame.userInteraction.MouseInterface;
 import kane.physics.ContactListener;
 import kane.physics.Physics;
+import kane.renderer.Renderer;
+import kane.renderer.Resolution;
+import kane.renderer.ResolutionSpecification;
 
-public abstract class Game implements WindowListener, KeyboardInterface, MouseInterface, ContactListener{
+/**
+ * Game is an abstract class which provides the main-construct of the game-engine
+ */
+public abstract class Game implements WindowListener, KeyboardInterface, MouseInterface, ContactListener {
 
+	protected ResolutionSpecification resSpecs;
 	private final String TITLE;
-	protected final int WIDTH = 800;
-	protected final int HEIGHT = 600;
 	private JFrame frame;
 	private Canvas canvas;
 	private BufferedImage frameBuffer;
@@ -32,30 +36,38 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	protected boolean[] mouseState = new boolean[16];
 	protected Mouse mouseListener;
 	protected Keyboard keyListener;
-	
+
 	final long TARGET_FPS = 60;
 	final long NANO_SECOND = 1000000000;
 	final long NANO_SECOND_FPS = NANO_SECOND / TARGET_FPS;
 	protected final float DELTATIME = 1.0f / TARGET_FPS;
-	
+
+	protected boolean pause;
 
 	protected Physics physics;
 	protected Renderer renderer;
 
 	protected abstract void initGame();
+
 	protected abstract void mechanicsLoop();
 
+	/**
+	 * 
+	 * @param title -The title of the game
+	 */
 	public Game(String title) {
 		// init Window
 		TITLE = title;
 		
-		frameBuffer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		resSpecs = new ResolutionSpecification(600, 800, 600, 800);
+
+		frameBuffer = new BufferedImage(resSpecs.width, resSpecs.height, BufferedImage.TYPE_INT_RGB);
 		frameBufferData = ((DataBufferInt) frameBuffer.getRaster().getDataBuffer()).getData();
-		
-		physics = new Physics(HEIGHT, WIDTH, DELTATIME, this);
-		renderer = new Renderer(WIDTH, HEIGHT, frameBufferData, physics);
-		mouseListener = new Mouse(physics, HEIGHT, this);
-		keyListener = new Keyboard(DELTATIME, renderer, physics, this);
+
+		physics = new Physics(DELTATIME, this);
+		renderer = new Renderer(resSpecs, frameBufferData, physics);
+		mouseListener = new Mouse(resSpecs, this);
+		keyListener = new Keyboard(this);
 
 		frame = new JFrame();
 		frame.setResizable(false);
@@ -65,7 +77,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		frame.addWindowListener(this);
 
 		canvas = new Canvas();
-		canvas.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		canvas.setPreferredSize(new Dimension(resSpecs.width, resSpecs.height));
 		canvas.setIgnoreRepaint(true);
 		canvas.addKeyListener(keyListener);
 		canvas.addMouseListener(mouseListener);
@@ -76,10 +88,96 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		frame.setVisible(true);
 		canvas.requestFocus();
 	}
-
-	protected void run() {
-		// runs the game
+	
+	/**
+	 * change the resolution. This uses the enum Resolution.
+	 * @param res -new resolution
+	 */
+	protected void changeResolution(Resolution res) {
+		switch (res) {
+		case SOL800x600:
+			resSpecs.width = 800;
+			resSpecs.height = 600;
+			break;
+		case SOL1024x768:
+			resSpecs.width = 1024;
+			resSpecs.height = 768;
+			break;
+		case SOL1152x864:
+			resSpecs.width = 1152;
+			resSpecs.height = 864;
+			break;
+		case SOL1280x960:
+			resSpecs.width = 1280;
+			resSpecs.height = 960;
+			break;
+		case SOL1280x768:
+			resSpecs.width = 1280;
+			resSpecs.height = 768;
+			break;
+		case SOL1280x1024:
+			resSpecs.width = 1280;
+			resSpecs.height = 1024;
+			break;
+		case SOL1280x800:
+			resSpecs.width = 1280;
+			resSpecs.height = 800;
+			break;
+		case SOL1680x1050:
+			resSpecs.width = 1680;
+			resSpecs.height = 1050;
+			break;
+		case SOL1176x664:
+			resSpecs.width = 1176;
+			resSpecs.height = 664;
+			break;
+		case SOL1280x720:
+			resSpecs.width = 1280;
+			resSpecs.height = 720;
+			break;
+		case SOL1360x768:
+			resSpecs.width = 1360;
+			resSpecs.height = 768;
+			break;
+		case SOL1366x768:
+			resSpecs.width = 1366;
+			resSpecs.height = 768;
+			break;
+		case SOL1600x900:
+			resSpecs.width = 1600;
+			resSpecs.height = 900;
+			break;
+		case SOL1768x992:
+			resSpecs.width = 1768;
+			resSpecs.height = 992;
+			break;
+		case SOL1920x1080:
+			resSpecs.width = 1920;
+			resSpecs.height = 1080;
+			break;
+		case SOL1600x1024:
+			resSpecs.width = 1600;
+			resSpecs.height = 1024;
+			break;
+		default:
+			break;
+		}
+		resSpecs.gameWidth = (int)((float)resSpecs.GAME_HEIGHT / resSpecs.height * resSpecs.width);
 		
+		frameBuffer = new BufferedImage(resSpecs.width, resSpecs.height, BufferedImage.TYPE_INT_RGB);
+		frameBufferData = ((DataBufferInt) frameBuffer.getRaster().getDataBuffer()).getData();
+		renderer.newFrameBufferData(frameBufferData);
+		
+		canvas.setPreferredSize(new Dimension(resSpecs.width, resSpecs.height));
+		frame.pack();
+		
+		renderer.changeResolution();
+	}
+
+	/**
+	 * This is the main-loop for the game.
+	 */
+	protected void run() {
 		long startFpsTime = System.nanoTime();
 		long lastFrameTime = System.nanoTime();
 		float accumulatedTime = 0.0f;
@@ -97,8 +195,10 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 			accumulatedTime += frameTime;
 			while (accumulatedTime >= DELTATIME) {
 				userInteraction(DELTATIME);
-				mechanicsLoop();
-				physics.step(DELTATIME);
+				if (!pause) {
+					mechanicsLoop();
+					physics.step(DELTATIME);
+				}
 				accumulatedTime -= DELTATIME;
 			}
 
@@ -131,13 +231,13 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		}
 	}
 
+	/**
+	 * This updates the states of keyboard and mouse and runs the actions, depending on it.
+	 * @param DELTATIME
+	 */
 	private void userInteraction(float DELTATIME) {
-
 		mouseListener.update();
-
 		keyListener.update();
-
-		
 	}
 
 //WindowListener

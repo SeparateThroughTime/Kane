@@ -7,14 +7,25 @@ import kane.physics.Material;
 import kane.physics.Shape;
 import kane.physics.ShapeType;
 
+/**
+ * This is a Shape of the Type Polygon. A Polygon has a minimum of 3 point.
+ */
 public class Polygon extends Shape {
-// A Polygon has a minimum of 3 point.
 
 	private final Vec2f[] points;
 	private final Vec2f[] pointsAlign;
 	private final int numPoints;
 	private float angle;
 
+	/**
+	 * Create polygon with specified points.
+	 * @param relPosX -position of x in relation to the body
+	 * @param RelPosY -position of y in relation to the body
+	 * @param body
+	 * @param color -0xrrggbb
+	 * @param points -relative points of the shape
+	 * @param material
+	 */
 	public Polygon(int relPosX, int RelPosY, Body body, int color, Vec2f[] points, Material material) {
 		super(relPosX, RelPosY, ShapeType.POLYGON, body, color, material);
 		numPoints = points.length;
@@ -27,6 +38,15 @@ public class Polygon extends Shape {
 		this.angle = 0;
 	}
 	
+	/**
+	 * Create equilateral polygon with a number of points.
+	 * @param relPosX -position of x in relation to the body
+	 * @param RelPosY -position of y in relation to the body
+	 * @param body
+	 * @param color -0xrrggbb
+	 * @param numPoints -number of points
+	 * @param material
+	 */
 	public Polygon(int relPosX, int RelPosY, Body body, int color, int numPoints, float radius, Material material) {
 		super(relPosX, RelPosY, ShapeType.POLYGON, body, color, material);
 		this.numPoints = numPoints;
@@ -91,16 +111,23 @@ public class Polygon extends Shape {
 	}
 
 	@Override
+	/**
+	 * Rotates the shape by given angle.
+	 * @angle
+	 */
 	public void rotate(float angle) {
 		// The angle is between 0 and 1
 		this.angle += angle;
 		float bodyAngle = body.getAngle();
 
 		for (int i = 0; i < numPoints; i++) {
-			points[i].set(pointsAlign[i]).rotate(angle + bodyAngle);
+			points[i].set(pointsAlign[i]).rotate(this.angle + bodyAngle);
 		}
 	}
 
+	/**
+	 * align the shape to original angle in relation to body angle.
+	 */
 	public void align() {
 		float bodyAngle = body.getAngle();
 		for (int i = 0; i < numPoints; i++) {
@@ -110,14 +137,27 @@ public class Polygon extends Shape {
 		angle = 0;
 	}
 
+	/**
+	 * Get point with index.
+	 * @param index
+	 * @return -point with specific index
+	 */
 	public Vec2f getPoint(int index) {
 		return points[index];
 	}
 
+	/**
+	 * Get the number of points.
+	 * @return
+	 */
 	public int getNumPoints() {
 		return numPoints;
 	}
 
+	/**
+	 * Get all points.
+	 * @return -Array of points
+	 */
 	public Vec2f[] getPoints() {
 		return points;
 	}

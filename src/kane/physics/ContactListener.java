@@ -1,13 +1,22 @@
 package kane.physics;
 
+/**
+ * A Listener for Contacts between Shapes.
+ */
 public interface ContactListener {
 
-	//This runs every frame the pair is penetrating
+	/**
+	 * This runs every frame the pair is penetrating
+	 */
 	public void penetration(ShapePair pair);
 	
-	//This runs once the pair gets from a separation to a penetration
+	/**
+	 * This runs once the pair gets from a separation to a penetration
+	 */
 	public void penetrated(ShapePair pair);
 	
-	//This runs once the pair gets from a penetration to a separation
+	/**
+	 * This runs once the pair gets from a penetration to a separation
+	 */
 	public void separated(ShapePair pair);
 }

@@ -9,6 +9,9 @@ import kane.physics.contacts.ContactGenerator;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.Circle;
 
+/**
+ * This is a generator for contacts between a circle and a box
+ */
 public class CircleBoxContactGenerator implements ContactGenerator{
 
 	@Override
