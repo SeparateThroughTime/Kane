@@ -21,6 +21,9 @@ public abstract class Shape{
 	protected boolean collision;
 	protected boolean visible;
 	protected final Material material;
+	protected float invMass;
+	protected final Vec2f centerOfMass;
+	protected float momentOfInertia;
 	
 	protected static int MAX_ACTIVE_ATTRIBUTES = 5;
 	protected static int MAX_PASSIVE_ATTRIBUTES = 5;
@@ -64,6 +67,7 @@ public abstract class Shape{
 		this.passiveAttributes = new PassiveAttributes[MAX_PASSIVE_ATTRIBUTES];
 		this.material = material;
 		this.hasSprite = false;
+		this.centerOfMass = new Vec2f();
 	}
 	
 	/**
@@ -71,6 +75,22 @@ public abstract class Shape{
 	 * @param angle
 	 */
 	public void rotate(float angle) {
+	}
+	
+	public void rotate(float angle, Vec2f referencePoint) {
+		
+	}
+	
+	public void setImpulseRatio(float invMass) {
+		this.invMass = invMass;
+	}
+	
+	public float getImpulseRatio() {
+		return invMass;
+	}
+	
+	public float calculateMomentOfInertia() {
+		return momentOfInertia;
 	}
 	
 	/**
@@ -85,7 +105,7 @@ public abstract class Shape{
 	 * Get collision.
 	 * @return
 	 */
-	public boolean getCoolision() {
+	public boolean getCollision() {
 		return collision;
 	}
 	
@@ -144,6 +164,10 @@ public abstract class Shape{
 	 */
 	public int getColor() {
 		return color;
+	}
+	
+	public Vec2f getCenterOfMass() {
+		return centerOfMass;
 	}
 
 	/**

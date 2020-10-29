@@ -24,6 +24,7 @@ public class TestingArea extends Game {
 
 	public TestingArea(String title) {
 		super(title);
+		renderer.testing = true;
 	}
 
 	public static void main(String[] args) {
@@ -44,20 +45,40 @@ public class TestingArea extends Game {
 		body.addShape(new Plane(new Vec2f(1, 0), 30, -(resSpecs.GAME_HEIGHT - 1), body, 0x0000FF, mStatic));
 		body.addShape(new Plane(new Vec2f(-1, 0), -(resSpecs.gameWidth - 1) + 30, resSpecs.GAME_HEIGHT - 1, body, 0x0000FF, mStatic));
 		physics.addBody(body);
-
-		body = new Body(resSpecs.gameWidth / 2 + 100, resSpecs.GAME_HEIGHT / 2 - 100);
 		
-		body.addShape(new Box(30, 0, body, new Vec2f(30, 30), 0xff0000, mDynamic));
-		body.addShape(new Box(-30, 0, body, new Vec2f(30, 30), 0xff0000, mDynamic));
+		Vec2f points[];
+		
+		body = new Body(resSpecs.gameWidth / 2 + 100, resSpecs.GAME_HEIGHT / 2 - 100);
+		points = new Vec2f[5];
+		points[0] = new Vec2f(-20, -20);
+		points[1] = new Vec2f(20, -25);
+		points[2] = new Vec2f(20, 20);
+		points[3] = new Vec2f(-20, 40);
+		points[4] = new Vec2f(-50, 0);
+		body.addShape(new Polygon(30, 0, body, 0x0000ff, points, mDynamic));
+		body.addShape(new Polygon(-30, 0, body, 0x0000ff, 6, 10, mDynamic));
+		physics.addBody(body);
+		
+		body = new Body(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2 - 100);
+		points = new Vec2f[5];
+		points[0] = new Vec2f(-20, -20);
+		points[1] = new Vec2f(20, -25);
+		points[2] = new Vec2f(20, 20);
+		points[3] = new Vec2f(-20, 40);
+		points[4] = new Vec2f(-50, 0);
+		body.addShape(new Polygon(30, 0, body, 0x0000ff, points, mDynamic));
 		physics.addBody(body);
 		
 		body = new Body(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2);
-		body.addShape(new Box(30, 0, body, new Vec2f(30, 30), 0xff0000, mDynamic));
-		body.addShape(new Box(-30, 0, body, new Vec2f(30, 30), 0xff0000, mDynamic));
-		physics.addBody(body);
-		
-		body = new Body(resSpecs.gameWidth / 2 + 100, resSpecs.GAME_HEIGHT / 2 + 100);
-		body.addShape(new Point(0, 0, body, 0xffffff, mDynamic));
+		points = new Vec2f[5];
+		points[0] = new Vec2f(-20, -20);
+		points[1] = new Vec2f(20, -25);
+		points[2] = new Vec2f(20, 20);
+		points[3] = new Vec2f(-20, 40);
+		points[4] = new Vec2f(-50, 0);
+		body.addShape(new Polygon(30, 0, body, 0x0000ff, points, mDynamic));
+		body.addShape(new Polygon(-30, 0, body, 0x0000ff, 6, 10, mDynamic));
+		body.addShape(new Polygon(0, -20, body, 0x0000ff, 3, 7, mDynamic));
 		physics.addBody(body);
 
 	}

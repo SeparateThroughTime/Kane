@@ -36,6 +36,7 @@ public class Polygon extends Shape {
 			this.pointsAlign[i] = new Vec2f(points[i]);
 		}
 		this.angle = 0;
+		calculateCenterOfMass();
 	}
 	
 	/**
@@ -59,8 +60,27 @@ public class Polygon extends Shape {
 			dir.rotate(1f / numPoints);
 		}
 		this.angle = 0;
+		calculateCenterOfMass();
 	}
 
+	private void calculateCenterOfMass() {
+		centerOfMass.zero();
+		for (int i = 0; i < numPoints; i++) {
+			centerOfMass.add(this.points[i]);
+		}
+		centerOfMass.div(numPoints);
+	}
+	
+	public float calculateMomentOfInertia() {
+		float mass = 1 / invMass;
+		momentOfInertia = mass / points.length;
+		for (int i = 0; i < numPoints; i++) {
+			momentOfInertia += new Vec2f(points[i]).sub(centerOfMass).lengthSquared();
+		}
+		return momentOfInertia;
+	}
+	
+	
 	@Override
 	public void updateAABB(Vec2f nextAbsPos, float tolerance) {
 		Vec2f absPos = getAbsPos();
@@ -125,6 +145,13 @@ public class Polygon extends Shape {
 		}
 	}
 
+	public void rotate(float angle, Vec2f referencePoint) {
+		for (int i = 0; i < numPoints; i++) {
+			Vec2f rotRefPoint = new Vec2f(points[i]).add(getAbsPos()).sub(referencePoint).rotate(angle);
+			points[i].set(rotRefPoint.add(referencePoint).sub(getAbsPos()));
+		}
+	}
+	
 	/**
 	 * align the shape to original angle in relation to body angle.
 	 */

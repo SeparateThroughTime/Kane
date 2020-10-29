@@ -1,10 +1,12 @@
 package kane.physics;
 
+import java.awt.font.ShapeGraphicAttribute;
+
 import kane.math.Vec2f;
 
 /**
- * A Body can have many Shapes.
- * The Body is the moving (or not moving) object in the world and the Shapes are bound to him.
+ * A Body can have many Shapes. The Body is the moving (or not moving) object in
+ * the world and the Shapes are bound to him.
  */
 public class Body {
 
@@ -15,9 +17,20 @@ public class Body {
 	protected final Vec2f vel;
 	protected final Vec2f acc;
 	protected float angle;
+	protected float angleVel;
 	protected boolean rotateByCollision;
 	protected float rotationFactor;
 	protected float invMass;
+	protected final Vec2f centerOfMass = new Vec2f();
+	protected float momentOfInertia;
+
+	public float getAngleVel() {
+		return angleVel;
+	}
+
+	public void setAngleVel(float angleVel) {
+		this.angleVel = angleVel;
+	}
 
 	protected Shape[] shapes;
 	public static final int MAX_SHAPES = 10;
@@ -38,12 +51,13 @@ public class Body {
 		this.rotateByCollision = false;
 		this.ID = numBodies;
 		numBodies++;
+		calculateCenterOfMass();
 	}
 
 	/**
 	 * 
-	 * @param posX -position X
-	 * @param posY -position Y
+	 * @param posX              -position X
+	 * @param posY              -position Y
 	 * @param rotateByCollision -boolean, if body can rotate when it collides
 	 */
 	public Body(int posX, int posY, boolean rotateByCollision) {
@@ -51,8 +65,48 @@ public class Body {
 		this.rotateByCollision = rotateByCollision;
 	}
 
+	public void calculateCenterOfMass() {
+		centerOfMass.zero();
+		float sumOfMass = 0;
+		for (int i = 0; i < numShapes; i++) {
+			Shape shape = shapes[i];
+			if (shape.getImpulseRatio() != 0) {
+				float mass = 1 / shape.getImpulseRatio();
+				Vec2f shapeCenterOfMass = new Vec2f(shape.getCenterOfMass());
+				shapeCenterOfMass.add(shape.getRelPos());
+				centerOfMass.addMult(shapeCenterOfMass, mass);
+				sumOfMass += mass;
+			}
+		}
+		if(sumOfMass > 0.f) {
+			centerOfMass.div(sumOfMass);
+		}
+	}
+
+	public float calculateMomentOfInertia() {
+		momentOfInertia = 0;
+		for (int i = 0; i < numShapes; i++) {
+			Shape shape = shapes[i];
+			if(shape.getImpulseRatio() > 0) {
+				float newShapeMoI = new Vec2f(shape.centerOfMass).add(shape.getRelPos()).sub(centerOfMass).lengthSquared();
+				newShapeMoI /= shape.getImpulseRatio();
+				newShapeMoI += shape.calculateMomentOfInertia();
+				momentOfInertia += newShapeMoI;
+			}
+		}
+		if(momentOfInertia == 0) {
+			momentOfInertia = Float.POSITIVE_INFINITY;
+		}
+		return momentOfInertia;
+	}
+
+	public Vec2f getCenterOfMass() {
+		return centerOfMass;
+	}
+
 	/**
 	 * Adds a new Shape to the body
+	 * 
 	 * @param shape
 	 * @return -true if successful. Otherwise false
 	 */
@@ -60,6 +114,8 @@ public class Body {
 		if (numShapes < MAX_SHAPES) {
 			shapes[numShapes++] = shape;
 			updateMass();
+			calculateCenterOfMass();
+			calculateMomentOfInertia();
 			return true;
 		} else {
 			return false;
@@ -82,7 +138,13 @@ public class Body {
 		for (int i = 0; i < numShapes; i++) {
 			Shape shape = shapes[i];
 			float shapeVol = shape.getVolume();
-			mass += shapeVol * shape.getMaterial().getDensity();
+			float shapeMass = shapeVol * shape.getMaterial().getDensity();
+			mass += shapeMass;
+			if(shapeMass == 0) {
+				shape.setImpulseRatio(0);
+			} else {
+				shape.setImpulseRatio(1 / shapeMass);
+			}
 		}
 		if (mass == 0) {
 			invMass = 0;
@@ -93,7 +155,8 @@ public class Body {
 
 	/**
 	 * update AABB of the body, including its next position.
-	 * @param nextPos -next position
+	 * 
+	 * @param nextPos   -next position
 	 * @param tolerance -added to every side of AABB
 	 */
 	public void updateAABB(Vec2f nextPos, float tolerance) {
@@ -106,16 +169,17 @@ public class Body {
 	}
 
 	/**
-	 * Rotate the body and all rotatable Shapes.
-	 * Angle is between 0 and 1.
-	 * Only Polygons and Cricles are roratable.
-	 * Static shapes wont move.
+	 * Rotate the body and all rotatable Shapes. Angle is between 0 and 1. Only
+	 * Polygons and Cricles are roratable. Static shapes wont move.
+	 * 
 	 * @param angle -angle between 0 an 1
 	 */
 	public void rotate(float angle) {
 		this.angle += angle;
 
 		for (int i = 0; i < numShapes; i++) {
+//			shapes[i].rotate(angle, new Vec2f(getCenterOfMass()).add(getPos()));
+
 			shapes[i].getRelPos().set(shapes[i].getRelPosAlign()).rotate(this.angle);
 
 			// angle is 0, so body angle is the only altered angle.
@@ -138,6 +202,7 @@ public class Body {
 
 	/**
 	 * Get angle
+	 * 
 	 * @return
 	 */
 	public float getAngle() {
@@ -146,6 +211,7 @@ public class Body {
 
 	/**
 	 * Get shape with index.
+	 * 
 	 * @param index
 	 * @return
 	 */
@@ -155,6 +221,7 @@ public class Body {
 
 	/**
 	 * Get number of shapes.
+	 * 
 	 * @return
 	 */
 	public int getNumShapes() {
@@ -163,6 +230,7 @@ public class Body {
 
 	/**
 	 * Get position of body.
+	 * 
 	 * @return
 	 */
 	public Vec2f getPos() {
@@ -171,6 +239,7 @@ public class Body {
 
 	/**
 	 * Get velocity of body.
+	 * 
 	 * @return
 	 */
 	public Vec2f getVel() {
@@ -179,6 +248,7 @@ public class Body {
 
 	/**
 	 * Get acceleration of body.
+	 * 
 	 * @return
 	 */
 	public Vec2f getAcc() {
@@ -187,13 +257,18 @@ public class Body {
 
 	/**
 	 * Get impulse ratio (inverted Mass) of body.
+	 * 
 	 * @return
 	 */
 	public float getImpulseRatio() {
 		return invMass;
 	}
 
-	//TODO: Use for rotation by collision?
+	public float getMomentOfInertia() {
+		return momentOfInertia;
+	}
+
+	// TODO: Use for rotation by collision?
 //	/**
 //	 * Get rotation factor of body.
 //	 * @return
@@ -216,8 +291,7 @@ public class Body {
 	}
 
 	/**
-	 * Reset the number of bodies
-	 * ONLY USE IF YOU ARE DELETING ALL BODIES!
+	 * Reset the number of bodies ONLY USE IF YOU ARE DELETING ALL BODIES!
 	 */
 	public static void resetNumBodies() {
 		numBodies = 0;

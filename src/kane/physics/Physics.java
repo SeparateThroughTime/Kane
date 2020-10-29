@@ -143,10 +143,19 @@ public class Physics {
 			if (body instanceof Body) {
 				if (body.getImpulseRatio() > 0) {
 					body.getPos().addMult(body.getVel(), deltaTime);
-					body.rotate(0);
+					//??? TODO
+//					body.rotate(0);
 				}
 			}
 		}
+		
+		// Angle velocity integration
+//		for (int i = 0; i < numBodies; i++) {
+//			Body body = bodies[i];
+//			if (body.getImpulseRatio() > 0) {
+//				body.rotate(body.getAngleVel() * deltaTime);
+//			}
+//		}
 
 		// adjust position for penetrations
 		contactSolver.solvePosition(shapePairs, numShapePairs);

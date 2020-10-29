@@ -336,9 +336,9 @@ public class Vec2f {
 	 */
 	public Vec2f rotate(float angle) {
 		float tmp = x;
-		float angleRAD = angle * Scalar.TWO_PI;
-		float cosAngle = (float) Math.cos(angleRAD);
-		float sinAngle = (float) Math.sin(angleRAD);
+//		float angleRAD = angle * Scalar.TWO_PI;
+		float cosAngle = (float) Scalar.cos(angle);
+		float sinAngle = (float) Scalar.sin(angle);
 		x = x * cosAngle - y * sinAngle;
 		y = tmp * sinAngle + y * cosAngle;
 

@@ -1,5 +1,7 @@
 package kane.renderer;
 
+import javax.swing.plaf.synth.SynthOptionPaneUI;
+
 import kane.math.Scalar;
 import kane.math.Vec2f;
 import kane.physics.AABB;
@@ -49,14 +51,29 @@ public class Renderer {
 		multiplicator = (float) resSpecs.height / resSpecs.GAME_HEIGHT;
 	}
 
-	public boolean testing = false;
+	public boolean testing = true;
 
 	public void testingArea() {
 		// TODO delete
 
-		// Declarations
-		Circle circleA = (Circle) physics.getBodies(2).getShape(0);
-		Polygon poliB = (Polygon) physics.getBodies(1).getShape(0);
+		for (int i = 0; i < physics.getNumBodies(); i++) {
+			Body body = physics.getBodies(i);
+			Vec2f pos = new Vec2f(body.getPos());
+			Vec2f coM = body.getCenterOfMass();
+			pos.add(coM);
+			drawPoint(pos, 3, 0x00ff00);
+			for (int j = 0; j < body.getNumShapes(); j++) {
+				Shape shape = body.getShape(j);
+				Vec2f shapePos = new Vec2f(shape.getAbsPos());
+				Vec2f shapecom = shape.getCenterOfMass();
+				shapePos.add(shapecom);
+				drawPoint(shapePos, 2, 0xff0000);
+			}
+			if (i == 2) {
+				System.out.println(body.getPos());
+			}
+
+		}
 
 	}
 
@@ -70,9 +87,7 @@ public class Renderer {
 		displayContacts();
 
 		// TODO delete
-		if (testing) {
-			testingArea();
-		}
+		testingArea();
 
 	}
 
@@ -206,6 +221,7 @@ public class Renderer {
 	// TODO: RESPRITE
 	/**
 	 * draw sprite.
+	 * 
 	 * @param frame
 	 * @param pos
 	 */
@@ -217,6 +233,7 @@ public class Renderer {
 
 	/**
 	 * Draw a polygon
+	 * 
 	 * @param pol
 	 * @param color
 	 */
@@ -232,6 +249,7 @@ public class Renderer {
 
 	/**
 	 * Draw a point with x and y
+	 * 
 	 * @param x
 	 * @param y
 	 * @param rad
@@ -243,6 +261,7 @@ public class Renderer {
 
 	/**
 	 * Draw a point with vector.
+	 * 
 	 * @param p
 	 * @param rad
 	 * @param color
@@ -253,6 +272,7 @@ public class Renderer {
 
 	/**
 	 * Get Circle Error for correct drawing of circles.
+	 * 
 	 * @param x
 	 * @param y
 	 * @param r
@@ -264,6 +284,7 @@ public class Renderer {
 
 	/**
 	 * Draw a circle.
+	 * 
 	 * @param cx
 	 * @param cy
 	 * @param r
@@ -308,6 +329,7 @@ public class Renderer {
 
 	/**
 	 * Draw a Rectangle with AABB.
+	 * 
 	 * @param aabb
 	 * @param color
 	 * @param filled
@@ -318,6 +340,7 @@ public class Renderer {
 
 	/**
 	 * Draw a Rectangle with a Box.
+	 * 
 	 * @param box
 	 * @param color
 	 * @param filled
@@ -328,6 +351,7 @@ public class Renderer {
 
 	/**
 	 * Draw a Rectangle with int points.
+	 * 
 	 * @param x0
 	 * @param y0
 	 * @param x1
@@ -375,6 +399,7 @@ public class Renderer {
 
 	/**
 	 * Draw a Rectangle with float points.
+	 * 
 	 * @param x0
 	 * @param y0
 	 * @param x1
@@ -388,6 +413,7 @@ public class Renderer {
 
 	/**
 	 * Draw a line with floats.
+	 * 
 	 * @param x0
 	 * @param y0
 	 * @param x1
@@ -400,6 +426,7 @@ public class Renderer {
 
 	/**
 	 * Draw a Line with integers.
+	 * 
 	 * @param x0
 	 * @param y0
 	 * @param x1
@@ -455,6 +482,7 @@ public class Renderer {
 
 	/**
 	 * Set a pixel to a specific color.
+	 * 
 	 * @param x
 	 * @param y
 	 * @param color -0xrrggbb
@@ -469,7 +497,9 @@ public class Renderer {
 	}
 
 	/**
-	 * Set a pixel, after checking if pixel is inside of the displayed window. With ints
+	 * Set a pixel, after checking if pixel is inside of the displayed window. With
+	 * ints
+	 * 
 	 * @param x
 	 * @param y
 	 * @param color
@@ -487,7 +517,9 @@ public class Renderer {
 	}
 
 	/**
-	 * Set a pixel, after checking if pixel is inside of the displayed window. With floats
+	 * Set a pixel, after checking if pixel is inside of the displayed window. With
+	 * floats
+	 * 
 	 * @param x
 	 * @param y
 	 * @param color
@@ -499,6 +531,7 @@ public class Renderer {
 
 	/**
 	 * draw a normal.
+	 * 
 	 * @param pos
 	 * @param normal
 	 */
@@ -521,6 +554,7 @@ public class Renderer {
 
 	/**
 	 * Set the frameBufferData to a new one.
+	 * 
 	 * @param frameBufferData
 	 */
 	public void newFrameBufferData(int[] frameBufferData) {
@@ -529,6 +563,7 @@ public class Renderer {
 
 	/**
 	 * Get camera.
+	 * 
 	 * @return
 	 */
 	public Camera getCamera() {

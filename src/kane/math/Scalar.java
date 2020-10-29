@@ -153,12 +153,13 @@ public class Scalar {
 	}
 
 	/**
-	 * Does a linear interpolation.
-	 * So the new vector is a point between v1 and v2 depending on the factor.
-	 * If factor is 0, v1 will be returned. If factor is 1, v2 will be returned.
-	 * If factor is 0.5, the middle of v1 and v2 will be returned.
-	 * @param v1 -first point
-	 * @param v2 -second point
+	 * Does a linear interpolation. So the new vector is a point between v1 and v2
+	 * depending on the factor. If factor is 0, v1 will be returned. If factor is 1,
+	 * v2 will be returned. If factor is 0.5, the middle of v1 and v2 will be
+	 * returned.
+	 * 
+	 * @param v1     -first point
+	 * @param v2     -second point
 	 * @param factor
 	 * @return -point between v1 and v2 depending on the factor
 	 */
@@ -168,6 +169,7 @@ public class Scalar {
 
 	/**
 	 * Calculates the volume of a triangle.
+	 * 
 	 * @param a -first point of triangle
 	 * @param b -second point of triangle
 	 * @param c -third point of triangle
@@ -183,10 +185,23 @@ public class Scalar {
 
 	/**
 	 * Rounds a float
+	 * 
 	 * @param f -float
 	 * @return -rounded float as int
 	 */
 	public static int round(float f) {
 		return (int) (f + 0.5f);
+	}
+
+	public static float sin(float alpha) {
+		return alpha - alpha * alpha * alpha / 6 + alpha * alpha * alpha * alpha * alpha / 120
+				- alpha * alpha * alpha * alpha * alpha * alpha * alpha / 5040
+				+ alpha * alpha * alpha * alpha * alpha * alpha * alpha * alpha * alpha / 362880;
+	}
+
+	public static float cos(float alpha) {
+		return 1 - alpha * alpha / 2 + alpha * alpha * alpha * alpha / 24
+				- alpha * alpha * alpha * alpha * alpha * alpha / 720
+				+ alpha * alpha * alpha * alpha * alpha * alpha * alpha * alpha / 40320;
 	}
 }
