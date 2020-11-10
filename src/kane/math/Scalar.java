@@ -136,6 +136,14 @@ public class Scalar {
 		}
 		return v1 > v2;
 	}
+	
+	public static boolean greaterEqual(float v1, float v2) {
+		boolean res = equals(v1, v2);
+		if (res || v1 > v2) {
+			return true;
+		}
+		return false;
+	}
 
 	/**
 	 * checks if first value is smaller than second value with a tolerance of 0.01%
@@ -150,6 +158,14 @@ public class Scalar {
 			return false;
 		}
 		return v1 < v2;
+	}
+	
+	public static boolean smallerEqual(float v1, float v2) {
+		boolean res = equals(v1, v2);
+		if (res || v1 < v2) {
+			return true;
+		}
+		return false;
 	}
 
 	/**

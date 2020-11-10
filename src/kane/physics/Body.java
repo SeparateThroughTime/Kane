@@ -260,7 +260,7 @@ public class Body {
 	 * 
 	 * @return
 	 */
-	public float getImpulseRatio() {
+	public float getImpulseRate() {
 		return invMass;
 	}
 

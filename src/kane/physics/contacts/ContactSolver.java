@@ -39,49 +39,51 @@ public class ContactSolver implements ContactAcceptor {
 				Body bodyB = shapeB.getBody();
 				Vec2f velA = bodyA.getVel();
 				Vec2f velB = bodyB.getVel();
-				float impulseRatioA = bodyA.getImpulseRatio();
-				float impulseRatioB = bodyB.getImpulseRatio();
-				float impulseRatioAB = 1 / (impulseRatioA + impulseRatioB);
-				if (shapeA.getCollision() && shapeB.getCollision() && shapePair.isCollideable()
-						) {
+				float impulseRateA = bodyA.getImpulseRate();
+				float impulseRateB = bodyB.getImpulseRate();
+				float massAB = 1 / (impulseRateA + impulseRateB);
+
+				if (shapeA.getCollision() && shapeB.getCollision() && shapePair.isCollideable()) {
 
 					// New Impulses
 					// TODO: Not working
-					if (false) {
-
+					if (true) {
 						Contact contact = shapePair.getContact();
-						Vec2f normal = contact.getNormal();
-						Vec2f collisionPoint = contact.getPoint();
-						Vec2f centerOfMassA = new Vec2f(bodyA.getCenterOfMass()).add(bodyA.getPos());
-						Vec2f distCoMAtoCollisionP = new Vec2f(collisionPoint).sub(centerOfMassA).perpLeft();
-						Vec2f centerOfMassB = new Vec2f(bodyB.getCenterOfMass()).add(bodyB.getPos());
-						Vec2f distCoMBtoCollisionP = new Vec2f(collisionPoint).sub(centerOfMassB).perpLeft();
-						Vec2f orbitSpeedA = new Vec2f(distCoMAtoCollisionP).mult(bodyA.getAngleVel());
-						Vec2f orbitSpeedB = new Vec2f(distCoMBtoCollisionP).mult(bodyB.getAngleVel());
-						Vec2f velPointA = new Vec2f(velA).add(orbitSpeedA);
-						Vec2f velPointB = new Vec2f(velB).add(orbitSpeedB);
-						Vec2f velAB = new Vec2f(velPointA).sub(velPointB);
+						float distance = shapePair.getContact().getDistance();
+						if (distance < 0) {
+							Vec2f normal = contact.getNormal();
+							Vec2f collisionPoint = contact.getPoint();
+							Vec2f centerOfMassA = new Vec2f(bodyA.getCenterOfMass()).add(bodyA.getPos());
+							Vec2f distCoMAtoCollisionP = new Vec2f(collisionPoint).sub(centerOfMassA).perpLeft();
+							Vec2f centerOfMassB = new Vec2f(bodyB.getCenterOfMass()).add(bodyB.getPos());
+							Vec2f distCoMBtoCollisionP = new Vec2f(collisionPoint).sub(centerOfMassB).perpLeft();
+							Vec2f orbitSpeedA = new Vec2f(distCoMAtoCollisionP).mult(bodyA.getAngleVel());
+							Vec2f orbitSpeedB = new Vec2f(distCoMBtoCollisionP).mult(bodyB.getAngleVel());
+							Vec2f velPointA = new Vec2f(velA).add(orbitSpeedA);
+							Vec2f velPointB = new Vec2f(velB).add(orbitSpeedB);
+							Vec2f velAB = new Vec2f(velPointA).sub(velPointB);
 
-						float nominator = -(1 + coefficientOfRestitution) * velAB.dot(normal);
-						float massAB = bodyA.getImpulseRatio() + bodyB.getImpulseRatio();
-						float distComAtoCollisionPProj = Math.abs(distCoMAtoCollisionP.dot(normal));
-						float rotationPartA = (distComAtoCollisionPProj * distComAtoCollisionPProj)
-								/ bodyA.getMomentOfInertia();
-						float distComBtoCollisionPProj = Math.abs(distCoMBtoCollisionP.dot(normal));
-						float rotationPartB = (distComBtoCollisionPProj * distComBtoCollisionPProj)
-								/ bodyB.getMomentOfInertia();
-						float collisionScaleFactor = nominator / (massAB + rotationPartA + rotationPartB);
+							float nominator = -(1 + coefficientOfRestitution) * velAB.dot(normal);
+							float impulseRateAB = impulseRateA + impulseRateB;
+							float distComAtoCollisionPProj = Math.abs(distCoMAtoCollisionP.dot(normal));
+							float rotationPartA = (distComAtoCollisionPProj * distComAtoCollisionPProj)
+									/ bodyA.getMomentOfInertia();
+							float distComBtoCollisionPProj = Math.abs(distCoMBtoCollisionP.dot(normal));
+							float rotationPartB = (distComBtoCollisionPProj * distComBtoCollisionPProj)
+									/ bodyB.getMomentOfInertia();
+							float collisionScaleFactor = nominator / (impulseRateAB + rotationPartA + rotationPartB);
 
-						velA.addMult(normal, collisionScaleFactor * bodyA.getImpulseRatio());
-						velB.addMult(normal, -collisionScaleFactor * bodyB.getImpulseRatio());
+							velA.addMult(normal, collisionScaleFactor * impulseRateA);
+							velB.addMult(normal, -collisionScaleFactor * impulseRateB);
 
-						float angleVelModificationA = (distComAtoCollisionPProj * collisionScaleFactor)
-								/ bodyA.getMomentOfInertia();
-						bodyA.setAngleVel(bodyA.getAngleVel() + angleVelModificationA);
+							float angleVelModificationA = (distComAtoCollisionPProj * collisionScaleFactor)
+									/ bodyA.getMomentOfInertia();
+							bodyA.setAngleVel(bodyA.getAngleVel() + angleVelModificationA);
 
-						float angleVelModificationB = (distComBtoCollisionPProj * collisionScaleFactor)
-								/ bodyB.getMomentOfInertia();
-						bodyB.setAngleVel(bodyB.getAngleVel() + angleVelModificationB);
+							float angleVelModificationB = (distComBtoCollisionPProj * collisionScaleFactor)
+									/ bodyB.getMomentOfInertia();
+							bodyB.setAngleVel(bodyB.getAngleVel() + angleVelModificationB);
+						}
 					} else {
 //					Old Impulses
 						// Normal Impulse
@@ -90,7 +92,7 @@ public class ContactSolver implements ContactAcceptor {
 						Vec2f normal = contact.getNormal();
 						float projVelAB = velAB.dot(normal);
 						float velToRemove = projVelAB + contact.getDistance() / deltaTime;
-						float impulse = Math.min(velToRemove * impulseRatioAB, 0f);
+						float impulse = Math.min(velToRemove * massAB, 0f);
 
 						// I don't unterstand this part... explained in:
 						// https://www.youtube.com/watch?v=jusFm0oSNF0&list=PLYG-GfK4ITZ5X2dciKXT_COJrzQAI4oxL&index=29
@@ -101,8 +103,8 @@ public class ContactSolver implements ContactAcceptor {
 //						impulse = newImpulse - contact.getImpulse();
 //						contact.setImpulse(newImpulse);
 
-						velA.addMult(normal, impulse * impulseRatioA);
-						velB.addMult(normal, -impulse * impulseRatioB);
+						velA.addMult(normal, impulse * impulseRateA);
+						velB.addMult(normal, -impulse * impulseRateB);
 
 						// Just Normal Impulse in direction of perp
 						velAB = new Vec2f(velB).sub(velA);
@@ -120,8 +122,7 @@ public class ContactSolver implements ContactAcceptor {
 						float relFriction = (float) Math.sqrt(frictionA * frictionB) * 2;
 						float maxFriction = impulse == 0 ? 0 : -relFriction * 4000;
 //						float maxFriction = impulse * relFriction;
-						float frictionImpulse = Scalar.clamp(velAB.dot(perp) * impulseRatioAB, maxFriction,
-								-maxFriction);
+						float frictionImpulse = Scalar.clamp(velAB.dot(perp) * massAB, maxFriction, -maxFriction);
 						contact.setFrictionImpulse(frictionImpulse);
 
 						// TODO Same as above
@@ -129,8 +130,8 @@ public class ContactSolver implements ContactAcceptor {
 //						frictionImpulse = newFrictionImpulse - contact.getFrictionImpulse();
 //						contact.setFrictionImpulse(newFrictionImpulse);
 
-						velA.addMult(perp, frictionImpulse * impulseRatioA);
-						velB.addMult(perp, -frictionImpulse * impulseRatioB);
+						velA.addMult(perp, frictionImpulse * impulseRateA);
+						velB.addMult(perp, -frictionImpulse * impulseRateB);
 					}
 				}
 			}
@@ -145,6 +146,11 @@ public class ContactSolver implements ContactAcceptor {
 	 * @param numShapePairs
 	 */
 	public void solvePosition(ShapePair[] shapePairs, int numShapePairs) {
+		// Theory was: Bodies collide. In the next frame they are still in collision, so
+		// the energey conservation doesnt work.
+		// So this was an attempt to replace the bodies. But still, the impulse is too
+		// high.
+		// Maybe this code will be useful in future...
 //		for (int i = 0; i < positionIterations; i++) {
 //			for (int j = 0; j < numShapePairs; j++) {
 //				ShapePair shapePair = shapePairs[j];
@@ -152,10 +158,18 @@ public class ContactSolver implements ContactAcceptor {
 //				Shape shapeB = shapePair.getShapeB();
 //				Body bodyA = shapeA.getBody();
 //				Body bodyB = shapeB.getBody();
-//				float distance = shapePair.getContact().getDistance();
 //
-//				if (shapeA.getCollision() && shapeB.getCollision() && shapePair.isCollideable() && distance < 0) {
-//					
+//				if (shapeA.getCollision() && shapeB.getCollision() && shapePair.isCollideable()) {
+//					Contact contact = shapePair.getContact();
+//					float distance = contact.getDistance();
+//					if (distance < 0) {
+//						Vec2f normal = contact.getNormal();
+//						float impulseRateA = bodyA.getImpulseRate();
+//						float impulseRateB = bodyB.getImpulseRate();
+//						float massAB = 1 / (impulseRateA + impulseRateB);
+//						bodyA.getPos().addMult(normal, distance * impulseRateA * massAB);
+//						bodyB.getPos().addMult(normal, -distance * impulseRateB * massAB);
+//					}
 //				}
 //			}
 //		}

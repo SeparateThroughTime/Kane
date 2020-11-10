@@ -69,9 +69,6 @@ public class Renderer {
 				shapePos.add(shapecom);
 				drawPoint(shapePos, 2, 0xff0000);
 			}
-			if (i == 2) {
-				System.out.println(body.getPos());
-			}
 
 		}
 

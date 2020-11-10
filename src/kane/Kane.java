@@ -1,5 +1,6 @@
 /*TODO
 
+	ContactPoint: BoxPolygon CirclePoligon, LineSegmentPolygon, PointPolygon, PolygonPolygon
 	Rotation
 	Sprites
 	Items/Inventory
@@ -92,8 +93,8 @@ public class Kane extends Game {
 		physics.addBody(body);
 
 		body = new Body(0, 0);
-		body.addShape(
-				new LineSegment(new Vec2f(mapLen - 30, 0), new Vec2f(mapLen - 30, resSpecs.GAME_HEIGHT), body, 0x0000ff, mStatic));
+		body.addShape(new LineSegment(new Vec2f(mapLen - 30, 0), new Vec2f(mapLen - 30, resSpecs.GAME_HEIGHT), body,
+				0x0000ff, mStatic));
 		body.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
 		physics.addBody(body);
 
@@ -109,8 +110,8 @@ public class Kane extends Game {
 
 		// Inventory
 		gameInterface = new Body(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2);
-		gameInterface.addShape(
-				new Box(0, 0, gameInterface, new Vec2f(resSpecs.gameWidth / 2 - 10, resSpecs.GAME_HEIGHT / 2 - 10), 0xffffff, mInterface));
+		gameInterface.addShape(new Box(0, 0, gameInterface,
+				new Vec2f(resSpecs.gameWidth / 2 - 10, resSpecs.GAME_HEIGHT / 2 - 10), 0xffffff, mInterface));
 		gameInterface.getShape(0).setVisible(false);
 		gameInterface.getShape(0).setCollision(false);
 		gameInterface.getShape(0).addPassiveAttribute(PassiveAttributes.INVENTORY);

@@ -61,7 +61,7 @@ public class Physics {
 		// Gravity
 		for (int i = 0; i < numBodies; i++) {
 			Body body = bodies[i];
-			if (Scalar.greaterThan(body.getImpulseRatio(), 0)) {
+			if (Scalar.greaterThan(body.getImpulseRate(), 0)) {
 				body.getAcc().add(new Vec2f(gravity).div(deltaTime));
 
 			}
@@ -71,7 +71,7 @@ public class Physics {
 		float aabbTolerance = 5;
 		for (int i = 0; i < numBodies; i++) {
 			Body body = bodies[i];
-			if (body.getImpulseRatio() > 0) {
+			if (body.getImpulseRate() > 0) {
 				body.getVel().addMult(body.getAcc(), deltaTime);
 				Vec2f nextPos = new Vec2f(body.getPos()).addMult(body.getVel(), deltaTime);
 				body.updateAABB(nextPos, aabbTolerance);
@@ -144,13 +144,12 @@ public class Physics {
 		contactSolver.solveVelocity(shapePairs, numShapePairs);
 
 		// Velocity integration
-		for (Body body : bodies) {
-			if (body instanceof Body) {
-				if (body.getImpulseRatio() > 0) {
-					body.getPos().addMult(body.getVel(), deltaTime);
-					// ??? TODO
-//					body.rotate(0);
-				}
+		for (int i = 0; i < numBodies; i++) {
+			Body body = bodies[i];
+			if (body.getImpulseRate() > 0) {
+				body.getPos().addMult(body.getVel(), deltaTime);
+				// ??? TODO
+//				body.rotate(0);
 			}
 		}
 

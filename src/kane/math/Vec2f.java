@@ -364,4 +364,18 @@ public class Vec2f {
 	public String toString() {
 		return String.format("(%f, %f)", x, y);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj != null && getClass() == obj.getClass()) {
+			Vec2f vec = (Vec2f) obj;
+			if (vec.x == x && vec.y == y) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		return false;
+	}
 }

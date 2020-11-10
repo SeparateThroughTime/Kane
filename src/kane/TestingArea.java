@@ -305,7 +305,7 @@ public class TestingArea extends Game {
 			dragObj = null;
 			for (int i = 0; i < physics.getNumBodies(); i++) {
 				Body body = physics.getBodies(i);
-				if (body.getImpulseRatio() > 0) {
+				if (body.getImpulseRate() > 0) {
 					for (int j = 0; j < body.getNumShapes(); j++) {
 						Shape shape = body.getShape(j);
 						AABB aabb = shape.getAABB();
@@ -413,7 +413,7 @@ public class TestingArea extends Game {
 	public void leftArrowPressed() {
 		for (int i = 0; i < physics.getNumBodies(); i++) {
 			Body body = physics.getBodies(i);
-			if (body.getImpulseRatio() > 0) {
+			if (body.getImpulseRate() > 0) {
 				body.getAcc().sub(new Vec2f(10 / DELTATIME, 0));
 
 			}
@@ -430,7 +430,7 @@ public class TestingArea extends Game {
 	public void rightArrowPressed() {
 		for (int i = 0; i < physics.getNumBodies(); i++) {
 			Body body = physics.getBodies(i);
-			if (body.getImpulseRatio() > 0) {
+			if (body.getImpulseRate() > 0) {
 				body.getAcc().add(new Vec2f(10 / DELTATIME, 0));
 
 			}
@@ -447,7 +447,7 @@ public class TestingArea extends Game {
 	public void upArrowPressed() {
 		for (int i = 0; i < physics.getNumBodies(); i++) {
 			Body body = physics.getBodies(i);
-			if (body.getImpulseRatio() > 0) {
+			if (body.getImpulseRate() > 0) {
 				body.getAcc().add(new Vec2f(0, 10 / DELTATIME));
 
 			}
@@ -464,7 +464,7 @@ public class TestingArea extends Game {
 	public void downArrowPressed() {
 		for (int i = 0; i < physics.getNumBodies(); i++) {
 			Body body = physics.getBodies(i);
-			if (body.getImpulseRatio() > 0) {
+			if (body.getImpulseRate() > 0) {
 				body.getAcc().sub(new Vec2f(0, 10 / DELTATIME));
 
 			}
