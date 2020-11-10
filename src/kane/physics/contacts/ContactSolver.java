@@ -42,7 +42,8 @@ public class ContactSolver implements ContactAcceptor {
 				float impulseRatioA = bodyA.getImpulseRatio();
 				float impulseRatioB = bodyB.getImpulseRatio();
 				float impulseRatioAB = 1 / (impulseRatioA + impulseRatioB);
-				if (shapeA.getCollision() && shapeB.getCollision() && shapePair.isCollideable() && shapePair.getContact().getDistance() < 0) {
+				if (shapeA.getCollision() && shapeB.getCollision() && shapePair.isCollideable()
+						&& shapePair.getContact().getDistance() < 0) {
 
 					// New Impulses
 					if (true) {
@@ -62,10 +63,10 @@ public class ContactSolver implements ContactAcceptor {
 
 						float nominator = -(1 + coefficientOfRestitution) * velAB.dot(normal);
 						float massAB = bodyA.getImpulseRatio() + bodyB.getImpulseRatio();
-						float distComAtoCollisionPProj = distCoMAtoCollisionP.dot(normal);
+						float distComAtoCollisionPProj = Math.abs(distCoMAtoCollisionP.dot(normal));
 						float rotationPartA = (distComAtoCollisionPProj * distComAtoCollisionPProj)
 								/ bodyA.getMomentOfInertia();
-						float distComBtoCollisionPProj = distCoMBtoCollisionP.dot(normal);
+						float distComBtoCollisionPProj = Math.abs(distCoMBtoCollisionP.dot(normal));
 						float rotationPartB = (distComBtoCollisionPProj * distComBtoCollisionPProj)
 								/ bodyB.getMomentOfInertia();
 						float collisionScaleFactor = nominator / (massAB + rotationPartA + rotationPartB);
@@ -147,6 +148,20 @@ public class ContactSolver implements ContactAcceptor {
 	 * @param numShapePairs
 	 */
 	public void solvePosition(ShapePair[] shapePairs, int numShapePairs) {
+		for (int i = 0; i < positionIterations; i++) {
+			for (int j = 0; j < numShapePairs; j++) {
+				ShapePair shapePair = shapePairs[j];
+				Shape shapeA = shapePair.getShapeA();
+				Shape shapeB = shapePair.getShapeB();
+				Body bodyA = shapeA.getBody();
+				Body bodyB = shapeB.getBody();
+				float distance = shapePair.getContact().getDistance();
+
+				if (shapeA.getCollision() && shapeB.getCollision() && shapePair.isCollideable() && distance < 0) {
+					
+				}
+			}
+		}
 	}
 
 	@Override

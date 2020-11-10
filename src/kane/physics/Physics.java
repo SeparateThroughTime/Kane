@@ -45,7 +45,7 @@ public class Physics {
 		numShapePairs = 0;
 
 		cgf = new ContactGeneratorFactory(contactListener);
-		contactSolver = new ContactSolver(deltaTime, 4, 1);
+		contactSolver = new ContactSolver(deltaTime, 1, 1);
 	}
 
 	/**
