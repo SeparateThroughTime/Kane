@@ -32,7 +32,7 @@ public class Physics {
 
 	/**
 	 * 
-	 * @param deltaTime -time between each frame
+	 * @param deltaTime       -time between each frame
 	 * @param contactListener
 	 */
 	public Physics(float deltaTime, ContactListener contactListener) {
@@ -45,11 +45,15 @@ public class Physics {
 		numShapePairs = 0;
 
 		cgf = new ContactGeneratorFactory(contactListener);
-		contactSolver = new ContactSolver(deltaTime, 1, 1);
+		// TODO: If possible with new ContactSolver -> Change to:
+		// contactSolver = new ContactSolver(deltaTime, 1, 1);
+		contactSolver = new ContactSolver(deltaTime, 4, 1);
 	}
 
 	/**
-	 * This need to run every frame. Its the main part of the physics engine, where everything is happening.
+	 * This need to run every frame. Its the main part of the physics engine, where
+	 * everything is happening.
+	 * 
 	 * @param deltaTime -time between each frame
 	 */
 	public void step(float deltaTime) {
@@ -93,7 +97,8 @@ public class Physics {
 								shapePairIds[i][j][k][l] = numShapePairs;
 								// Workaround "interchanged Body IDs"
 								// In this if, the ID of Body A is always smaller than the ID of Body B
-								// (Tested). But in some cases there are still shapepairs where its interchanged. I
+								// (Tested). But in some cases there are still shapepairs where its
+								// interchanged. I
 								// don't no, why they exist. But with this workaround, the algorithm for
 								// managing the shapepairs can handle it.
 								aabbOverlaps[k][l][i][j] = true;
@@ -143,12 +148,12 @@ public class Physics {
 			if (body instanceof Body) {
 				if (body.getImpulseRatio() > 0) {
 					body.getPos().addMult(body.getVel(), deltaTime);
-					//??? TODO
+					// ??? TODO
 //					body.rotate(0);
 				}
 			}
 		}
-		
+
 		// Angle velocity integration
 //		for (int i = 0; i < numBodies; i++) {
 //			Body body = bodies[i];
@@ -163,6 +168,7 @@ public class Physics {
 
 	/**
 	 * Add a body to the engine
+	 * 
 	 * @param body
 	 * @return
 	 */
@@ -173,6 +179,7 @@ public class Physics {
 
 	/**
 	 * Get maximum of number of bodies.
+	 * 
 	 * @return
 	 */
 	public int getMAX_BODIES() {
@@ -181,6 +188,7 @@ public class Physics {
 
 	/**
 	 * Get a body with index.
+	 * 
 	 * @param index
 	 * @return
 	 */
@@ -190,6 +198,7 @@ public class Physics {
 
 	/**
 	 * Get the number of bodies.
+	 * 
 	 * @return
 	 */
 	public int getNumBodies() {
@@ -198,6 +207,7 @@ public class Physics {
 
 	/**
 	 * get a shapePair with collision with specific index.
+	 * 
 	 * @param index
 	 * @return
 	 */
@@ -207,6 +217,7 @@ public class Physics {
 
 	/**
 	 * Get number of ShapePairs.
+	 * 
 	 * @return
 	 */
 	public int getNumShapePairs() {
@@ -215,6 +226,7 @@ public class Physics {
 
 	/**
 	 * Set gravity
+	 * 
 	 * @param gravity
 	 * @return
 	 */
@@ -225,6 +237,7 @@ public class Physics {
 
 	/**
 	 * Get gravity.
+	 * 
 	 * @return
 	 */
 	public Vec2f getGravity() {

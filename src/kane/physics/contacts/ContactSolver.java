@@ -43,10 +43,11 @@ public class ContactSolver implements ContactAcceptor {
 				float impulseRatioB = bodyB.getImpulseRatio();
 				float impulseRatioAB = 1 / (impulseRatioA + impulseRatioB);
 				if (shapeA.getCollision() && shapeB.getCollision() && shapePair.isCollideable()
-						&& shapePair.getContact().getDistance() < 0) {
+						) {
 
 					// New Impulses
-					if (true) {
+					// TODO: Not working
+					if (false) {
 
 						Contact contact = shapePair.getContact();
 						Vec2f normal = contact.getNormal();
@@ -130,10 +131,6 @@ public class ContactSolver implements ContactAcceptor {
 
 						velA.addMult(perp, frictionImpulse * impulseRatioA);
 						velB.addMult(perp, -frictionImpulse * impulseRatioB);
-
-						// Rotation Impulse
-						Vec2f distanceAToContact = new Vec2f(bodyA.getPos()).add(contact.getPoint());
-						float angle = distanceAToContact.angleTo(normal) / Scalar.PI;
 					}
 				}
 			}
@@ -148,20 +145,20 @@ public class ContactSolver implements ContactAcceptor {
 	 * @param numShapePairs
 	 */
 	public void solvePosition(ShapePair[] shapePairs, int numShapePairs) {
-		for (int i = 0; i < positionIterations; i++) {
-			for (int j = 0; j < numShapePairs; j++) {
-				ShapePair shapePair = shapePairs[j];
-				Shape shapeA = shapePair.getShapeA();
-				Shape shapeB = shapePair.getShapeB();
-				Body bodyA = shapeA.getBody();
-				Body bodyB = shapeB.getBody();
-				float distance = shapePair.getContact().getDistance();
-
-				if (shapeA.getCollision() && shapeB.getCollision() && shapePair.isCollideable() && distance < 0) {
-					
-				}
-			}
-		}
+//		for (int i = 0; i < positionIterations; i++) {
+//			for (int j = 0; j < numShapePairs; j++) {
+//				ShapePair shapePair = shapePairs[j];
+//				Shape shapeA = shapePair.getShapeA();
+//				Shape shapeB = shapePair.getShapeB();
+//				Body bodyA = shapeA.getBody();
+//				Body bodyB = shapeB.getBody();
+//				float distance = shapePair.getContact().getDistance();
+//
+//				if (shapeA.getCollision() && shapeB.getCollision() && shapePair.isCollideable() && distance < 0) {
+//					
+//				}
+//			}
+//		}
 	}
 
 	@Override
