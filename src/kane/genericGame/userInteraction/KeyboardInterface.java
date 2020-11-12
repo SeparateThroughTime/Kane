@@ -5,12 +5,16 @@ package kane.genericGame.userInteraction;
  */
 public interface KeyboardInterface {
 	
+	public void leftArrowClick();
 	public void leftArrowPressed();
 	public void leftArrowReleased();
+	public void rightArrowClick();
 	public void rightArrowPressed();
 	public void rightArrowReleased();
+	public void upArrowClick();
 	public void upArrowPressed();
 	public void upArrowReleased();
+	public void downArrowClick();
 	public void downArrowPressed();
 	public void downArrowReleased();
 	

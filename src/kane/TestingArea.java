@@ -24,7 +24,6 @@ public class TestingArea extends Game {
 
 	public TestingArea(String title) {
 		super(title);
-		renderer.testing = true;
 	}
 
 	public static void main(String[] args) {
@@ -290,7 +289,6 @@ public class TestingArea extends Game {
 //		camera.getShape(0).setVisible(false);
 //		physics.addBody(camera);
 		
-		renderer.testing = false;
 		scene0();
 
 	}

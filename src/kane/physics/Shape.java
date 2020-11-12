@@ -4,6 +4,7 @@ import kane.math.Vec2f;
 import kane.physics.contacts.ActiveAttributes;
 import kane.physics.contacts.PassiveAttributes;
 import kane.renderer.Sprite;
+import kane.renderer.SpriteState;
 
 /**
  * Shape is an abstract class, which is the base for all Shapes.
@@ -32,9 +33,6 @@ public abstract class Shape{
 	protected int numActiveAttributes;
 	protected int numPassiveAttributes;
 	
-	//protected Sprite sprite;
-	//protected SpriteState currentSpriteState;
-	protected int currentSpriteStateFrame;
 	protected boolean hasSprite;
 	protected Sprite sprite;
 	
@@ -282,7 +280,6 @@ public abstract class Shape{
 		return material;
 	}
 	
-	// TODO: RESPRITE
 	/**
 	 * set Sprite
 	 * @param sprite
@@ -297,35 +294,11 @@ public abstract class Shape{
 	 * @return
 	 */
 	public boolean hasSprite() {
-		return hasSprite();
+		return hasSprite;
 	}
-//	TODO RESPRITE
-//	public Sprite getSprite() {
-//		return sprite;
-//	}
-//	
-//	public void setCurrentSpriteState(SpriteState state) {
-//		this.currentSpriteState = state;
-//		this.currentSpriteStateFrame = 0;
-//	}
-//	
-//	public SpriteState getCurrentSpriteState() {
-//		return currentSpriteState;
-//	}
-//	
-//	public void stepCurrentSpriteStateFrame() {
-//		currentSpriteStateFrame++;
-//		if(currentSpriteStateFrame >= sprite.getFrameCount(currentSpriteState)) {
-//			currentSpriteStateFrame = 0;
-//		}
-//	}
-	
-	/**
-	 * get the current frame state of the sprite.
-	 * @return
-	 */
-	public int getCurrenSpriteStateFrame() {
-		return currentSpriteStateFrame;
+
+	public Sprite getSprite() {
+		return sprite;
 	}
 	
 	@Override

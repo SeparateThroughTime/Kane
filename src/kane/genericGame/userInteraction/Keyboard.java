@@ -93,15 +93,19 @@ public class Keyboard implements KeyListener{
 				chooseActionPressed[i] = new ChooseAction() { public void choose() {}};
 				chooseActionReleased[i] = new ChooseAction() { public void choose() {}};
 			}
+			chooseActionClick[37] = new ChooseAction() { public void choose() {keyInt.leftArrowClick();}};
 			chooseActionPressed[37] = new ChooseAction() { public void choose() {keyInt.leftArrowPressed();}};
 			chooseActionReleased[37] = new ChooseAction() { public void choose() {keyInt.leftArrowReleased();}};
 			
+			chooseActionClick[38] = new ChooseAction() { public void choose() {keyInt.upArrowClick();}};
 			chooseActionPressed[38] = new ChooseAction() { public void choose() {keyInt.upArrowPressed();}};
 			chooseActionReleased[38] = new ChooseAction() { public void choose() {keyInt.upArrowReleased();}};
 			
+			chooseActionClick[39] = new ChooseAction() { public void choose() {keyInt.rightArrowClick();}};
 			chooseActionPressed[39] = new ChooseAction() { public void choose() {keyInt.rightArrowPressed();}};
 			chooseActionReleased[39] = new ChooseAction() { public void choose() {keyInt.rightArrowReleased();}};
 			
+			chooseActionClick[40] = new ChooseAction() { public void choose() {keyInt.downArrowClick();}};
 			chooseActionPressed[40] = new ChooseAction() { public void choose() {keyInt.downArrowPressed();}};
 			chooseActionReleased[40] = new ChooseAction() { public void choose() {keyInt.downArrowReleased();}};
 			

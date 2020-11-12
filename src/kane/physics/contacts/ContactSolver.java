@@ -47,7 +47,7 @@ public class ContactSolver implements ContactAcceptor {
 
 					// New Impulses
 					// TODO: Not working
-					if (true) {
+					if (false) {
 						Contact contact = shapePair.getContact();
 						float distance = shapePair.getContact().getDistance();
 						if (distance < 0) {

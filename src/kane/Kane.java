@@ -3,6 +3,7 @@
 	ContactPoint: BoxPolygon CirclePoligon, LineSegmentPolygon, PointPolygon, PolygonPolygon
 	Rotation
 	Sprites
+	Transparent Pixel
 	Items/Inventory
 	Visual Effects
 	Sounds
@@ -20,6 +21,8 @@
 */
 package kane;
 
+import java.io.File;
+
 import kane.genericGame.Game;
 import kane.math.Vec2f;
 import kane.physics.Body;
@@ -31,6 +34,8 @@ import kane.physics.contacts.PassiveAttributes;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.LineSegment;
 import kane.physics.shapes.Polygon;
+import kane.renderer.Sprite;
+import kane.renderer.SpriteState;
 
 /**
  * This is the game "Kane".
@@ -100,12 +105,19 @@ public class Kane extends Game {
 
 		// Create player
 		player = new Body(100, 130);
-		player.addShape(new Box(0, 0, player, new Vec2f(10, 20), 0x00ff00, mDynamic));
+		player.addShape(new Box(0, 0, player, new Vec2f(16, 16), 0x00ff00, mDynamic));
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PLAYER_ALL);
 		body.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
-		player.addShape(new Box(0, -15, player, new Vec2f(9, 5), 0xffffff, mEvent));
+		player.addShape(new Box(0, -11, player, new Vec2f(15, 5), 0xffffff, mEvent));
 		player.getShape(1).setCollision(false);
 		player.getShape(1).addActiveAttribute(ActiveAttributes.PLAYER_FEETS);
+		File file = new File("sprites\\player.png");
+		Sprite sprite = new Sprite(file, 1, 1);
+		sprite.addState(SpriteState.Standing, new int[] { 0 });
+		sprite.addState(SpriteState.Running, new int[] { 1, 2, 3, 4 });
+		player.getShape(0).setSprite(sprite);
+		sprite.setCurrentSpriteState(SpriteState.Standing);
+		sprite.setSpritePosOffset(new Vec2f(-16, -16));
 		physics.addBody(player);
 
 		// Inventory
@@ -178,6 +190,11 @@ public class Kane extends Game {
 	@Override
 	public void rightMouseClick() {
 	}
+	
+	@Override
+	public void leftArrowClick() {
+		player.getShape(0).getSprite().setCurrentSpriteState(SpriteState.Running);
+	}
 
 	@Override
 	public void leftArrowPressed() {
@@ -191,7 +208,12 @@ public class Kane extends Game {
 
 	@Override
 	public void leftArrowReleased() {
-
+		player.getShape(0).getSprite().setCurrentSpriteState(SpriteState.Standing);
+	}
+	
+	@Override
+	public void rightArrowClick() {
+		player.getShape(0).getSprite().setCurrentSpriteState(SpriteState.Running);
 	}
 
 	@Override
@@ -206,7 +228,12 @@ public class Kane extends Game {
 
 	@Override
 	public void rightArrowReleased() {
-
+		player.getShape(0).getSprite().setCurrentSpriteState(SpriteState.Standing);
+	}
+	
+	@Override
+	public void upArrowClick() {
+		
 	}
 
 	@Override
@@ -222,6 +249,11 @@ public class Kane extends Game {
 	@Override
 	public void downArrowPressed() {
 
+	}
+	
+	@Override
+	public void downArrowClick() {
+		
 	}
 
 	@Override

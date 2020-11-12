@@ -22,7 +22,7 @@ import kane.physics.shapes.Polygon;
  * The Renderer renders the game.
  */
 public class Renderer {
-
+	
 	private ResolutionSpecification resSpecs;
 	private float multiplicator;
 	private int[] frameBufferData;
@@ -50,8 +50,6 @@ public class Renderer {
 		camera.changeResolution();
 		multiplicator = (float) resSpecs.height / resSpecs.GAME_HEIGHT;
 	}
-
-	public boolean testing = true;
 
 	public void testingArea() {
 		// TODO delete
@@ -84,7 +82,7 @@ public class Renderer {
 		displayContacts();
 
 		// TODO delete
-		testingArea();
+//		testingArea();
 
 	}
 
@@ -125,16 +123,15 @@ public class Renderer {
 		// draw bodies
 		for (int i = 0; i < numRenderedShapes; i++) {
 			Shape shape = renderedShapes[i];
-			// TODO RESPRITE
-//			if (shape.hasSprite()) {
-//				Sprite sprite = shape.getSprite();
-//				SpriteState state = shape.getCurrentSpriteState();
-//				int frameNo = shape.getCurrenSpriteStateFrame();
-//				int[] frame = sprite.getFrame(state, frameNo);
-//				Vec2f pos = shape.getAbsPos();
-//				drawSprite(frame, pos);
-//			}
-			if (ShapeType.PLANE.equals(shape.getType())) {
+			if (shape.hasSprite()) {
+				Sprite sprite = shape.getSprite();
+				sprite.step();
+				int[] frame = sprite.getFrame();
+				Vec2f pos = shape.getAbsPos();
+				int width = sprite.FRAME_WIDTH * sprite.PIXELS;
+				Vec2f spriteAbsPos = new Vec2f(pos).add(shape.getSprite().getSpritePosOffset());
+				drawSprite(frame, spriteAbsPos, width);
+			} else if (ShapeType.PLANE.equals(shape.getType())) {
 				Plane plane = (Plane) shape;
 				// draws planes
 				Vec2f startPoint = plane.getPoint();
@@ -215,16 +212,21 @@ public class Renderer {
 		}
 	}
 
-	// TODO: RESPRITE
 	/**
 	 * draw sprite.
 	 * 
 	 * @param frame
 	 * @param pos
 	 */
-	private void drawSprite(int[] frame, Vec2f pos) {
-		for (int i = 0; i < frame.length; i++) {
-
+	private void drawSprite(int[] frame, Vec2f pos, int width) {
+		int frameLen = frame.length;
+		for (int i = 0; i < frameLen; i++) {
+			int posX = (int) pos.getX();
+			int posY = (int) pos.getY();
+			int pixel = frame[frameLen - (i + 1)];
+			int pixelPosX = posX + (i % width);
+			int pixelPosY = posY + (i / width);
+			setPixelSave(pixelPosX, pixelPosY, pixel);
 		}
 	}
 
