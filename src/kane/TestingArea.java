@@ -48,14 +48,13 @@ public class TestingArea extends Game {
 		Vec2f points[];
 		
 		body = new Body(resSpecs.gameWidth / 2 + 100, resSpecs.GAME_HEIGHT / 2 - 100);
-		points = new Vec2f[5];
+		points = new Vec2f[4];
 		points[0] = new Vec2f(-20, -20);
-		points[1] = new Vec2f(20, -25);
+		points[1] = new Vec2f(20, -20);
 		points[2] = new Vec2f(20, 20);
-		points[3] = new Vec2f(-20, 40);
-		points[4] = new Vec2f(-50, 0);
+		points[3] = new Vec2f(-20, 20);
 		body.addShape(new Polygon(30, 0, body, 0x0000ff, points, mDynamic));
-		body.addShape(new Polygon(-30, 0, body, 0x0000ff, 6, 10, mDynamic));
+//		body.addShape(new Polygon(-30, 0, body, 0x0000ff, 6, 10, mDynamic));
 		physics.addBody(body);
 		
 		body = new Body(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2 - 100);
@@ -76,8 +75,8 @@ public class TestingArea extends Game {
 		points[3] = new Vec2f(-20, 40);
 		points[4] = new Vec2f(-50, 0);
 		body.addShape(new Polygon(30, 0, body, 0x0000ff, points, mDynamic));
-		body.addShape(new Polygon(-30, 0, body, 0x0000ff, 6, 10, mDynamic));
-		body.addShape(new Polygon(0, -20, body, 0x0000ff, 3, 7, mDynamic));
+//		body.addShape(new Polygon(-30, 0, body, 0x0000ff, 6, 10, mDynamic));
+//		body.addShape(new Polygon(0, -20, body, 0x0000ff, 3, 7, mDynamic));
 		physics.addBody(body);
 
 	}
@@ -288,7 +287,6 @@ public class TestingArea extends Game {
 //		camera.getShape(0).setCollision(false);
 //		camera.getShape(0).setVisible(false);
 //		physics.addBody(camera);
-		
 		scene0();
 
 	}
@@ -626,6 +624,26 @@ public class TestingArea extends Game {
 
 	@Override
 	public void iClick() {
+		
+	}
+
+	@Override
+	public void leftArrowClick() {
+		
+	}
+
+	@Override
+	public void rightArrowClick() {
+		
+	}
+
+	@Override
+	public void upArrowClick() {
+		
+	}
+
+	@Override
+	public void downArrowClick() {
 		
 	}
 }

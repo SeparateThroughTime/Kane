@@ -49,7 +49,7 @@ public class BoxBoxContactGenerator implements ContactGenerator {
 		Vec2f posTmp = new Vec2f(boxB.getAbsPos()).addMult(boxB.getRad(), new Vec2f(normal).negate());
 		Vec2f closestPointB = Scalar.findIntersection(closestPointA, normal, posTmp, perp);
 
-		Contact newContact = new Contact(normal, overlap, closestPointB, new Vec2f(), new Vec2f());
+		Contact newContact = new Contact(normal, overlap, closestPointB);
 		if (acceptor.accept(newContact)) {
 			shapePair.setContact(newContact);
 		}

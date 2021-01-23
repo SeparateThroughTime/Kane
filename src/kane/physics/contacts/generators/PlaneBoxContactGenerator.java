@@ -39,7 +39,7 @@ public class PlaneBoxContactGenerator implements ContactGenerator{
 		}
 		Vec2f closestPointOnPlane = new Vec2f(point).addMult(planeA.getNormal(), projDistance);
 		
-		Contact newContact = new Contact(planeA.getNormal(), -projDistance, closestPointOnPlane, new Vec2f(), new Vec2f());
+		Contact newContact = new Contact(planeA.getNormal(), -projDistance, closestPointOnPlane);
 		if (acceptor.accept(newContact)) {
 			shapePair.setContact(newContact);
 		}

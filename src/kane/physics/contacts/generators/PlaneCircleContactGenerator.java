@@ -25,7 +25,7 @@ public class PlaneCircleContactGenerator implements ContactGenerator {
 		Vec2f closestPointOnPlane = new Vec2f(circleB.getAbsPos()).addMult(planeA.getNormal(), projDistance);
 		Vec2f supportB = new Vec2f(circleB.getAbsPos()).addMult(planeA.getNormal(), circleB.getRad());
 		
-		Contact newContact = new Contact(planeA.getNormal(), d, closestPointOnPlane, new Vec2f(), supportB);
+		Contact newContact = new Contact(planeA.getNormal(), d, closestPointOnPlane);
 		if (acceptor.accept(newContact)) {
 			shapePair.setContact(newContact);
 		}

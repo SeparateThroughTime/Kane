@@ -15,15 +15,6 @@ public class Contact {
 	private final Vec2f supportA;
 	private final Vec2f supportB;
 	
-	public Contact(Vec2f normal, float distance, Vec2f point, Vec2f supportA, Vec2f supportB) {
-		this.normal = new Vec2f(normal);
-		this.distance = distance;
-		this.point = new Vec2f(point);
-		this.supportA = supportA;
-		this.supportB = supportB;
-	}
-	
-	//TODO choose this or the other for rotation solution
 	/**
 	 * @param normal -direction of contact
 	 * @param distance -distance between bodies

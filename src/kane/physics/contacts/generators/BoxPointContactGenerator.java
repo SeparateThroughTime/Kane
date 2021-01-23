@@ -43,7 +43,7 @@ public class BoxPointContactGenerator implements ContactGenerator {
 
 		Vec2f closestPointB = new Vec2f(pointB.getAbsPos());
 
-		Contact newContact = new Contact(normal, overlap, closestPointB, new Vec2f(), new Vec2f());
+		Contact newContact = new Contact(normal, overlap, closestPointB);
 		if (acceptor.accept(newContact)) {
 			shapePair.setContact(newContact);
 		}

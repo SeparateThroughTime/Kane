@@ -31,7 +31,7 @@ public class Renderer {
 	private int numRenderedShapes;
 	private Camera camera;
 
-	public boolean showContacts = false;
+	public boolean showContacts = true;
 	public boolean showAABBs = false;
 
 	public Renderer(ResolutionSpecification resSpecs, int[] frameBufferData, Physics physics) {

@@ -132,7 +132,7 @@ public class LineSegmentBoxContactGenerator implements ContactGenerator{
 			contactPoint = nearestPointA;
 		}
 		
-		Contact newContact = new Contact(normal, nearestIntervalD, contactPoint, new Vec2f(), new Vec2f());
+		Contact newContact = new Contact(normal, nearestIntervalD, contactPoint);
 		if (acceptor.accept(newContact)) {
 			shapePair.setContact(newContact);
 		}

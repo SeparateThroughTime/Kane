@@ -22,7 +22,7 @@ public class PlanePointContactGenerator implements ContactGenerator {
 		float d = distanceToPlane.dot(planeA.getNormal());
 		Vec2f closestPointOnPlane = new Vec2f(pointB.getAbsPos()).addMult(planeA.getNormal(), d);
 		
-		Contact newContact = new Contact(planeA.getNormal(), -d, closestPointOnPlane, new Vec2f(), pointB.getAbsPos());
+		Contact newContact = new Contact(planeA.getNormal(), -d, closestPointOnPlane);
 		if (acceptor.accept(newContact)) {
 			shapePair.setContact(newContact);
 		}
