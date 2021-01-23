@@ -1,6 +1,6 @@
 /*TODO
 
-	ContactPoint: BoxPolygon CirclePoligon, LineSegmentPolygon, PointPolygon, PolygonPolygon
+	ContactPoint: BoxPolygon, PolygonPolygon -> Ghost Contacts
 	Rotation
 	Sprites
 	Transparent Pixel
