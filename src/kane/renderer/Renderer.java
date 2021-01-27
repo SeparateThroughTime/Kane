@@ -22,7 +22,7 @@ import kane.physics.shapes.Polygon;
  * The Renderer renders the game.
  */
 public class Renderer {
-	
+
 	private ResolutionSpecification resSpecs;
 	private float multiplicator;
 	private int[] frameBufferData;
@@ -31,7 +31,7 @@ public class Renderer {
 	private int numRenderedShapes;
 	private Camera camera;
 
-	public boolean showContacts = true;
+	public boolean showContacts = false;
 	public boolean showAABBs = false;
 
 	public Renderer(ResolutionSpecification resSpecs, int[] frameBufferData, Physics physics) {
@@ -226,7 +226,7 @@ public class Renderer {
 			int pixel = frame[frameLen - (i + 1)];
 			int pixelPosX = posX + (i % width);
 			int pixelPosY = posY + (i / width);
-			setPixelSave(pixelPosX, pixelPosY, pixel);
+			setPixelSaveARGB(pixelPosX, pixelPosY, pixel);
 		}
 	}
 
@@ -524,8 +524,32 @@ public class Renderer {
 	 * @param color
 	 */
 	private void setPixelSave(float x, float y, int color) {
-		// TODO remove this later. To slow.
 		setPixelSave(Scalar.round(x), Scalar.round(y), color);
+	}
+
+	/**
+	 * Set a pixel, after checking if pixel is inside of the displayed window. With
+	 * floats
+	 * 
+	 * @param x
+	 * @param y
+	 * @param color
+	 * @param alpha
+	 */
+	private void setPixelSaveARGB(int x, int y, int color) {
+		x *= multiplicator;
+		x -= camera.zeroPoint.getX();
+		x *= multiplicator;
+		x -= camera.zeroPoint.getY();
+		if (!(x < 0 || y < 0 || x > resSpecs.width - 1 || y > resSpecs.height - 1)) {
+			int index = Scalar.getY(y, resSpecs.height) * resSpecs.width + x;
+			int currentColor = frameBufferData[index];
+			int alpha = (color & 0xff000000) >> 8;
+			//get alpha in every color for bitmask
+			alpha += (alpha >> 8) + (alpha >> 16);
+			int newColor = (alpha & color) + (~alpha & currentColor);
+			frameBufferData[index] = newColor;
+		}
 	}
 
 	/**

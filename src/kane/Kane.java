@@ -34,6 +34,7 @@ import kane.physics.contacts.PassiveAttributes;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.LineSegment;
 import kane.physics.shapes.Polygon;
+import kane.renderer.Resolution;
 import kane.renderer.Sprite;
 import kane.renderer.SpriteState;
 
@@ -111,6 +112,7 @@ public class Kane extends Game {
 		player.addShape(new Box(0, -11, player, new Vec2f(15, 5), 0xffffff, mEvent));
 		player.getShape(1).setCollision(false);
 		player.getShape(1).addActiveAttribute(ActiveAttributes.PLAYER_FEETS);
+		player.getShape(1).setVisible(false);
 		File file = new File("sprites\\player.png");
 		Sprite sprite = new Sprite(file, 1, 1);
 		sprite.addState(SpriteState.Standing, new int[] { 0 });

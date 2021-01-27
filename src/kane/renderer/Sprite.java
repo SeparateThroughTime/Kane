@@ -70,12 +70,15 @@ public class Sprite {
 			e.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * Defines which frames are used for the specific state.
+	 * @param state
+	 * @param frameNumbers
+	 */
 	public void addState(SpriteState state, int[] frameNumbers) {
-		// Defines which frames are used for the specific state.
 		states.put(state, frameNumbers);
 	}
-	
 
 	public int[] getFrame() {
 		// Returns the frame of a state with the specific frameNo.
@@ -131,9 +134,6 @@ public class Sprite {
 	private void stepCurrentSpriteStateFrame() {
 		currentSpriteStateFrame++;
 		if (currentSpriteStateFrame >= getFrameCount(currentSpriteState)) {
-			if (currentSpriteState == SpriteState.Running) {
-				System.out.println(getFrameCount(currentSpriteState));
-			}
 			currentSpriteStateFrame = 0;
 		}
 	}
