@@ -1,6 +1,11 @@
 package kane.renderer;
 
-import javax.swing.plaf.synth.SynthOptionPaneUI;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+
+import javax.swing.JPanel;
 
 import kane.math.Scalar;
 import kane.math.Vec2f;
@@ -21,11 +26,10 @@ import kane.physics.shapes.Polygon;
 /**
  * The Renderer renders the game.
  */
-public class Renderer {
+public class Renderer extends JPanel {
 
 	private ResolutionSpecification resSpecs;
 	private float multiplicator;
-	private int[] frameBufferData;
 	private final Physics physics;
 	private Shape[] renderedShapes;
 	private int numRenderedShapes;
@@ -34,13 +38,25 @@ public class Renderer {
 	public boolean showContacts = false;
 	public boolean showAABBs = false;
 
-	public Renderer(ResolutionSpecification resSpecs, int[] frameBufferData, Physics physics) {
+	public Renderer(ResolutionSpecification resSpecs, Physics physics) {
 		this.resSpecs = resSpecs;
-		this.frameBufferData = frameBufferData;
 		this.physics = physics;
 		this.camera = new Camera(resSpecs);
 		this.physics.addBody(camera);
 		this.multiplicator = 1;
+		setFocusable(true);
+	}
+
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		this.setBackground(Color.BLACK);
+		Graphics2D g2d = (Graphics2D) g;
+
+		camera.update();
+		chooseRenderedShapes();
+		drawBodies(g2d);
+		displayAABBs(g2d);
+		displayContacts(g2d);
 	}
 
 	/**
@@ -54,32 +70,12 @@ public class Renderer {
 	public void testingArea() {
 		// TODO delete
 
-		for (int i = 0; i < physics.getNumBodies(); i++) {
-			Body body = physics.getBodies(i);
-			Vec2f pos = new Vec2f(body.getPos());
-			Vec2f coM = body.getCenterOfMass();
-			pos.add(coM);
-			drawPoint(pos, 3, 0x00ff00);
-			for (int j = 0; j < body.getNumShapes(); j++) {
-				Shape shape = body.getShape(j);
-				Vec2f shapePos = new Vec2f(shape.getAbsPos());
-				Vec2f shapecom = shape.getCenterOfMass();
-				shapePos.add(shapecom);
-				drawPoint(shapePos, 2, 0xff0000);
-			}
-
-		}
-
 	}
 
 	public void renderGame() {
 
-		clear(0x000000);
-		camera.update();
-		chooseRenderedShapes();
-		drawBodies();
-		displayAABBs();
-		displayContacts();
+		repaint();
+//		clear(0x000000);
 
 		// TODO delete
 //		testingArea();
@@ -106,71 +102,78 @@ public class Renderer {
 	}
 
 	/**
-	 * fill whole window with color.
-	 * 
-	 * @param color -0xrrggbb
-	 */
-	private void clear(int color) {
-		for (int i = 0; i < resSpecs.width * resSpecs.height; i++) {
-			frameBufferData[i] = color;
-		}
-	}
-
-	/**
 	 * draw all bodies, that are determined to be rendered.
+	 * 
+	 * @param cox: Camera Offset X
+	 * @param coy: Camera Offset Y
 	 */
-	private void drawBodies() {
+	private void drawBodies(Graphics2D g2d) {
 		// draw bodies
 		for (int i = 0; i < numRenderedShapes; i++) {
 			Shape shape = renderedShapes[i];
 			if (shape.hasSprite()) {
 				Sprite sprite = shape.getSprite();
 				sprite.step();
-				int[] frame = sprite.getFrame();
+				BufferedImage frame = sprite.getFrame();
 				Vec2f pos = shape.getAbsPos();
-				int width = sprite.FRAME_WIDTH * sprite.PIXELS;
+//				int width = sprite.FRAME_WIDTH * Sprite.PIXELS;
 				Vec2f spriteAbsPos = new Vec2f(pos).add(shape.getSprite().getSpritePosOffset());
-				drawSprite(frame, spriteAbsPos, width);
+				int posX = (int) spriteAbsPos.getX();
+				int posY = (int) spriteAbsPos.getY();
+				drawImage(frame, posX, posY, g2d);
 			} else if (ShapeType.PLANE.equals(shape.getType())) {
 				Plane plane = (Plane) shape;
 				// draws planes
 				Vec2f startPoint = plane.getPoint();
 				Vec2f perp = new Vec2f(plane.getNormal()).perpRight();
 				Vec2f endPoint = new Vec2f(startPoint).addMult(perp, plane.getLen());
-				drawLine(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY(), plane.getColor());
+				drawLine((int) startPoint.getX(), (int) startPoint.getY(), (int) endPoint.getX(), (int) endPoint.getY(),
+						plane.getColor(), g2d);
 
 				// draws normal of planes
 				Vec2f center = new Vec2f(startPoint).addMult(perp, plane.getLen() * 0.5f);
-				drawNormal(center, plane.getNormal());
+				drawNormal(center, plane.getNormal(), g2d);
 			}
 
 			else if (ShapeType.LINESEGMENT.equals(shape.getType())) {
 				LineSegment lineSegment = (LineSegment) shape;
 				Vec2f startPoint = new Vec2f(lineSegment.getAbsPos()).add(lineSegment.getRelPosA());
 				Vec2f endPoint = new Vec2f(lineSegment.getAbsPos()).add(lineSegment.getRelPosB());
-				drawLine(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY(),
-						lineSegment.getColor());
+				drawLine((int) startPoint.getX(), (int) startPoint.getY(), (int) endPoint.getX(), (int) endPoint.getY(),
+						lineSegment.getColor(), g2d);
 			}
 
 			else if (ShapeType.CIRCLE.equals(shape.getType())) {
 				Circle circle = (Circle) shape;
-				drawCircle(circle.getAbsPos().getX(), circle.getAbsPos().getY(), circle.getRad(), circle.getColor(),
-						false);
+				drawCircle((int) circle.getAbsPos().getX(), (int) circle.getAbsPos().getY(), (int) circle.getRad(),
+						circle.getColor(), g2d);
 			}
 
 			else if (ShapeType.BOX.equals(shape.getType())) {
 				Box box = (Box) shape;
-				drawRect(box, box.getColor(), false);
+				drawRect((int) (box.getAbsPos().getX() - box.getRad().getX()),
+						(int) (box.getAbsPos().getY() + box.getRad().getY()), (int) box.getRad().getX() * 2,
+						(int) box.getRad().getY() * 2, box.getColor(), g2d);
 			}
 
 			else if (ShapeType.POLYGON.equals(shape.getType())) {
 				Polygon pol = (Polygon) shape;
-				drawPolygon(pol, pol.getColor());
+				int numPoints = pol.getNumPoints();
+				int[] xPoints = new int[numPoints];
+				int[] yPoints = new int[numPoints];
+				Vec2f absPos = pol.getAbsPos();
+				for (int p = 0; p < numPoints; p++) {
+					Vec2f pointAbsPos = new Vec2f(pol.getPoint(p)).add(absPos);
+					xPoints[p] = (int) pointAbsPos.getX();
+					yPoints[p] = (int) pointAbsPos.getY();
+				}
+				drawPolygon(xPoints, yPoints, pol.getColor(), g2d);
 			}
 
 			else if (ShapeType.POINT.equals(shape.getType())) {
 				Point point = (Point) shape;
-				drawPoint(point.getAbsPos(), 2, point.getColor());
+				drawLine((int) point.getAbsPos().getX(), (int) point.getAbsPos().getY(), (int) point.getAbsPos().getX(),
+						(int) point.getAbsPos().getY(), point.getColor(), g2d);
 			}
 
 		}
@@ -179,13 +182,16 @@ public class Renderer {
 	/**
 	 * Display AABBs
 	 */
-	private void displayAABBs() {
+	private void displayAABBs(Graphics2D g2d) {
 		if (showAABBs) {
 			for (int i = 0; i < physics.getNumBodies(); i++) {
 				Body body = physics.getBodies(i);
 				for (int j = 0; j < body.getNumShapes(); j++) {
 					Shape shape = body.getShape(j);
-					drawRect(shape.getAABB(), 0x00FF00, false);
+					AABB aabb = shape.getAABB();
+					Vec2f diameter = new Vec2f(aabb.getMax()).sub(aabb.getMin());
+					drawRect((int) aabb.getMin().getX(), (int) aabb.getMax().getY(), (int) diameter.getX(),
+							(int) diameter.getY(), Color.GREEN, g2d);
 				}
 			}
 		}
@@ -194,7 +200,7 @@ public class Renderer {
 	/**
 	 * Display contacts.
 	 */
-	private void displayContacts() {
+	private void displayContacts(Graphics2D g2d) {
 		if (showContacts) {
 			for (int i = 0; i < physics.getNumShapePairs(); i++) {
 				ShapePair shapePair = physics.getShapePairs(i);
@@ -204,352 +210,70 @@ public class Renderer {
 					Vec2f normal = contact.getNormal();
 					Vec2f closestPointOnPlane = contact.getPoint();
 					Vec2f closestPointOnBox = new Vec2f(closestPointOnPlane).addMult(normal, contact.getDistance());
-					drawCircle(closestPointOnPlane.getX(), closestPointOnPlane.getY(), 4f, 0xff00ff, true);
-					drawCircle(closestPointOnBox.getX(), closestPointOnBox.getY(), 4f, 0xffff00, true);
-//					drawNormal(closestPointOnPlane, normal);
+					fillCircle((int) closestPointOnPlane.getX(), (int) closestPointOnPlane.getY(), 4, Color.PINK, g2d);
+					fillCircle((int) closestPointOnBox.getX(), (int) closestPointOnBox.getY(), 4, Color.YELLOW, g2d);
 				}
 			}
 		}
 	}
 
-	/**
-	 * draw sprite.
-	 * 
-	 * @param frame
-	 * @param pos
-	 */
-	private void drawSprite(int[] frame, Vec2f pos, int width) {
-		int frameLen = frame.length;
-		for (int i = 0; i < frameLen; i++) {
-			int posX = (int) pos.getX();
-			int posY = (int) pos.getY();
-			int pixel = frame[frameLen - (i + 1)];
-			int pixelPosX = posX + (i % width);
-			int pixelPosY = posY + (i / width);
-			setPixelSaveARGB(pixelPosX, pixelPosY, pixel);
+	private void drawImage(BufferedImage img, int posX, int posY, Graphics2D g2d) {
+		posX -= (int) camera.zeroPoint.getX();
+		posY -= (int) camera.zeroPoint.getY();
+		posY += img.getHeight();
+		posY = Scalar.getY(posY, resSpecs.height);
+		g2d.drawImage(img, posX, posY, null);
+	}
+
+	private void drawLine(int x1, int y1, int x2, int y2, Color color, Graphics2D g2d) {
+		x1 -= (int) camera.zeroPoint.getX();
+		x2 -= (int) camera.zeroPoint.getX();
+		y1 -= (int) camera.zeroPoint.getY();
+		y2 -= (int) camera.zeroPoint.getY();
+		y1 = Scalar.getY(y1, resSpecs.height);
+		y2 = Scalar.getY(y2, resSpecs.height);
+		g2d.setColor(color);
+		g2d.drawLine(x1, y1, x2, y2);
+	}
+
+	private void drawCircle(int x, int y, int rad, Color color, Graphics2D g2d) {
+		x -= (int) camera.zeroPoint.getX();
+		y -= (int) camera.zeroPoint.getY();
+		y = Scalar.getY(y, resSpecs.height);
+		x -= rad;
+		y -= rad;
+		g2d.setColor(color);
+		g2d.drawOval(x, y, rad * 2, rad * 2);
+	}
+	
+	private void fillCircle(int x, int y, int rad, Color color, Graphics2D g2d) {
+		x -= (int) camera.zeroPoint.getX();
+		y -= (int) camera.zeroPoint.getY();
+		y = Scalar.getY(y, resSpecs.height);
+		x -= rad;
+		y -= rad;
+		g2d.setColor(color);
+		g2d.fillOval(x, y, rad * 2, rad * 2);
+	}
+
+	private void drawRect(int x, int y, int width, int height, Color color, Graphics2D g2d) {
+		x -= (int) camera.zeroPoint.getX();
+		y -= (int) camera.zeroPoint.getY();
+		y = Scalar.getY(y, resSpecs.height);
+		g2d.setColor(color);
+		g2d.drawRect(x - (int) camera.zeroPoint.getX(), y - (int) camera.zeroPoint.getY(), width, height);
+	}
+
+	private void drawPolygon(int[] xs, int[] ys, Color color, Graphics2D g2d) {
+		g2d.setColor(color);
+		for (int i = 0; i < xs.length; i++) {
+			xs[i] -= camera.zeroPoint.getX();
 		}
-	}
-
-	/**
-	 * Draw a polygon
-	 * 
-	 * @param pol
-	 * @param color
-	 */
-	private void drawPolygon(Polygon pol, int color) {
-		Vec2f absPos = pol.getAbsPos();
-		for (int i = 0; i < pol.getNumPoints(); i++) {
-			int j = i == pol.getNumPoints() - 1 ? 0 : i + 1;
-			Vec2f pointA = new Vec2f(pol.getPoint(i)).add(absPos);
-			Vec2f pointB = new Vec2f(pol.getPoint(j)).add(absPos);
-			drawLine(pointA.getX(), pointA.getY(), pointB.getX(), pointB.getY(), color);
+		for (int i = 0; i < ys.length; i++) {
+			ys[i] -= camera.zeroPoint.getY();
+			ys[i] = Scalar.getY(ys[i], resSpecs.height);
 		}
-	}
-
-	/**
-	 * Draw a point with x and y
-	 * 
-	 * @param x
-	 * @param y
-	 * @param rad
-	 * @param color
-	 */
-	private void drawPoint(float x, float y, int rad, int color) {
-		drawRect(x - rad, y - rad, x + rad, y + rad, color, true);
-	}
-
-	/**
-	 * Draw a point with vector.
-	 * 
-	 * @param p
-	 * @param rad
-	 * @param color
-	 */
-	private void drawPoint(Vec2f p, int rad, int color) {
-		drawPoint(p.getX(), p.getY(), rad, color);
-	}
-
-	/**
-	 * Get Circle Error for correct drawing of circles.
-	 * 
-	 * @param x
-	 * @param y
-	 * @param r
-	 * @return
-	 */
-	private float getCircleError(float x, float y, float r) {
-		return x * x + y * y - r * r;
-	}
-
-	/**
-	 * Draw a circle.
-	 * 
-	 * @param cx
-	 * @param cy
-	 * @param r
-	 * @param color
-	 * @param filled
-	 */
-	private void drawCircle(float cx, float cy, float r, int color, boolean filled) {
-		float cxOriginal = cx;
-		float cyOriginal = cy;
-
-		cx *= multiplicator;
-		cy *= multiplicator;
-		r *= multiplicator;
-		float x = 0;
-		float y = r;
-		float f = getCircleError(1f, y - 0.5f, r);
-
-		while (x <= y) {
-			if (filled) {
-				drawLine(cxOriginal + x, cyOriginal + y, cxOriginal - x, cyOriginal + y, color);
-				drawLine(cxOriginal + x, cyOriginal - y, cxOriginal - x, cyOriginal - y, color);
-				drawLine(cxOriginal + y, cyOriginal + x, cxOriginal - y, cyOriginal + x, color);
-				drawLine(cxOriginal + y, cyOriginal - x, cxOriginal - y, cyOriginal - x, color);
-			} else {
-				setPixelSave(cx + x, cy + y, color);
-				setPixelSave(cx - x, cy + y, color);
-				setPixelSave(cx + x, cy - y, color);
-				setPixelSave(cx - x, cy - y, color);
-				setPixelSave(cx + y, cy + x, color);
-				setPixelSave(cx - y, cy + x, color);
-				setPixelSave(cx + y, cy - x, color);
-				setPixelSave(cx - y, cy - x, color);
-			}
-			x++;
-			if (f > 0) {
-				y--;
-			}
-			f = getCircleError(x, y - 0.5f, r);
-		}
-
-	}
-
-	/**
-	 * Draw a Rectangle with AABB.
-	 * 
-	 * @param aabb
-	 * @param color
-	 * @param filled
-	 */
-	private void drawRect(AABB aabb, int color, boolean filled) {
-		drawRect(aabb.getMin().getX(), aabb.getMin().getY(), aabb.getMax().getX(), aabb.getMax().getY(), color, filled);
-	}
-
-	/**
-	 * Draw a Rectangle with a Box.
-	 * 
-	 * @param box
-	 * @param color
-	 * @param filled
-	 */
-	private void drawRect(Box box, int color, boolean filled) {
-		drawRect(box.getMin().getX(), box.getMin().getY(), box.getMax().getX(), box.getMax().getY(), color, filled);
-	}
-
-	/**
-	 * Draw a Rectangle with int points.
-	 * 
-	 * @param x0
-	 * @param y0
-	 * @param x1
-	 * @param y1
-	 * @param color
-	 * @param filled
-	 */
-	private void drawRect(int x0, int y0, int x1, int y1, int color, boolean filled) {
-		// draws a rectangle.
-		float x0Original = x0;
-		float y0Original = y0;
-		float x1Original = x1;
-		float y1Original = y1;
-
-		x0 *= multiplicator;
-		y0 *= multiplicator;
-		x1 *= multiplicator;
-		y1 *= multiplicator;
-
-		int maxX = Math.max(x0, x1);
-		int minX = Math.min(x0, x1);
-		int maxY = Math.max(y0, y1);
-		int minY = Math.min(y0, y1);
-
-		// cut parts that are not in window
-		maxX = Math.min(resSpecs.width - 1, maxX);
-		minX = Math.max(0, minX);
-		maxY = Math.min(resSpecs.height - 1, maxY);
-		minY = Math.max(0, minY);
-
-		// draw rect
-		if (filled) {
-			for (int x = minX; x <= maxX; x++) {
-				for (int y = minY; y <= maxY; y++) {
-					setPixel(x, y, color);
-				}
-			}
-		} else {
-			drawLine(x0Original, y0Original, x0Original, y1Original, color);
-			drawLine(x0Original, y0Original, x1Original, y0Original, color);
-			drawLine(x0Original, y1Original, x1Original, y1Original, color);
-			drawLine(x1Original, y0Original, x1Original, y1Original, color);
-		}
-	}
-
-	/**
-	 * Draw a Rectangle with float points.
-	 * 
-	 * @param x0
-	 * @param y0
-	 * @param x1
-	 * @param y1
-	 * @param color
-	 * @param filled
-	 */
-	private void drawRect(float x0, float y0, float x1, float y1, int color, boolean filled) {
-		drawRect(Scalar.round(x0), Scalar.round(y0), Scalar.round(x1), Scalar.round(y1), color, filled);
-	}
-
-	/**
-	 * Draw a line with floats.
-	 * 
-	 * @param x0
-	 * @param y0
-	 * @param x1
-	 * @param y1
-	 * @param color
-	 */
-	private void drawLine(float x0, float y0, float x1, float y1, int color) {
-		drawLine(Scalar.round(x0), Scalar.round(y0), Scalar.round(x1), Scalar.round(y1), color);
-	}
-
-	/**
-	 * Draw a Line with integers.
-	 * 
-	 * @param x0
-	 * @param y0
-	 * @param x1
-	 * @param y1
-	 * @param color
-	 */
-	private void drawLine(int x0, int y0, int x1, int y1, int color) {
-		// draws a line.
-
-		x0 *= multiplicator;
-		y0 *= multiplicator;
-		x1 *= multiplicator;
-		y1 *= multiplicator;
-
-		int dx = x0 - x1;
-		int dy = y0 - y1;
-
-		int signX = dx < 0 ? -1 : 1;
-		int signY = dy < 0 ? -1 : 1;
-
-		dx = Math.abs(dx);
-		dy = Math.abs(dy);
-
-		setPixelSave(x0, y0, color);
-		setPixelSave(x1, y1, color);
-
-		if (dx > dy) {
-			int err = dx / 2;
-			int y = 0;
-
-			for (int x = 0; x < dx; x++) {
-				err = err - dy;
-				if (err < 0) {
-					y++;
-					err = err + dx;
-				}
-				setPixelSave(x1 + x * signX, y1 + y * signY, color);
-			}
-		} else {
-			int err = dy / 2;
-			int x = 0;
-
-			for (int y = 0; y < dy; y++) {
-				err = err - dx;
-				if (err < 0) {
-					x++;
-					err = err + dy;
-				}
-				setPixelSave(x1 + x * signX, y1 + y * signY, color);
-			}
-		}
-	}
-
-	/**
-	 * Set a pixel to a specific color.
-	 * 
-	 * @param x
-	 * @param y
-	 * @param color -0xrrggbb
-	 */
-	private void setPixel(int x, int y, int color) {
-		x *= multiplicator;
-		x -= camera.zeroPoint.getX();
-		x *= multiplicator;
-		x -= camera.zeroPoint.getY();
-		int index = Scalar.getY(y, resSpecs.height) * resSpecs.width + x;
-		frameBufferData[index] = color;
-	}
-
-	/**
-	 * Set a pixel, after checking if pixel is inside of the displayed window. With
-	 * ints
-	 * 
-	 * @param x
-	 * @param y
-	 * @param color
-	 */
-	private void setPixelSave(int x, int y, int color) {
-		// TODO remove this later. To slow.
-		x *= multiplicator;
-		x -= camera.zeroPoint.getX();
-		x *= multiplicator;
-		x -= camera.zeroPoint.getY();
-		if (!(x < 0 || y < 0 || x > resSpecs.width - 1 || y > resSpecs.height - 1)) {
-			int index = Scalar.getY(y, resSpecs.height) * resSpecs.width + x;
-			frameBufferData[index] = color;
-		}
-	}
-
-	/**
-	 * Set a pixel, after checking if pixel is inside of the displayed window. With
-	 * floats
-	 * 
-	 * @param x
-	 * @param y
-	 * @param color
-	 */
-	private void setPixelSave(float x, float y, int color) {
-		setPixelSave(Scalar.round(x), Scalar.round(y), color);
-	}
-
-	/**
-	 * Set a pixel, after checking if pixel is inside of the displayed window. With
-	 * floats
-	 * 
-	 * @param x
-	 * @param y
-	 * @param color
-	 * @param alpha
-	 */
-	private void setPixelSaveARGB(int x, int y, int color) {
-		x *= multiplicator;
-		x -= camera.zeroPoint.getX();
-		x *= multiplicator;
-		x -= camera.zeroPoint.getY();
-		if (!(x < 0 || y < 0 || x > resSpecs.width - 1 || y > resSpecs.height - 1)) {
-			int index = Scalar.getY(y, resSpecs.height) * resSpecs.width + x;
-			int currentColor = frameBufferData[index];
-			int alpha = (color & 0xff000000) >> 8;
-			//get alpha in every color for bitmask
-			alpha += (alpha >> 8) + (alpha >> 16);
-			int newColor = (alpha & color) + (~alpha & currentColor);
-			frameBufferData[index] = newColor;
-		}
+		g2d.drawPolygon(xs, ys, xs.length);
 	}
 
 	/**
@@ -558,7 +282,7 @@ public class Renderer {
 	 * @param pos
 	 * @param normal
 	 */
-	private void drawNormal(Vec2f pos, Vec2f normal) {
+	private void drawNormal(Vec2f pos, Vec2f normal, Graphics2D g2d) {
 		pos.mult(multiplicator);
 
 		int arrowRadLen = 15;
@@ -570,18 +294,11 @@ public class Renderer {
 		Vec2f leftArmPos = new Vec2f(arrowTip).addMult(perp, -arrowRadLen).addMult(normal, -arrowRadWid);
 		Vec2f rightArmPos = new Vec2f(arrowTip).addMult(perp, arrowRadLen).addMult(normal, -arrowRadWid);
 
-		drawLine(pos.getX(), pos.getY(), arrowTip.getX(), arrowTip.getY(), 0xFFFFFF);
-		drawLine(arrowTip.getX(), arrowTip.getY(), leftArmPos.getX(), leftArmPos.getY(), 0xFFFFFF);
-		drawLine(arrowTip.getX(), arrowTip.getY(), rightArmPos.getX(), rightArmPos.getY(), 0xFFFFFF);
-	}
-
-	/**
-	 * Set the frameBufferData to a new one.
-	 * 
-	 * @param frameBufferData
-	 */
-	public void newFrameBufferData(int[] frameBufferData) {
-		this.frameBufferData = frameBufferData;
+		drawLine((int) pos.getX(), (int) pos.getY(), (int) arrowTip.getX(), (int) arrowTip.getY(), Color.WHITE, g2d);
+		drawLine((int) arrowTip.getX(), (int) arrowTip.getY(), (int) leftArmPos.getX(), (int) leftArmPos.getY(),
+				Color.WHITE, g2d);
+		drawLine((int) arrowTip.getX(), (int) arrowTip.getY(), (int) rightArmPos.getX(), (int) rightArmPos.getY(),
+				Color.WHITE, g2d);
 	}
 
 	/**

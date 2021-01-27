@@ -1,5 +1,7 @@
 package kane.physics.shapes;
 
+import java.awt.Color;
+
 import kane.math.Scalar;
 import kane.math.Vec2f;
 import kane.physics.Body;
@@ -22,7 +24,7 @@ public class Circle extends Shape {
 	 * @param body
 	 * @param material
 	 */
-	public Circle(float rad, int relPosX, int relPosY, int color, Body body, Material material) {
+	public Circle(float rad, int relPosX, int relPosY, Color color, Body body, Material material) {
 		super(relPosX, relPosY, ShapeType.CIRCLE, body, color, material);
 		this.rad = rad;
 	}

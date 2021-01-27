@@ -1,5 +1,7 @@
 package kane.physics.shapes;
 
+import java.awt.Color;
+
 import kane.math.Vec2f;
 import kane.physics.Body;
 import kane.physics.Material;
@@ -22,7 +24,7 @@ public class LineSegment extends Shape{
 	 * @param color -0xrrggbb
 	 * @param material
 	 */
-	public LineSegment(Vec2f relPosA, Vec2f relPosB, Body body, int color, Material material) {
+	public LineSegment(Vec2f relPosA, Vec2f relPosB, Body body, Color color, Material material) {
 		super(0, 0, ShapeType.LINESEGMENT, body, color, material);
 		this.relPosA = relPosA;
 		this.relPosB = relPosB;

@@ -28,9 +28,6 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	protected ResolutionSpecification resSpecs;
 	private final String TITLE;
 	private JFrame frame;
-	private Canvas canvas;
-	private BufferedImage frameBuffer;
-	private int[] frameBufferData;
 
 	protected boolean[] keyState = new boolean[128];
 	protected boolean[] mouseState = new boolean[16];
@@ -61,11 +58,8 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		
 		resSpecs = new ResolutionSpecification(600, 800, 600, 800);
 
-		frameBuffer = new BufferedImage(resSpecs.width, resSpecs.height, BufferedImage.TYPE_INT_RGB);
-		frameBufferData = ((DataBufferInt) frameBuffer.getRaster().getDataBuffer()).getData();
-
 		physics = new Physics(DELTATIME, this);
-		renderer = new Renderer(resSpecs, frameBufferData, physics);
+		renderer = new Renderer(resSpecs, physics);
 		mouseListener = new Mouse(resSpecs, this);
 		keyListener = new Keyboard(this);
 
@@ -76,17 +70,16 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		frame.setIgnoreRepaint(true);
 		frame.addWindowListener(this);
 
-		canvas = new Canvas();
-		canvas.setPreferredSize(new Dimension(resSpecs.width, resSpecs.height));
-		canvas.setIgnoreRepaint(true);
-		canvas.addKeyListener(keyListener);
-		canvas.addMouseListener(mouseListener);
-		canvas.addMouseMotionListener(mouseListener);
-		frame.add(canvas);
+		renderer.setPreferredSize(new Dimension(resSpecs.width, resSpecs.height));
+		renderer.addKeyListener(keyListener);
+		renderer.addMouseListener(mouseListener);
+		renderer.addMouseMotionListener(mouseListener);
+		renderer.setIgnoreRepaint(true);
+		renderer.requestFocusInWindow();
+		frame.add(renderer);
 		frame.pack();
 
 		frame.setVisible(true);
-		canvas.requestFocus();
 	}
 	
 	/**
@@ -164,11 +157,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		}
 		resSpecs.gameWidth = (int)((float)resSpecs.GAME_HEIGHT / resSpecs.height * resSpecs.width);
 		
-		frameBuffer = new BufferedImage(resSpecs.width, resSpecs.height, BufferedImage.TYPE_INT_RGB);
-		frameBufferData = ((DataBufferInt) frameBuffer.getRaster().getDataBuffer()).getData();
-		renderer.newFrameBufferData(frameBufferData);
-		
-		canvas.setPreferredSize(new Dimension(resSpecs.width, resSpecs.height));
+		renderer.setPreferredSize(new Dimension(resSpecs.width, resSpecs.height));
 		frame.pack();
 		
 		renderer.changeResolution();
@@ -203,11 +192,6 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 			}
 
 			renderer.renderGame();
-
-			// Display FrameBuffer
-			Graphics graphics = canvas.getGraphics();
-			graphics.drawImage(frameBuffer, 0, 0, null);
-			graphics.dispose();
 			numFrames++;
 
 			// FPS Output

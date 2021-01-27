@@ -1,5 +1,7 @@
 package kane.physics.shapes;
 
+import java.awt.Color;
+
 import kane.math.Vec2f;
 import kane.physics.Body;
 import kane.physics.Material;
@@ -21,7 +23,7 @@ public class Box extends Shape {
 	 * @param color -0xrrggbb
 	 * @param material
 	 */
-	public Box(int relPosX, int relPosY, Body body, Vec2f rad, int color, Material material) {
+	public Box(int relPosX, int relPosY, Body body, Vec2f rad, Color color, Material material) {
 		super(relPosX, relPosY, ShapeType.BOX, body, color, material);
 		this.rad = rad;
 	}

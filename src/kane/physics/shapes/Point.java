@@ -1,5 +1,7 @@
 package kane.physics.shapes;
 
+import java.awt.Color;
+
 import kane.math.Vec2f;
 import kane.physics.Body;
 import kane.physics.Material;
@@ -21,7 +23,7 @@ public class Point extends Shape {
 	 * @param color -0xrrggbb
 	 * @param material
 	 */
-	public Point(int relPosX, int relPosY, Body body, int color, Material material) {
+	public Point(int relPosX, int relPosY, Body body, Color color, Material material) {
 		super(relPosX, relPosY, ShapeType.POINT, body, color, material);
 	}
 

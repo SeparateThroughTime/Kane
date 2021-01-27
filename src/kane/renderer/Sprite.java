@@ -21,7 +21,8 @@ public class Sprite {
 	public final int FRAME_WIDTH;
 	public final int FRAME_HEIGHT;
 	private int PIXEL_PER_FRAME;
-	private int[][] spritePixels;
+//	private int[][] spritePixels;
+	private BufferedImage[] frames;
 
 	protected SpriteState currentSpriteState;
 	protected int currentSpriteStateFrame;
@@ -43,36 +44,27 @@ public class Sprite {
 			int pixelPerFrame = PIXELS * PIXELS * FRAME_WIDTH * FRAME_HEIGHT;
 			this.PIXEL_PER_FRAME = pixelPerFrame;
 			int frameCount = (imgWidth * imgHeight) / pixelPerFrame;
-			spritePixels = new int[frameCount][pixelPerFrame];
+//			spritePixels = new int[frameCount][pixelPerFrame];
 			int pixelPerFrameX = PIXELS * FRAME_WIDTH;
 			int pixelPerFrameY = PIXELS * FRAME_HEIGHT;
 			int frameCountX = imgWidth / pixelPerFrameX;
-//			int frameCountY = imgWidth / pixelPerFrameY;
+			int frameCountY = imgHeight / pixelPerFrameY;
+			frames = new BufferedImage[frameCount];
 
-			for (int x = 0; x < imgWidth; x++) {
-				for (int y = 0; y < imgHeight; y++) {
-					int pixel = img.getRGB(x, y);
-
-					// This is the position of the frame.
-					int frameX = x / pixelPerFrameX;
-					int frameY = y / pixelPerFrameY;
-					int frameNo = frameX + frameY * frameCountX;
-
-					// This is the position of the pixel inside of the frame.
-					int pixelX = x - pixelPerFrameX * frameX;
-					int pixelY = y - pixelPerFrameY * frameY;
-					int pixelNo = pixelX + pixelY * pixelPerFrameX;
-
-					spritePixels[frameNo][pixelNo] = pixel;
+			for (int x = 0; x < frameCountX; x++) {
+				for (int y = 0; y < frameCountY; y++) {
+					frames[x + y * frameCountX] = img.getSubimage(x * pixelPerFrameX, y * pixelPerFrameY,
+							pixelPerFrameX, pixelPerFrameY);
 				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Defines which frames are used for the specific state.
+	 * 
 	 * @param state
 	 * @param frameNumbers
 	 */
@@ -80,14 +72,20 @@ public class Sprite {
 		states.put(state, frameNumbers);
 	}
 
-	public int[] getFrame() {
-		// Returns the frame of a state with the specific frameNo.
-
-		// Transfer the Number of the frame inside the whole sprite to the number of the
-		// frame inside the state.
+	/**
+	 * Returns the frame of a state with the specific frameNo.
+	 * 
+	 * @return
+	 */
+	public BufferedImage getFrame() {
 		int frameNo = states.get(currentSpriteState)[currentSpriteStateFrame];
-		int[] frame = spritePixels[frameNo];
-		return frame;
+		return frames[frameNo];
+
+//		// Transfer the Number of the frame inside the whole sprite to the number of the
+//		// frame inside the state.
+//		int frameNo = states.get(currentSpriteState)[currentSpriteStateFrame];
+//		int[] frame = spritePixels[frameNo];
+//		return frame;
 	}
 
 	public int getFrameCount(SpriteState state) {

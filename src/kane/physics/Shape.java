@@ -1,10 +1,11 @@
 package kane.physics;
 
+import java.awt.Color;
+
 import kane.math.Vec2f;
 import kane.physics.contacts.ActiveAttributes;
 import kane.physics.contacts.PassiveAttributes;
 import kane.renderer.Sprite;
-import kane.renderer.SpriteState;
 
 /**
  * Shape is an abstract class, which is the base for all Shapes.
@@ -18,7 +19,7 @@ public abstract class Shape{
 	protected final ShapeType type;
 	protected final AABB aabb;
 	protected final Body body;
-	protected int color;
+	protected Color color;
 	protected boolean collision;
 	protected boolean visible;
 	protected final Material material;
@@ -49,7 +50,7 @@ public abstract class Shape{
 	public abstract float getVolume();
 	
 	
-	public Shape(int relPosX, int RelPosY, ShapeType type, Body body, int color, Material material) {
+	public Shape(int relPosX, int RelPosY, ShapeType type, Body body, Color color, Material material) {
 		relPos = new Vec2f(relPosX, RelPosY);
 		relPosAlign = new Vec2f(relPosX, RelPosY);
 		this.type = type;
@@ -160,7 +161,7 @@ public abstract class Shape{
 	 * get Color.
 	 * @return
 	 */
-	public int getColor() {
+	public Color getColor() {
 		return color;
 	}
 	
@@ -172,7 +173,7 @@ public abstract class Shape{
 	 * Set color.
 	 * @param color -0xrrggbb
 	 */
-	public void setColor(int color) {
+	public void setColor(Color color) {
 		this.color = color;
 	}
 	

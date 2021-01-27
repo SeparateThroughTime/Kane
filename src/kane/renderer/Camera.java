@@ -1,5 +1,7 @@
 package kane.renderer;
 
+import java.awt.Color;
+
 import kane.math.Vec2f;
 import kane.physics.AABB;
 import kane.physics.Body;
@@ -36,40 +38,40 @@ public class Camera extends Body {
 		this.windowRad = new Vec2f(resSpecs.gameWidth * 0.5f, resSpecs.GAME_HEIGHT * 0.5f);
 		
 		// Create camera
-		addShape(new Point(0, 0, this, 0x0000ff, mInterface));
+		addShape(new Point(0, 0, this, Color.BLUE, mInterface));
 		getShape(0).setCollision(false);
 		getShape(0).setVisible(false);
 		// Left Box
 		addShape(new Box(-(int) (resSpecs.gameWidth * 0.3125f), 0, this, new Vec2f(resSpecs.gameWidth * 0.1875f, resSpecs.GAME_HEIGHT * 0.5f),
-				0x00ff00, mInterface));
+				Color.GREEN, mInterface));
 		getShape(1).setCollision(false);
 		getShape(1).addActiveAttribute(ActiveAttributes.CAMERA_LEFT);
 		getShape(1).setVisible(false);
 		// Right Box
 		addShape(new Box((int) (resSpecs.gameWidth * 0.3125f), 0, this, new Vec2f(resSpecs.gameWidth * 0.1875f, resSpecs.GAME_HEIGHT * 0.5f),
-				0x00ff00, mInterface));
+				Color.GREEN, mInterface));
 		getShape(2).setCollision(false);
 		getShape(2).addActiveAttribute(ActiveAttributes.CAMERA_RIGHT);
 		getShape(2).setVisible(false);
 		// Lower Box
 		addShape(new Box(0, -(int) (resSpecs.GAME_HEIGHT * 0.3125f), this, new Vec2f(resSpecs.gameWidth * 0.5f, resSpecs.GAME_HEIGHT * 0.1875f),
-				0x00ff00, mInterface));
+				Color.GREEN, mInterface));
 		getShape(3).setCollision(false);
 		getShape(3).addActiveAttribute(ActiveAttributes.CAMERA_DOWN);
 		getShape(3).setVisible(false);
 		// Upper Box
 		addShape(new Box(0, (int) (resSpecs.GAME_HEIGHT * 0.3125f), this, new Vec2f(resSpecs.gameWidth * 0.5f, resSpecs.GAME_HEIGHT * 0.1875f),
-				0x00ff00, mInterface));
+				Color.GREEN, mInterface));
 		getShape(4).setCollision(false);
 		getShape(4).addActiveAttribute(ActiveAttributes.CAMERA_UP);
 		getShape(4).setVisible(false);
 		// Mid X Box
-		addShape(new Box(0, 0, this, new Vec2f(resSpecs.gameWidth * 0.125f, resSpecs.GAME_HEIGHT * 0.5f), 0xff0000, mInterface));
+		addShape(new Box(0, 0, this, new Vec2f(resSpecs.gameWidth * 0.125f, resSpecs.GAME_HEIGHT * 0.5f), Color.RED, mInterface));
 		getShape(5).setCollision(false);
 		getShape(5).addActiveAttribute(ActiveAttributes.CAMERA_MID_X);
 		getShape(5).setVisible(false);
 		// Mid Y Box
-		addShape(new Box(0, 0, this, new Vec2f(resSpecs.gameWidth * 0.5f, resSpecs.GAME_HEIGHT * 0.125f), 0xff0000, mInterface));
+		addShape(new Box(0, 0, this, new Vec2f(resSpecs.gameWidth * 0.5f, resSpecs.GAME_HEIGHT * 0.125f), Color.RED, mInterface));
 		getShape(6).setCollision(false);
 		getShape(6).addActiveAttribute(ActiveAttributes.CAMERA_MID_Y);
 		getShape(6).setVisible(false);

@@ -1,5 +1,7 @@
 package kane.physics.shapes;
 
+import java.awt.Color;
+
 import kane.math.Vec2f;
 import kane.physics.Body;
 import kane.physics.Material;
@@ -24,7 +26,7 @@ public class Plane extends Shape{
 	 * @param color -0xrrggbb
 	 * @param material
 	 */
-	public Plane(Vec2f normal, float distance, float len, Body body, int color, Material material) {
+	public Plane(Vec2f normal, float distance, float len, Body body, Color color, Material material) {
 		super(0, 0, ShapeType.PLANE, body, color, material);
 		this.normal = normal.normalize();
 		this.distance = distance;

@@ -21,6 +21,7 @@
 */
 package kane;
 
+import java.awt.Color;
 import java.io.File;
 
 import kane.genericGame.Game;
@@ -89,27 +90,27 @@ public class Kane extends Game {
 
 		// Create World
 		Body body = new Body(0, 0);
-		body.addShape(new LineSegment(new Vec2f(30, 0), new Vec2f(30, resSpecs.GAME_HEIGHT), body, 0x0000ff, mStatic));
+		body.addShape(new LineSegment(new Vec2f(30, 0), new Vec2f(30, resSpecs.GAME_HEIGHT), body, Color.BLUE, mStatic));
 		body.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
 		physics.addBody(body);
 
 		body = new Body(0, 0);
-		body.addShape(new LineSegment(new Vec2f(0, 30), new Vec2f(mapLen, 30), body, 0x0000ff, mStatic));
+		body.addShape(new LineSegment(new Vec2f(0, 30), new Vec2f(mapLen, 30), body, Color.BLUE, mStatic));
 		body.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
 		physics.addBody(body);
 
 		body = new Body(0, 0);
 		body.addShape(new LineSegment(new Vec2f(mapLen - 30, 0), new Vec2f(mapLen - 30, resSpecs.GAME_HEIGHT), body,
-				0x0000ff, mStatic));
+				Color.BLUE, mStatic));
 		body.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
 		physics.addBody(body);
 
 		// Create player
 		player = new Body(100, 130);
-		player.addShape(new Box(0, 0, player, new Vec2f(16, 16), 0x00ff00, mDynamic));
+		player.addShape(new Box(0, 0, player, new Vec2f(16, 16), Color.GREEN, mDynamic));
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PLAYER_ALL);
 		body.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
-		player.addShape(new Box(0, -11, player, new Vec2f(15, 5), 0xffffff, mEvent));
+		player.addShape(new Box(0, -11, player, new Vec2f(15, 5), Color.WHITE, mEvent));
 		player.getShape(1).setCollision(false);
 		player.getShape(1).addActiveAttribute(ActiveAttributes.PLAYER_FEETS);
 		player.getShape(1).setVisible(false);
@@ -125,7 +126,7 @@ public class Kane extends Game {
 		// Inventory
 		gameInterface = new Body(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2);
 		gameInterface.addShape(new Box(0, 0, gameInterface,
-				new Vec2f(resSpecs.gameWidth / 2 - 10, resSpecs.GAME_HEIGHT / 2 - 10), 0xffffff, mInterface));
+				new Vec2f(resSpecs.gameWidth / 2 - 10, resSpecs.GAME_HEIGHT / 2 - 10), Color.WHITE, mInterface));
 		gameInterface.getShape(0).setVisible(false);
 		gameInterface.getShape(0).setCollision(false);
 		gameInterface.getShape(0).addPassiveAttribute(PassiveAttributes.INVENTORY);
@@ -138,7 +139,7 @@ public class Kane extends Game {
 		points[1] = new Vec2f(3, -10);
 		points[2] = new Vec2f(3, 10);
 		points[3] = new Vec2f(-3, 10);
-		sword.addShape(new Polygon(0, 0, sword, 0xffff00, points, mDynamic));
+		sword.addShape(new Polygon(0, 0, sword, Color.YELLOW, points, mDynamic));
 		physics.addBody(sword);
 
 	}

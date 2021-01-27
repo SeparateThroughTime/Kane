@@ -1,5 +1,7 @@
 package kane.physics.shapes;
 
+import java.awt.Color;
+
 import kane.math.Scalar;
 import kane.math.Vec2f;
 import kane.physics.Body;
@@ -26,7 +28,7 @@ public class Polygon extends Shape {
 	 * @param points -relative points of the shape
 	 * @param material
 	 */
-	public Polygon(int relPosX, int RelPosY, Body body, int color, Vec2f[] points, Material material) {
+	public Polygon(int relPosX, int RelPosY, Body body, Color color, Vec2f[] points, Material material) {
 		super(relPosX, RelPosY, ShapeType.POLYGON, body, color, material);
 		numPoints = points.length;
 		this.points = new Vec2f[numPoints];
@@ -48,7 +50,7 @@ public class Polygon extends Shape {
 	 * @param numPoints -number of points
 	 * @param material
 	 */
-	public Polygon(int relPosX, int RelPosY, Body body, int color, int numPoints, float radius, Material material) {
+	public Polygon(int relPosX, int RelPosY, Body body, Color color, int numPoints, float radius, Material material) {
 		super(relPosX, RelPosY, ShapeType.POLYGON, body, color, material);
 		this.numPoints = numPoints;
 		this.points = new Vec2f[numPoints];
