@@ -141,6 +141,8 @@ public class Kane extends Game {
 		points[3] = new Vec2f(-3, 10);
 		sword.addShape(new Polygon(0, 0, sword, Color.YELLOW, points, mDynamic));
 		physics.addBody(sword);
+		
+//		changeResolution(Resolution.SOL1024x768);
 
 	}
 
