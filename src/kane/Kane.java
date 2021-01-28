@@ -107,20 +107,20 @@ public class Kane extends Game {
 
 		// Create player
 		player = new Body(100, 130);
-		player.addShape(new Box(0, 0, player, new Vec2f(16, 16), Color.GREEN, mDynamic));
+		player.addShape(new Box(0, 0, player, new Vec2f(60, 60), Color.GREEN, mDynamic));
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PLAYER_ALL);
 		body.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
-		player.addShape(new Box(0, -11, player, new Vec2f(15, 5), Color.WHITE, mEvent));
+		player.addShape(new Box(0, -22, player, new Vec2f(30, 10), Color.WHITE, mEvent));
 		player.getShape(1).setCollision(false);
 		player.getShape(1).addActiveAttribute(ActiveAttributes.PLAYER_FEETS);
 		player.getShape(1).setVisible(false);
-		File file = new File("sprites\\player.png");
-		Sprite sprite = new Sprite(file, 1, 1);
-		sprite.addState(SpriteState.Standing, new int[] { 0 });
-		sprite.addState(SpriteState.Running, new int[] { 1, 2, 3, 4 });
-		player.getShape(0).setSprite(sprite);
-		sprite.setCurrentSpriteState(SpriteState.Standing);
-		sprite.setSpritePosOffset(new Vec2f(-16, -16));
+//		File file = new File("sprites\\player.png");
+//		Sprite sprite = new Sprite(file, 1, 1);
+//		sprite.addState(SpriteState.Standing, new int[] { 0 });
+//		sprite.addState(SpriteState.Running, new int[] { 1, 2, 3, 4 });
+//		player.getShape(0).setSprite(sprite);
+//		sprite.setCurrentSpriteState(SpriteState.Standing);
+//		sprite.setSpritePosOffset(new Vec2f(-32, -32));
 		physics.addBody(player);
 
 		// Inventory
@@ -142,7 +142,7 @@ public class Kane extends Game {
 		sword.addShape(new Polygon(0, 0, sword, Color.YELLOW, points, mDynamic));
 		physics.addBody(sword);
 		
-//		changeResolution(Resolution.SOL1024x768);
+//		changeResolution(Resolution.SOL1176x664);
 
 	}
 

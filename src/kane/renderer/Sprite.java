@@ -15,6 +15,7 @@ public class Sprite {
 
 	public static final int PIXELS = 32;
 	public static final int ANIMATION_RATE = 10;
+	public static final float SCALE = 2f;
 
 	// FRAME_WIDTH and FRAME_HEIGHT defines how many 32x32 blocks are used for one
 	// frame.

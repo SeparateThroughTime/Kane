@@ -43,7 +43,7 @@ public class Renderer extends JPanel {
 		this.physics = physics;
 		this.camera = new Camera(resSpecs);
 		this.physics.addBody(camera);
-		this.multiplicator = 1.01f;
+		this.multiplicator = 1f;
 		setFocusable(true);
 	}
 
@@ -64,7 +64,7 @@ public class Renderer extends JPanel {
 	 */
 	public void changeResolution() {
 		camera.changeResolution();
-		multiplicator = (float) resSpecs.height / resSpecs.GAME_HEIGHT;
+		multiplicator = (float) (resSpecs.height / resSpecs.GAME_HEIGHT);
 	}
 
 	public void testingArea() {
@@ -73,10 +73,8 @@ public class Renderer extends JPanel {
 	}
 
 	public void renderGame() {
-
 		repaint();
-//		clear(0x000000);
-
+		
 		// TODO delete
 //		testingArea();
 
@@ -220,14 +218,13 @@ public class Renderer extends JPanel {
 	private void drawImage(BufferedImage img, int posX, int posY, Graphics2D g2d) {
 		posX -= (int) camera.zeroPoint.getX();
 		posY -= (int) camera.zeroPoint.getY();
-		posY += img.getHeight();
+		int width = (int) (img.getWidth() * multiplicator * Sprite.SCALE);
+		int height = (int) (img.getHeight() * multiplicator * Sprite.SCALE);
+		posY += img.getHeight() * Sprite.SCALE;
 		posX = (int) (posX * multiplicator);
 		posY = (int) (posY * multiplicator);
-		//TODO
-		int dx2 = posX + (int) (img.getWidth() * multiplicator);
-		int dy2 = posY + (int) (img.getHeight() * multiplicator);
 		posY = Scalar.getY(posY, resSpecs.height);
-		g2d.drawImage(img, posX, posY, dx2, dy2, 0, 0, img.getWidth(), img.getHeight(), null);
+		g2d.drawImage(img, posX, posY, width, height, null);
 	}
 
 	private void drawLine(int x1, int y1, int x2, int y2, Color color, Graphics2D g2d) {
@@ -280,7 +277,7 @@ public class Renderer extends JPanel {
 		height = (int) (height * multiplicator);
 		y = Scalar.getY(y, resSpecs.height);
 		g2d.setColor(color);
-		g2d.drawRect(x - (int) camera.zeroPoint.getX(), y - (int) camera.zeroPoint.getY(), width, height);
+		g2d.drawRect(x, y, width, height);
 	}
 
 	private void drawPolygon(int[] xs, int[] ys, Color color, Graphics2D g2d) {
