@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 import javax.swing.JPanel;
 
@@ -34,6 +35,7 @@ public class Renderer extends JPanel {
 	private Shape[] renderedShapes;
 	private int numRenderedShapes;
 	private Camera camera;
+	private Background background;
 
 	public boolean showContacts = false;
 	public boolean showAABBs = false;
@@ -53,10 +55,24 @@ public class Renderer extends JPanel {
 		Graphics2D g2d = (Graphics2D) g;
 
 		camera.update();
+		drawBackground(g2d);
 		chooseRenderedShapes();
 		drawBodies(g2d);
 		displayAABBs(g2d);
 		displayContacts(g2d);
+	}
+
+	private void drawBackground(Graphics2D g2d) {
+		if (background != null) {
+			int width = (int) (background.getImg().getWidth() * multiplicator);
+			int height = (int) (background.getImg().getHeight() * multiplicator);
+			int x = background.getOffsetX();
+			while (x < resSpecs.gameWidth) {
+				System.out.println(x);
+				g2d.drawImage(background.getImg(), x, 0, width, height, null);
+				x += width;
+			}
+		}
 	}
 
 	/**
@@ -64,7 +80,7 @@ public class Renderer extends JPanel {
 	 */
 	public void changeResolution() {
 		camera.changeResolution();
-		multiplicator = (float) (resSpecs.height / resSpecs.GAME_HEIGHT);
+		multiplicator = (float) resSpecs.height / resSpecs.GAME_HEIGHT;
 	}
 
 	public void testingArea() {
@@ -74,7 +90,7 @@ public class Renderer extends JPanel {
 
 	public void renderGame() {
 		repaint();
-		
+
 		// TODO delete
 //		testingArea();
 
@@ -107,73 +123,76 @@ public class Renderer extends JPanel {
 	 */
 	private void drawBodies(Graphics2D g2d) {
 		// draw bodies
-		for (int i = 0; i < numRenderedShapes; i++) {
-			Shape shape = renderedShapes[i];
-			if (shape.hasSprite()) {
-				Sprite sprite = shape.getSprite();
-				sprite.step();
-				BufferedImage frame = sprite.getFrame();
-				Vec2f pos = shape.getAbsPos();
-//				int width = sprite.FRAME_WIDTH * Sprite.PIXELS;
-				Vec2f spriteAbsPos = new Vec2f(pos).add(shape.getSprite().getSpritePosOffset());
-				int posX = (int) spriteAbsPos.getX();
-				int posY = (int) spriteAbsPos.getY();
-				drawImage(frame, posX, posY, g2d);
-			} else if (ShapeType.PLANE.equals(shape.getType())) {
-				Plane plane = (Plane) shape;
-				// draws planes
-				Vec2f startPoint = plane.getPoint();
-				Vec2f perp = new Vec2f(plane.getNormal()).perpRight();
-				Vec2f endPoint = new Vec2f(startPoint).addMult(perp, plane.getLen());
-				drawLine((int) startPoint.getX(), (int) startPoint.getY(), (int) endPoint.getX(), (int) endPoint.getY(),
-						plane.getColor(), g2d);
+		for (int layer = 1; layer < Shape.MAX_RENDER_LAYER; layer++) {
+			for (int i = 0; i < numRenderedShapes; i++) {
+				Shape shape = renderedShapes[i];
+				if (shape.RENDER_LAYER == layer) {
+					if (shape.hasSprite()) {
+						Sprite sprite = shape.getSprite();
+						sprite.step();
+						BufferedImage frame = sprite.getFrame();
+						Vec2f pos = shape.getAbsPos();
+//						int width = sprite.FRAME_WIDTH * Sprite.PIXELS;
+						Vec2f spriteAbsPos = new Vec2f(pos).add(shape.getSprite().getSpritePosOffset());
+						int posX = (int) spriteAbsPos.getX();
+						int posY = (int) spriteAbsPos.getY();
+						drawImage(frame, posX, posY, g2d);
+					} else if (ShapeType.PLANE.equals(shape.getType())) {
+						Plane plane = (Plane) shape;
+						// draws planes
+						Vec2f startPoint = plane.getPoint();
+						Vec2f perp = new Vec2f(plane.getNormal()).perpRight();
+						Vec2f endPoint = new Vec2f(startPoint).addMult(perp, plane.getLen());
+						drawLine((int) startPoint.getX(), (int) startPoint.getY(), (int) endPoint.getX(),
+								(int) endPoint.getY(), plane.getColor(), g2d);
 
-				// draws normal of planes
-				Vec2f center = new Vec2f(startPoint).addMult(perp, plane.getLen() * 0.5f);
-				drawNormal(center, plane.getNormal(), g2d);
-			}
+						// draws normal of planes
+						Vec2f center = new Vec2f(startPoint).addMult(perp, plane.getLen() * 0.5f);
+						drawNormal(center, plane.getNormal(), g2d);
+					}
 
-			else if (ShapeType.LINESEGMENT.equals(shape.getType())) {
-				LineSegment lineSegment = (LineSegment) shape;
-				Vec2f startPoint = new Vec2f(lineSegment.getAbsPos()).add(lineSegment.getRelPosA());
-				Vec2f endPoint = new Vec2f(lineSegment.getAbsPos()).add(lineSegment.getRelPosB());
-				drawLine((int) startPoint.getX(), (int) startPoint.getY(), (int) endPoint.getX(), (int) endPoint.getY(),
-						lineSegment.getColor(), g2d);
-			}
+					else if (ShapeType.LINESEGMENT.equals(shape.getType())) {
+						LineSegment lineSegment = (LineSegment) shape;
+						Vec2f startPoint = new Vec2f(lineSegment.getAbsPos()).add(lineSegment.getRelPosA());
+						Vec2f endPoint = new Vec2f(lineSegment.getAbsPos()).add(lineSegment.getRelPosB());
+						drawLine((int) startPoint.getX(), (int) startPoint.getY(), (int) endPoint.getX(),
+								(int) endPoint.getY(), lineSegment.getColor(), g2d);
+					}
 
-			else if (ShapeType.CIRCLE.equals(shape.getType())) {
-				Circle circle = (Circle) shape;
-				drawCircle((int) circle.getAbsPos().getX(), (int) circle.getAbsPos().getY(), (int) circle.getRad(),
-						circle.getColor(), g2d);
-			}
+					else if (ShapeType.CIRCLE.equals(shape.getType())) {
+						Circle circle = (Circle) shape;
+						drawCircle((int) circle.getAbsPos().getX(), (int) circle.getAbsPos().getY(),
+								(int) circle.getRad(), circle.getColor(), g2d);
+					}
 
-			else if (ShapeType.BOX.equals(shape.getType())) {
-				Box box = (Box) shape;
-				drawRect((int) (box.getAbsPos().getX() - box.getRad().getX()),
-						(int) (box.getAbsPos().getY() + box.getRad().getY()), (int) box.getRad().getX() * 2,
-						(int) box.getRad().getY() * 2, box.getColor(), g2d);
-			}
+					else if (ShapeType.BOX.equals(shape.getType())) {
+						Box box = (Box) shape;
+						drawRect((int) (box.getAbsPos().getX() - box.getRad().getX()),
+								(int) (box.getAbsPos().getY() + box.getRad().getY()), (int) box.getRad().getX() * 2,
+								(int) box.getRad().getY() * 2, box.getColor(), g2d);
+					}
 
-			else if (ShapeType.POLYGON.equals(shape.getType())) {
-				Polygon pol = (Polygon) shape;
-				int numPoints = pol.getNumPoints();
-				int[] xPoints = new int[numPoints];
-				int[] yPoints = new int[numPoints];
-				Vec2f absPos = pol.getAbsPos();
-				for (int p = 0; p < numPoints; p++) {
-					Vec2f pointAbsPos = new Vec2f(pol.getPoint(p)).add(absPos);
-					xPoints[p] = (int) pointAbsPos.getX();
-					yPoints[p] = (int) pointAbsPos.getY();
+					else if (ShapeType.POLYGON.equals(shape.getType())) {
+						Polygon pol = (Polygon) shape;
+						int numPoints = pol.getNumPoints();
+						int[] xPoints = new int[numPoints];
+						int[] yPoints = new int[numPoints];
+						Vec2f absPos = pol.getAbsPos();
+						for (int p = 0; p < numPoints; p++) {
+							Vec2f pointAbsPos = new Vec2f(pol.getPoint(p)).add(absPos);
+							xPoints[p] = (int) pointAbsPos.getX();
+							yPoints[p] = (int) pointAbsPos.getY();
+						}
+						drawPolygon(xPoints, yPoints, pol.getColor(), g2d);
+					}
+
+					else if (ShapeType.POINT.equals(shape.getType())) {
+						Point point = (Point) shape;
+						drawLine((int) point.getAbsPos().getX(), (int) point.getAbsPos().getY(),
+								(int) point.getAbsPos().getX(), (int) point.getAbsPos().getY(), point.getColor(), g2d);
+					}
 				}
-				drawPolygon(xPoints, yPoints, pol.getColor(), g2d);
 			}
-
-			else if (ShapeType.POINT.equals(shape.getType())) {
-				Point point = (Point) shape;
-				drawLine((int) point.getAbsPos().getX(), (int) point.getAbsPos().getY(), (int) point.getAbsPos().getX(),
-						(int) point.getAbsPos().getY(), point.getColor(), g2d);
-			}
-
 		}
 	}
 
@@ -326,5 +345,13 @@ public class Renderer extends JPanel {
 	 */
 	public Camera getCamera() {
 		return camera;
+	}
+
+	public void changeBackground(File file) {
+		background = new Background(file, resSpecs.GAME_HEIGHT);
+	}
+
+	public Background getGameBackground() {
+		return background;
 	}
 }

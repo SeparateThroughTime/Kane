@@ -24,8 +24,8 @@ public class LineSegment extends Shape{
 	 * @param color -0xrrggbb
 	 * @param material
 	 */
-	public LineSegment(Vec2f relPosA, Vec2f relPosB, Body body, Color color, Material material) {
-		super(0, 0, ShapeType.LINESEGMENT, body, color, material);
+	public LineSegment(Vec2f relPosA, Vec2f relPosB, Body body, Color color, Material material, int renderLayer) {
+		super(0, 0, ShapeType.LINESEGMENT, body, color, material, renderLayer);
 		this.relPosA = relPosA;
 		this.relPosB = relPosB;
 	}

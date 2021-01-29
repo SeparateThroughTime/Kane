@@ -21,15 +21,17 @@ public class Polygon extends Shape {
 
 	/**
 	 * Create polygon with specified points.
-	 * @param relPosX -position of x in relation to the body
-	 * @param RelPosY -position of y in relation to the body
+	 * 
+	 * @param relPosX  -position of x in relation to the body
+	 * @param RelPosY  -position of y in relation to the body
 	 * @param body
-	 * @param color -0xrrggbb
-	 * @param points -relative points of the shape
+	 * @param color    -0xrrggbb
+	 * @param points   -relative points of the shape
 	 * @param material
 	 */
-	public Polygon(int relPosX, int RelPosY, Body body, Color color, Vec2f[] points, Material material) {
-		super(relPosX, RelPosY, ShapeType.POLYGON, body, color, material);
+	public Polygon(int relPosX, int RelPosY, Body body, Color color, Vec2f[] points, Material material,
+			int renderLayer) {
+		super(relPosX, RelPosY, ShapeType.POLYGON, body, color, material, renderLayer);
 		numPoints = points.length;
 		this.points = new Vec2f[numPoints];
 		this.pointsAlign = new Vec2f[numPoints];
@@ -40,18 +42,20 @@ public class Polygon extends Shape {
 		this.angle = 0;
 		calculateCenterOfMass();
 	}
-	
+
 	/**
 	 * Create equilateral polygon with a number of points.
-	 * @param relPosX -position of x in relation to the body
-	 * @param RelPosY -position of y in relation to the body
+	 * 
+	 * @param relPosX   -position of x in relation to the body
+	 * @param RelPosY   -position of y in relation to the body
 	 * @param body
-	 * @param color -0xrrggbb
+	 * @param color     -0xrrggbb
 	 * @param numPoints -number of points
 	 * @param material
 	 */
-	public Polygon(int relPosX, int RelPosY, Body body, Color color, int numPoints, float radius, Material material) {
-		super(relPosX, RelPosY, ShapeType.POLYGON, body, color, material);
+	public Polygon(int relPosX, int RelPosY, Body body, Color color, int numPoints, float radius, Material material,
+			int renderLayer) {
+		super(relPosX, RelPosY, ShapeType.POLYGON, body, color, material, renderLayer);
 		this.numPoints = numPoints;
 		this.points = new Vec2f[numPoints];
 		this.pointsAlign = new Vec2f[numPoints];
@@ -72,7 +76,7 @@ public class Polygon extends Shape {
 		}
 		centerOfMass.div(numPoints);
 	}
-	
+
 	public float calculateMomentOfInertia() {
 		float mass = 1 / invMass;
 		momentOfInertia = mass / points.length;
@@ -81,8 +85,7 @@ public class Polygon extends Shape {
 		}
 		return momentOfInertia;
 	}
-	
-	
+
 	@Override
 	public void updateAABB(Vec2f nextAbsPos, float tolerance) {
 		Vec2f absPos = getAbsPos();
@@ -135,6 +138,7 @@ public class Polygon extends Shape {
 	@Override
 	/**
 	 * Rotates the shape by given angle.
+	 * 
 	 * @angle
 	 */
 	public void rotate(float angle) {
@@ -153,7 +157,7 @@ public class Polygon extends Shape {
 			points[i].set(rotRefPoint.add(referencePoint).sub(getAbsPos()));
 		}
 	}
-	
+
 	/**
 	 * align the shape to original angle in relation to body angle.
 	 */
@@ -168,6 +172,7 @@ public class Polygon extends Shape {
 
 	/**
 	 * Get point with index.
+	 * 
 	 * @param index
 	 * @return -point with specific index
 	 */
@@ -177,6 +182,7 @@ public class Polygon extends Shape {
 
 	/**
 	 * Get the number of points.
+	 * 
 	 * @return
 	 */
 	public int getNumPoints() {
@@ -185,6 +191,7 @@ public class Polygon extends Shape {
 
 	/**
 	 * Get all points.
+	 * 
 	 * @return -Array of points
 	 */
 	public Vec2f[] getPoints() {

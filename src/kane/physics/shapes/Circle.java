@@ -17,20 +17,21 @@ public class Circle extends Shape {
 
 	/**
 	 * 
-	 * @param rad -radius
-	 * @param relPosX -position of x in relation to the body
-	 * @param relPosY -position of y in relation to the body
-	 * @param color -0xrrggbb
+	 * @param rad      -radius
+	 * @param relPosX  -position of x in relation to the body
+	 * @param relPosY  -position of y in relation to the body
+	 * @param color    -0xrrggbb
 	 * @param body
 	 * @param material
 	 */
-	public Circle(float rad, int relPosX, int relPosY, Color color, Body body, Material material) {
-		super(relPosX, relPosY, ShapeType.CIRCLE, body, color, material);
+	public Circle(float rad, int relPosX, int relPosY, Color color, Body body, Material material, int renderLayer) {
+		super(relPosX, relPosY, ShapeType.CIRCLE, body, color, material, renderLayer);
 		this.rad = rad;
 	}
 
 	/**
 	 * Get the radius of the circle
+	 * 
 	 * @return
 	 */
 	public float getRad() {

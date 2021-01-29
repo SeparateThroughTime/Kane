@@ -20,7 +20,6 @@ import kane.physics.shapes.Polygon;
 
 public class TestingArea extends Game {
 
-
 	Material mStatic = new Material(0, 1f);
 	Material mDynamic = new Material(1, 0.7f);
 
@@ -41,24 +40,26 @@ public class TestingArea extends Game {
 		physics.setGravity(new Vec2f(0, 0));
 
 		Body body = new Body(0, 0);
-		body.addShape(new Plane(new Vec2f(0, 1), 30, resSpecs.gameWidth - 1, body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(0, -1), -(resSpecs.GAME_HEIGHT - 1) + 30, -(resSpecs.gameWidth - 1), body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(1, 0), 30, -(resSpecs.GAME_HEIGHT - 1), body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(-1, 0), -(resSpecs.gameWidth - 1) + 30, resSpecs.GAME_HEIGHT - 1, body, Color.BLUE, mStatic));
+		body.addShape(new Plane(new Vec2f(0, 1), 30, resSpecs.gameWidth - 1, body, Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(0, -1), -(resSpecs.GAME_HEIGHT - 1) + 30, -(resSpecs.gameWidth - 1), body,
+				Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(1, 0), 30, -(resSpecs.GAME_HEIGHT - 1), body, Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(-1, 0), -(resSpecs.gameWidth - 1) + 30, resSpecs.GAME_HEIGHT - 1, body,
+				Color.BLUE, mStatic, 2));
 		physics.addBody(body);
-		
+
 		Vec2f points[];
-		
+
 		body = new Body(resSpecs.gameWidth / 2 + 100, resSpecs.GAME_HEIGHT / 2 - 100);
 		points = new Vec2f[4];
 		points[0] = new Vec2f(-20, -20);
 		points[1] = new Vec2f(20, -20);
 		points[2] = new Vec2f(20, 20);
 		points[3] = new Vec2f(-20, 20);
-		body.addShape(new Polygon(30, 0, body, Color.BLUE, points, mDynamic));
+		body.addShape(new Polygon(30, 0, body, Color.BLUE, points, mDynamic, 2));
 //		body.addShape(new Polygon(-30, 0, body, 0x0000ff, 6, 10, mDynamic));
 		physics.addBody(body);
-		
+
 		body = new Body(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2 - 100);
 		points = new Vec2f[5];
 		points[0] = new Vec2f(-20, -20);
@@ -66,9 +67,9 @@ public class TestingArea extends Game {
 		points[2] = new Vec2f(20, 20);
 		points[3] = new Vec2f(-20, 40);
 		points[4] = new Vec2f(-50, 0);
-		body.addShape(new Polygon(30, 0, body, Color.BLUE, points, mDynamic));
+		body.addShape(new Polygon(30, 0, body, Color.BLUE, points, mDynamic, 2));
 		physics.addBody(body);
-		
+
 		body = new Body(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2);
 		points = new Vec2f[5];
 		points[0] = new Vec2f(-20, -20);
@@ -76,7 +77,7 @@ public class TestingArea extends Game {
 		points[2] = new Vec2f(20, 20);
 		points[3] = new Vec2f(-20, 40);
 		points[4] = new Vec2f(-50, 0);
-		body.addShape(new Polygon(30, 0, body, Color.BLUE, points, mDynamic));
+		body.addShape(new Polygon(30, 0, body, Color.BLUE, points, mDynamic, 2));
 //		body.addShape(new Polygon(-30, 0, body, 0x0000ff, 6, 10, mDynamic));
 //		body.addShape(new Polygon(0, -20, body, 0x0000ff, 3, 7, mDynamic));
 		physics.addBody(body);
@@ -88,19 +89,21 @@ public class TestingArea extends Game {
 		physics.setGravity(new Vec2f(0, 0));
 
 		Body body = new Body(0, 0);
-		body.addShape(new Plane(new Vec2f(0, 1), 30, resSpecs.gameWidth - 1, body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(0, -1), -(resSpecs.GAME_HEIGHT - 1) + 30, -(resSpecs.gameWidth - 1), body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(1, 0), 30, -(resSpecs.GAME_HEIGHT - 1), body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(-1, 0), -(resSpecs.gameWidth - 1) + 30, resSpecs.GAME_HEIGHT - 1, body, Color.BLUE, mStatic));
+		body.addShape(new Plane(new Vec2f(0, 1), 30, resSpecs.gameWidth - 1, body, Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(0, -1), -(resSpecs.GAME_HEIGHT - 1) + 30, -(resSpecs.gameWidth - 1), body,
+				Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(1, 0), 30, -(resSpecs.GAME_HEIGHT - 1), body, Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(-1, 0), -(resSpecs.gameWidth - 1) + 30, resSpecs.GAME_HEIGHT - 1, body,
+				Color.BLUE, mStatic, 2));
 		physics.addBody(body);
 
 		body = new Body(resSpecs.gameWidth / 2 + 100, resSpecs.GAME_HEIGHT / 2 + 100);
-		body.addShape(new Point(0, 0, body, Color.WHITE, mDynamic));
+		body.addShape(new Point(0, 0, body, Color.WHITE, mDynamic, 2));
 		physics.addBody(body);
-		
+
 		body = new Body(0, 0);
-		body.addShape(new LineSegment(new Vec2f(30, 500), new Vec2f(700, 300), body, Color.GREEN, mStatic));
-		body.addShape(new LineSegment(new Vec2f(90, 100), new Vec2f(800, 250), body, Color.GREEN, mStatic));
+		body.addShape(new LineSegment(new Vec2f(30, 500), new Vec2f(700, 300), body, Color.GREEN, mStatic, 2));
+		body.addShape(new LineSegment(new Vec2f(90, 100), new Vec2f(800, 250), body, Color.GREEN, mStatic, 2));
 		physics.addBody(body);
 	}
 
@@ -109,15 +112,17 @@ public class TestingArea extends Game {
 		physics.setGravity(new Vec2f(0, -10f));
 
 		Body body = new Body(0, 0);
-		body.addShape(new Plane(new Vec2f(0, 1), 30, resSpecs.gameWidth - 1, body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(0, -1), -(resSpecs.GAME_HEIGHT - 1) + 30, -(resSpecs.gameWidth - 1), body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(1, 0), 30, -(resSpecs.GAME_HEIGHT - 1), body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(-1, 0), -(resSpecs.gameWidth - 1) + 30, resSpecs.GAME_HEIGHT - 1, body, Color.BLUE, mStatic));
+		body.addShape(new Plane(new Vec2f(0, 1), 30, resSpecs.gameWidth - 1, body, Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(0, -1), -(resSpecs.GAME_HEIGHT - 1) + 30, -(resSpecs.gameWidth - 1), body,
+				Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(1, 0), 30, -(resSpecs.GAME_HEIGHT - 1), body, Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(-1, 0), -(resSpecs.gameWidth - 1) + 30, resSpecs.GAME_HEIGHT - 1, body,
+				Color.BLUE, mStatic, 2));
 		physics.addBody(body);
 
 		body = new Body(0, 0);
-		body.addShape(new LineSegment(new Vec2f(30, 500), new Vec2f(700, 300), body, Color.GREEN, mStatic));
-		body.addShape(new LineSegment(new Vec2f(90, 100), new Vec2f(800, 250), body, Color.GREEN, mStatic));
+		body.addShape(new LineSegment(new Vec2f(30, 500), new Vec2f(700, 300), body, Color.GREEN, mStatic, 2));
+		body.addShape(new LineSegment(new Vec2f(90, 100), new Vec2f(800, 250), body, Color.GREEN, mStatic, 2));
 		physics.addBody(body);
 	}
 
@@ -125,18 +130,20 @@ public class TestingArea extends Game {
 		physics.setGravity(new Vec2f(0, 0f));
 
 		Body body = new Body(0, 0);
-		body.addShape(new Plane(new Vec2f(0, 1), 30, resSpecs.gameWidth - 1, body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(0, -1), -(resSpecs.GAME_HEIGHT - 1) + 30, -(resSpecs.gameWidth - 1), body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(1, 0), 30, -(resSpecs.GAME_HEIGHT - 1), body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(-1, 0), -(resSpecs.gameWidth - 1) + 30, resSpecs.GAME_HEIGHT - 1, body, Color.BLUE, mStatic));
+		body.addShape(new Plane(new Vec2f(0, 1), 30, resSpecs.gameWidth - 1, body, Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(0, -1), -(resSpecs.GAME_HEIGHT - 1) + 30, -(resSpecs.gameWidth - 1), body,
+				Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(1, 0), 30, -(resSpecs.GAME_HEIGHT - 1), body, Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(-1, 0), -(resSpecs.gameWidth - 1) + 30, resSpecs.GAME_HEIGHT - 1, body,
+				Color.BLUE, mStatic, 2));
 		physics.addBody(body);
 
 		body = new Body(resSpecs.gameWidth / 2 + 100, resSpecs.GAME_HEIGHT / 2 + 100);
-		body.addShape(new Box(0, 0, body, new Vec2f(50, 30), Color.GREEN, mDynamic));
+		body.addShape(new Box(0, 0, body, new Vec2f(50, 30), Color.GREEN, mDynamic, 2));
 		physics.addBody(body);
 
 		body = new Body(resSpecs.gameWidth / 2 - 100, resSpecs.GAME_HEIGHT / 2 - 100);
-		body.addShape(new Box(0, 0, body, new Vec2f(30, 50), Color.RED, mDynamic));
+		body.addShape(new Box(0, 0, body, new Vec2f(30, 50), Color.RED, mDynamic, 2));
 		physics.addBody(body);
 	}
 
@@ -144,18 +151,20 @@ public class TestingArea extends Game {
 		physics.setGravity(new Vec2f(0, 0f));
 
 		Body body = new Body(0, 0);
-		body.addShape(new Plane(new Vec2f(0, 1), 30, resSpecs.gameWidth - 1, body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(0, -1), -(resSpecs.GAME_HEIGHT - 1) + 30, -(resSpecs.gameWidth - 1), body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(1, 0), 30, -(resSpecs.GAME_HEIGHT - 1), body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(-1, 0), -(resSpecs.gameWidth - 1) + 30, resSpecs.GAME_HEIGHT - 1, body, Color.BLUE, mStatic));
+		body.addShape(new Plane(new Vec2f(0, 1), 30, resSpecs.gameWidth - 1, body, Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(0, -1), -(resSpecs.GAME_HEIGHT - 1) + 30, -(resSpecs.gameWidth - 1), body,
+				Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(1, 0), 30, -(resSpecs.GAME_HEIGHT - 1), body, Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(-1, 0), -(resSpecs.gameWidth - 1) + 30, resSpecs.GAME_HEIGHT - 1, body,
+				Color.BLUE, mStatic, 2));
 		physics.addBody(body);
 
 		body = new Body(resSpecs.gameWidth / 2 - 100, resSpecs.GAME_HEIGHT / 2 - 100);
-		body.addShape(new Circle(30, 0, 0, Color.RED, body, mDynamic));
+		body.addShape(new Circle(30, 0, 0, Color.RED, body, mDynamic, 2));
 		physics.addBody(body);
 
 		body = new Body(resSpecs.gameWidth / 2 + 100, resSpecs.GAME_HEIGHT / 2 + 100);
-		body.addShape(new Box(0, 0, body, new Vec2f(50, 30), Color.GREEN, mDynamic));
+		body.addShape(new Box(0, 0, body, new Vec2f(50, 30), Color.GREEN, mDynamic, 2));
 		physics.addBody(body);
 
 	}
@@ -164,12 +173,12 @@ public class TestingArea extends Game {
 		physics.setGravity(new Vec2f(0, 0));
 
 		Body body = new Body(0, 0);
-		body.addShape(new Plane(new Vec2f(0, 1), 30, resSpecs.gameWidth - 1, body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(0.75f, 0.75f), 400, 300, body, Color.BLUE, mStatic));
+		body.addShape(new Plane(new Vec2f(0, 1), 30, resSpecs.gameWidth - 1, body, Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(0.75f, 0.75f), 400, 300, body, Color.BLUE, mStatic, 2));
 		physics.addBody(body);
 
 		body = new Body(resSpecs.gameWidth / 2 + 100, resSpecs.GAME_HEIGHT / 2 + 100);
-		body.addShape(new Box(0, 0, body, new Vec2f(50, 30), Color.BLUE, mDynamic));
+		body.addShape(new Box(0, 0, body, new Vec2f(50, 30), Color.BLUE, mDynamic, 2));
 		physics.addBody(body);
 	}
 
@@ -177,18 +186,20 @@ public class TestingArea extends Game {
 		physics.setGravity(new Vec2f(0, 0));
 
 		Body body = new Body(0, 0);
-		body.addShape(new Plane(new Vec2f(0, 1), 30, resSpecs.gameWidth - 1, body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(0, -1), -(resSpecs.GAME_HEIGHT - 1) + 30, -(resSpecs.gameWidth - 1), body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(1, 0), 30, -(resSpecs.GAME_HEIGHT - 1), body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(-1, 0), -(resSpecs.gameWidth - 1) + 30, resSpecs.GAME_HEIGHT - 1, body, Color.BLUE, mStatic));
+		body.addShape(new Plane(new Vec2f(0, 1), 30, resSpecs.gameWidth - 1, body, Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(0, -1), -(resSpecs.GAME_HEIGHT - 1) + 30, -(resSpecs.gameWidth - 1), body,
+				Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(1, 0), 30, -(resSpecs.GAME_HEIGHT - 1), body, Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(-1, 0), -(resSpecs.gameWidth - 1) + 30, resSpecs.GAME_HEIGHT - 1, body,
+				Color.BLUE, mStatic, 2));
 		physics.addBody(body);
 
 		body = new Body(resSpecs.gameWidth / 2 + 100, resSpecs.GAME_HEIGHT / 2 + 100);
-		body.addShape(new Box(0, 0, body, new Vec2f(20, 30), Color.GREEN, mDynamic));
+		body.addShape(new Box(0, 0, body, new Vec2f(20, 30), Color.GREEN, mDynamic, 2));
 		physics.addBody(body);
 
 		body = new Body(0, 0);
-		body.addShape(new LineSegment(new Vec2f(150, 100), new Vec2f(120, 500), body, Color.GREEN, mStatic));
+		body.addShape(new LineSegment(new Vec2f(150, 100), new Vec2f(120, 500), body, Color.GREEN, mStatic, 2));
 		physics.addBody(body);
 	}
 
@@ -196,10 +207,12 @@ public class TestingArea extends Game {
 		physics.setGravity(new Vec2f(0, -10f));
 
 		Body body = new Body(0, 0);
-		body.addShape(new Plane(new Vec2f(0, 1), 30, resSpecs.gameWidth - 1, body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(0, -1), -(resSpecs.GAME_HEIGHT - 1) + 30, -(resSpecs.gameWidth - 1), body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(1, 0), 30, -(resSpecs.GAME_HEIGHT - 1), body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(-1, 0), -(resSpecs.gameWidth - 1) + 30, resSpecs.GAME_HEIGHT - 1, body, Color.BLUE, mStatic));
+		body.addShape(new Plane(new Vec2f(0, 1), 30, resSpecs.gameWidth - 1, body, Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(0, -1), -(resSpecs.GAME_HEIGHT - 1) + 30, -(resSpecs.gameWidth - 1), body,
+				Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(1, 0), 30, -(resSpecs.GAME_HEIGHT - 1), body, Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(-1, 0), -(resSpecs.gameWidth - 1) + 30, resSpecs.GAME_HEIGHT - 1, body,
+				Color.BLUE, mStatic, 2));
 		physics.addBody(body);
 	}
 
@@ -207,10 +220,12 @@ public class TestingArea extends Game {
 		physics.setGravity(new Vec2f(0, 0));
 
 		Body body = new Body(0, 0);
-		body.addShape(new Plane(new Vec2f(0, 1), 30, resSpecs.gameWidth - 1, body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(0, -1), -(resSpecs.GAME_HEIGHT - 1) + 30, -(resSpecs.gameWidth - 1), body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(1, 0), 30, -(resSpecs.GAME_HEIGHT - 1), body, Color.BLUE, mStatic));
-		body.addShape(new Plane(new Vec2f(-1, 0), -(resSpecs.gameWidth - 1) + 30, resSpecs.GAME_HEIGHT - 1, body, Color.BLUE, mStatic));
+		body.addShape(new Plane(new Vec2f(0, 1), 30, resSpecs.gameWidth - 1, body, Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(0, -1), -(resSpecs.GAME_HEIGHT - 1) + 30, -(resSpecs.gameWidth - 1), body,
+				Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(1, 0), 30, -(resSpecs.GAME_HEIGHT - 1), body, Color.BLUE, mStatic, 2));
+		body.addShape(new Plane(new Vec2f(-1, 0), -(resSpecs.gameWidth - 1) + 30, resSpecs.GAME_HEIGHT - 1, body,
+				Color.BLUE, mStatic, 2));
 		physics.addBody(body);
 
 		body = new Body(resSpecs.gameWidth / 2 + 100, resSpecs.GAME_HEIGHT / 2 - 100);
@@ -219,7 +234,7 @@ public class TestingArea extends Game {
 		points[1] = new Vec2f(20, -20);
 		points[2] = new Vec2f(20, 20);
 		points[3] = new Vec2f(-20, 20);
-		body.addShape(new Polygon(0, 0, body, Color.YELLOW, points, mDynamic));
+		body.addShape(new Polygon(0, 0, body, Color.YELLOW, points, mDynamic, 2));
 		physics.addBody(body);
 
 		body = new Body(resSpecs.gameWidth / 2 + 100, resSpecs.GAME_HEIGHT / 2 - 200);
@@ -229,19 +244,19 @@ public class TestingArea extends Game {
 		points[2] = new Vec2f(20, 20);
 		points[3] = new Vec2f(-20, 40);
 		points[4] = new Vec2f(-50, 0);
-		body.addShape(new Polygon(0, 0, body, Color.RED, points, mDynamic));
+		body.addShape(new Polygon(0, 0, body, Color.RED, points, mDynamic, 2));
 		physics.addBody(body);
 
 		body = new Body(resSpecs.gameWidth / 2 - 100, resSpecs.GAME_HEIGHT / 2 - 100);
-		body.addShape(new Circle(30, 0, 0, Color.RED, body, mDynamic));
+		body.addShape(new Circle(30, 0, 0, Color.RED, body, mDynamic, 2));
 		physics.addBody(body);
 
 		body = new Body(resSpecs.gameWidth / 2 + 100, resSpecs.GAME_HEIGHT / 2 + 100);
-		body.addShape(new Box(0, 0, body, new Vec2f(20, 30), Color.GREEN, mDynamic));
+		body.addShape(new Box(0, 0, body, new Vec2f(20, 30), Color.GREEN, mDynamic, 2));
 		physics.addBody(body);
 
 		body = new Body(0, 0);
-		body.addShape(new LineSegment(new Vec2f(150, 100), new Vec2f(120, 500), body, Color.GREEN, mStatic));
+		body.addShape(new LineSegment(new Vec2f(150, 100), new Vec2f(120, 500), body, Color.GREEN, mStatic, 2));
 		physics.addBody(body);
 	}
 
@@ -359,7 +374,7 @@ public class TestingArea extends Game {
 				for (int y = 0; y < numY; y++) {
 					Body body = new Body(mouseListener.getMousePos().getX() - halfDimX + x * radius * 2,
 							mouseListener.getMousePos().getY() - halfDimY + y * radius * 2);
-					body.addShape(new Circle(radius, 0, 0, Color.RED, body, mDynamic));
+					body.addShape(new Circle(radius, 0, 0, Color.RED, body, mDynamic, 2));
 					physics.addBody(body);
 				}
 			}
@@ -398,7 +413,7 @@ public class TestingArea extends Game {
 				for (int y = 0; y < numY; y++) {
 					Body body = new Body(mouseListener.getMousePos().getX() - halfDimX + x * radius * 2,
 							mouseListener.getMousePos().getY() - halfDimY + y * radius * 2);
-					body.addShape(new Box(0, 0, body, new Vec2f(radius, radius), Color.GREEN, mDynamic));
+					body.addShape(new Box(0, 0, body, new Vec2f(radius, radius), Color.GREEN, mDynamic, 2));
 					physics.addBody(body);
 				}
 			}
@@ -593,17 +608,17 @@ public class TestingArea extends Game {
 
 	@Override
 	public void penetration(ShapePair pair) {
-		
+
 	}
 
 	@Override
 	public void penetrated(ShapePair pair) {
-		
+
 	}
 
 	@Override
 	public void separated(ShapePair pair) {
-		
+
 	}
 
 	@Override
@@ -616,36 +631,36 @@ public class TestingArea extends Game {
 
 	@Override
 	public void iPressed() {
-		
+
 	}
 
 	@Override
 	public void iReleased() {
-		
+
 	}
 
 	@Override
 	public void iClick() {
-		
+
 	}
 
 	@Override
 	public void leftArrowClick() {
-		
+
 	}
 
 	@Override
 	public void rightArrowClick() {
-		
+
 	}
 
 	@Override
 	public void upArrowClick() {
-		
+
 	}
 
 	@Override
 	public void downArrowClick() {
-		
+
 	}
 }

@@ -2,12 +2,9 @@
 
 	ContactPoint: BoxPolygon, PolygonPolygon -> Ghost Contacts
 	Rotation
-	Sprites
-	Transparent Pixel
 	Items/Inventory
 	Visual Effects
 	Sounds
-	Renderer -> Remove Jittering
 	Object Editor
 		Ermitteln des besten Mittelpunkts
 	Level Ends/ Player dies -> Next level/ Restart
@@ -22,6 +19,7 @@
 package kane;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.File;
 
 import kane.genericGame.Game;
@@ -53,6 +51,8 @@ public class Kane extends Game {
 		game.run();
 
 	}
+	
+	public static float BACKGROUND_SPEED = 0.5f;
 
 	Material mStatic = new Material(0, 1f);
 	Material mDynamic = new Material(1, 0.9f);
@@ -90,27 +90,28 @@ public class Kane extends Game {
 
 		// Create World
 		Body body = new Body(0, 0);
-		body.addShape(new LineSegment(new Vec2f(30, 0), new Vec2f(30, resSpecs.GAME_HEIGHT), body, Color.BLUE, mStatic));
+		body.addShape(
+				new LineSegment(new Vec2f(30, 0), new Vec2f(30, resSpecs.GAME_HEIGHT), body, Color.BLUE, mStatic, 2));
 		body.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
 		physics.addBody(body);
 
 		body = new Body(0, 0);
-		body.addShape(new LineSegment(new Vec2f(0, 30), new Vec2f(mapLen, 30), body, Color.BLUE, mStatic));
+		body.addShape(new LineSegment(new Vec2f(0, 30), new Vec2f(mapLen, 30), body, Color.BLUE, mStatic, 2));
 		body.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
 		physics.addBody(body);
 
 		body = new Body(0, 0);
 		body.addShape(new LineSegment(new Vec2f(mapLen - 30, 0), new Vec2f(mapLen - 30, resSpecs.GAME_HEIGHT), body,
-				Color.BLUE, mStatic));
+				Color.BLUE, mStatic, 2));
 		body.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
 		physics.addBody(body);
 
 		// Create player
 		player = new Body(100, 130);
-		player.addShape(new Box(0, 0, player, new Vec2f(32, 32), Color.GREEN, mDynamic));
+		player.addShape(new Box(0, 0, player, new Vec2f(32, 32), Color.GREEN, mDynamic, 2));
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PLAYER_ALL);
 		body.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
-		player.addShape(new Box(0, -22, player, new Vec2f(30, 10), Color.WHITE, mEvent));
+		player.addShape(new Box(0, -22, player, new Vec2f(30, 10), Color.WHITE, mEvent, 2));
 		player.getShape(1).setCollision(false);
 		player.getShape(1).addActiveAttribute(ActiveAttributes.PLAYER_FEETS);
 		player.getShape(1).setVisible(false);
@@ -126,7 +127,7 @@ public class Kane extends Game {
 		// Inventory
 		gameInterface = new Body(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2);
 		gameInterface.addShape(new Box(0, 0, gameInterface,
-				new Vec2f(resSpecs.gameWidth / 2 - 10, resSpecs.GAME_HEIGHT / 2 - 10), Color.WHITE, mInterface));
+				new Vec2f(resSpecs.gameWidth / 2 - 10, resSpecs.GAME_HEIGHT / 2 - 10), Color.WHITE, mInterface, 2));
 		gameInterface.getShape(0).setVisible(false);
 		gameInterface.getShape(0).setCollision(false);
 		gameInterface.getShape(0).addPassiveAttribute(PassiveAttributes.INVENTORY);
@@ -139,9 +140,13 @@ public class Kane extends Game {
 		points[1] = new Vec2f(3, -10);
 		points[2] = new Vec2f(3, 10);
 		points[3] = new Vec2f(-3, 10);
-		sword.addShape(new Polygon(0, 0, sword, Color.YELLOW, points, mDynamic));
+		sword.addShape(new Polygon(0, 0, sword, Color.YELLOW, points, mDynamic, 2));
 		physics.addBody(sword);
 		
+		// Create Background
+		file = new File("sprites\\background.png");
+		renderer.changeBackground(file);
+
 //		changeResolution(Resolution.SOL1176x664);
 
 	}
@@ -166,6 +171,11 @@ public class Kane extends Game {
 			cameraPos.setY(mapHeight - resSpecs.GAME_HEIGHT * 0.5f);
 			renderer.getCamera().getAcc().setY(0);
 			renderer.getCamera().getVel().setY(0);
+		}
+		
+		if (renderer.getGameBackground() != null) {
+			int backgroundPos = (int) ((cameraPos.dot(new Vec2f(1, 0)) - resSpecs.gameWidth * 0.5f) * BACKGROUND_SPEED);
+			renderer.getGameBackground().setOffsetX(backgroundPos);
 		}
 	}
 
@@ -195,7 +205,7 @@ public class Kane extends Game {
 	@Override
 	public void rightMouseClick() {
 	}
-	
+
 	@Override
 	public void leftArrowClick() {
 		player.getShape(0).getSprite().setCurrentSpriteState(SpriteState.Running);
@@ -215,7 +225,7 @@ public class Kane extends Game {
 	public void leftArrowReleased() {
 		player.getShape(0).getSprite().setCurrentSpriteState(SpriteState.Standing);
 	}
-	
+
 	@Override
 	public void rightArrowClick() {
 		player.getShape(0).getSprite().setCurrentSpriteState(SpriteState.Running);
@@ -235,10 +245,10 @@ public class Kane extends Game {
 	public void rightArrowReleased() {
 		player.getShape(0).getSprite().setCurrentSpriteState(SpriteState.Standing);
 	}
-	
+
 	@Override
 	public void upArrowClick() {
-		
+
 	}
 
 	@Override
@@ -255,10 +265,10 @@ public class Kane extends Game {
 	public void downArrowPressed() {
 
 	}
-	
+
 	@Override
 	public void downArrowClick() {
-		
+
 	}
 
 	@Override

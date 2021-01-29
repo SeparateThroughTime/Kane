@@ -17,14 +17,14 @@ public class Point extends Shape {
 
 	/**
 	 * 
-	 * @param relPosX -position of x in relation to the body
-	 * @param relPosY -position of y in relation to the body
+	 * @param relPosX  -position of x in relation to the body
+	 * @param relPosY  -position of y in relation to the body
 	 * @param body
-	 * @param color -0xrrggbb
+	 * @param color    -0xrrggbb
 	 * @param material
 	 */
-	public Point(int relPosX, int relPosY, Body body, Color color, Material material) {
-		super(relPosX, relPosY, ShapeType.POINT, body, color, material);
+	public Point(int relPosX, int relPosY, Body body, Color color, Material material, int renderLayer) {
+		super(relPosX, relPosY, ShapeType.POINT, body, color, material, renderLayer);
 	}
 
 	@Override

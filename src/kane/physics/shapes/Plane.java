@@ -9,25 +9,25 @@ import kane.physics.Shape;
 import kane.physics.ShapeType;
 
 /**
- * This is a Shape of the Type Plane.
- * Planes are Lines without startpoint or endpoint. The length is only for rendering.
+ * This is a Shape of the Type Plane. Planes are Lines without startpoint or
+ * endpoint. The length is only for rendering.
  */
-public class Plane extends Shape{
+public class Plane extends Shape {
 	private Vec2f normal;
 	private float distance;
 	private float len;
 
 	/**
 	 * 
-	 * @param normal -determines the angle of plane
+	 * @param normal   -determines the angle of plane
 	 * @param distance -determines the position of plane
-	 * @param len -length that is displayed
+	 * @param len      -length that is displayed
 	 * @param body
-	 * @param color -0xrrggbb
+	 * @param color    -0xrrggbb
 	 * @param material
 	 */
-	public Plane(Vec2f normal, float distance, float len, Body body, Color color, Material material) {
-		super(0, 0, ShapeType.PLANE, body, color, material);
+	public Plane(Vec2f normal, float distance, float len, Body body, Color color, Material material, int renderLayer) {
+		super(0, 0, ShapeType.PLANE, body, color, material, renderLayer);
 		this.normal = normal.normalize();
 		this.distance = distance;
 		this.len = len;
@@ -35,22 +35,25 @@ public class Plane extends Shape{
 
 	/**
 	 * Get the "starting point" of plane.
+	 * 
 	 * @return
 	 */
 	public Vec2f getPoint() {
 		return new Vec2f(normal).mult(distance);
 	}
-	
+
 	/**
 	 * Get length, that is displayed.
+	 * 
 	 * @return
 	 */
 	public float getLen() {
 		return len;
 	}
-	
+
 	/**
 	 * Get normal of plane.
+	 * 
 	 * @return
 	 */
 	public Vec2f getNormal() {
@@ -78,7 +81,7 @@ public class Plane extends Shape{
 		} else {
 			aabb.getMax().setY(aabb.getMax().getY() + depth);
 		}
-		
+
 	}
 
 	@Override
