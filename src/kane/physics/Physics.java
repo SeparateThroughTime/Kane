@@ -56,8 +56,8 @@ public class Physics {
 	 * 
 	 * @param deltaTime -time between each frame
 	 */
-	public void step(float deltaTime) {
 
+	public void preStep(float deltaTime) {
 		// Gravity
 		for (int i = 0; i < numBodies; i++) {
 			Body body = bodies[i];
@@ -66,6 +66,12 @@ public class Physics {
 
 			}
 		}
+
+		// Solve Friction
+		contactSolver.solveFriction(shapePairs, numShapePairs);
+	}
+
+	public void step(float deltaTime) {
 
 		// Acceleration integration
 		float aabbTolerance = 5;
@@ -148,8 +154,6 @@ public class Physics {
 			Body body = bodies[i];
 			if (body.getImpulseRate() > 0) {
 				body.getPos().addMult(body.getVel(), deltaTime);
-				// ??? TODO
-//				body.rotate(0);
 			}
 		}
 

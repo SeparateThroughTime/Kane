@@ -183,6 +183,9 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 			// Update Game
 			accumulatedTime += frameTime;
 			while (accumulatedTime >= DELTATIME) {
+				if (!pause) {
+					physics.preStep(DELTATIME);
+				}
 				userInteraction(DELTATIME);
 				if (!pause) {
 					mechanicsLoop();

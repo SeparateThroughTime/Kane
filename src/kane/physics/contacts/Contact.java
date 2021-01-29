@@ -10,8 +10,6 @@ public class Contact {
 	private final Vec2f normal;
 	private final float distance;
 	private final Vec2f point;
-	private float impulse;
-	private float frictionImpulse;
 	private final Vec2f supportA;
 	private final Vec2f supportB;
 	
@@ -50,40 +48,6 @@ public class Contact {
 	 */
 	public Vec2f getPoint() {
 		return point;
-	}
-
-	/**
-	 * Get impule
-	 * @return -impulse
-	 */
-	public float getImpulse() {
-		return impulse;
-	}
-
-	/**
-	 * Set impulse
-	 * @param impulse
-	 * @return -impulse
-	 */
-	public float setImpulse(float impulse) {
-		this.impulse = impulse;
-		return impulse;
-	}
-
-	/**
-	 * Get frictionImpulse
-	 * @return -frictionImpulse
-	 */
-	public float getFrictionImpulse() {
-		return frictionImpulse;
-	}
-
-	/**
-	 * Set frictionImpules
-	 * @param frictionImpulse
-	 */
-	public void setFrictionImpulse(float frictionImpulse) {
-		this.frictionImpulse = frictionImpulse;
 	}
 
 	/**

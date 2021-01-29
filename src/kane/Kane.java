@@ -55,7 +55,7 @@ public class Kane extends Game {
 	}
 
 	Material mStatic = new Material(0, 1f);
-	Material mDynamic = new Material(1, 0.7f);
+	Material mDynamic = new Material(1, 0.9f);
 	Material mEvent = new Material(0, 0);
 	Material mInterface = new Material(1, 0);
 	Body player;
@@ -107,20 +107,20 @@ public class Kane extends Game {
 
 		// Create player
 		player = new Body(100, 130);
-		player.addShape(new Box(0, 0, player, new Vec2f(60, 60), Color.GREEN, mDynamic));
+		player.addShape(new Box(0, 0, player, new Vec2f(32, 32), Color.GREEN, mDynamic));
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PLAYER_ALL);
 		body.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
 		player.addShape(new Box(0, -22, player, new Vec2f(30, 10), Color.WHITE, mEvent));
 		player.getShape(1).setCollision(false);
 		player.getShape(1).addActiveAttribute(ActiveAttributes.PLAYER_FEETS);
 		player.getShape(1).setVisible(false);
-//		File file = new File("sprites\\player.png");
-//		Sprite sprite = new Sprite(file, 1, 1);
-//		sprite.addState(SpriteState.Standing, new int[] { 0 });
-//		sprite.addState(SpriteState.Running, new int[] { 1, 2, 3, 4 });
-//		player.getShape(0).setSprite(sprite);
-//		sprite.setCurrentSpriteState(SpriteState.Standing);
-//		sprite.setSpritePosOffset(new Vec2f(-32, -32));
+		File file = new File("sprites\\player.png");
+		Sprite sprite = new Sprite(file, 1, 1);
+		sprite.addState(SpriteState.Standing, new int[] { 0 });
+		sprite.addState(SpriteState.Running, new int[] { 1, 2, 3, 4 });
+		player.getShape(0).setSprite(sprite);
+		sprite.setCurrentSpriteState(SpriteState.Standing);
+		sprite.setSpritePosOffset(new Vec2f(-32, -32));
 		physics.addBody(player);
 
 		// Inventory
@@ -204,7 +204,7 @@ public class Kane extends Game {
 	@Override
 	public void leftArrowPressed() {
 		if (!pause) {
-			player.getAcc().sub(playerRunAcc);
+			player.getAcc().setX(-playerRunAcc.getX());
 			if (-player.getVel().getX() > playerRunSpeed) {
 				player.getVel().setX(-playerRunSpeed);
 			}
@@ -224,7 +224,7 @@ public class Kane extends Game {
 	@Override
 	public void rightArrowPressed() {
 		if (!pause) {
-			player.getAcc().add(playerRunAcc);
+			player.getAcc().setX(playerRunAcc.getX());
 			if (player.getVel().getX() > playerRunSpeed) {
 				player.getVel().setX(playerRunSpeed);
 			}

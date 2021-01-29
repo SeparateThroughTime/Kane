@@ -94,49 +94,71 @@ public class ContactSolver implements ContactAcceptor {
 						float velToRemove = projVelAB + contact.getDistance() / deltaTime;
 						float impulse = Math.min(velToRemove * massAB, 0f);
 
-						// I don't unterstand this part... explained in:
-						// https://www.youtube.com/watch?v=jusFm0oSNF0&list=PLYG-GfK4ITZ5X2dciKXT_COJrzQAI4oxL&index=29
-						// UPDATE: Seems to be pretty useless.
-						// TODO: If no bugs appear: delete this. Also delete impulse in contacts
-//						contact.setImpulse(impulse);
-//						float newImpulse = Math.min(impulse + contact.getImpulse(), 0f);
-//						impulse = newImpulse - contact.getImpulse();
-//						contact.setImpulse(newImpulse);
-
 						velA.addMult(normal, impulse * impulseRateA);
 						velB.addMult(normal, -impulse * impulseRateB);
 
-						// Just Normal Impulse in direction of perp
-						velAB = new Vec2f(velB).sub(velA);
-						Vec2f perp = new Vec2f(normal).perpRight();
-//						float perpProjVelAB = velAB.dot(perp);
-//						float perpVelToRemove = perpProjVelAB + contact.getDistance() / deltaTime;
-//						float perpImpulse = Math.min(perpVelToRemove * impulseRatioAB, 0f);
-//						float perpNewImpulse = Math.min(perpImpulse + contact.getPerpImpulse(), 0f);
-//						perpImpulse = perpNewImpulse - contact.getPerpImpulse();
-//						contact.setPerpImpulse(perpNewImpulse);
+//						float frictionA = shapePair.getShapeA().getMaterial().getFriction();
+//						float frictionB = shapePair.getShapeB().getMaterial().getFriction();
+//						float relFriction = (float) Math.sqrt(frictionA * frictionB) * 2;
+//						float maxFriction = impulse == 0 ? 0 : relFriction * 22000;
+////						float maxFriction = impulse * relFriction;
+//						float frictionImpulse = velAB.dot(perp) > 0 ? maxFriction : -maxFriction;
+//						frictionImpulse = velAB.dot(perp) == 0 ? 0 : frictionImpulse;
+////						float frictionImpulse = Scalar.clamp(velAB.dot(perp)*4000, maxFriction, -maxFriction);
+//						contact.setFrictionImpulse(frictionImpulse);
+//						System.out.println(velAB.dot(perp));
 
-						// Friction Impulse
-						float frictionA = shapePair.getShapeA().getMaterial().getFriction();
-						float frictionB = shapePair.getShapeB().getMaterial().getFriction();
-						float relFriction = (float) Math.sqrt(frictionA * frictionB) * 2;
-						float maxFriction = impulse == 0 ? 0 : -relFriction * 4000;
-//						float maxFriction = impulse * relFriction;
-						float frictionImpulse = Scalar.clamp(velAB.dot(perp) * massAB, maxFriction, -maxFriction);
-						contact.setFrictionImpulse(frictionImpulse);
-
-						// TODO Same as above
-//						float newFrictionImpulse = Scalar.clamp(frictionImpulse + contact.getFrictionImpulse(), maxFriction, -maxFriction);
-//						frictionImpulse = newFrictionImpulse - contact.getFrictionImpulse();
-//						contact.setFrictionImpulse(newFrictionImpulse);
-
-						velA.addMult(perp, frictionImpulse * impulseRateA);
-						velB.addMult(perp, -frictionImpulse * impulseRateB);
+//								velA.addMult(perp, frictionImpulse * impulseRateA);
+//						velB.addMult(perp, -frictionImpulse * impulseRateB);
 					}
 				}
 			}
 		}
 
+	}
+
+	public void solveFriction(ShapePair[] shapePairs, int numShapePairs) {
+		for (int i = 0; i < velocityIterations; i++) {
+			for (int j = 0; j < numShapePairs; j++) {
+				ShapePair shapePair = shapePairs[j];
+				Shape shapeA = shapePair.getShapeA();
+				Shape shapeB = shapePair.getShapeB();
+				Body bodyA = shapeA.getBody();
+				Body bodyB = shapeB.getBody();
+
+				if (shapeA.getCollision() && shapeB.getCollision() && shapePair.isCollideable()) {
+					Vec2f velA = bodyA.getVel();
+					Vec2f velB = bodyB.getVel();
+					Vec2f accA = bodyA.getAcc();
+					Vec2f accB = bodyB.getAcc();
+					float impulseRateA = bodyA.getImpulseRate();
+					float impulseRateB = bodyB.getImpulseRate();
+					float massAB = 1 / (impulseRateA + impulseRateB);
+					Vec2f velAB = new Vec2f(velB).sub(velA);
+					Vec2f accAB = new Vec2f(accB).sub(accA);
+					Contact contact = shapePair.getContact();
+					Vec2f normal = contact.getNormal();
+					float distance = shapePair.getContact().getDistance();
+					velAB = new Vec2f(velB).sub(velA);
+					Vec2f perp = new Vec2f(normal).perpRight();
+					float projVelAB = velAB.dot(perp);
+					if ((!Scalar.equals(velAB.dot(normal), 0f) || !Scalar.equals(accAB.dot(normal), 0f))
+							&& distance <= 0) {
+
+						// Friction Impulse
+						float frictionA = shapePair.getShapeA().getMaterial().getFriction();
+						float frictionB = shapePair.getShapeB().getMaterial().getFriction();
+						float relFriction = frictionA * frictionB;
+
+						float projVelToRemoveAB = projVelAB - projVelAB * relFriction;
+						float frictionImpulse = projVelToRemoveAB * massAB;
+
+						accA.addMult(perp, -(frictionImpulse * impulseRateA) / deltaTime);
+						accB.addMult(perp, -(frictionImpulse * impulseRateB) / deltaTime);
+					}
+				}
+			}
+		}
 	}
 
 	/**
