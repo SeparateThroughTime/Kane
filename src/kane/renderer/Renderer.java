@@ -246,7 +246,7 @@ public class Renderer extends JPanel {
 		x -= (int) camera.zeroPoint.getX();
 		y -= (int) camera.zeroPoint.getY();
 		x -= rad;
-		y -= rad;
+		y += rad;
 		x = (int) (x * multiplicator);
 		y = (int) (y * multiplicator);
 		rad = (int) (rad * multiplicator);
@@ -259,7 +259,7 @@ public class Renderer extends JPanel {
 		x -= (int) camera.zeroPoint.getX();
 		y -= (int) camera.zeroPoint.getY();
 		x -= rad;
-		y -= rad;
+		y += rad;
 		x = (int) (x * multiplicator);
 		y = (int) (y * multiplicator);
 		rad = (int) (rad * multiplicator);
