@@ -342,7 +342,7 @@ public class TestingArea extends Game {
 	@Override
 	public void leftMouseClick() {
 		if (dragObj == null) {
-			final int radius = 10;
+			final int radius = 60;
 			final int numX;
 			final int numY;
 			if (!switchAmount) {

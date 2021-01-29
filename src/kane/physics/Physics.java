@@ -61,7 +61,7 @@ public class Physics {
 		// Gravity
 		for (int i = 0; i < numBodies; i++) {
 			Body body = bodies[i];
-			if (Scalar.greaterThan(body.getImpulseRate(), 0)) {
+			if (body.getImpulseRate() > 0) {
 				body.getAcc().add(new Vec2f(gravity).div(deltaTime));
 
 			}
