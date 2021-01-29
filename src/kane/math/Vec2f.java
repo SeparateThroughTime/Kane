@@ -336,7 +336,7 @@ public class Vec2f {
 	 */
 	public Vec2f rotate(float angle) {
 		float tmp = x;
-		//changes Scale of Shapes with high angles
+		// changes Scale of Shapes with high angles
 //		float cosAngle = (float) Scalar.cos(angle);
 //		float sinAngle = (float) Scalar.sin(angle);
 		float cosAngle = (float) Math.cos(angle);
@@ -360,19 +360,22 @@ public class Vec2f {
 		return (float) Math.acos(dot / (lenThis * lenV));
 	}
 
+	public Vec2i toVec2i() {
+		return new Vec2i((int) x, (int) y);
+	}
+
 	@Override
 	public String toString() {
 		return String.format("(%f, %f)", x, y);
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj != null && getClass() == obj.getClass()) {
 			Vec2f vec = (Vec2f) obj;
 			if (vec.x == x && vec.y == y) {
 				return true;
-			}
-			else {
+			} else {
 				return false;
 			}
 		}

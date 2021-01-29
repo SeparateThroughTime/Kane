@@ -68,7 +68,6 @@ public class Renderer extends JPanel {
 			int height = (int) (background.getImg().getHeight() * multiplicator);
 			int x = background.getOffsetX();
 			while (x < resSpecs.gameWidth) {
-				System.out.println(x);
 				g2d.drawImage(background.getImg(), x, 0, width, height, null);
 				x += width;
 			}
@@ -235,8 +234,8 @@ public class Renderer extends JPanel {
 	}
 
 	private void drawImage(BufferedImage img, int posX, int posY, Graphics2D g2d) {
-		posX -= (int) camera.zeroPoint.getX();
-		posY -= (int) camera.zeroPoint.getY();
+		posX -= Scalar.round(camera.zeroPoint.getX());
+		posY -= Scalar.round(camera.zeroPoint.getY());
 		int width = (int) (img.getWidth() * multiplicator * Sprite.SCALE);
 		int height = (int) (img.getHeight() * multiplicator * Sprite.SCALE);
 		posY += img.getHeight() * Sprite.SCALE;
@@ -247,10 +246,10 @@ public class Renderer extends JPanel {
 	}
 
 	private void drawLine(int x1, int y1, int x2, int y2, Color color, Graphics2D g2d) {
-		x1 -= (int) camera.zeroPoint.getX();
-		x2 -= (int) camera.zeroPoint.getX();
-		y1 -= (int) camera.zeroPoint.getY();
-		y2 -= (int) camera.zeroPoint.getY();
+		x1 -= Scalar.round(camera.zeroPoint.getX());
+		x2 -= Scalar.round(camera.zeroPoint.getX());
+		y1 -= Scalar.round(camera.zeroPoint.getY());
+		y2 -= Scalar.round(camera.zeroPoint.getY());
 		x1 = (int) (x1 * multiplicator);
 		x2 = (int) (x2 * multiplicator);
 		y1 = (int) (y1 * multiplicator);
@@ -262,8 +261,8 @@ public class Renderer extends JPanel {
 	}
 
 	private void drawCircle(int x, int y, int rad, Color color, Graphics2D g2d) {
-		x -= (int) camera.zeroPoint.getX();
-		y -= (int) camera.zeroPoint.getY();
+		x -= Scalar.round(camera.zeroPoint.getX());
+		y -= Scalar.round(camera.zeroPoint.getY());
 		x -= rad;
 		y += rad;
 		x = (int) (x * multiplicator);
@@ -275,8 +274,8 @@ public class Renderer extends JPanel {
 	}
 
 	private void fillCircle(int x, int y, int rad, Color color, Graphics2D g2d) {
-		x -= (int) camera.zeroPoint.getX();
-		y -= (int) camera.zeroPoint.getY();
+		x -= Scalar.round(camera.zeroPoint.getX());
+		y -= Scalar.round(camera.zeroPoint.getY());
 		x -= rad;
 		y += rad;
 		x = (int) (x * multiplicator);
@@ -288,8 +287,8 @@ public class Renderer extends JPanel {
 	}
 
 	private void drawRect(int x, int y, int width, int height, Color color, Graphics2D g2d) {
-		x -= (int) camera.zeroPoint.getX();
-		y -= (int) camera.zeroPoint.getY();
+		x -= Scalar.round(camera.zeroPoint.getX());
+		y -= Scalar.round(camera.zeroPoint.getY());
 		x = (int) (x * multiplicator);
 		y = (int) (y * multiplicator);
 		width = (int) (width * multiplicator);
@@ -302,11 +301,11 @@ public class Renderer extends JPanel {
 	private void drawPolygon(int[] xs, int[] ys, Color color, Graphics2D g2d) {
 		g2d.setColor(color);
 		for (int i = 0; i < xs.length; i++) {
-			xs[i] -= camera.zeroPoint.getX();
+			xs[i] -= Scalar.round(camera.zeroPoint.getX());
 			xs[i] = (int) (xs[i] * multiplicator);
 		}
 		for (int i = 0; i < ys.length; i++) {
-			ys[i] -= camera.zeroPoint.getY();
+			ys[i] -= Scalar.round(camera.zeroPoint.getY());
 			ys[i] = (int) (ys[i] * multiplicator);
 			ys[i] = Scalar.getY(ys[i], resSpecs.height);
 		}

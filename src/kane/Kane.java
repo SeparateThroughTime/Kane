@@ -19,11 +19,12 @@
 package kane;
 
 import java.awt.Color;
-import java.awt.image.BufferedImage;
 import java.io.File;
 
 import kane.genericGame.Game;
+import kane.math.Scalar;
 import kane.math.Vec2f;
+import kane.math.Vec2i;
 import kane.physics.Body;
 import kane.physics.Material;
 import kane.physics.Shape;
@@ -32,8 +33,8 @@ import kane.physics.contacts.ActiveAttributes;
 import kane.physics.contacts.PassiveAttributes;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.LineSegment;
+import kane.physics.shapes.Point;
 import kane.physics.shapes.Polygon;
-import kane.renderer.Resolution;
 import kane.renderer.Sprite;
 import kane.renderer.SpriteState;
 
@@ -51,7 +52,7 @@ public class Kane extends Game {
 		game.run();
 
 	}
-	
+
 	public static float BACKGROUND_SPEED = 0.5f;
 
 	Material mStatic = new Material(0, 1f);
@@ -74,8 +75,6 @@ public class Kane extends Game {
 
 	@Override
 	protected void initGame() {
-
-//		physics.setGravity(new Vec2f(0, 0));
 
 		mapLen = 400 * 3;
 		mapHeight = resSpecs.GAME_HEIGHT;
@@ -131,6 +130,10 @@ public class Kane extends Game {
 		gameInterface.getShape(0).setVisible(false);
 		gameInterface.getShape(0).setCollision(false);
 		gameInterface.getShape(0).addPassiveAttribute(PassiveAttributes.INVENTORY);
+		gameInterface.addShape(new Point(0, 0, gameInterface, Color.BLUE, mInterface, 0));
+		gameInterface.getShape(1).setCollision(false);
+		gameInterface.getShape(1).setVisible(false);
+		gameInterface.setReactToGravity(false);
 		physics.addBody(gameInterface);
 
 		// Sword
@@ -142,7 +145,7 @@ public class Kane extends Game {
 		points[3] = new Vec2f(-3, 10);
 		sword.addShape(new Polygon(0, 0, sword, Color.YELLOW, points, mDynamic, 2));
 		physics.addBody(sword);
-		
+
 		// Create Background
 		file = new File("sprites\\background.png");
 		renderer.changeBackground(file);
@@ -172,10 +175,25 @@ public class Kane extends Game {
 			renderer.getCamera().getAcc().setY(0);
 			renderer.getCamera().getVel().setY(0);
 		}
-		
+
 		if (renderer.getGameBackground() != null) {
 			int backgroundPos = (int) ((cameraPos.dot(new Vec2f(1, 0)) - resSpecs.gameWidth * 0.5f) * BACKGROUND_SPEED);
 			renderer.getGameBackground().setOffsetX(backgroundPos);
+		}
+	}
+
+	@Override
+	protected void postMechanicsLoops() {
+		Vec2f cameraPos = new Vec2f(Scalar.round(renderer.getCamera().getPos().getX()),
+				Scalar.round(renderer.getCamera().getPos().getY()));
+		for (int i = 0; i < physics.getNumBodies(); i++) {
+			Body body = physics.getBodies(i);
+			for (int j = 0; j < body.getNumShapes(); j++) {
+				Shape shape = body.getShape(j);
+				if (shape.hasPassiveAtrribute(PassiveAttributes.INVENTORY)) {
+					body.getPos().set(new Vec2f(cameraPos));
+				}
+			}
 		}
 	}
 

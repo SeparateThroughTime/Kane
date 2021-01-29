@@ -47,6 +47,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	protected abstract void initGame();
 
 	protected abstract void mechanicsLoop();
+	protected abstract void postMechanicsLoops();
 
 	/**
 	 * 
@@ -190,6 +191,8 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 				if (!pause) {
 					mechanicsLoop();
 					physics.step(DELTATIME);
+					postMechanicsLoops();
+					
 				}
 				accumulatedTime -= DELTATIME;
 			}

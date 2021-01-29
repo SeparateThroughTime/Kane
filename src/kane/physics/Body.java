@@ -23,6 +23,7 @@ public class Body {
 	protected float invMass;
 	protected final Vec2f centerOfMass = new Vec2f();
 	protected float momentOfInertia;
+	private boolean reactToGravity;
 
 	public float getAngleVel() {
 		return angleVel;
@@ -52,6 +53,7 @@ public class Body {
 		this.ID = numBodies;
 		numBodies++;
 		calculateCenterOfMass();
+		reactToGravity = true;
 	}
 
 	/**
@@ -266,6 +268,14 @@ public class Body {
 
 	public float getMomentOfInertia() {
 		return momentOfInertia;
+	}
+	
+	public void setReactToGravity(boolean b) {
+		reactToGravity = b;
+	}
+	
+	public boolean isReactToGravity() {
+		return reactToGravity;
 	}
 
 	// TODO: Use for rotation by collision?
