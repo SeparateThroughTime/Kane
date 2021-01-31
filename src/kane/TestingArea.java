@@ -663,4 +663,10 @@ public class TestingArea extends Game {
 	public void downArrowClick() {
 
 	}
+
+	@Override
+	protected void postMechanicsLoops() {
+		// TODO Auto-generated method stub
+		
+	}
 }

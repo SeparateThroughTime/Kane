@@ -61,7 +61,7 @@ public class Physics {
 		// Gravity
 		for (int i = 0; i < numBodies; i++) {
 			Body body = bodies[i];
-			if (body.getImpulseRate() > 0 && body.isReactToGravity()) {
+			if (body.getImpulseRate() > 0 && body.isReactToGravity() && !body.isRemoved()) {
 				body.getAcc().add(new Vec2f(gravity).div(deltaTime));
 
 			}
@@ -77,14 +77,16 @@ public class Physics {
 		float aabbTolerance = 5;
 		for (int i = 0; i < numBodies; i++) {
 			Body body = bodies[i];
-			if (body.getImpulseRate() > 0) {
-				body.getVel().addMult(body.getAcc(), deltaTime);
-				Vec2f nextPos = new Vec2f(body.getPos()).addMult(body.getVel(), deltaTime);
-				body.updateAABB(nextPos, aabbTolerance);
-				body.getAcc().zero();
-			} else {
-				body.updateAABB(body.getPos(), aabbTolerance);
+			if (!body.isRemoved()) {
+				if (body.getImpulseRate() > 0) {
+					body.getVel().addMult(body.getAcc(), deltaTime);
+					Vec2f nextPos = new Vec2f(body.getPos()).addMult(body.getVel(), deltaTime);
+					body.updateAABB(nextPos, aabbTolerance);
+					body.getAcc().zero();
+				} else {
+					body.updateAABB(body.getPos(), aabbTolerance);
 
+				}
 			}
 		}
 
@@ -98,7 +100,7 @@ public class Physics {
 					for (int l = 0; l < bodyB.getNumShapes(); l++) {
 						Shape shapeB = bodyB.getShape(l);
 						if (!aabbOverlaps[i][j][k][l]) {
-							if (shapeA.getAABB().overlaps(shapeB.getAABB())) {
+							if (shapeA.getAABB().overlaps(shapeB.getAABB()) && !bodyA.isRemoved() && !bodyB.isRemoved()) {
 								aabbOverlaps[i][j][k][l] = true;
 								shapePairIds[i][j][k][l] = numShapePairs;
 								// Workaround "interchanged Body IDs"
@@ -112,7 +114,7 @@ public class Physics {
 								shapePairs[numShapePairs++] = new ShapePair(shapeA, shapeB);
 							}
 						} else {
-							if (!shapeA.getAABB().overlaps(shapeB.getAABB())) {
+							if (!shapeA.getAABB().overlaps(shapeB.getAABB()) || bodyA.isRemoved() || bodyB.isRemoved()) {
 								aabbOverlaps[i][j][k][l] = false;
 								shapePairs[shapePairIds[i][j][k][l]] = null;
 								// Workaround "interchanged Body IDs"
@@ -152,8 +154,10 @@ public class Physics {
 		// Velocity integration
 		for (int i = 0; i < numBodies; i++) {
 			Body body = bodies[i];
-			if (body.getImpulseRate() > 0) {
-				body.getPos().addMult(body.getVel(), deltaTime);
+			if (!body.isRemoved()) {
+				if (body.getImpulseRate() > 0) {
+					body.getPos().addMult(body.getVel(), deltaTime);
+				}
 			}
 		}
 
@@ -256,6 +260,7 @@ public class Physics {
 		}
 		numBodies = 0;
 		Body.resetNumBodies();
+		;
 		for (int i = 0; i < getNumShapePairs(); i++) {
 			shapePairs[i] = null;
 		}

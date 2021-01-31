@@ -26,7 +26,7 @@ public class Camera extends Body {
 
 		this.resSpecs = resSpecs;
 		this.zeroPoint = new Vec2f();
-
+		setReactToGravity(false);
 		createCamera();
 	}
 

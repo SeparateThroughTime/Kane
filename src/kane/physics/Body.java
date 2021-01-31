@@ -24,6 +24,7 @@ public class Body {
 	protected final Vec2f centerOfMass = new Vec2f();
 	protected float momentOfInertia;
 	private boolean reactToGravity;
+	private boolean removed;
 
 	public float getAngleVel() {
 		return angleVel;
@@ -54,6 +55,7 @@ public class Body {
 		numBodies++;
 		calculateCenterOfMass();
 		reactToGravity = true;
+		removed = false;
 	}
 
 	/**
@@ -305,5 +307,13 @@ public class Body {
 	 */
 	public static void resetNumBodies() {
 		numBodies = 0;
+	}
+	
+	public void remove() {
+		removed = true;
+	}
+	
+	public boolean isRemoved() {
+		return removed;
 	}
 }

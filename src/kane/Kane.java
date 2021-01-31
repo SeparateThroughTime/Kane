@@ -144,6 +144,7 @@ public class Kane extends Game {
 		points[2] = new Vec2f(3, 10);
 		points[3] = new Vec2f(-3, 10);
 		sword.addShape(new Polygon(0, 0, sword, Color.YELLOW, points, mDynamic, 2));
+		sword.getShape(0).addActiveAttribute(ActiveAttributes.SWORD);
 		physics.addBody(sword);
 
 		// Create Background
@@ -476,6 +477,9 @@ public class Kane extends Game {
 						}
 					} else if (activeE == ActiveAttributes.CAMERA_MID_Y && passiveE == PassiveAttributes.PLAYER_ALL) {
 						renderer.getCamera().getVel().setY(gameInterface.getVel().getY() * 0.5f);
+					} else if (activeE == ActiveAttributes.SWORD && passiveE == PassiveAttributes.PLAYER_ALL) {
+						activeShape.getBody().remove();
+						
 					}
 				}
 

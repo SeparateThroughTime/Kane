@@ -103,11 +103,13 @@ public class Renderer extends JPanel {
 		renderedShapes = new Shape[physics.getNumBodies() * Body.MAX_SHAPES];
 		for (int i = 0; i < physics.getNumBodies(); i++) {
 			Body body = physics.getBodies(i);
-			for (int j = 0; j < body.getNumShapes(); j++) {
-				Shape shape = body.getShape(j);
-				if (shape.getAABB().overlaps(camera.getWindow())) {
-					if (shape.isVisible()) {
-						renderedShapes[numRenderedShapes++] = shape;
+			if (!body.isRemoved()) {
+				for (int j = 0; j < body.getNumShapes(); j++) {
+					Shape shape = body.getShape(j);
+					if (shape.getAABB().overlaps(camera.getWindow())) {
+						if (shape.isVisible()) {
+							renderedShapes[numRenderedShapes++] = shape;
+						}
 					}
 				}
 			}
