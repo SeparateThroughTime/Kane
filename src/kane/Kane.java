@@ -2,6 +2,8 @@
 
 	ContactPoint: BoxPolygon, PolygonPolygon -> Ghost Contacts
 	Rotation
+	SpriteAnimator: Shape has SpriteAnimator has Sprite -> So Sprites dont need to load for every entity
+	Different Sprites for same shape -> wearing item
 	Items/Inventory
 	Visual Effects
 	Sounds
@@ -22,6 +24,7 @@ import java.awt.Color;
 import java.io.File;
 
 import kane.genericGame.Game;
+import kane.genericGame.Inventory;
 import kane.math.Scalar;
 import kane.math.Vec2f;
 import kane.math.Vec2i;
@@ -36,6 +39,7 @@ import kane.physics.shapes.LineSegment;
 import kane.physics.shapes.Point;
 import kane.physics.shapes.Polygon;
 import kane.renderer.Sprite;
+import kane.renderer.SpriteController;
 import kane.renderer.SpriteState;
 
 /**
@@ -60,7 +64,6 @@ public class Kane extends Game {
 	Material mEvent = new Material(0, 0);
 	Material mInterface = new Material(1, 0);
 	Body player;
-	Body gameInterface;
 	Body sword;
 	Vec2f playerRunAcc;
 	int playerRunSpeed;
@@ -118,23 +121,11 @@ public class Kane extends Game {
 		Sprite sprite = new Sprite(file, 1, 1);
 		sprite.addState(SpriteState.Standing, new int[] { 0 });
 		sprite.addState(SpriteState.Running, new int[] { 1, 2, 3, 4 });
-		player.getShape(0).setSprite(sprite);
-		sprite.setCurrentSpriteState(SpriteState.Standing);
-		sprite.setSpritePosOffset(new Vec2f(-32, -32));
+		SpriteController spriteController = new SpriteController(sprite);
+		player.getShape(0).setSpriteController(spriteController);
+		spriteController.setCurrentSpriteState(SpriteState.Standing, true);
+		spriteController.setSpritePosOffset(new Vec2f(-32, -32));
 		physics.addBody(player);
-
-		// Inventory
-		gameInterface = new Body(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2);
-		gameInterface.addShape(new Box(0, 0, gameInterface,
-				new Vec2f(resSpecs.gameWidth / 2 - 10, resSpecs.GAME_HEIGHT / 2 - 10), Color.WHITE, mInterface, 2));
-		gameInterface.getShape(0).setVisible(false);
-		gameInterface.getShape(0).setCollision(false);
-		gameInterface.getShape(0).addPassiveAttribute(PassiveAttributes.INVENTORY);
-		gameInterface.addShape(new Point(0, 0, gameInterface, Color.BLUE, mInterface, 0));
-		gameInterface.getShape(1).setCollision(false);
-		gameInterface.getShape(1).setVisible(false);
-		gameInterface.setReactToGravity(false);
-		physics.addBody(gameInterface);
 
 		// Sword
 		sword = new Body(200, 130);
@@ -227,7 +218,7 @@ public class Kane extends Game {
 
 	@Override
 	public void leftArrowClick() {
-		player.getShape(0).getSprite().setCurrentSpriteState(SpriteState.Running);
+		player.getShape(0).getSpriteController().setCurrentSpriteState(SpriteState.Running, true);
 	}
 
 	@Override
@@ -242,12 +233,12 @@ public class Kane extends Game {
 
 	@Override
 	public void leftArrowReleased() {
-		player.getShape(0).getSprite().setCurrentSpriteState(SpriteState.Standing);
+		player.getShape(0).getSpriteController().setCurrentSpriteState(SpriteState.Standing, true);
 	}
 
 	@Override
 	public void rightArrowClick() {
-		player.getShape(0).getSprite().setCurrentSpriteState(SpriteState.Running);
+		player.getShape(0).getSpriteController().setCurrentSpriteState(SpriteState.Running, true);
 	}
 
 	@Override
@@ -262,7 +253,7 @@ public class Kane extends Game {
 
 	@Override
 	public void rightArrowReleased() {
-		player.getShape(0).getSprite().setCurrentSpriteState(SpriteState.Standing);
+		player.getShape(0).getSpriteController().setCurrentSpriteState(SpriteState.Standing, true);
 	}
 
 	@Override
@@ -393,7 +384,11 @@ public class Kane extends Game {
 
 	@Override
 	public void escClick() {
-		pause = !pause;
+		if (showInterface) {
+			iClick();
+		} else {
+			pause = !pause;
+		}
 	}
 
 	@Override
@@ -426,8 +421,9 @@ public class Kane extends Game {
 	@Override
 	public void iClick() {
 		showInterface = !showInterface;
-		for (int i = 0; i < gameInterface.getNumShapes(); i++) {
-			Shape shape = gameInterface.getShape(i);
+		pause = showInterface;
+		for (int i = 0; i < inventory.getNumShapes(); i++) {
+			Shape shape = inventory.getShape(i);
 			if (shape.hasPassiveAtrribute(PassiveAttributes.INVENTORY)) {
 				shape.setVisible(showInterface);
 			}
@@ -463,7 +459,7 @@ public class Kane extends Game {
 							renderer.getCamera().getVel().setX(-playerRunSpeed);
 						}
 					} else if (activeE == ActiveAttributes.CAMERA_MID_X && passiveE == PassiveAttributes.PLAYER_ALL) {
-						renderer.getCamera().getVel().setX(gameInterface.getVel().getX() * 0.9f);
+						renderer.getCamera().getVel().setX(inventory.getVel().getX() * 0.9f);
 					}
 					if (activeE == ActiveAttributes.CAMERA_UP && passiveE == PassiveAttributes.PLAYER_ALL) {
 						renderer.getCamera().getAcc().add(cameraMovementAccY);
@@ -476,10 +472,10 @@ public class Kane extends Game {
 							renderer.getCamera().getVel().setY(-cameraMovementSpeedY);
 						}
 					} else if (activeE == ActiveAttributes.CAMERA_MID_Y && passiveE == PassiveAttributes.PLAYER_ALL) {
-						renderer.getCamera().getVel().setY(gameInterface.getVel().getY() * 0.5f);
+						renderer.getCamera().getVel().setY(inventory.getVel().getY() * 0.5f);
 					} else if (activeE == ActiveAttributes.SWORD && passiveE == PassiveAttributes.PLAYER_ALL) {
 						activeShape.getBody().remove();
-						
+
 					}
 				}
 

@@ -39,10 +39,11 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	final long NANO_SECOND_FPS = NANO_SECOND / TARGET_FPS;
 	protected final float DELTATIME = 1.0f / TARGET_FPS;
 
-	protected boolean pause;
+	public boolean pause;
 
 	protected Physics physics;
 	protected Renderer renderer;
+	protected Inventory inventory;
 
 	protected abstract void initGame();
 
@@ -60,7 +61,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		resSpecs = new ResolutionSpecification(600, 800, 600, 800);
 
 		physics = new Physics(DELTATIME, this);
-		renderer = new Renderer(resSpecs, physics);
+		renderer = new Renderer(resSpecs, physics, this);
 		mouseListener = new Mouse(resSpecs, this);
 		keyListener = new Keyboard(this);
 
@@ -79,6 +80,9 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		renderer.requestFocusInWindow();
 		frame.add(renderer);
 		frame.pack();
+		
+		inventory = new Inventory(resSpecs);
+		physics.addBody(inventory);
 
 		frame.setVisible(true);
 	}
@@ -162,6 +166,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		frame.pack();
 		
 		renderer.changeResolution();
+		inventory.changeResolution();
 	}
 
 	/**

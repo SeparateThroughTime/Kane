@@ -5,7 +5,7 @@ import java.awt.Color;
 import kane.math.Vec2f;
 import kane.physics.contacts.ActiveAttributes;
 import kane.physics.contacts.PassiveAttributes;
-import kane.renderer.Sprite;
+import kane.renderer.SpriteController;
 
 /**
  * Shape is an abstract class, which is the base for all Shapes.
@@ -40,7 +40,7 @@ public abstract class Shape {
 	protected int numPassiveAttributes;
 
 	protected boolean hasSprite;
-	protected Sprite sprite;
+	protected SpriteController spriteController;
 
 	/**
 	 * Update the AABB of Shape including its next position.
@@ -315,8 +315,8 @@ public abstract class Shape {
 	 * 
 	 * @param sprite
 	 */
-	public void setSprite(Sprite sprite) {
-		this.sprite = sprite;
+	public void setSpriteController(SpriteController spriteController) {
+		this.spriteController = spriteController;
 		hasSprite = true;
 	}
 
@@ -329,8 +329,8 @@ public abstract class Shape {
 		return hasSprite;
 	}
 
-	public Sprite getSprite() {
-		return sprite;
+	public SpriteController getSpriteController() {
+		return spriteController;
 	}
 
 	@Override

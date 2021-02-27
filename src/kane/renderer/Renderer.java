@@ -8,6 +8,7 @@ import java.io.File;
 
 import javax.swing.JPanel;
 
+import kane.genericGame.Game;
 import kane.math.Scalar;
 import kane.math.Vec2f;
 import kane.physics.AABB;
@@ -32,6 +33,7 @@ public class Renderer extends JPanel {
 	private ResolutionSpecification resSpecs;
 	private float multiplicator;
 	private final Physics physics;
+	private final Game game;
 	private Shape[] renderedShapes;
 	private int numRenderedShapes;
 	private Camera camera;
@@ -40,9 +42,10 @@ public class Renderer extends JPanel {
 	public boolean showContacts = false;
 	public boolean showAABBs = false;
 
-	public Renderer(ResolutionSpecification resSpecs, Physics physics) {
+	public Renderer(ResolutionSpecification resSpecs, Physics physics, Game game) {
 		this.resSpecs = resSpecs;
 		this.physics = physics;
+		this.game = game;
 		this.camera = new Camera(resSpecs);
 		this.physics.addBody(camera);
 		this.multiplicator = 1f;
@@ -129,12 +132,14 @@ public class Renderer extends JPanel {
 				Shape shape = renderedShapes[i];
 				if (shape.RENDER_LAYER == layer) {
 					if (shape.hasSprite()) {
-						Sprite sprite = shape.getSprite();
-						sprite.step();
-						BufferedImage frame = sprite.getFrame();
+						SpriteController spriteController = shape.getSpriteController();
+						if (!game.pause) {
+							spriteController.step();
+						}
+						BufferedImage frame = spriteController.getFrame();
 						Vec2f pos = shape.getAbsPos();
 //						int width = sprite.FRAME_WIDTH * Sprite.PIXELS;
-						Vec2f spriteAbsPos = new Vec2f(pos).add(shape.getSprite().getSpritePosOffset());
+						Vec2f spriteAbsPos = new Vec2f(pos).add(spriteController.getSpritePosOffset());
 						int posX = (int) spriteAbsPos.getX();
 						int posY = (int) spriteAbsPos.getY();
 						drawImage(frame, posX, posY, g2d);

@@ -14,7 +14,6 @@ public class Sprite {
 	// This class manages sprites.
 
 	public static final int PIXELS = 32;
-	public static final int ANIMATION_RATE = 10;
 	public static final float SCALE = 2f;
 
 	// FRAME_WIDTH and FRAME_HEIGHT defines how many 32x32 blocks are used for one
@@ -25,18 +24,12 @@ public class Sprite {
 //	private int[][] spritePixels;
 	private BufferedImage[] frames;
 
-	protected SpriteState currentSpriteState;
-	protected int currentSpriteStateFrame;
-	protected Vec2f spritePosOffset;
-	private int frameCounter;
-
 	private Map<SpriteState, int[]> states;
 
 	public Sprite(File file, int frameWidth, int frameHeight) {
 		this.FRAME_HEIGHT = frameHeight;
 		this.FRAME_WIDTH = frameWidth;
 		this.states = new HashMap<SpriteState, int[]>();
-		this.spritePosOffset = new Vec2f();
 		BufferedImage img;
 		try {
 			img = ImageIO.read(file);
@@ -73,67 +66,13 @@ public class Sprite {
 		states.put(state, frameNumbers);
 	}
 
-	/**
-	 * Returns the frame of a state with the specific frameNo.
-	 * 
-	 * @return
-	 */
-	public BufferedImage getFrame() {
-		int frameNo = states.get(currentSpriteState)[currentSpriteStateFrame];
-		return frames[frameNo];
 
-//		// Transfer the Number of the frame inside the whole sprite to the number of the
-//		// frame inside the state.
-//		int frameNo = states.get(currentSpriteState)[currentSpriteStateFrame];
-//		int[] frame = spritePixels[frameNo];
-//		return frame;
+	public BufferedImage getFrame(SpriteState spriteState, int spriteStateFrameNo) {
+		int frameNo = states.get(spriteState)[spriteStateFrameNo];
+		return frames[frameNo];
 	}
 
 	public int getFrameCount(SpriteState state) {
 		return states.get(state).length;
-	}
-
-	public void setCurrentSpriteState(SpriteState state) {
-		this.currentSpriteState = state;
-		this.currentSpriteStateFrame = 0;
-	}
-
-	public SpriteState getCurrentSpriteState() {
-		return currentSpriteState;
-	}
-
-	/**
-	 * get the current frame state of the sprite.
-	 * 
-	 * @return
-	 */
-	public int getCurrenSpriteStateFrame() {
-		return currentSpriteStateFrame;
-	}
-
-	public void setSpritePosOffset(Vec2f offset) {
-		this.spritePosOffset = offset;
-	}
-
-	public Vec2f getSpritePosOffset() {
-		return spritePosOffset;
-	}
-
-	/**
-	 * Need to run every frame. This produces animation.
-	 */
-	public void step() {
-		if (frameCounter >= ANIMATION_RATE) {
-			frameCounter = 0;
-			stepCurrentSpriteStateFrame();
-		}
-		frameCounter++;
-	}
-
-	private void stepCurrentSpriteStateFrame() {
-		currentSpriteStateFrame++;
-		if (currentSpriteStateFrame >= getFrameCount(currentSpriteState)) {
-			currentSpriteStateFrame = 0;
-		}
 	}
 }
