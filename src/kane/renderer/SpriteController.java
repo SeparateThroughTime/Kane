@@ -11,12 +11,14 @@ public class SpriteController {
 	protected int currentSpriteStateFrameNo;
 	protected Vec2f spritePosOffset;
 	private int frameCounter;
+	private float scale;
 	
 	private Sprite sprite;
 	
 	public SpriteController(Sprite sprite) {
 		this.spritePosOffset = new Vec2f();
 		this.sprite = sprite;
+		this.scale = 1;
 	}
 	
 	/**
@@ -73,5 +75,13 @@ public class SpriteController {
 		if (currentSpriteStateFrameNo >= sprite.getFrameCount(currentSpriteState)) {
 			currentSpriteStateFrameNo = 0;
 		}
+	}
+	
+	public float getScale() {
+		return scale;
+	}
+	
+	public void setScale(float scale) {
+		this.scale = scale;
 	}
 }

@@ -133,16 +133,16 @@ public class Renderer extends JPanel {
 				if (shape.RENDER_LAYER == layer) {
 					if (shape.hasSprite()) {
 						SpriteController spriteController = shape.getSpriteController();
+						float scale = spriteController.getScale();
 						if (!game.pause) {
 							spriteController.step();
 						}
 						BufferedImage frame = spriteController.getFrame();
 						Vec2f pos = shape.getAbsPos();
-//						int width = sprite.FRAME_WIDTH * Sprite.PIXELS;
 						Vec2f spriteAbsPos = new Vec2f(pos).add(spriteController.getSpritePosOffset());
 						int posX = (int) spriteAbsPos.getX();
 						int posY = (int) spriteAbsPos.getY();
-						drawImage(frame, posX, posY, g2d);
+						drawImage(frame, scale, posX, posY, g2d);
 					} else if (ShapeType.PLANE.equals(shape.getType())) {
 						Plane plane = (Plane) shape;
 						// draws planes
@@ -240,12 +240,12 @@ public class Renderer extends JPanel {
 		}
 	}
 
-	private void drawImage(BufferedImage img, int posX, int posY, Graphics2D g2d) {
+	private void drawImage(BufferedImage img, float scale, int posX, int posY, Graphics2D g2d) {
 		posX -= Scalar.round(camera.zeroPoint.getX());
 		posY -= Scalar.round(camera.zeroPoint.getY());
 		int width = (int) (img.getWidth() * multiplicator * Sprite.SCALE);
 		int height = (int) (img.getHeight() * multiplicator * Sprite.SCALE);
-		posY += img.getHeight() * Sprite.SCALE;
+		posY += img.getHeight() * Sprite.SCALE * scale;
 		posX = (int) (posX * multiplicator);
 		posY = (int) (posY * multiplicator);
 		posY = Scalar.getY(posY, resSpecs.height);

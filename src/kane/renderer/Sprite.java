@@ -13,7 +13,7 @@ import kane.math.Vec2f;
 public class Sprite {
 	// This class manages sprites.
 
-	public static final int PIXELS = 32;
+	public static final int PIXELS = 16;
 	public static final float SCALE = 2f;
 
 	// FRAME_WIDTH and FRAME_HEIGHT defines how many 32x32 blocks are used for one

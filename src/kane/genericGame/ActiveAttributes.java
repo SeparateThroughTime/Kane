@@ -1,4 +1,4 @@
-package kane.physics.contacts;
+package kane.genericGame;
 
 /**
  * This is a list of all active attributes, which a shape can have.

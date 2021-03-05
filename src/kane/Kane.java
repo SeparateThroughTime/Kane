@@ -23,8 +23,11 @@ package kane;
 import java.awt.Color;
 import java.io.File;
 
+import kane.genericGame.ActiveAttributes;
 import kane.genericGame.Game;
 import kane.genericGame.Inventory;
+import kane.genericGame.PassiveAttributes;
+import kane.genericGame.item.SWORD;
 import kane.math.Scalar;
 import kane.math.Vec2f;
 import kane.math.Vec2i;
@@ -32,8 +35,6 @@ import kane.physics.Body;
 import kane.physics.Material;
 import kane.physics.Shape;
 import kane.physics.ShapePair;
-import kane.physics.contacts.ActiveAttributes;
-import kane.physics.contacts.PassiveAttributes;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.LineSegment;
 import kane.physics.shapes.Point;
@@ -117,8 +118,8 @@ public class Kane extends Game {
 		player.getShape(1).setCollision(false);
 		player.getShape(1).addActiveAttribute(ActiveAttributes.PLAYER_FEETS);
 		player.getShape(1).setVisible(false);
-		File file = new File("sprites\\player.png");
-		Sprite sprite = new Sprite(file, 1, 1);
+		File file = new File("sprites\\player\\player.png");
+		Sprite sprite = new Sprite(file, 2, 2);
 		sprite.addState(SpriteState.Standing, new int[] { 0 });
 		sprite.addState(SpriteState.Running, new int[] { 1, 2, 3, 4 });
 		SpriteController spriteController = new SpriteController(sprite);
@@ -130,16 +131,23 @@ public class Kane extends Game {
 		// Sword
 		sword = new Body(200, 130);
 		Vec2f points[] = new Vec2f[4];
-		points[0] = new Vec2f(-3, -10);
-		points[1] = new Vec2f(3, -10);
-		points[2] = new Vec2f(3, 10);
-		points[3] = new Vec2f(-3, 10);
+		points[0] = new Vec2f(-16, -16);
+		points[1] = new Vec2f(16, -16);
+		points[2] = new Vec2f(16, 16);
+		points[3] = new Vec2f(-16, 16);
 		sword.addShape(new Polygon(0, 0, sword, Color.YELLOW, points, mDynamic, 2));
 		sword.getShape(0).addActiveAttribute(ActiveAttributes.SWORD);
+		file = new File("sprites\\items\\sword.png");
+		sprite = new Sprite(file, 1, 1);
+		sprite.addState(SpriteState.Static, new int[] { 0 });
+		spriteController = new SpriteController(sprite);
+		spriteController.setSpritePosOffset(new Vec2f(-16, -16));
+		spriteController.setCurrentSpriteState(SpriteState.Static, true);
+		sword.getShape(0).setSpriteController(spriteController);
 		physics.addBody(sword);
 
 		// Create Background
-		file = new File("sprites\\background.png");
+		file = new File("sprites\\backgrounds\\background.png");
 		renderer.changeBackground(file);
 
 //		changeResolution(Resolution.SOL1176x664);
@@ -428,6 +436,9 @@ public class Kane extends Game {
 				shape.setVisible(showInterface);
 			}
 		}
+		if (showInterface) {
+			inventory.showItems();
+		}
 
 	}
 
@@ -475,7 +486,7 @@ public class Kane extends Game {
 						renderer.getCamera().getVel().setY(inventory.getVel().getY() * 0.5f);
 					} else if (activeE == ActiveAttributes.SWORD && passiveE == PassiveAttributes.PLAYER_ALL) {
 						activeShape.getBody().remove();
-
+						inventory.getItem("Sword").addAmount(SWORD.STANDARD_AMOUNT);
 					}
 				}
 

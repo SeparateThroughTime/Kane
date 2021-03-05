@@ -2,9 +2,9 @@ package kane.physics;
 
 import java.awt.Color;
 
+import kane.genericGame.ActiveAttributes;
+import kane.genericGame.PassiveAttributes;
 import kane.math.Vec2f;
-import kane.physics.contacts.ActiveAttributes;
-import kane.physics.contacts.PassiveAttributes;
 import kane.renderer.SpriteController;
 
 /**

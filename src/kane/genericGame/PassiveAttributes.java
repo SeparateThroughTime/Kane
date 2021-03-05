@@ -1,4 +1,4 @@
-package kane.physics.contacts;
+package kane.genericGame;
 
 /**
  * This is a list of all passive attributes, which a shape can have.
@@ -8,5 +8,6 @@ public enum PassiveAttributes {
 	
 	PHYSICAL,
 	
-	INVENTORY;
+	INVENTORY,
+	INVENTORY_SLOT;
 }

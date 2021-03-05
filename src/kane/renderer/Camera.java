@@ -2,11 +2,11 @@ package kane.renderer;
 
 import java.awt.Color;
 
+import kane.genericGame.ActiveAttributes;
 import kane.math.Vec2f;
 import kane.physics.AABB;
 import kane.physics.Body;
 import kane.physics.Material;
-import kane.physics.contacts.ActiveAttributes;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.Point;
 
