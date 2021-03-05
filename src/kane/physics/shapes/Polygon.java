@@ -8,6 +8,7 @@ import kane.physics.Body;
 import kane.physics.Material;
 import kane.physics.Shape;
 import kane.physics.ShapeType;
+import kane.physics.contacts.Contact;
 
 /**
  * This is a Shape of the Type Polygon. A Polygon has a minimum of 3 point.
@@ -196,6 +197,57 @@ public class Polygon extends Shape {
 	 */
 	public Vec2f[] getPoints() {
 		return points;
+	}
+
+	@Override
+	public boolean isPointInShape(Vec2f point) {
+		float bestD = Float.POSITIVE_INFINITY;
+		Vec2f bestNormal = new Vec2f();
+		Vec2f bestPointOnB = new Vec2f();
+
+		// Loop every "LineSegment" of Poli
+		for (int i = 0; i < numPoints; i++) {
+			int j = i == numPoints - 1 ? 0 : i + 1;
+
+			Vec2f lineAbsPosA = new Vec2f(points[i]);
+			Vec2f lineAbsPosB = new Vec2f(points[j]);
+
+			Vec2f lineAB = new Vec2f(lineAbsPosB).sub(lineAbsPosA);
+			Vec2f distanceToPoint = new Vec2f(point).sub(lineAbsPosA);
+			// f determines if the Point of Box B is inside the area between the Edges (Just
+			// in that axis)
+			// if f is between 0 an 1 the Point is in the area.
+			float f = distanceToPoint.dot(lineAB) / lineAB.lengthSquared();
+			f = Math.max(Math.min(f, 1), 0);
+
+			Vec2f pointOnB = new Vec2f(lineAbsPosA).addMult(lineAB, f);
+
+			Vec2f distanceToClosest = new Vec2f(point).sub(pointOnB);
+			Vec2f normal = new Vec2f(distanceToClosest).normalize();
+			float d = distanceToClosest.dot(normal);
+
+			if (d < bestD) {
+				bestD = d;
+				bestNormal = normal;
+				bestPointOnB = pointOnB;
+			}
+		}
+
+		// If the point is inside the Polygon, bestD is positive again but should be
+		// negative. This negates bestD and the normal.
+		float distancePointToPoli = Math.abs(new Vec2f(getAbsPos()).sub(point).dot(bestNormal));
+		float distancePoliPointToPoli = Math.abs(new Vec2f(getAbsPos()).sub(bestPointOnB).dot(bestNormal));
+		if (distancePointToPoli < distancePoliPointToPoli) {
+			bestD = -bestD;
+			bestNormal.mult(-1);
+		}
+
+		if (bestD <= 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 }

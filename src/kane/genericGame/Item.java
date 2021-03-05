@@ -5,11 +5,13 @@ import kane.renderer.SpriteController;
 public abstract class Item {
 	int amount;
 	String name;
-	SpriteController spriteController;
+	SpriteController itemSpriteController;
+	SpriteController playerSpriteController;
 	
-	public Item(String name, SpriteController spriteController) {
+	public Item(String name, SpriteController itemSpriteController, SpriteController playerSpriteController) {
 		this.name = name;
-		this.spriteController = spriteController;
+		this.itemSpriteController = itemSpriteController;
+		this.playerSpriteController = playerSpriteController;
 	}
 	
 	public abstract void attack();
@@ -25,8 +27,12 @@ public abstract class Item {
 		return amount;
 	}
 	
-	public SpriteController getSpriteController() {
-		return spriteController;
+	public SpriteController getItemSpriteController() {
+		return itemSpriteController;
+	}
+	
+	public SpriteController getPlayerSpriteController() {
+		return playerSpriteController;
 	}
 	
 	public String getName() {

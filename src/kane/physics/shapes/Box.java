@@ -2,11 +2,13 @@ package kane.physics.shapes;
 
 import java.awt.Color;
 
+import kane.math.Scalar;
 import kane.math.Vec2f;
 import kane.physics.Body;
 import kane.physics.Material;
 import kane.physics.Shape;
 import kane.physics.ShapeType;
+import kane.physics.contacts.Contact;
 
 /**
  * This is a Shape of the Type Box
@@ -68,6 +70,37 @@ public class Box extends Shape {
 	 */
 	public Vec2f getRad() {
 		return rad;
+	}
+
+	@Override
+	public boolean isPointInShape(Vec2f point) {
+		Vec2f radius = new Vec2f(getRad());
+		Vec2f min = new Vec2f(getMin());
+		Vec2f max = new Vec2f(getMax());
+
+		// Get closest Point on boxA
+		Vec2f closestPointA = new Vec2f(point);
+		closestPointA.setX(Scalar.clamp(closestPointA.getX(), min.getX(), max.getX()));
+		closestPointA.setY(Scalar.clamp(closestPointA.getY(), min.getY(), max.getY()));
+
+		// get Normal with difference of Pos of boxes
+		Vec2f relPos = new Vec2f(point).sub(getAbsPos());
+		float overlapX = Math.abs(relPos.getX()) - radius.getX();
+		float overlapY = Math.abs(relPos.getY()) - radius.getY();
+		float overlap = 0f;
+		Vec2f normal = new Vec2f();
+		if (overlapX > overlapY) {
+			overlap = overlapX;
+			normal.set(Scalar.sign(relPos.getX()), 0).normalize();
+		} else {
+			overlap = overlapY;
+			normal.set(0, Scalar.sign(relPos.getY())).normalize();
+		}
+		
+		if(overlap <= 0) {
+			return true;
+		}
+		return false;
 	}
 
 }

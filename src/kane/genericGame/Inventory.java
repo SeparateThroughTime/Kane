@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
 
+import kane.genericGame.item.NONE;
 import kane.genericGame.item.SWORD;
 import kane.math.Vec2f;
 import kane.physics.Body;
@@ -31,6 +32,7 @@ public class Inventory extends Body {
 	}
 
 	private void createItems() {
+		items.add(new NONE());
 		items.add(new SWORD());
 	}
 
@@ -42,10 +44,10 @@ public class Inventory extends Body {
 		setReactToGravity(false);
 		File file = new File("sprites\\interface\\inventory.png");
 		Sprite sprite = new Sprite(file, 14, 8);
-		sprite.addState(SpriteState.Static, new int[] { 0 });
+		sprite.addState(SpriteState.STATIC, new int[] { 0 });
 		SpriteController spriteController = new SpriteController(sprite);
 		getShape(0).setSpriteController(spriteController);
-		spriteController.setCurrentSpriteState(SpriteState.Static, true);
+		spriteController.setCurrentSpriteState(SpriteState.STATIC, true);
 		spriteController.setSpritePosOffset(new Vec2f(-224, -128));
 
 		// Slots
@@ -103,6 +105,26 @@ public class Inventory extends Body {
 		}
 		return null;
 	}
+	
+	/**
+	 * This returns the active item shown in the inventory with the specific index.
+	 * This does not return the item with the static index!
+	 * @param index
+	 * @return
+	 */
+	public Item getItem(int index) {
+		int counter = 0;
+		for (int i = 0; i < items.size(); i++) {
+			Item item = items.get(i);
+			if(item.getAmount() > 0) {
+				if(counter == index) {
+					return item;
+				}
+				counter++;
+			}
+		}
+		return null;
+	}
 
 	public void showItems() {
 		ArrayList<Item> activeItems = new ArrayList<Item>();
@@ -115,7 +137,7 @@ public class Inventory extends Body {
 		for (int i = 1; i < numShapes; i++) {
 			try {
 				Item item = activeItems.get(i-1);
-				getShape(i).setSpriteController(item.getSpriteController());
+				getShape(i).setSpriteController(item.getItemSpriteController());
 				getShape(i).setVisible(true);
 			} catch (Exception e) {
 				getShape(i).setVisible(false);

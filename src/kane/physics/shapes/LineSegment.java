@@ -70,4 +70,9 @@ public class LineSegment extends Shape{
 		return new Vec2f(relPosA).add(relPosB).mult(0.5f).add(new Vec2f (body.getPos()));
 	}
 
+	@Override
+	public boolean isPointInShape(Vec2f point) {
+		return false;
+	}
+
 }

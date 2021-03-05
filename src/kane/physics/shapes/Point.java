@@ -41,4 +41,12 @@ public class Point extends Shape {
 		return 0;
 	}
 
+	@Override
+	public boolean isPointInShape(Vec2f point) {
+		if (point.equals(getAbsPos())) {
+			return true;
+		}
+		return false;
+	}
+
 }

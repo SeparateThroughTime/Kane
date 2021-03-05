@@ -4,8 +4,10 @@ package kane.renderer;
  * This is a list of the states a sprite can has.
  */
 public enum SpriteState {
-	Static,
+	STATIC,
 	
-	Running,
-	Standing;
+	RUNNING,
+	STANDING,
+	RUNNING_ATTACK,
+	STANDING_ATTACK;
 }

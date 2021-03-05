@@ -243,8 +243,8 @@ public class Renderer extends JPanel {
 	private void drawImage(BufferedImage img, float scale, int posX, int posY, Graphics2D g2d) {
 		posX -= Scalar.round(camera.zeroPoint.getX());
 		posY -= Scalar.round(camera.zeroPoint.getY());
-		int width = (int) (img.getWidth() * multiplicator * Sprite.SCALE);
-		int height = (int) (img.getHeight() * multiplicator * Sprite.SCALE);
+		int width = (int) (img.getWidth() * multiplicator * Sprite.SCALE * scale);
+		int height = (int) (img.getHeight() * multiplicator * Sprite.SCALE * scale);
 		posY += img.getHeight() * Sprite.SCALE * scale;
 		posX = (int) (posX * multiplicator);
 		posY = (int) (posY * multiplicator);

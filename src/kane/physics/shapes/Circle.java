@@ -8,6 +8,7 @@ import kane.physics.Body;
 import kane.physics.Material;
 import kane.physics.Shape;
 import kane.physics.ShapeType;
+import kane.physics.contacts.Contact;
 
 /**
  * This is a Shape of the Type Circle
@@ -52,6 +53,21 @@ public class Circle extends Shape {
 	@Override
 	public float getVolume() {
 		return Scalar.PI * rad * rad;
+	}
+
+	@Override
+	public boolean isPointInShape(Vec2f point) {
+		// Contact generation Circle-Circle
+		Vec2f distanceBetween = new Vec2f(point).sub(getAbsPos());
+		Vec2f normal = new Vec2f(distanceBetween).normalize();
+		float projDistance = distanceBetween.dot(normal);
+		float radius = getRad();
+		float d = radius - projDistance;
+
+		if (-d <= 0) {
+			return true;
+		}
+		return false;
 	}
 
 }

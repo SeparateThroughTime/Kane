@@ -25,19 +25,17 @@ import java.io.File;
 
 import kane.genericGame.ActiveAttributes;
 import kane.genericGame.Game;
-import kane.genericGame.Inventory;
+import kane.genericGame.Item;
 import kane.genericGame.PassiveAttributes;
 import kane.genericGame.item.SWORD;
 import kane.math.Scalar;
 import kane.math.Vec2f;
-import kane.math.Vec2i;
 import kane.physics.Body;
 import kane.physics.Material;
 import kane.physics.Shape;
 import kane.physics.ShapePair;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.LineSegment;
-import kane.physics.shapes.Point;
 import kane.physics.shapes.Polygon;
 import kane.renderer.Sprite;
 import kane.renderer.SpriteController;
@@ -74,6 +72,7 @@ public class Kane extends Game {
 	int cameraMovementSpeedY;
 	int mapLen;
 	int mapHeight;
+	Item currentItem;
 
 	boolean playerCanJump;
 
@@ -110,6 +109,8 @@ public class Kane extends Game {
 		physics.addBody(body);
 
 		// Create player
+		currentItem = inventory.getItem(0);
+		
 		player = new Body(100, 130);
 		player.addShape(new Box(0, 0, player, new Vec2f(32, 32), Color.GREEN, mDynamic, 2));
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PLAYER_ALL);
@@ -118,13 +119,9 @@ public class Kane extends Game {
 		player.getShape(1).setCollision(false);
 		player.getShape(1).addActiveAttribute(ActiveAttributes.PLAYER_FEETS);
 		player.getShape(1).setVisible(false);
-		File file = new File("sprites\\player\\player.png");
-		Sprite sprite = new Sprite(file, 2, 2);
-		sprite.addState(SpriteState.Standing, new int[] { 0 });
-		sprite.addState(SpriteState.Running, new int[] { 1, 2, 3, 4 });
-		SpriteController spriteController = new SpriteController(sprite);
+		SpriteController spriteController = currentItem.getPlayerSpriteController();
 		player.getShape(0).setSpriteController(spriteController);
-		spriteController.setCurrentSpriteState(SpriteState.Standing, true);
+		spriteController.setCurrentSpriteState(SpriteState.STANDING, true);
 		spriteController.setSpritePosOffset(new Vec2f(-32, -32));
 		physics.addBody(player);
 
@@ -137,12 +134,12 @@ public class Kane extends Game {
 		points[3] = new Vec2f(-16, 16);
 		sword.addShape(new Polygon(0, 0, sword, Color.YELLOW, points, mDynamic, 2));
 		sword.getShape(0).addActiveAttribute(ActiveAttributes.SWORD);
-		file = new File("sprites\\items\\sword.png");
-		sprite = new Sprite(file, 1, 1);
-		sprite.addState(SpriteState.Static, new int[] { 0 });
+		File file = new File("sprites\\items\\sword.png");
+		Sprite sprite = new Sprite(file, 1, 1);
+		sprite.addState(SpriteState.STATIC, new int[] { 0 });
 		spriteController = new SpriteController(sprite);
 		spriteController.setSpritePosOffset(new Vec2f(-16, -16));
-		spriteController.setCurrentSpriteState(SpriteState.Static, true);
+		spriteController.setCurrentSpriteState(SpriteState.STATIC, true);
 		sword.getShape(0).setSpriteController(spriteController);
 		physics.addBody(sword);
 
@@ -204,6 +201,19 @@ public class Kane extends Game {
 
 	@Override
 	public void leftMouseReleased() {
+		if (showInventory) {
+			for (int i = 1; i < inventory.getNumShapes(); i++) {
+				Shape slot = inventory.getShape(i);
+				if (slot.isPointInShape(mouseListener.getMousePos())) {
+					Item item = inventory.getItem(i - 1);
+					if (item != null) {
+						currentItem = item;
+						SpriteController spriteController = item.getPlayerSpriteController();
+						player.getShape(0).setSpriteController(spriteController);
+					}
+				}
+			}
+		}
 	}
 
 	@Override
@@ -226,7 +236,7 @@ public class Kane extends Game {
 
 	@Override
 	public void leftArrowClick() {
-		player.getShape(0).getSpriteController().setCurrentSpriteState(SpriteState.Running, true);
+		player.getShape(0).getSpriteController().setCurrentSpriteState(SpriteState.RUNNING, true);
 	}
 
 	@Override
@@ -241,12 +251,12 @@ public class Kane extends Game {
 
 	@Override
 	public void leftArrowReleased() {
-		player.getShape(0).getSpriteController().setCurrentSpriteState(SpriteState.Standing, true);
+		player.getShape(0).getSpriteController().setCurrentSpriteState(SpriteState.STANDING, true);
 	}
 
 	@Override
 	public void rightArrowClick() {
-		player.getShape(0).getSpriteController().setCurrentSpriteState(SpriteState.Running, true);
+		player.getShape(0).getSpriteController().setCurrentSpriteState(SpriteState.RUNNING, true);
 	}
 
 	@Override
@@ -261,7 +271,7 @@ public class Kane extends Game {
 
 	@Override
 	public void rightArrowReleased() {
-		player.getShape(0).getSpriteController().setCurrentSpriteState(SpriteState.Standing, true);
+		player.getShape(0).getSpriteController().setCurrentSpriteState(SpriteState.STANDING, true);
 	}
 
 	@Override
@@ -392,7 +402,7 @@ public class Kane extends Game {
 
 	@Override
 	public void escClick() {
-		if (showInterface) {
+		if (showInventory) {
 			iClick();
 		} else {
 			pause = !pause;
@@ -424,19 +434,19 @@ public class Kane extends Game {
 
 	}
 
-	boolean showInterface = false;
+	boolean showInventory = false;
 
 	@Override
 	public void iClick() {
-		showInterface = !showInterface;
-		pause = showInterface;
+		showInventory = !showInventory;
+		pause = showInventory;
 		for (int i = 0; i < inventory.getNumShapes(); i++) {
 			Shape shape = inventory.getShape(i);
 			if (shape.hasPassiveAtrribute(PassiveAttributes.INVENTORY)) {
-				shape.setVisible(showInterface);
+				shape.setVisible(showInventory);
 			}
 		}
-		if (showInterface) {
+		if (showInventory) {
 			inventory.showItems();
 		}
 

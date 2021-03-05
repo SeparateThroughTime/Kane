@@ -5,6 +5,7 @@ import java.awt.Color;
 import kane.genericGame.ActiveAttributes;
 import kane.genericGame.PassiveAttributes;
 import kane.math.Vec2f;
+import kane.math.Vec2i;
 import kane.renderer.SpriteController;
 
 /**
@@ -56,6 +57,13 @@ public abstract class Shape {
 	 * @return
 	 */
 	public abstract float getVolume();
+	
+	public abstract boolean isPointInShape(Vec2f point);
+	
+	public boolean isPointInShape(Vec2i point) {
+		Vec2f pointF = new Vec2f(point.getX(), point.getY());
+		return isPointInShape(pointF);
+	}
 
 	public Shape(int relPosX, int RelPosY, ShapeType type, Body body, Color color, Material material, int renderLayer) {
 		relPos = new Vec2f(relPosX, RelPosY);
