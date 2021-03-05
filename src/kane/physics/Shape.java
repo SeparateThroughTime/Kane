@@ -41,7 +41,7 @@ public abstract class Shape {
 	protected int numPassiveAttributes;
 
 	protected boolean hasSprite;
-	protected SpriteController spriteController;
+	protected SpriteController[] spriteControllers;
 
 	/**
 	 * Update the AABB of Shape including its next position.
@@ -323,8 +323,8 @@ public abstract class Shape {
 	 * 
 	 * @param sprite
 	 */
-	public void setSpriteController(SpriteController spriteController) {
-		this.spriteController = spriteController;
+	public void setSpriteControllers(SpriteController[] spriteControllers) {
+		this.spriteControllers = spriteControllers;
 		hasSprite = true;
 	}
 
@@ -337,8 +337,8 @@ public abstract class Shape {
 		return hasSprite;
 	}
 
-	public SpriteController getSpriteController() {
-		return spriteController;
+	public SpriteController[] getSpriteControllers() {
+		return spriteControllers;
 	}
 
 	@Override

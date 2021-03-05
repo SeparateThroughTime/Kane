@@ -2,9 +2,10 @@
 
 	ContactPoint: BoxPolygon, PolygonPolygon -> Ghost Contacts
 	Rotation
-	SpriteAnimator: Shape has SpriteAnimator has Sprite -> So Sprites dont need to load for every entity
-	Different Sprites for same shape -> wearing item
 	Items/Inventory
+	Sword Attack
+	No-Jumping-Bug
+	Mobs
 	Visual Effects
 	Sounds
 	Object Editor
@@ -62,7 +63,6 @@ public class Kane extends Game {
 	Material mDynamic = new Material(1, 0.9f);
 	Material mEvent = new Material(0, 0);
 	Material mInterface = new Material(1, 0);
-	Body player;
 	Body sword;
 	Vec2f playerRunAcc;
 	int playerRunSpeed;
@@ -109,20 +109,18 @@ public class Kane extends Game {
 		physics.addBody(body);
 
 		// Create player
-		currentItem = inventory.getItem(0);
-		
+		currentItem = inventory.getItem("None");
+
 		player = new Body(100, 130);
-		player.addShape(new Box(0, 0, player, new Vec2f(32, 32), Color.GREEN, mDynamic, 2));
+		player.addShape(new Box(0, 0, player, new Vec2f(16, 32), Color.GREEN, mDynamic, 2));
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PLAYER_ALL);
-		body.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
+		player.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
 		player.addShape(new Box(0, -22, player, new Vec2f(30, 10), Color.WHITE, mEvent, 2));
 		player.getShape(1).setCollision(false);
 		player.getShape(1).addActiveAttribute(ActiveAttributes.PLAYER_FEETS);
 		player.getShape(1).setVisible(false);
-		SpriteController spriteController = currentItem.getPlayerSpriteController();
-		player.getShape(0).setSpriteController(spriteController);
-		spriteController.setCurrentSpriteState(SpriteState.STANDING, true);
-		spriteController.setSpritePosOffset(new Vec2f(-32, -32));
+		SpriteController[] spriteControllers = currentItem.getPlayerSpriteControllers();
+		player.getShape(0).setSpriteControllers(spriteControllers);
 		physics.addBody(player);
 
 		// Sword
@@ -137,10 +135,11 @@ public class Kane extends Game {
 		File file = new File("sprites\\items\\sword.png");
 		Sprite sprite = new Sprite(file, 1, 1);
 		sprite.addState(SpriteState.STATIC, new int[] { 0 });
-		spriteController = new SpriteController(sprite);
-		spriteController.setSpritePosOffset(new Vec2f(-16, -16));
-		spriteController.setCurrentSpriteState(SpriteState.STATIC, true);
-		sword.getShape(0).setSpriteController(spriteController);
+		spriteControllers = new SpriteController[1];
+		spriteControllers[0] = new SpriteController(sprite);
+		spriteControllers[0].setSpritePosOffset(new Vec2f(-16, -16));
+		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC, true);
+		sword.getShape(0).setSpriteControllers(spriteControllers);
 		physics.addBody(sword);
 
 		// Create Background
@@ -208,8 +207,8 @@ public class Kane extends Game {
 					Item item = inventory.getItem(i - 1);
 					if (item != null) {
 						currentItem = item;
-						SpriteController spriteController = item.getPlayerSpriteController();
-						player.getShape(0).setSpriteController(spriteController);
+						SpriteController[] spriteControllers = item.getPlayerSpriteControllers();
+						player.getShape(0).setSpriteControllers(spriteControllers);
 					}
 				}
 			}
@@ -236,7 +235,11 @@ public class Kane extends Game {
 
 	@Override
 	public void leftArrowClick() {
-		player.getShape(0).getSpriteController().setCurrentSpriteState(SpriteState.RUNNING, true);
+		SpriteController[] spriteControllers = player.getShape(0).getSpriteControllers();
+		for (SpriteController spriteController : spriteControllers) {
+			spriteController.setCurrentSpriteState(SpriteState.RUNNING_LEFT, true);
+		}
+
 	}
 
 	@Override
@@ -251,12 +254,18 @@ public class Kane extends Game {
 
 	@Override
 	public void leftArrowReleased() {
-		player.getShape(0).getSpriteController().setCurrentSpriteState(SpriteState.STANDING, true);
+		SpriteController[] spriteControllers = player.getShape(0).getSpriteControllers();
+		for (SpriteController spriteController : spriteControllers) {
+			spriteController.setCurrentSpriteState(SpriteState.STANDING_LEFT, true);
+		}
 	}
 
 	@Override
 	public void rightArrowClick() {
-		player.getShape(0).getSpriteController().setCurrentSpriteState(SpriteState.RUNNING, true);
+		SpriteController[] spriteControllers = player.getShape(0).getSpriteControllers();
+		for (SpriteController spriteController : spriteControllers) {
+			spriteController.setCurrentSpriteState(SpriteState.RUNNING_RIGHT, true);
+		}
 	}
 
 	@Override
@@ -271,7 +280,10 @@ public class Kane extends Game {
 
 	@Override
 	public void rightArrowReleased() {
-		player.getShape(0).getSpriteController().setCurrentSpriteState(SpriteState.STANDING, true);
+		SpriteController[] spriteControllers = player.getShape(0).getSpriteControllers();
+		for (SpriteController spriteController : spriteControllers) {
+			spriteController.setCurrentSpriteState(SpriteState.STANDING_RIGHT, true);
+		}
 	}
 
 	@Override
@@ -397,7 +409,7 @@ public class Kane extends Game {
 
 	@Override
 	public void shiftClick() {
-
+		currentItem.attack(this);
 	}
 
 	@Override
@@ -411,7 +423,6 @@ public class Kane extends Game {
 
 	@Override
 	public void cPressed() {
-
 	}
 
 	@Override

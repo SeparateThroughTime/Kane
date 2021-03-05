@@ -5,19 +5,19 @@ import kane.renderer.SpriteController;
 public abstract class Item {
 	int amount;
 	String name;
-	SpriteController itemSpriteController;
-	SpriteController playerSpriteController;
+	SpriteController[] itemSpriteControllers;
+	SpriteController[] playerSpriteControllers;
 	
-	public Item(String name, SpriteController itemSpriteController, SpriteController playerSpriteController) {
+	public Item(String name, SpriteController[] itemSpriteControllers, SpriteController[] playerSpriteControllers) {
 		this.name = name;
-		this.itemSpriteController = itemSpriteController;
-		this.playerSpriteController = playerSpriteController;
+		this.itemSpriteControllers = itemSpriteControllers;
+		this.playerSpriteControllers = playerSpriteControllers;
 	}
 	
-	public abstract void attack();
-	public abstract void react();
-	public abstract void jump();
-	public abstract void move();
+	public abstract void attack(Game g);
+	public abstract void react(Game g);
+	public abstract void jump(Game g);
+	public abstract void move(Game g);
 	
 	public void addAmount(int amount) {
 		this.amount += amount;
@@ -27,12 +27,12 @@ public abstract class Item {
 		return amount;
 	}
 	
-	public SpriteController getItemSpriteController() {
-		return itemSpriteController;
+	public SpriteController[] getItemSpriteControllers() {
+		return itemSpriteControllers;
 	}
 	
-	public SpriteController getPlayerSpriteController() {
-		return playerSpriteController;
+	public SpriteController[] getPlayerSpriteControllers() {
+		return playerSpriteControllers;
 	}
 	
 	public String getName() {

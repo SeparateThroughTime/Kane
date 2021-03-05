@@ -14,6 +14,7 @@ import kane.genericGame.userInteraction.Keyboard;
 import kane.genericGame.userInteraction.KeyboardInterface;
 import kane.genericGame.userInteraction.Mouse;
 import kane.genericGame.userInteraction.MouseInterface;
+import kane.physics.Body;
 import kane.physics.ContactListener;
 import kane.physics.Physics;
 import kane.renderer.Renderer;
@@ -44,6 +45,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	protected Physics physics;
 	protected Renderer renderer;
 	protected Inventory inventory;
+	protected Body player;
 
 	protected abstract void initGame();
 
@@ -272,5 +274,9 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 			keyState[i] = false;
 		}
 
+	}
+	
+	public Body getPlayer() {
+		return player;
 	}
 }

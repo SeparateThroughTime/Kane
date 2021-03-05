@@ -45,10 +45,11 @@ public class Inventory extends Body {
 		File file = new File("sprites\\interface\\inventory.png");
 		Sprite sprite = new Sprite(file, 14, 8);
 		sprite.addState(SpriteState.STATIC, new int[] { 0 });
-		SpriteController spriteController = new SpriteController(sprite);
-		getShape(0).setSpriteController(spriteController);
-		spriteController.setCurrentSpriteState(SpriteState.STATIC, true);
-		spriteController.setSpritePosOffset(new Vec2f(-224, -128));
+		SpriteController[] spriteControllers = new SpriteController[1];
+		spriteControllers[0] = new SpriteController(sprite);
+		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC, true);
+		spriteControllers[0].setSpritePosOffset(new Vec2f(-224, -128));
+		getShape(0).setSpriteControllers(spriteControllers);
 
 		// Slots
 		addShape(new Box(-144, 48, this, new Vec2f(32, 32), Color.RED, mInterface, 2));
@@ -137,7 +138,7 @@ public class Inventory extends Body {
 		for (int i = 1; i < numShapes; i++) {
 			try {
 				Item item = activeItems.get(i-1);
-				getShape(i).setSpriteController(item.getItemSpriteController());
+				getShape(i).setSpriteControllers(item.getItemSpriteControllers());
 				getShape(i).setVisible(true);
 			} catch (Exception e) {
 				getShape(i).setVisible(false);

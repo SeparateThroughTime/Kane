@@ -132,17 +132,20 @@ public class Renderer extends JPanel {
 				Shape shape = renderedShapes[i];
 				if (shape.RENDER_LAYER == layer) {
 					if (shape.hasSprite()) {
-						SpriteController spriteController = shape.getSpriteController();
-						float scale = spriteController.getScale();
-						if (!game.pause) {
-							spriteController.step();
+						SpriteController[] spriteControllers = shape.getSpriteControllers();
+						for (SpriteController spriteController : spriteControllers) {
+							float scale = spriteController.getScale();
+							if (!game.pause) {
+								spriteController.step();
+							}
+							BufferedImage frame = spriteController.getFrame();
+							Vec2f pos = shape.getAbsPos();
+							Vec2f spriteAbsPos = new Vec2f(pos).add(spriteController.getSpritePosOffset());
+							int posX = (int) spriteAbsPos.getX();
+							int posY = (int) spriteAbsPos.getY();
+							drawImage(frame, scale, posX, posY, g2d);
 						}
-						BufferedImage frame = spriteController.getFrame();
-						Vec2f pos = shape.getAbsPos();
-						Vec2f spriteAbsPos = new Vec2f(pos).add(spriteController.getSpritePosOffset());
-						int posX = (int) spriteAbsPos.getX();
-						int posY = (int) spriteAbsPos.getY();
-						drawImage(frame, scale, posX, posY, g2d);
+
 					} else if (ShapeType.PLANE.equals(shape.getType())) {
 						Plane plane = (Plane) shape;
 						// draws planes

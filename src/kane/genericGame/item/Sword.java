@@ -2,6 +2,7 @@ package kane.genericGame.item;
 
 import java.io.File;
 
+import kane.genericGame.Game;
 import kane.genericGame.Item;
 import kane.math.Vec2f;
 import kane.renderer.Sprite;
@@ -13,47 +14,75 @@ import kane.renderer.SpriteState;
 public class SWORD extends Item {
 	public static final int STANDARD_AMOUNT = 5;
 	
-	private static final File ITEM_FILE = new File("sprites\\items\\sword.png");
-	private static final Sprite ITEM_SPRITE = new Sprite(ITEM_FILE, 1, 1);
-	private static final SpriteController ITEM_SPRITE_CONTROLLER = new SpriteController(ITEM_SPRITE);
-	private static final File PLAYER_FILE = new File("sprites\\player\\playerSword.png");
-	private static final Sprite PLAYER_SPRITE = new Sprite(PLAYER_FILE, 2, 2);
-	private static final SpriteController PLAYER_SPRITE_CONTROLLER = new SpriteController(PLAYER_SPRITE);
+	private static final Sprite ITEM_SPRITE = new Sprite(new File("sprites\\\\items\\\\sword.png"), 1, 1);
+	
+	private static final SpriteController[] ITEM_SPRITE_CONTROLLERS = {
+			new SpriteController(ITEM_SPRITE)
+	};
+	
+	private static final Sprite[] PLAYER_SPRITES = {
+			new Sprite(new File("sprites\\player\\playerHead.png"), 2, 2),
+			new Sprite(new File("sprites\\player\\playerUpperSword.png"), 2, 2),
+			new Sprite(new File("sprites\\player\\playerLower.png"), 2, 2)
+	};
+
+	private static final SpriteController[] PLAYER_SPRITE_CONTROLLERS = {
+			new SpriteController(PLAYER_SPRITES[0]),
+			new SpriteController(PLAYER_SPRITES[1]),
+			new SpriteController(PLAYER_SPRITES[2])
+	};
 
 	public SWORD() {
-		super("Sword", ITEM_SPRITE_CONTROLLER, PLAYER_SPRITE_CONTROLLER);
+		super("Sword", ITEM_SPRITE_CONTROLLERS, PLAYER_SPRITE_CONTROLLERS);
 		
 		ITEM_SPRITE.addState(SpriteState.STATIC, new int[] { 0 });
-		ITEM_SPRITE_CONTROLLER.setCurrentSpriteState(SpriteState.STATIC, true);
-		ITEM_SPRITE_CONTROLLER.setSpritePosOffset(new Vec2f(-32, -32));
-		ITEM_SPRITE_CONTROLLER.setScale(2f);
+		ITEM_SPRITE_CONTROLLERS[0].setCurrentSpriteState(SpriteState.STATIC, true);
+		ITEM_SPRITE_CONTROLLERS[0].setSpritePosOffset(new Vec2f(-32, -32));
+		ITEM_SPRITE_CONTROLLERS[0].setScale(2f);
 		
-		PLAYER_SPRITE.addState(SpriteState.STANDING, new int[] { 0 });
-		PLAYER_SPRITE.addState(SpriteState.RUNNING, new int[] { 1, 2, 3, 4 });
-		PLAYER_SPRITE.addState(SpriteState.STANDING_ATTACK, new int[] { 5, 6, 7, 8 });
-		PLAYER_SPRITE.addState(SpriteState.RUNNING_ATTACK, new int[] { 9, 10, 11, 12 });
-		PLAYER_SPRITE_CONTROLLER.setCurrentSpriteState(SpriteState.STANDING, true);
-		PLAYER_SPRITE_CONTROLLER.setSpritePosOffset(new Vec2f(-32, -32));
+		PLAYER_SPRITES[0].addState(SpriteState.STANDING_RIGHT, new int[] { 0 });
+		PLAYER_SPRITES[0].addState(SpriteState.RUNNING_RIGHT, new int[] { 0 });
+		PLAYER_SPRITES[0].addState(SpriteState.STANDING_LEFT, new int[] { 1 });
+		PLAYER_SPRITES[0].addState(SpriteState.RUNNING_LEFT, new int[] { 1 });
+		
+		PLAYER_SPRITES[1].addState(SpriteState.STANDING_RIGHT, new int[] { 0 });
+		PLAYER_SPRITES[1].addState(SpriteState.RUNNING_RIGHT, new int[] { 1, 2, 3, 4 });
+		PLAYER_SPRITES[1].addState(SpriteState.STANDING_LEFT, new int[] { 6 });
+		PLAYER_SPRITES[1].addState(SpriteState.RUNNING_LEFT, new int[] { 7, 8, 9, 10 });
+		PLAYER_SPRITES[1].addState(SpriteState.ATTACK_RIGHT, new int[] { 5 });
+		PLAYER_SPRITES[1].addState(SpriteState.ATTACK_LEFT, new int[] { 11 });
+		
+		PLAYER_SPRITES[2].addState(SpriteState.STANDING_RIGHT, new int[] { 0 });
+		PLAYER_SPRITES[2].addState(SpriteState.RUNNING_RIGHT, new int[] { 1, 2, 3, 4, });
+		PLAYER_SPRITES[2].addState(SpriteState.STANDING_LEFT, new int[] { 5 });
+		PLAYER_SPRITES[2].addState(SpriteState.RUNNING_LEFT, new int[] { 6, 7, 8, 9 });
+		
+		PLAYER_SPRITE_CONTROLLERS[0].setCurrentSpriteState(SpriteState.STANDING_RIGHT, true);
+		PLAYER_SPRITE_CONTROLLERS[0].setSpritePosOffset(new Vec2f(-32, -32));
+		PLAYER_SPRITE_CONTROLLERS[1].setCurrentSpriteState(SpriteState.STANDING_RIGHT, true);
+		PLAYER_SPRITE_CONTROLLERS[1].setSpritePosOffset(new Vec2f(-32, -32));
+		PLAYER_SPRITE_CONTROLLERS[2].setCurrentSpriteState(SpriteState.STANDING_RIGHT, true);
+		PLAYER_SPRITE_CONTROLLERS[2].setSpritePosOffset(new Vec2f(-32, -32));
 
 	}
 
 	@Override
-	public void attack() {
+	public void attack(Game g) {
+		
+	}
+
+	@Override
+	public void react(Game g) {
 
 	}
 
 	@Override
-	public void react() {
+	public void jump(Game g) {
 
 	}
 
 	@Override
-	public void jump() {
-
-	}
-
-	@Override
-	public void move() {
+	public void move(Game g) {
 
 	}
 
