@@ -2,9 +2,13 @@
 
 	ContactPoint: BoxPolygon, PolygonPolygon -> Ghost Contacts
 	Rotation
-	Items/Inventory
 	Sword Attack
+		Actual Damage
+		Animation
 	No-Jumping-Bug
+	Standing-Walk-Bug
+	Flickering...
+	Body mirroring when eg. player change direction.
 	Mobs
 	Visual Effects
 	Sounds
@@ -27,6 +31,7 @@ import java.io.File;
 import kane.genericGame.ActiveAttributes;
 import kane.genericGame.Game;
 import kane.genericGame.Item;
+import kane.genericGame.Mob;
 import kane.genericGame.PassiveAttributes;
 import kane.genericGame.item.SWORD;
 import kane.math.Scalar;
@@ -111,7 +116,7 @@ public class Kane extends Game {
 		// Create player
 		currentItem = inventory.getItem("None");
 
-		player = new Body(100, 130);
+		player = new Mob(100, 130, 3);
 		player.addShape(new Box(0, 0, player, new Vec2f(16, 32), Color.GREEN, mDynamic, 2));
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PLAYER_ALL);
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
@@ -239,6 +244,7 @@ public class Kane extends Game {
 		for (SpriteController spriteController : spriteControllers) {
 			spriteController.setCurrentSpriteState(SpriteState.RUNNING_LEFT, true);
 		}
+		player.setAngle(Scalar.PI);
 
 	}
 
@@ -266,6 +272,7 @@ public class Kane extends Game {
 		for (SpriteController spriteController : spriteControllers) {
 			spriteController.setCurrentSpriteState(SpriteState.RUNNING_RIGHT, true);
 		}
+		player.setAngle(0f);
 	}
 
 	@Override

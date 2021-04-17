@@ -9,6 +9,10 @@ public enum ActiveAttributes {
 	PLAYER_FRONT,
 	PLAYER_BACK,
 	
+	ATTACK_LEFT,
+	ATTACK_RIGHT,
+	ATTACKING,
+	
 	CAMERA_UP,
 	CAMERA_DOWN,
 	CAMERA_LEFT,

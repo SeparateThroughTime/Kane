@@ -1,6 +1,7 @@
 package kane.physics;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import kane.genericGame.ActiveAttributes;
 import kane.genericGame.PassiveAttributes;
@@ -229,6 +230,22 @@ public abstract class Shape {
 	public void addActiveAttribute(ActiveAttributes aa) {
 		activeAttributes[numActiveAttributes++] = aa;
 	}
+	
+	public void remActiveAttribute(ActiveAttributes aa) {
+		ArrayList<Integer> indices = new ArrayList<Integer>();
+		for (int i = 0; i < numActiveAttributes; i++) {
+			if(activeAttributes[i] == aa) {
+				indices.add(i);
+			}
+		}
+		for (int i = 0; i < indices.size(); i++) {
+			int index = indices.get(i);
+			for (int j = index + 1; j < numActiveAttributes; j++) {
+				activeAttributes[j - 1] = activeAttributes[j];
+			}
+			numActiveAttributes--;
+		}
+	}
 
 	/**
 	 * Get an active attribute with index.
@@ -287,6 +304,23 @@ public abstract class Shape {
 	 * @param index
 	 * @return
 	 */
+	
+	public void remPassiveAttribute(PassiveAttributes pa) {
+		ArrayList<Integer> indices = new ArrayList<Integer>();
+		for (int i = 0; i < numPassiveAttributes; i++) {
+			if(passiveAttributes[i] == pa) {
+				indices.add(i);
+			}
+		}
+		for (int i = 0; i < indices.size(); i++) {
+			int index = indices.get(i);
+			for (int j = index + 1; j < numPassiveAttributes; j++) {
+				passiveAttributes[j - 1] = passiveAttributes[j];
+			}
+			numPassiveAttributes--;
+		}
+	}
+	
 	public PassiveAttributes getPassiveAttribute(int index) {
 		return passiveAttributes[index];
 	}

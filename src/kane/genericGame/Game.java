@@ -1,12 +1,8 @@
 package kane.genericGame;
 
-import java.awt.Canvas;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 
@@ -22,7 +18,8 @@ import kane.renderer.Resolution;
 import kane.renderer.ResolutionSpecification;
 
 /**
- * Game is an abstract class which provides the main-construct of the game-engine
+ * Game is an abstract class which provides the main-construct of the
+ * game-engine
  */
 public abstract class Game implements WindowListener, KeyboardInterface, MouseInterface, ContactListener {
 
@@ -42,14 +39,18 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 
 	public boolean pause;
 
+	protected GameEvent[] events = new GameEvent[5000];
+	protected int numEvents = 0;
+
 	protected Physics physics;
 	protected Renderer renderer;
 	protected Inventory inventory;
-	protected Body player;
+	protected Mob player;
 
 	protected abstract void initGame();
 
 	protected abstract void mechanicsLoop();
+
 	protected abstract void postMechanicsLoops();
 
 	/**
@@ -59,7 +60,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	public Game(String title) {
 		// init Window
 		TITLE = title;
-		
+
 		resSpecs = new ResolutionSpecification(600, 800, 600, 800);
 
 		physics = new Physics(DELTATIME, this);
@@ -82,15 +83,16 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		renderer.requestFocusInWindow();
 		frame.add(renderer);
 		frame.pack();
-		
+
 		inventory = new Inventory(resSpecs);
 		physics.addBody(inventory);
 
 		frame.setVisible(true);
 	}
-	
+
 	/**
 	 * change the resolution. This uses the enum Resolution.
+	 * 
 	 * @param res -new resolution
 	 */
 	protected void changeResolution(Resolution res) {
@@ -162,11 +164,11 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		default:
 			break;
 		}
-		resSpecs.gameWidth = (int)((float)resSpecs.GAME_HEIGHT / resSpecs.height * resSpecs.width);
-		
+		resSpecs.gameWidth = (int) ((float) resSpecs.GAME_HEIGHT / resSpecs.height * resSpecs.width);
+
 		renderer.setPreferredSize(new Dimension(resSpecs.width, resSpecs.height));
 		frame.pack();
-		
+
 		renderer.changeResolution();
 		inventory.changeResolution();
 	}
@@ -198,8 +200,9 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 				if (!pause) {
 					mechanicsLoop();
 					physics.step(DELTATIME);
+					eventsLoop();
 					postMechanicsLoops();
-					
+
 				}
 				accumulatedTime -= DELTATIME;
 			}
@@ -228,8 +231,27 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		}
 	}
 
+	private void eventsLoop() {
+		for (int i = 0; i < numEvents; i++) {
+			GameEvent event = events[i];
+			if (event.getFrameCounter() == 0) {
+				event.start();
+			} else if (event.getFrameCounter() < event.EVENT_DURATION) {
+				event.procedure();
+			} else {
+				event.end();
+				remEvent(i);
+				// Otherwise the next event wouldn't be executed but the next but one.
+				i--;
+			}
+			event.countFrame();
+		}
+	}
+
 	/**
-	 * This updates the states of keyboard and mouse and runs the actions, depending on it.
+	 * This updates the states of keyboard and mouse and runs the actions, depending
+	 * on it.
+	 * 
 	 * @param DELTATIME
 	 */
 	private void userInteraction(float DELTATIME) {
@@ -275,8 +297,19 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		}
 
 	}
-	
+
 	public Body getPlayer() {
 		return player;
+	}
+
+	public void addEvent(GameEvent e) {
+		events[numEvents++] = e;
+	}
+
+	private void remEvent(int id) {
+		for (int i = id + 1; i < numEvents; i++) {
+			events[i - 1] = events[i];
+		}
+		numEvents--;
 	}
 }

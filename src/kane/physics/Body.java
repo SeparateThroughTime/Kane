@@ -2,6 +2,7 @@ package kane.physics;
 
 import java.awt.font.ShapeGraphicAttribute;
 
+import kane.genericGame.ActiveAttributes;
 import kane.math.Vec2f;
 
 /**
@@ -33,6 +34,10 @@ public class Body {
 	public void setAngleVel(float angleVel) {
 		this.angleVel = angleVel;
 	}
+	
+	public void setAngle(float angle) {
+		this.angle = angle;
+	}
 
 	protected Shape[] shapes;
 	public static final int MAX_SHAPES = 10;
@@ -44,10 +49,14 @@ public class Body {
 	 * @param posY -position Y
 	 */
 	public Body(int posX, int posY) {
+		this(new Vec2f(posX, posY));
+	}
+	
+	public Body(Vec2f pos) {
 		invMass = 0;
 		vel = new Vec2f();
 		acc = new Vec2f();
-		pos = new Vec2f(posX, posY);
+		this.pos = pos;
 		shapes = new Shape[MAX_SHAPES];
 		numShapes = 0;
 		this.rotateByCollision = false;
@@ -221,6 +230,16 @@ public class Body {
 	 */
 	public Shape getShape(int index) {
 		return shapes[index];
+	}
+	
+	public Shape getShape(ActiveAttributes activeAttribute) {
+		for (int i = 0; i < numShapes; i++) {
+			Shape shape = shapes[i];
+			if(shape.hasActiveAtrribute(activeAttribute)) {
+				return shape;
+			}
+		}
+		return null;
 	}
 
 	/**
