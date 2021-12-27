@@ -2,7 +2,6 @@ package kane.genericGame;
 
 import kane.math.Vec2f;
 import kane.physics.Body;
-import sun.security.x509.DeltaCRLIndicatorExtension;
 
 public class Mob extends Body {
 	private static final int INVULNERABILITY_TIME = 30;

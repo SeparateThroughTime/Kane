@@ -403,13 +403,13 @@ public class Body {
 	 * @return
 	 */
 	public Shape[] getSpriteShapes() {
-		Shape[] shapes = new Shape[0];
+		Shape[] spriteShapes = new Shape[0];
 		for (int i = 0; i < numShapes; i++) {
 			Shape shape = shapes[i];
 			if (shape.hasSprite) {
-				shapes = (Shape[])ArrayOperations.add(shapes, shape);
+				spriteShapes = ArrayOperations.add(spriteShapes, shape);
 			}
 		}
-		return shapes;
+		return spriteShapes;
 	}
 }

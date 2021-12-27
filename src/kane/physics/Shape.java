@@ -8,6 +8,7 @@ import kane.genericGame.PassiveAttributes;
 import kane.math.Vec2f;
 import kane.math.Vec2i;
 import kane.renderer.SpriteController;
+import kane.renderer.SpriteState;
 
 /**
  * Shape is an abstract class, which is the base for all Shapes.
@@ -382,6 +383,21 @@ public abstract class Shape {
 
 	public SpriteController[] getSpriteControllers() {
 		return spriteControllers;
+	}
+	
+	public void setCurrentSpriteState(SpriteState spriteState) {
+		for (int i = 0; i < spriteControllers.length; i++) {
+			SpriteController spriteController = spriteControllers[i];
+			spriteController.setCurrentSpriteState(spriteState);
+		}
+	}
+	
+	public SpriteState getCurrentSpriteState() {
+		if (hasSprite) {
+			return spriteControllers[0].getCurrentSpriteState();
+		} else {
+			return null;
+		}
 	}
 
 	@Override

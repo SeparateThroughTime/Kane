@@ -34,9 +34,9 @@ public class SpriteController {
 		return sprite.getFrame(currentSpriteState, currentSpriteStateFrameNo);
 	}
 
-	public void setCurrentSpriteState(SpriteState state, boolean resetAnimationState) {
-		this.currentSpriteState = state;
-		if (resetAnimationState) {
+	public void setCurrentSpriteState(SpriteState state) {
+		if (sprite.stateIsAssigned(state)) {
+			this.currentSpriteState = state;
 			this.currentSpriteStateFrameNo = 0;
 			this.frameCounter = 0;
 		}

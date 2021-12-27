@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import kane.math.ArrayOperations;
 import kane.math.Vec2f;
 
 public class Sprite {
@@ -23,10 +24,12 @@ public class Sprite {
 	private int PIXEL_PER_FRAME;
 //	private int[][] spritePixels;
 	private BufferedImage[] frames;
+	protected SpriteState[] assignedSpriteStates;
 
 	private Map<SpriteState, int[]> states;
 
 	public Sprite(File file, int frameWidth, int frameHeight) {
+		assignedSpriteStates = new SpriteState[0];
 		this.FRAME_HEIGHT = frameHeight;
 		this.FRAME_WIDTH = frameWidth;
 		this.states = new HashMap<SpriteState, int[]>();
@@ -64,6 +67,11 @@ public class Sprite {
 	 */
 	public void addState(SpriteState state, int[] frameNumbers) {
 		states.put(state, frameNumbers);
+		assignedSpriteStates = ArrayOperations.add(assignedSpriteStates, state);
+	}
+	
+	public boolean stateIsAssigned(SpriteState state) {
+		return ArrayOperations.contains(assignedSpriteStates, state);
 	}
 
 

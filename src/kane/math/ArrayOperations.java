@@ -1,5 +1,7 @@
 package kane.math;
 
+import java.lang.reflect.Array;
+
 public class ArrayOperations {
 	
 	/**
@@ -26,11 +28,9 @@ public class ArrayOperations {
 	 * @param object
 	 * @return
 	 */
-	public static Object[] add(Object[] array, Object object) {
-		Object[] newArray = new Object[array.length + 1];
-		for (int i = 0; i < array.length; i++) {
-			newArray[i] = array[i];
-		}
+	public static <T> T[] add(T[] array, T object) {
+		T[] newArray = (T[]) Array.newInstance(array.getClass().getComponentType(), array.length + 1);
+		System.arraycopy(array, 0, newArray, 0, array.length);
 		newArray[array.length] = object;
 		return newArray;
 	}

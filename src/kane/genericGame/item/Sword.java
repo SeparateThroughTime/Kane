@@ -37,7 +37,7 @@ public class SWORD extends Item {
 		super("Sword", ITEM_SPRITE_CONTROLLERS, PLAYER_SPRITE_CONTROLLERS);
 		
 		ITEM_SPRITE.addState(SpriteState.STATIC, new int[] { 0 });
-		ITEM_SPRITE_CONTROLLERS[0].setCurrentSpriteState(SpriteState.STATIC, true);
+		ITEM_SPRITE_CONTROLLERS[0].setCurrentSpriteState(SpriteState.STATIC);
 		ITEM_SPRITE_CONTROLLERS[0].setSpritePosOffset(new Vec2f(-32, -32));
 		ITEM_SPRITE_CONTROLLERS[0].setScale(2f);
 		
@@ -58,11 +58,11 @@ public class SWORD extends Item {
 		PLAYER_SPRITES[2].addState(SpriteState.STANDING_LEFT, new int[] { 5 });
 		PLAYER_SPRITES[2].addState(SpriteState.RUNNING_LEFT, new int[] { 6, 7, 8, 9 });
 		
-		PLAYER_SPRITE_CONTROLLERS[0].setCurrentSpriteState(SpriteState.STANDING_RIGHT, true);
+		PLAYER_SPRITE_CONTROLLERS[0].setCurrentSpriteState(SpriteState.STANDING_RIGHT);
 		PLAYER_SPRITE_CONTROLLERS[0].setSpritePosOffset(new Vec2f(-32, -32));
-		PLAYER_SPRITE_CONTROLLERS[1].setCurrentSpriteState(SpriteState.STANDING_RIGHT, true);
+		PLAYER_SPRITE_CONTROLLERS[1].setCurrentSpriteState(SpriteState.STANDING_RIGHT);
 		PLAYER_SPRITE_CONTROLLERS[1].setSpritePosOffset(new Vec2f(-32, -32));
-		PLAYER_SPRITE_CONTROLLERS[2].setCurrentSpriteState(SpriteState.STANDING_RIGHT, true);
+		PLAYER_SPRITE_CONTROLLERS[2].setCurrentSpriteState(SpriteState.STANDING_RIGHT);
 		PLAYER_SPRITE_CONTROLLERS[2].setSpritePosOffset(new Vec2f(-32, -32));
 
 	}

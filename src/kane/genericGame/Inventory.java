@@ -47,7 +47,7 @@ public class Inventory extends Body {
 		sprite.addState(SpriteState.STATIC, new int[] { 0 });
 		SpriteController[] spriteControllers = new SpriteController[1];
 		spriteControllers[0] = new SpriteController(sprite);
-		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC, true);
+		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC);
 		spriteControllers[0].setSpritePosOffset(new Vec2f(-224, -128));
 		getShape(0).setSpriteControllers(spriteControllers);
 

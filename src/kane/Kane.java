@@ -2,20 +2,19 @@
 
 	ContactPoint: BoxPolygon, PolygonPolygon -> Ghost Contacts
 	Rotation
-	Sword Attack
-		Actual Damage
-		Animation
 	No-Jumping-Bug
 	Standing-Walk-Bug, Mirroring Bug (Pressing left and right)
 	Flickering...
+	Attack direction when shape 0 of attacker has static sprite (maybe wont be appearing)
 	Mobs
+	Items and additional mechanics
 	Visual Effects
 	Sounds
 	Object Editor
-		Ermitteln des besten Mittelpunkts
+		(Ermitteln des besten Mittelpunkts)
 	Level Ends/ Player dies -> Next level/ Restart
 	Level Editor
-	Event Editor?
+	Event Editor
 	Campaign Editor
 	StartMenu
 	Save
@@ -147,7 +146,7 @@ public class Kane extends Game {
 		spriteControllers = new SpriteController[1];
 		spriteControllers[0] = new SpriteController(sprite);
 		spriteControllers[0].setSpritePosOffset(new Vec2f(-16, -16));
-		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC, true);
+		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC);
 		sword.getShape(0).setSpriteControllers(spriteControllers);
 		physics.addBody(sword);
 
@@ -166,7 +165,7 @@ public class Kane extends Game {
 		spriteControllers = new SpriteController[1];
 		spriteControllers[0] = new SpriteController(sprite);
 		spriteControllers[0].setSpritePosOffset(new Vec2f(-32, -16));
-		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC, true);
+		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC);
 		blob.getShape(0).setSpriteControllers(spriteControllers);
 		physics.addBody(blob);
 
@@ -263,21 +262,15 @@ public class Kane extends Game {
 
 	@Override
 	public void leftArrowClick() {
-		SpriteController[] spriteControllers = player.getShape(0).getSpriteControllers();
-		for (int i = 0; i < spriteControllers.length; i++) {
-			SpriteController spriteController = spriteControllers[i];
+		player.getShape(PassiveAttributes.PLAYER_ALL).setCurrentSpriteState(SpriteState.RUNNING_LEFT);
 
-			// Checks if the player changed direction. If so, the body turns.
-			if (i == 0) {
-				if (ArrayOperations.contains(SpriteController.RIGHT_SPRITE_STATES,
-						spriteController.getCurrentSpriteState())) {
-					player.mirrorX();
-				}
-			}
-
-			spriteController.setCurrentSpriteState(SpriteState.RUNNING_LEFT, true);
+		// Checks if the player changed direction. If so, the body turns.
+		if (ArrayOperations.contains(SpriteController.RIGHT_SPRITE_STATES,
+				player.getShape(PassiveAttributes.PLAYER_ALL).getCurrentSpriteState())) {
+			player.mirrorX();
 		}
-		player.setAngle(Scalar.PI);
+
+		player.setAngle(0f);
 
 	}
 
@@ -293,28 +286,19 @@ public class Kane extends Game {
 
 	@Override
 	public void leftArrowReleased() {
-		SpriteController[] spriteControllers = player.getShape(0).getSpriteControllers();
-		for (SpriteController spriteController : spriteControllers) {
-			spriteController.setCurrentSpriteState(SpriteState.STANDING_LEFT, true);
-		}
+		player.getShape(PassiveAttributes.PLAYER_ALL).setCurrentSpriteState(SpriteState.STANDING_LEFT);
 	}
 
 	@Override
 	public void rightArrowClick() {
-		SpriteController[] spriteControllers = player.getShape(0).getSpriteControllers();
-		for (int i = 0; i < spriteControllers.length; i++) {
-			SpriteController spriteController = spriteControllers[i];
+		player.getShape(PassiveAttributes.PLAYER_ALL).setCurrentSpriteState(SpriteState.RUNNING_RIGHT);
 
-			// Checks if the player changed direction. If so, the body turns.
-			if (i == 0) {
-				if (ArrayOperations.contains(SpriteController.LEFT_SPRITE_STATES,
-						spriteController.getCurrentSpriteState())) {
-					player.mirrorX();
-				}
-			}
-
-			spriteController.setCurrentSpriteState(SpriteState.RUNNING_RIGHT, true);
+		// Checks if the player changed direction. If so, the body turns.
+		if (ArrayOperations.contains(SpriteController.LEFT_SPRITE_STATES,
+				player.getShape(PassiveAttributes.PLAYER_ALL).getCurrentSpriteState())) {
+			player.mirrorX();
 		}
+
 		player.setAngle(0f);
 	}
 
@@ -330,10 +314,7 @@ public class Kane extends Game {
 
 	@Override
 	public void rightArrowReleased() {
-		SpriteController[] spriteControllers = player.getShape(0).getSpriteControllers();
-		for (SpriteController spriteController : spriteControllers) {
-			spriteController.setCurrentSpriteState(SpriteState.STANDING_RIGHT, true);
-		}
+		player.getShape(PassiveAttributes.PLAYER_ALL).setCurrentSpriteState(SpriteState.STANDING_RIGHT);
 	}
 
 	@Override
@@ -573,7 +554,7 @@ public class Kane extends Game {
 
 	@Override
 	public void playerAttacksMob(Shape attackingField, Shape mobAll) {
-		Mob mob = (Mob)mobAll.getBody();
+		Mob mob = (Mob) mobAll.getBody();
 		int damage = player.getDamage();
 		mob.hit(damage, player.getPos());
 	}
