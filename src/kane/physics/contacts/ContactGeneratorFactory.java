@@ -1,6 +1,5 @@
 package kane.physics.contacts;
 
-import kane.physics.ContactListener;
 import kane.physics.Shape;
 import kane.physics.ShapePair;
 import kane.physics.ShapeType;
@@ -82,13 +81,13 @@ public class ContactGeneratorFactory {
 				
 				if (shapePair.getContact() != null) {
 					if (shapePair.getContact().getDistance() <= 0) {
-						contactListener.penetration(shapePair);
+						contactListener.penetrated(shapePair);
 						if (!shapePair.isPenetration()) {
-							contactListener.penetrated(shapePair);
+							contactListener.penetration(shapePair);
 							shapePair.setPenetration(true);
 						}
 					} else if (shapePair.isPenetration()) {
-						contactListener.separated(shapePair);
+						contactListener.separation(shapePair);
 						shapePair.setPenetration(false);
 					}
 				}

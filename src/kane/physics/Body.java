@@ -1,8 +1,7 @@
 package kane.physics;
 
-import java.awt.font.ShapeGraphicAttribute;
-
 import kane.genericGame.ActiveAttributes;
+import kane.genericGame.PassiveAttributes;
 import kane.math.Vec2f;
 
 /**
@@ -232,10 +231,32 @@ public class Body {
 		return shapes[index];
 	}
 	
+	/**
+	 * Get shape with activeAttribute.
+	 * If more shapes exist the first one is returned
+	 * @param activeAttribute
+	 * @return
+	 */
 	public Shape getShape(ActiveAttributes activeAttribute) {
 		for (int i = 0; i < numShapes; i++) {
 			Shape shape = shapes[i];
 			if(shape.hasActiveAtrribute(activeAttribute)) {
+				return shape;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Get shape with passiveAttribute.
+	 * If more shapes exist the first one is returned
+	 * @param passiveAttribute
+	 * @return
+	 */
+	public Shape getShape(PassiveAttributes passiveAttribute) {
+		for (int i = 0; i < numShapes; i++) {
+			Shape shape = shapes[i];
+			if(shape.hasPassiveAtrribute(passiveAttribute)) {
 				return shape;
 			}
 		}

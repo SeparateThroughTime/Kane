@@ -6,7 +6,11 @@ package kane.genericGame;
 public enum PassiveAttributes {
 	PLAYER_ALL,
 	
+	MOB_ALL,
+	
 	PHYSICAL,
+	
+	ATTACKING_FIELD,
 	
 	INVENTORY,
 	INVENTORY_SLOT;

@@ -155,6 +155,12 @@ public class Vec2f {
 		y += f;
 		return this;
 	}
+	
+	public Vec2f add(float x, float y) {
+		this.x += x;
+		this.y += y;
+		return this;
+	}
 
 	/**
 	 * Subtract another vector from this vector

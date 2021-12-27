@@ -11,8 +11,8 @@ import kane.genericGame.userInteraction.KeyboardInterface;
 import kane.genericGame.userInteraction.Mouse;
 import kane.genericGame.userInteraction.MouseInterface;
 import kane.physics.Body;
-import kane.physics.ContactListener;
 import kane.physics.Physics;
+import kane.physics.contacts.ContactListener;
 import kane.renderer.Renderer;
 import kane.renderer.Resolution;
 import kane.renderer.ResolutionSpecification;
@@ -21,7 +21,7 @@ import kane.renderer.ResolutionSpecification;
  * Game is an abstract class which provides the main-construct of the
  * game-engine
  */
-public abstract class Game implements WindowListener, KeyboardInterface, MouseInterface, ContactListener {
+public abstract class Game implements WindowListener, KeyboardInterface, MouseInterface, ContactManagementInterface {
 
 	protected ResolutionSpecification resSpecs;
 	private final String TITLE;
@@ -46,6 +46,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	protected Renderer renderer;
 	protected Inventory inventory;
 	protected Mob player;
+	protected ContactListener contactListener;
 
 	protected abstract void initGame();
 
@@ -63,7 +64,8 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 
 		resSpecs = new ResolutionSpecification(600, 800, 600, 800);
 
-		physics = new Physics(DELTATIME, this);
+		contactListener = new ContactListener(this);
+		physics = new Physics(DELTATIME, contactListener);
 		renderer = new Renderer(resSpecs, physics, this);
 		mouseListener = new Mouse(resSpecs, this);
 		keyListener = new Keyboard(this);
@@ -198,6 +200,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 				}
 				userInteraction(DELTATIME);
 				if (!pause) {
+					coreMechanicsLoop();
 					mechanicsLoop();
 					physics.step(DELTATIME);
 					eventsLoop();
@@ -227,6 +230,17 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 					} catch (InterruptedException e) {
 					}
 				}
+			}
+		}
+	}
+	
+	private void coreMechanicsLoop() {
+		//Mob Mechanics
+		for (int i = 0; i < physics.getNumBodies(); i++) {
+			Body body = physics.getBodies(i);
+			if (body instanceof Mob) {
+				Mob mob = (Mob) body;
+				mob.invulnerabilityCooldown();
 			}
 		}
 	}

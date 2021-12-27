@@ -1,8 +1,8 @@
 package kane.physics;
 
-import kane.math.Scalar;
 import kane.math.Vec2f;
 import kane.physics.contacts.ContactGeneratorFactory;
+import kane.physics.contacts.ContactListener;
 import kane.physics.contacts.ContactSolver;
 
 /**

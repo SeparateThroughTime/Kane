@@ -1,13 +1,12 @@
 /*TODO
 
-	Body mirroring when eg. player change direction.
 	ContactPoint: BoxPolygon, PolygonPolygon -> Ghost Contacts
 	Rotation
 	Sword Attack
 		Actual Damage
 		Animation
 	No-Jumping-Bug
-	Standing-Walk-Bug
+	Standing-Walk-Bug, Mirroring Bug (Pressing left and right)
 	Flickering...
 	Mobs
 	Visual Effects
@@ -34,6 +33,7 @@ import kane.genericGame.Item;
 import kane.genericGame.Mob;
 import kane.genericGame.PassiveAttributes;
 import kane.genericGame.item.SWORD;
+import kane.math.ArrayOperations;
 import kane.math.Scalar;
 import kane.math.Vec2f;
 import kane.physics.Body;
@@ -116,7 +116,7 @@ public class Kane extends Game {
 		// Create player
 		currentItem = inventory.getItem("None");
 
-		player = new Mob(100, 130, 3);
+		player = new Mob(100, 130, 3, 1);
 		player.addShape(new Box(0, 0, player, new Vec2f(16, 32), Color.GREEN, mDynamic, 2));
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PLAYER_ALL);
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
@@ -124,6 +124,10 @@ public class Kane extends Game {
 		player.getShape(1).setCollision(false);
 		player.getShape(1).addActiveAttribute(ActiveAttributes.PLAYER_FEETS);
 		player.getShape(1).setVisible(false);
+		player.addShape(new Box(32, 0, player, new Vec2f(8, 32), Color.RED, mEvent, 2));
+		player.getShape(2).setCollision(false);
+		player.getShape(2).addPassiveAttribute(PassiveAttributes.ATTACKING_FIELD);
+		player.getShape(2).setVisible(true);
 		SpriteController[] spriteControllers = currentItem.getPlayerSpriteControllers();
 		player.getShape(0).setSpriteControllers(spriteControllers);
 		physics.addBody(player);
@@ -146,6 +150,25 @@ public class Kane extends Game {
 		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC, true);
 		sword.getShape(0).setSpriteControllers(spriteControllers);
 		physics.addBody(sword);
+
+		// Create Blob
+		Mob blob = new Mob(300, 130, 3, 1);
+		points = new Vec2f[4];
+		points[0] = new Vec2f(-32, -16);
+		points[1] = new Vec2f(32, -16);
+		points[2] = new Vec2f(32, 16);
+		points[3] = new Vec2f(-32, 16);
+		blob.addShape(new Polygon(0, 0, blob, Color.YELLOW, points, mDynamic, 2));
+		blob.getShape(0).addPassiveAttribute(PassiveAttributes.MOB_ALL);
+		blob.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
+		sprite = new Sprite(new File("sprites\\Mobs\\Blob\\Blob.png"), 2, 2);
+		sprite.addState(SpriteState.STATIC, new int[] { 0 });
+		spriteControllers = new SpriteController[1];
+		spriteControllers[0] = new SpriteController(sprite);
+		spriteControllers[0].setSpritePosOffset(new Vec2f(-32, -16));
+		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC, true);
+		blob.getShape(0).setSpriteControllers(spriteControllers);
+		physics.addBody(blob);
 
 		// Create Background
 		file = new File("sprites\\backgrounds\\background.png");
@@ -241,7 +264,17 @@ public class Kane extends Game {
 	@Override
 	public void leftArrowClick() {
 		SpriteController[] spriteControllers = player.getShape(0).getSpriteControllers();
-		for (SpriteController spriteController : spriteControllers) {
+		for (int i = 0; i < spriteControllers.length; i++) {
+			SpriteController spriteController = spriteControllers[i];
+
+			// Checks if the player changed direction. If so, the body turns.
+			if (i == 0) {
+				if (ArrayOperations.contains(SpriteController.RIGHT_SPRITE_STATES,
+						spriteController.getCurrentSpriteState())) {
+					player.mirrorX();
+				}
+			}
+
 			spriteController.setCurrentSpriteState(SpriteState.RUNNING_LEFT, true);
 		}
 		player.setAngle(Scalar.PI);
@@ -269,7 +302,17 @@ public class Kane extends Game {
 	@Override
 	public void rightArrowClick() {
 		SpriteController[] spriteControllers = player.getShape(0).getSpriteControllers();
-		for (SpriteController spriteController : spriteControllers) {
+		for (int i = 0; i < spriteControllers.length; i++) {
+			SpriteController spriteController = spriteControllers[i];
+
+			// Checks if the player changed direction. If so, the body turns.
+			if (i == 0) {
+				if (ArrayOperations.contains(SpriteController.LEFT_SPRITE_STATES,
+						spriteController.getCurrentSpriteState())) {
+					player.mirrorX();
+				}
+			}
+
 			spriteController.setCurrentSpriteState(SpriteState.RUNNING_RIGHT, true);
 		}
 		player.setAngle(0f);
@@ -471,104 +514,67 @@ public class Kane extends Game {
 	}
 
 	@Override
-	public void penetration(ShapePair pair) {
-		for (int i = 0; i < 2; i++) {
-			Shape activeShape;
-			Shape passiveShape;
-			if (i == 0) {
-				activeShape = pair.getShapeA();
-				passiveShape = pair.getShapeB();
-			} else {
-				activeShape = pair.getShapeB();
-				passiveShape = pair.getShapeA();
-			}
-			for (int j = 0; j < activeShape.getNumActiveAttributes(); j++) {
-				ActiveAttributes activeE = activeShape.getActiveAttribute(j);
-				for (int k = 0; k < passiveShape.getNumPassiveAttributes(); k++) {
-					PassiveAttributes passiveE = passiveShape.getPassiveAttribute(j);
-					// Here starts the Eventmanagement
-					if (activeE == ActiveAttributes.CAMERA_RIGHT && passiveE == PassiveAttributes.PLAYER_ALL) {
-						renderer.getCamera().getAcc().add(cameraMovementAccX);
-						if (renderer.getCamera().getVel().getX() > playerRunSpeed) {
-							renderer.getCamera().getVel().setX(playerRunSpeed);
-						}
-					} else if (activeE == ActiveAttributes.CAMERA_LEFT && passiveE == PassiveAttributes.PLAYER_ALL) {
-						renderer.getCamera().getAcc().sub(cameraMovementAccX);
-						if (-renderer.getCamera().getVel().getX() > playerRunSpeed) {
-							renderer.getCamera().getVel().setX(-playerRunSpeed);
-						}
-					} else if (activeE == ActiveAttributes.CAMERA_MID_X && passiveE == PassiveAttributes.PLAYER_ALL) {
-						renderer.getCamera().getVel().setX(inventory.getVel().getX() * 0.9f);
-					}
-					if (activeE == ActiveAttributes.CAMERA_UP && passiveE == PassiveAttributes.PLAYER_ALL) {
-						renderer.getCamera().getAcc().add(cameraMovementAccY);
-						if (renderer.getCamera().getVel().getY() > cameraMovementSpeedY) {
-							renderer.getCamera().getVel().setY(cameraMovementSpeedY);
-						}
-					} else if (activeE == ActiveAttributes.CAMERA_DOWN && passiveE == PassiveAttributes.PLAYER_ALL) {
-						renderer.getCamera().getAcc().sub(cameraMovementAccY);
-						if (-renderer.getCamera().getVel().getY() > cameraMovementSpeedY) {
-							renderer.getCamera().getVel().setY(-cameraMovementSpeedY);
-						}
-					} else if (activeE == ActiveAttributes.CAMERA_MID_Y && passiveE == PassiveAttributes.PLAYER_ALL) {
-						renderer.getCamera().getVel().setY(inventory.getVel().getY() * 0.5f);
-					} else if (activeE == ActiveAttributes.SWORD && passiveE == PassiveAttributes.PLAYER_ALL) {
-						activeShape.getBody().remove();
-						inventory.getItem("Sword").addAmount(SWORD.STANDARD_AMOUNT);
-					}
-				}
-
-			}
+	public void playerTouchCameraLeft(Shape cameraLeft, Shape playerAll) {
+		renderer.getCamera().getAcc().sub(cameraMovementAccX);
+		if (-renderer.getCamera().getVel().getX() > playerRunSpeed) {
+			renderer.getCamera().getVel().setX(-playerRunSpeed);
 		}
 	}
 
 	@Override
-	public void penetrated(ShapePair pair) {
-		for (int i = 0; i < 2; i++) {
-			Shape activeShape;
-			Shape passiveShape;
-			if (i == 0) {
-				activeShape = pair.getShapeA();
-				passiveShape = pair.getShapeB();
-			} else {
-				activeShape = pair.getShapeB();
-				passiveShape = pair.getShapeA();
-			}
-			for (int j = 0; j < activeShape.getNumActiveAttributes(); j++) {
-				ActiveAttributes activeE = activeShape.getActiveAttribute(j);
-				for (int k = 0; k < passiveShape.getNumPassiveAttributes(); k++) {
-					PassiveAttributes passiveE = passiveShape.getPassiveAttribute(j);
-					// Here starts the Eventmanagement
-					if (activeE == ActiveAttributes.PLAYER_FEETS && passiveE == PassiveAttributes.PHYSICAL) {
-						playerCanJump = true;
-					}
-				}
-			}
+	public void playerTouchCameraRight(Shape cameraRight, Shape playerAll) {
+		renderer.getCamera().getAcc().add(cameraMovementAccX);
+		if (renderer.getCamera().getVel().getX() > playerRunSpeed) {
+			renderer.getCamera().getVel().setX(playerRunSpeed);
 		}
 	}
 
 	@Override
-	public void separated(ShapePair pair) {
-		for (int i = 0; i < 2; i++) {
-			Shape activeShape;
-			Shape passiveShape;
-			if (i == 0) {
-				activeShape = pair.getShapeA();
-				passiveShape = pair.getShapeB();
-			} else {
-				activeShape = pair.getShapeB();
-				passiveShape = pair.getShapeA();
-			}
-			for (int j = 0; j < activeShape.getNumActiveAttributes(); j++) {
-				ActiveAttributes activeE = activeShape.getActiveAttribute(j);
-				for (int k = 0; k < passiveShape.getNumPassiveAttributes(); k++) {
-					PassiveAttributes passiveE = passiveShape.getPassiveAttribute(j);
-					// Here starts the Eventmanagement
-					if (activeE == ActiveAttributes.PLAYER_FEETS && passiveE == PassiveAttributes.PHYSICAL) {
-						playerCanJump = false;
-					}
-				}
-			}
+	public void playerTouchCameraUp(Shape cameraUp, Shape playerAll) {
+		renderer.getCamera().getAcc().add(cameraMovementAccY);
+		if (renderer.getCamera().getVel().getY() > cameraMovementSpeedY) {
+			renderer.getCamera().getVel().setY(cameraMovementSpeedY);
 		}
+	}
+
+	@Override
+	public void playerTouchCameraDown(Shape cameraDown, Shape playerAll) {
+		renderer.getCamera().getAcc().sub(cameraMovementAccY);
+		if (-renderer.getCamera().getVel().getY() > cameraMovementSpeedY) {
+			renderer.getCamera().getVel().setY(-cameraMovementSpeedY);
+		}
+	}
+
+	@Override
+	public void playerTouchCameraMidX(Shape cameraMidX, Shape playerAll) {
+		renderer.getCamera().getVel().setX(inventory.getVel().getX() * 0.9f);
+	}
+
+	@Override
+	public void playerTouchCameraMidY(Shape cameraMidY, Shape playerAll) {
+		renderer.getCamera().getVel().setY(inventory.getVel().getY() * 0.5f);
+	}
+
+	@Override
+	public void playerStandsOnPhysical(Shape playerFeet, Shape physical) {
+		playerCanJump = true;
+	}
+
+	@Override
+	public void playerCollectsSword(Shape sword, Shape playerAll) {
+		sword.getBody().remove();
+		inventory.getItem("Sword").addAmount(SWORD.STANDARD_AMOUNT);
+	}
+
+	@Override
+	public void playerFeetLeavePhysical(Shape playerFeet, Shape physical) {
+		playerCanJump = false;
+	}
+
+	@Override
+	public void playerAttacksMob(Shape attackingField, Shape mobAll) {
+		Mob mob = (Mob)mobAll.getBody();
+		int damage = player.getDamage();
+		mob.hit(damage, player.getPos());
 	}
 }

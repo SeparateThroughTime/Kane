@@ -4,11 +4,13 @@ import kane.genericGame.ActiveAttributes;
 import kane.genericGame.Game;
 import kane.genericGame.GameEvent;
 import kane.genericGame.Mob;
+import kane.genericGame.PassiveAttributes;
 import kane.physics.Shape;
 
 public class MeleeAttack extends GameEvent {
 
-	private Mob attacker;
+	protected Mob attacker;
+	protected Shape attackShape;
 
 	public MeleeAttack(Game g, int eventDuration, Mob attacker) {
 		super(g, eventDuration);
@@ -17,35 +19,20 @@ public class MeleeAttack extends GameEvent {
 
 	@Override
 	public void start() {
+		attackShape = attacker.getShape(PassiveAttributes.ATTACKING_FIELD);
+		attackShape.addActiveAttribute(ActiveAttributes.ATTACKING_FIELD);
 		
 		procedure();
 	}
 
 	@Override
 	public void procedure() {
-		if (attacker.getAngle() == 0) {
-			Shape attackShape = attacker.getShape(ActiveAttributes.ATTACK_RIGHT);
-			attackShape.addActiveAttribute(ActiveAttributes.ATTACKING);
-			Shape otherSide = attacker.getShape(ActiveAttributes.ATTACK_LEFT);
-			otherSide.remActiveAttribute(ActiveAttributes.ATTACKING);
-		}
-		else {
-			Shape attackShape = attacker.getShape(ActiveAttributes.ATTACK_LEFT);
-			attackShape.addActiveAttribute(ActiveAttributes.ATTACKING);
-			Shape otherSide = attacker.getShape(ActiveAttributes.ATTACK_RIGHT);
-			otherSide.remActiveAttribute(ActiveAttributes.ATTACKING);
-		}
-		//TODO Attack stuff
-
+		
 	}
 
 	@Override
 	public void end() {
-		Shape attackRight = attacker.getShape(ActiveAttributes.ATTACK_RIGHT);
-		attackRight.remActiveAttribute(ActiveAttributes.ATTACKING);
-		Shape attackLeft = attacker.getShape(ActiveAttributes.ATTACK_LEFT);
-		attackLeft.remActiveAttribute(ActiveAttributes.ATTACKING);
-
+		attackShape.remActiveAttribute(ActiveAttributes.ATTACKING_FIELD);
 	}
 
 }
