@@ -38,7 +38,7 @@ public class ContactListener {
 						penetrationInterface.playerTouchCameraLeft(activeShape, passiveShape);
 						
 					} else if (activeA == ActiveAttributes.CAMERA_MID_X && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerTouchCameraMidY(activeShape, passiveShape);
+						penetrationInterface.playerTouchCameraMidX(activeShape, passiveShape);
 						
 					}
 					if (activeA == ActiveAttributes.CAMERA_UP && passiveA == PassiveAttributes.PLAYER_ALL) {

@@ -552,7 +552,7 @@ public class Kane extends Game {
 
 	@Override
 	public void playerTouchCameraMidY(Shape cameraMidY, Shape playerAll) {
-		renderer.getCamera().getVel().setY(inventory.getVel().getY() * 0.5f);
+		renderer.getCamera().getVel().setY(inventory.getVel().getY() * 0.9f);
 	}
 
 	@Override

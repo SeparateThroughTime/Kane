@@ -24,7 +24,7 @@ import kane.renderer.ResolutionSpecification;
 public abstract class Game implements WindowListener, KeyboardInterface, MouseInterface, ContactManagementInterface {
 
 	protected ResolutionSpecification resSpecs;
-	private final String TITLE;
+	private final String title;
 	private JFrame frame;
 
 	protected boolean[] keyState = new boolean[128];
@@ -32,10 +32,10 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	protected Mouse mouseListener;
 	protected Keyboard keyListener;
 
-	final long TARGET_FPS = 60;
-	final long NANO_SECOND = 1000000000;
-	final long NANO_SECOND_FPS = NANO_SECOND / TARGET_FPS;
-	protected final float DELTATIME = 1.0f / TARGET_FPS;
+	public final static long TARGET_FPS = 60;
+	public final static long NANO_SECOND = 1000000000;
+	public final static long NANO_SECOND_FPS = NANO_SECOND / TARGET_FPS;
+	public final static float DELTATIME = 1.0f / TARGET_FPS;
 
 	public boolean pause;
 
@@ -60,7 +60,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	 */
 	public Game(String title) {
 		// init Window
-		TITLE = title;
+		this.title = title;
 
 		resSpecs = new ResolutionSpecification(600, 800, 600, 800);
 
@@ -69,10 +69,11 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		renderer = new Renderer(resSpecs, physics, this);
 		mouseListener = new Mouse(resSpecs, this);
 		keyListener = new Keyboard(this);
+		
 
 		frame = new JFrame();
 		frame.setResizable(false);
-		frame.setTitle(TITLE);
+		frame.setTitle(title);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setIgnoreRepaint(true);
 		frame.addWindowListener(this);
@@ -215,7 +216,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 
 			// FPS Output
 			if (System.nanoTime() - startFpsTime >= NANO_SECOND) {
-				frame.setTitle(String.format("%s: Frames: %d, Bodie: %d", TITLE, numFrames, physics.getNumBodies()));
+				frame.setTitle(String.format("%s: Frames: %d, Bodie: %d", title, numFrames, physics.getNumBodies()));
 				startFpsTime = System.nanoTime();
 				numFrames = 0;
 			}

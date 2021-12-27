@@ -13,5 +13,7 @@ public enum PassiveAttributes {
 	ATTACKING_FIELD,
 	
 	INVENTORY,
-	INVENTORY_SLOT;
+	INVENTORY_SLOT,
+	
+	HAS_SPRITE;
 }

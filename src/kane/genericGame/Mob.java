@@ -2,6 +2,7 @@ package kane.genericGame;
 
 import kane.math.Vec2f;
 import kane.physics.Body;
+import sun.security.x509.DeltaCRLIndicatorExtension;
 
 public class Mob extends Body {
 	private static final int INVULNERABILITY_TIME = 30;
@@ -35,11 +36,12 @@ public class Mob extends Body {
 	}
 
 	public void kill() {
-		
+		remove();
 	}
 
 	public void reduceHealth(int amount) {
 		health -= amount;
+		checkDeath();
 	}
 
 	public int getMaxHealth() {
@@ -69,9 +71,9 @@ public class Mob extends Body {
 	private void bump(Vec2f attackersPos) {
 		float attackersRelPosX = attackersPos.getX() - pos.getX();
 		if (attackersRelPosX < 0) {
-			acc.add(5, 5);
+			acc.add(200 / Game.DELTATIME, 200 / Game.DELTATIME);
 		} else {
-			acc.add(-5, 5);
+			acc.add(-200 / Game.DELTATIME, 200 / Game.DELTATIME);
 		}
 	}
 	

@@ -2,6 +2,7 @@ package kane.physics;
 
 import kane.genericGame.ActiveAttributes;
 import kane.genericGame.PassiveAttributes;
+import kane.math.ArrayOperations;
 import kane.math.Vec2f;
 
 /**
@@ -375,5 +376,40 @@ public class Body {
 			
 			shape.mirrorY();
 		}
+	}
+	
+	public boolean hasShapeWithPassiveAttribute(PassiveAttributes passiveA) {
+		for (int i = 0; i < numShapes; i++) {
+			Shape shape = shapes[i];
+			if (shape.hasPassiveAtrribute(passiveA)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean hasShapeWithActiveAttribute(ActiveAttributes activeA) {
+		for (int i = 0; i < numShapes; i++) {
+			Shape shape = shapes[i];
+			if (shape.hasActiveAtrribute(activeA)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Returns all shapes with sprites
+	 * @return
+	 */
+	public Shape[] getSpriteShapes() {
+		Shape[] shapes = new Shape[0];
+		for (int i = 0; i < numShapes; i++) {
+			Shape shape = shapes[i];
+			if (shape.hasSprite) {
+				shapes = (Shape[])ArrayOperations.add(shapes, shape);
+			}
+		}
+		return shapes;
 	}
 }
