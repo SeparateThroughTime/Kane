@@ -26,6 +26,10 @@ public class Body {
 	protected float momentOfInertia;
 	private boolean reactToGravity;
 	private boolean removed;
+	
+	protected Shape[] shapes;
+	public static final int MAX_SHAPES = 10;
+	protected int numShapes;
 
 	public float getAngleVel() {
 		return angleVel;
@@ -38,10 +42,6 @@ public class Body {
 	public void setAngle(float angle) {
 		this.angle = angle;
 	}
-
-	protected Shape[] shapes;
-	public static final int MAX_SHAPES = 10;
-	protected int numShapes;
 
 	/**
 	 * 
@@ -334,5 +334,25 @@ public class Body {
 	
 	public boolean isRemoved() {
 		return removed;
+	}
+	
+	public void mirrorX() {
+		for (int i = 0; i < numShapes; i++) {
+			Shape shape = shapes[i];
+			Vec2f relPos = shape.getRelPos();
+			shape.setRelPos(-relPos.getX(), relPos.getY());
+			
+			shape.mirrorX();
+		}
+	}
+	
+	public void mirrorY() {
+		for (int i = 0; i < numShapes; i++) {
+			Shape shape = shapes[i];
+			Vec2f relPos = shape.getRelPos();
+			shape.setRelPos(relPos.getX(), -relPos.getY());
+			
+			shape.mirrorY();
+		}
 	}
 }

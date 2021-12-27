@@ -8,7 +8,6 @@ import kane.physics.Body;
 import kane.physics.Material;
 import kane.physics.Shape;
 import kane.physics.ShapeType;
-import kane.physics.contacts.Contact;
 
 /**
  * This is a Shape of the Type Box
@@ -18,11 +17,11 @@ public class Box extends Shape {
 
 	/**
 	 * 
-	 * @param relPosX -position of x in relation to the body
-	 * @param relPosY -position of y in relation to the body
+	 * @param relPosX  -position of x in relation to the body
+	 * @param relPosY  -position of y in relation to the body
 	 * @param body
-	 * @param rad -lengths of the box
-	 * @param color -0xrrggbb
+	 * @param rad      -lengths of the box
+	 * @param color    -0xrrggbb
 	 * @param material
 	 */
 	public Box(int relPosX, int relPosY, Body body, Vec2f rad, Color color, Material material, int renderLayer) {
@@ -45,6 +44,7 @@ public class Box extends Shape {
 
 	/**
 	 * Get the point bottom left of the box.
+	 * 
 	 * @return
 	 */
 	public Vec2f getMin() {
@@ -53,6 +53,7 @@ public class Box extends Shape {
 
 	/**
 	 * Get the point up right of the box.
+	 * 
 	 * @return
 	 */
 	public Vec2f getMax() {
@@ -66,6 +67,7 @@ public class Box extends Shape {
 
 	/**
 	 * Get the lengths of the box.
+	 * 
 	 * @return
 	 */
 	public Vec2f getRad() {
@@ -96,11 +98,19 @@ public class Box extends Shape {
 			overlap = overlapY;
 			normal.set(0, Scalar.sign(relPos.getY())).normalize();
 		}
-		
-		if(overlap <= 0) {
+
+		if (overlap <= 0) {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	protected void mirrorX() {
+	}
+
+	@Override
+	protected void mirrorY() {
 	}
 
 }

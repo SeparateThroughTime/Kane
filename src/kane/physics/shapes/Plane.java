@@ -7,7 +7,6 @@ import kane.physics.Body;
 import kane.physics.Material;
 import kane.physics.Shape;
 import kane.physics.ShapeType;
-import kane.physics.contacts.Contact;
 
 /**
  * This is a Shape of the Type Plane. Planes are Lines without startpoint or
@@ -95,10 +94,20 @@ public class Plane extends Shape {
 		Vec2f pointOnPlane = getPoint();
 		Vec2f distanceToPlane = new Vec2f(pointOnPlane).sub(point);
 		float d = distanceToPlane.dot(getNormal());
-		
+
 		if (-d <= 0) {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	protected void mirrorX() {
+		normal.set(-normal.getX(), normal.getY());
+	}
+
+	@Override
+	protected void mirrorY() {
+		normal.set(normal.getX(), -normal.getY());
 	}
 }

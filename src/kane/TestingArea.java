@@ -522,12 +522,18 @@ public class TestingArea extends Game {
 
 	@Override
 	public void f5Click() {
-
+		for (int i = 0; i < physics.getNumBodies(); i++) {
+			Body body = physics.getBodies(i);
+			body.mirrorX();
+		}
 	}
 
 	@Override
 	public void f6Click() {
-
+		for (int i = 0; i < physics.getNumBodies(); i++) {
+			Body body = physics.getBodies(i);
+			body.mirrorY();
+		}
 	}
 
 	@Override

@@ -75,4 +75,16 @@ public class LineSegment extends Shape{
 		return false;
 	}
 
+	@Override
+	protected void mirrorX() {
+		relPosA.set(-relPosA.getX(), relPosA.getY());
+		relPosB.set(-relPosB.getX(), relPosB.getY());
+	}
+
+	@Override
+	protected void mirrorY() {
+		relPosA.set(relPosA.getX(), -relPosA.getY());
+		relPosB.set(relPosB.getX(), -relPosB.getY());
+	}
+
 }

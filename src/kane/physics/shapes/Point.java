@@ -49,4 +49,12 @@ public class Point extends Shape {
 		return false;
 	}
 
+	@Override
+	protected void mirrorX() {
+	}
+
+	@Override
+	protected void mirrorY() {
+	}
+
 }

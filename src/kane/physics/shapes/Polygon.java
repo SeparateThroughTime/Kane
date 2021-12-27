@@ -8,7 +8,6 @@ import kane.physics.Body;
 import kane.physics.Material;
 import kane.physics.Shape;
 import kane.physics.ShapeType;
-import kane.physics.contacts.Contact;
 
 /**
  * This is a Shape of the Type Polygon. A Polygon has a minimum of 3 point.
@@ -244,9 +243,24 @@ public class Polygon extends Shape {
 
 		if (bestD <= 0) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
+		}
+	}
+
+	@Override
+	protected void mirrorX() {
+		for (int i = 0; i < numPoints; i++) {
+			Vec2f point = points[i];
+			point.set(-point.getX(), point.getY());
+		}
+	}
+
+	@Override
+	protected void mirrorY() {
+		for (int i = 0; i < numPoints; i++) {
+			Vec2f point = points[i];
+			point.set(point.getX(), -point.getY());
 		}
 	}
 

@@ -127,6 +127,15 @@ public abstract class Shape {
 	public boolean getCollision() {
 		return collision;
 	}
+	
+	/**
+	 * Set relative position of shape
+	 * @param x
+	 * @param y
+	 */
+	public void setRelPos(float x, float y) {
+		relPos.set(x, y);
+	}
 
 	/**
 	 * Get relative position of shape.
@@ -379,4 +388,8 @@ public abstract class Shape {
 	public String toString() {
 		return "" + ID;
 	}
+
+	protected abstract void mirrorX();
+	
+	protected abstract void mirrorY();
 }

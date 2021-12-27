@@ -8,7 +8,6 @@ import kane.physics.Body;
 import kane.physics.Material;
 import kane.physics.Shape;
 import kane.physics.ShapeType;
-import kane.physics.contacts.Contact;
 
 /**
  * This is a Shape of the Type Circle
@@ -68,6 +67,14 @@ public class Circle extends Shape {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	protected void mirrorX() {
+	}
+
+	@Override
+	protected void mirrorY() {
 	}
 
 }
