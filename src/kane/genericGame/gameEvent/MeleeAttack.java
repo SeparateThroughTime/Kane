@@ -35,6 +35,7 @@ public class MeleeAttack extends GameEvent {
 			Shape otherSide = attacker.getShape(ActiveAttributes.ATTACK_RIGHT);
 			otherSide.remActiveAttribute(ActiveAttributes.ATTACKING);
 		}
+		//TODO Attack stuff
 
 	}
 

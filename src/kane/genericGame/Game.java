@@ -298,7 +298,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 
 	}
 
-	public Body getPlayer() {
+	public Mob getPlayer() {
 		return player;
 	}
 

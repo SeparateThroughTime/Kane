@@ -1,5 +1,6 @@
 /*TODO
 
+	Body mirroring when eg. player change direction.
 	ContactPoint: BoxPolygon, PolygonPolygon -> Ghost Contacts
 	Rotation
 	Sword Attack
@@ -8,7 +9,6 @@
 	No-Jumping-Bug
 	Standing-Walk-Bug
 	Flickering...
-	Body mirroring when eg. player change direction.
 	Mobs
 	Visual Effects
 	Sounds
