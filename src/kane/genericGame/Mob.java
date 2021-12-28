@@ -2,6 +2,7 @@ package kane.genericGame;
 
 import java.util.HashMap;
 
+import kane.genericGame.gameEvent.Jump;
 import kane.genericGame.gameEvent.WalkingLeft;
 import kane.genericGame.gameEvent.WalkingRight;
 import kane.math.Vec2f;
@@ -15,6 +16,7 @@ public class Mob extends Body {
 	private int damage;
 	private Vec2f walkAcc;
 	private int walkSpeed;
+	private boolean canJump;
 	private Vec2f jumpAcc;
 	private HashMap<MobActions, Boolean> activeActions;
 	private WalkingLeft currentWalkingLeftEvent;
@@ -34,6 +36,7 @@ public class Mob extends Body {
 		this.health = maxHealth;
 		this.setDamage(damage);
 		this.g = g;
+		canJump = true;
 
 		activeActions = new HashMap<MobActions, Boolean>();
 		activeActions.put(MobActions.WALK_LEFT, false);
@@ -143,5 +146,19 @@ public class Mob extends Body {
 		if (activeActions.get(MobActions.WALK_RIGHT)) {
 			currentWalkingRightEvent.killEvent();
 		}
+	}
+	
+	public void jump() {
+		if (canJump) {
+			g.addEvent(new Jump(g, this));
+		}
+	}
+
+	public boolean getCanJump() {
+		return canJump;
+	}
+
+	public void setCanJump(boolean canJump) {
+		this.canJump = canJump;
 	}
 }

@@ -79,8 +79,6 @@ public class Kane extends Game {
 	int mapHeight;
 	Item currentItem;
 
-	boolean playerCanJump;
-
 	@Override
 	protected void initGame() {
 
@@ -187,8 +185,8 @@ public class Kane extends Game {
 		// Create Background
 		file = new File("sprites\\backgrounds\\background.png");
 		renderer.changeBackground(file);
-		
-		//camera
+
+		// camera
 		cameraMovementAccX = new Vec2f(player.getWalkAcc()).mult(0.5f);
 		cameraMovementAccY = new Vec2f(cameraMovementAccX).perpLeft();
 		cameraMovementSpeedY = player.getWalkSpeed() * 2;
@@ -282,7 +280,9 @@ public class Kane extends Game {
 
 	@Override
 	public void leftArrowClick() {
-		player.walkLeft();
+		if (!pause) {
+			player.walkLeft();
+		}
 	}
 
 	@Override
@@ -295,7 +295,9 @@ public class Kane extends Game {
 
 	@Override
 	public void rightArrowClick() {
-		player.walkRight();
+		if (!pause) {
+			player.walkRight();
+		}
 	}
 
 	@Override
@@ -411,9 +413,7 @@ public class Kane extends Game {
 	@Override
 	public void spaceClick() {
 		if (!pause) {
-			if (playerCanJump) {
-				player.getAcc().add(player.getJumpAcc());
-			}
+			player.jump();
 		}
 	}
 
@@ -526,8 +526,9 @@ public class Kane extends Game {
 	}
 
 	@Override
-	public void playerStandsOnPhysical(Shape playerFeet, Shape physical) {
-		playerCanJump = true;
+	public void mobStandsOnPhysical(Shape mobFeet, Shape physical) {
+		Mob mob = (Mob) mobFeet.getBody();
+		mob.setCanJump(true);
 	}
 
 	@Override
@@ -537,8 +538,9 @@ public class Kane extends Game {
 	}
 
 	@Override
-	public void playerFeetLeavePhysical(Shape playerFeet, Shape physical) {
-		playerCanJump = false;
+	public void mobFeetLeavePhysical(Shape mobFeet, Shape physical) {
+		Mob mob = (Mob) mobFeet.getBody();
+		mob.setCanJump(false);
 	}
 
 	@Override
