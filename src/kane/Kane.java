@@ -27,13 +27,16 @@ package kane;
 
 import java.awt.Color;
 import java.io.File;
+import java.util.HashMap;
 
 import kane.genericGame.ActiveAttributes;
 import kane.genericGame.Game;
 import kane.genericGame.Item;
 import kane.genericGame.Mob;
 import kane.genericGame.PassiveAttributes;
+import kane.genericGame.MobActions;
 import kane.genericGame.item.SWORD;
+import kane.genericGame.userInteraction.Keys;
 import kane.math.ArrayOperations;
 import kane.math.Scalar;
 import kane.math.Vec2f;
@@ -70,9 +73,6 @@ public class Kane extends Game {
 	Material mEvent = new Material(0, 0);
 	Material mInterface = new Material(1, 0);
 	Body sword;
-	Vec2f playerRunAcc;
-	int playerRunSpeed;
-	Vec2f playerJumpAcc;
 	Vec2f cameraMovementAccX;
 	Vec2f cameraMovementAccY;
 	int cameraMovementSpeedY;
@@ -87,14 +87,6 @@ public class Kane extends Game {
 
 		mapLen = 400 * 3;
 		mapHeight = resSpecs.GAME_HEIGHT;
-
-		// Set Vars
-		playerRunAcc = new Vec2f(40 / DELTATIME, 0);
-		playerJumpAcc = new Vec2f(0, 200 / DELTATIME);
-		playerRunSpeed = 300;
-		cameraMovementAccX = new Vec2f(playerRunAcc).mult(0.5f);
-		cameraMovementAccY = new Vec2f(cameraMovementAccX).perpLeft();
-		cameraMovementSpeedY = playerRunSpeed * 2;
 
 		// Create World
 		Body body = new Body(0, 0);
@@ -117,7 +109,7 @@ public class Kane extends Game {
 		// Create player
 		currentItem = inventory.getItem("None");
 
-		player = new Mob(100, 130, 3, 1);
+		player = new Mob(this, 100, 130, 3, 1);
 		player.addShape(new Box(0, 0, player, new Vec2f(16, 32), Color.GREEN, mDynamic, 2));
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PLAYER_ALL);
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
@@ -132,6 +124,9 @@ public class Kane extends Game {
 		SpriteController[] spriteControllers = currentItem.getPlayerSpriteControllers();
 		player.getShape(0).setSpriteControllers(spriteControllers);
 		physics.addBody(player);
+		player.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
+		player.setJumpAcc(new Vec2f(0, 200 / DELTATIME));
+		player.setWalkSpeed(300);
 
 		// Sword
 		sword = new Body(200, 130);
@@ -152,14 +147,33 @@ public class Kane extends Game {
 		sword.getShape(0).setSpriteControllers(spriteControllers);
 		physics.addBody(sword);
 
+//		// Create Blob
+//		Mob blob = new Mob(300, 130, 3, 1);
+//		points = new Vec2f[4];
+//		points[0] = new Vec2f(-32, -16);
+//		points[1] = new Vec2f(32, -16);
+//		points[2] = new Vec2f(32, 16);
+//		points[3] = new Vec2f(-32, 16);
+//		blob.addShape(new Polygon(0, 0, blob, Color.YELLOW, points, mDynamic, 2));
+//		blob.getShape(0).addPassiveAttribute(PassiveAttributes.MOB_ALL);
+//		blob.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
+//		sprite = new Sprite(new File("sprites\\Mobs\\Blob\\Blob.png"), 2, 2);
+//		sprite.addState(SpriteState.STATIC, new int[] { 0 });
+//		spriteControllers = new SpriteController[1];
+//		spriteControllers[0] = new SpriteController(sprite);
+//		spriteControllers[0].setSpritePosOffset(new Vec2f(-32, -16));
+//		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC);
+//		blob.getShape(0).setSpriteControllers(spriteControllers);
+//		physics.addBody(blob);
+
 		// Create Blob
-		Mob blob = new Mob(300, 130, 3, 1);
+		Mob blob = new Mob(this, 300, 130, 3, 1);
 		points = new Vec2f[4];
 		points[0] = new Vec2f(-32, -16);
 		points[1] = new Vec2f(32, -16);
 		points[2] = new Vec2f(32, 16);
 		points[3] = new Vec2f(-32, 16);
-		blob.addShape(new Polygon(0, 0, blob, Color.YELLOW, points, mDynamic, 2));
+		blob.addShape(new Box(0, 0, blob, new Vec2f(32, 16), Color.YELLOW, mDynamic, 2));
 		blob.getShape(0).addPassiveAttribute(PassiveAttributes.MOB_ALL);
 		blob.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
 		sprite = new Sprite(new File("sprites\\Mobs\\Blob\\Blob.png"), 2, 2);
@@ -174,6 +188,11 @@ public class Kane extends Game {
 		// Create Background
 		file = new File("sprites\\backgrounds\\background.png");
 		renderer.changeBackground(file);
+		
+		//camera
+		cameraMovementAccX = new Vec2f(player.getWalkAcc()).mult(0.5f);
+		cameraMovementAccY = new Vec2f(cameraMovementAccX).perpLeft();
+		cameraMovementSpeedY = player.getWalkSpeed() * 2;
 
 //		changeResolution(Resolution.SOL1176x664);
 
@@ -264,57 +283,28 @@ public class Kane extends Game {
 
 	@Override
 	public void leftArrowClick() {
-		// Checks if the player changed direction. If so, the body turns.
-		if (ArrayOperations.contains(SpriteController.RIGHT_SPRITE_STATES,
-				player.getShape(PassiveAttributes.PLAYER_ALL).getCurrentSpriteState())) {
-			player.mirrorX();
-		}
-
-		player.getShape(PassiveAttributes.PLAYER_ALL).setCurrentSpriteState(SpriteState.RUNNING_LEFT);
-		player.setAngle(0f);
-
+		player.walkLeft();
 	}
 
 	@Override
 	public void leftArrowPressed() {
-		if (!pause) {
-			player.getAcc().setX(-playerRunAcc.getX());
-			if (-player.getVel().getX() > playerRunSpeed) {
-				player.getVel().setX(-playerRunSpeed);
-			}
-		}
 	}
 
 	@Override
 	public void leftArrowReleased() {
-		player.getShape(PassiveAttributes.PLAYER_ALL).setCurrentSpriteState(SpriteState.STANDING_LEFT);
 	}
 
 	@Override
 	public void rightArrowClick() {
-		// Checks if the player changed direction. If so, the body turns.
-		if (ArrayOperations.contains(SpriteController.LEFT_SPRITE_STATES,
-				player.getShape(PassiveAttributes.PLAYER_ALL).getCurrentSpriteState())) {
-			player.mirrorX();
-		}
-
-		player.getShape(PassiveAttributes.PLAYER_ALL).setCurrentSpriteState(SpriteState.RUNNING_RIGHT);
-		player.setAngle(0f);
+		player.walkRight();
 	}
 
 	@Override
 	public void rightArrowPressed() {
-		if (!pause) {
-			player.getAcc().setX(playerRunAcc.getX());
-			if (player.getVel().getX() > playerRunSpeed) {
-				player.getVel().setX(playerRunSpeed);
-			}
-		}
 	}
 
 	@Override
 	public void rightArrowReleased() {
-		player.getShape(PassiveAttributes.PLAYER_ALL).setCurrentSpriteState(SpriteState.STANDING_RIGHT);
 	}
 
 	@Override
@@ -423,7 +413,7 @@ public class Kane extends Game {
 	public void spaceClick() {
 		if (!pause) {
 			if (playerCanJump) {
-				player.getAcc().add(playerJumpAcc);
+				player.getAcc().add(player.getJumpAcc());
 			}
 		}
 	}
@@ -497,16 +487,16 @@ public class Kane extends Game {
 	@Override
 	public void playerTouchCameraLeft(Shape cameraLeft, Shape playerAll) {
 		renderer.getCamera().getAcc().sub(cameraMovementAccX);
-		if (-renderer.getCamera().getVel().getX() > playerRunSpeed) {
-			renderer.getCamera().getVel().setX(-playerRunSpeed);
+		if (-renderer.getCamera().getVel().getX() > player.getWalkSpeed()) {
+			renderer.getCamera().getVel().setX(-player.getWalkSpeed());
 		}
 	}
 
 	@Override
 	public void playerTouchCameraRight(Shape cameraRight, Shape playerAll) {
 		renderer.getCamera().getAcc().add(cameraMovementAccX);
-		if (renderer.getCamera().getVel().getX() > playerRunSpeed) {
-			renderer.getCamera().getVel().setX(playerRunSpeed);
+		if (renderer.getCamera().getVel().getX() > player.getWalkSpeed()) {
+			renderer.getCamera().getVel().setX(player.getWalkSpeed());
 		}
 	}
 
@@ -539,7 +529,6 @@ public class Kane extends Game {
 	@Override
 	public void playerStandsOnPhysical(Shape playerFeet, Shape physical) {
 		playerCanJump = true;
-		System.out.println("Ground");
 	}
 
 	@Override
@@ -551,7 +540,6 @@ public class Kane extends Game {
 	@Override
 	public void playerFeetLeavePhysical(Shape playerFeet, Shape physical) {
 		playerCanJump = false;
-		System.out.println("Air");
 	}
 
 	@Override

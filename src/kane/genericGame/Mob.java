@@ -1,5 +1,9 @@
 package kane.genericGame;
 
+import java.util.HashMap;
+
+import kane.genericGame.gameEvent.WalkingLeft;
+import kane.genericGame.gameEvent.WalkingRight;
 import kane.math.Vec2f;
 import kane.physics.Body;
 
@@ -9,14 +13,20 @@ public class Mob extends Body {
 	private int health;
 	private int maxHealth;
 	private int damage;
+	private Vec2f walkAcc;
+	private int walkSpeed;
+	private Vec2f jumpAcc;
+	private HashMap<MobActions, Boolean> activePlayerActions;
+	private Game g;
 
 	private int invulnerabilityCooldown;
 
-	public Mob(int posX, int posY, int maxHealth, int damage) {
+	public Mob(Game g, int posX, int posY, int maxHealth, int damage) {
 		super(posX, posY);
 		this.setMaxHealth(maxHealth);
 		this.health = maxHealth;
 		this.setDamage(damage);
+		this.g = g;
 	}
 
 	public int getHealth() {
@@ -80,5 +90,37 @@ public class Mob extends Body {
 		if (invulnerabilityCooldown > 0) {
 			invulnerabilityCooldown--;
 		}
+	}
+
+	public Vec2f getWalkAcc() {
+		return walkAcc;
+	}
+
+	public void setWalkAcc(Vec2f walkAcc) {
+		this.walkAcc = walkAcc;
+	}
+
+	public int getWalkSpeed() {
+		return walkSpeed;
+	}
+
+	public void setWalkSpeed(int wlakSpeed) {
+		this.walkSpeed = wlakSpeed;
+	}
+
+	public Vec2f getJumpAcc() {
+		return jumpAcc;
+	}
+
+	public void setJumpAcc(Vec2f jumpAcc) {
+		this.jumpAcc = jumpAcc;
+	}
+	
+	public void walkRight() {
+		g.addEvent(new WalkingRight(g, this));
+	}
+	
+	public void walkLeft() {
+		g.addEvent(new WalkingLeft(g, this));
 	}
 }

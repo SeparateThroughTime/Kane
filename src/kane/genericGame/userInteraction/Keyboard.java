@@ -4,17 +4,18 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /**
- * The Keyboard is managing all actions, when keys on the hw-keyboard are pressed.
+ * The Keyboard is managing all actions, when keys on the hw-keyboard are
+ * pressed.
  */
-public class Keyboard implements KeyListener{
-	
+public class Keyboard implements KeyListener {
+
 	private final int NUM_BUTTONS = 128;
 	protected boolean[] keyState = new boolean[NUM_BUTTONS];
 	protected boolean[] click = new boolean[NUM_BUTTONS];
 	protected boolean[] clickAgain = new boolean[NUM_BUTTONS];
-	
+
 	private KeyboardInterface keyInt;
-	
+
 	/**
 	 * 
 	 * @param keyInt -Specifies the used KeyboardInterface.
@@ -22,20 +23,50 @@ public class Keyboard implements KeyListener{
 	public Keyboard(KeyboardInterface keyInt) {
 		generateChooseAction();
 		this.keyInt = keyInt;
-		
+
 		for (int i = 0; i < NUM_BUTTONS; i++) {
 			clickAgain[i] = true;
 		}
 	}
+
+	//@formatter:off
+	public boolean isKeyPressed(Keys key) {
+		switch (key) {
+		case LEFT: return keyState[37];
+		case UP: return keyState[38];
+		case RIGHT: return keyState[39];
+		case DOWN: return keyState[40];
+		case F1: return keyState[112];
+		case F2: return keyState[113];
+		case F3: return keyState[114];
+		case F4: return keyState[115];
+		case F5: return keyState[116];
+		case F6: return keyState[117];
+		case F7: return keyState[118];
+		case F8: return keyState[119];
+		case F9: return keyState[120];
+		case F10: return keyState[121];
+		case F11: return keyState[122];
+		case F12: return keyState[123];
+		case SHIFT: return keyState[16];
+		case C: return keyState[67];
+		case SPACE: return keyState[32];
+		case ESC: return keyState[27];
+		case I: return keyState[73];
+
+		default: return false;
+		}
+	}
+	//@formatter:on
 
 	/**
 	 * This needs to run every frame. It updates the pushed Buttons on the Keyboard.
 	 */
 	public void update() {
 		for (int i = 0; i < keyState.length; i++) {
-			if(keyState[i]) {
+			if (keyState[i]) {
 				chooseActionPressed[i].choose();
-				if(click[i] && clickAgain[i]) {
+				if (click[i] && clickAgain[i]) {
 					click[i] = false;
 					clickAgain[i] = false;
 					chooseActionClick[i].choose();
@@ -43,47 +74,47 @@ public class Keyboard implements KeyListener{
 			}
 		}
 	}
-	
+
 	/**
 	 * Set the KeyboardInterface
+	 * 
 	 * @param keyInt -New KeyboardInterface
 	 */
 	public void setKeyInt(KeyboardInterface keyInt) {
 		this.keyInt = keyInt;
 	}
-	
-	//KeyListerner
-		@Override
-		public void keyTyped(KeyEvent e) {
 
-		}
+	// KeyListerner
+	@Override
+	public void keyTyped(KeyEvent e) {
 
-		@Override
-		public void keyPressed(KeyEvent e) {
-			keyState[e.getKeyCode()] = true;
-			click[e.getKeyCode()] = true;
-			
-		}
+	}
 
-		@Override
-		public void keyReleased(KeyEvent e) {
-			keyState[e.getKeyCode()] = false;
-			chooseActionReleased[e.getKeyCode()].choose();
-			clickAgain[e.getKeyCode()] = true;
+	@Override
+	public void keyPressed(KeyEvent e) {
+		keyState[e.getKeyCode()] = true;
+		click[e.getKeyCode()] = true;
 
-		}
-		
-		
-		// To choose which method is used in update
-		private interface ChooseAction {
-			/**
-			 * This is a dummy for deciding, which actual method is used in update.
-			 * Though java is not able to manage an array with methods, this will do the same.
-			 */
-			public void choose();
-		}
+	}
 
-		//@formatter:off
+	@Override
+	public void keyReleased(KeyEvent e) {
+		keyState[e.getKeyCode()] = false;
+		chooseActionReleased[e.getKeyCode()].choose();
+		clickAgain[e.getKeyCode()] = true;
+
+	}
+
+	// To choose which method is used in update
+	private interface ChooseAction {
+		/**
+		 * This is a dummy for deciding, which actual method is used in update. Though
+		 * java is not able to manage an array with methods, this will do the same.
+		 */
+		public void choose();
+	}
+
+	//@formatter:off
 		private ChooseAction[] chooseActionClick = new ChooseAction[NUM_BUTTONS];
 		private ChooseAction[] chooseActionPressed = new ChooseAction[NUM_BUTTONS];
 		private ChooseAction[] chooseActionReleased = new ChooseAction[NUM_BUTTONS];

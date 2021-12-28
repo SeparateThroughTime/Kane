@@ -3,6 +3,7 @@ package kane.genericGame;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.HashMap;
 
 import javax.swing.JFrame;
 
@@ -31,6 +32,10 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	protected boolean[] mouseState = new boolean[16];
 	protected Mouse mouseListener;
 	protected Keyboard keyListener;
+
+	public Keyboard getKeyListener() {
+		return keyListener;
+	}
 
 	public final static long TARGET_FPS = 60;
 	public final static long NANO_SECOND = 1000000000;
@@ -203,8 +208,8 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 				if (!pause) {
 					coreMechanicsLoop();
 					mechanicsLoop();
-					physics.step(DELTATIME);
 					eventsLoop();
+					physics.step(DELTATIME);
 					postMechanicsLoops();
 
 				}

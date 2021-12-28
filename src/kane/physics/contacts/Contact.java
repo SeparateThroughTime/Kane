@@ -13,6 +13,8 @@ public class Contact {
 	private final Vec2f supportA;
 	private final Vec2f supportB;
 	
+	private float impulse;
+	
 	/**
 	 * @param normal -direction of contact
 	 * @param distance -distance between bodies
@@ -24,6 +26,7 @@ public class Contact {
 		this.point = new Vec2f(point);
 		this.supportA = new Vec2f();
 		this.supportB = new Vec2f();
+		setImpulse(0f);
 	}
 	
 	/**
@@ -64,6 +67,14 @@ public class Contact {
 	 */
 	public Vec2f getSupportB() {
 		return supportB;
+	}
+
+	public float getImpulse() {
+		return impulse;
+	}
+
+	public void setImpulse(float impulse) {
+		this.impulse = impulse;
 	}
 	
 }
