@@ -2,11 +2,13 @@
 
 	ContactPoint: BoxPolygon, PolygonPolygon -> Ghost Contacts
 	Rotation
-	No-Jumping-Bug
+	Speed-Adjuster (Jumping agains dynamics increases jump heigth -> Not a bug but a feature?)
 	Standing-Walk-Bug, Mirroring Bug (Pressing left and right)
+	Inventory not working when camera moved
 	Flickering...
 	Attack direction when shape 0 of attacker has static sprite (maybe wont be appearing)
 	Mobs
+	HUD
 	Items and additional mechanics
 	Visual Effects
 	Sounds
@@ -119,10 +121,10 @@ public class Kane extends Game {
 		player.addShape(new Box(0, 0, player, new Vec2f(16, 32), Color.GREEN, mDynamic, 2));
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PLAYER_ALL);
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
-		player.addShape(new Box(0, -22, player, new Vec2f(30, 10), Color.WHITE, mEvent, 2));
+		player.addShape(new Box(0, -22, player, new Vec2f(15, 10), Color.WHITE, mEvent, 2));
 		player.getShape(1).setCollision(false);
 		player.getShape(1).addActiveAttribute(ActiveAttributes.PLAYER_FEETS);
-		player.getShape(1).setVisible(false);
+		player.getShape(1).setVisible(true);
 		player.addShape(new Box(32, 0, player, new Vec2f(8, 32), Color.RED, mEvent, 2));
 		player.getShape(2).setCollision(false);
 		player.getShape(2).addPassiveAttribute(PassiveAttributes.ATTACKING_FIELD);
@@ -262,14 +264,13 @@ public class Kane extends Game {
 
 	@Override
 	public void leftArrowClick() {
-		player.getShape(PassiveAttributes.PLAYER_ALL).setCurrentSpriteState(SpriteState.RUNNING_LEFT);
-
 		// Checks if the player changed direction. If so, the body turns.
 		if (ArrayOperations.contains(SpriteController.RIGHT_SPRITE_STATES,
 				player.getShape(PassiveAttributes.PLAYER_ALL).getCurrentSpriteState())) {
 			player.mirrorX();
 		}
 
+		player.getShape(PassiveAttributes.PLAYER_ALL).setCurrentSpriteState(SpriteState.RUNNING_LEFT);
 		player.setAngle(0f);
 
 	}
@@ -291,14 +292,13 @@ public class Kane extends Game {
 
 	@Override
 	public void rightArrowClick() {
-		player.getShape(PassiveAttributes.PLAYER_ALL).setCurrentSpriteState(SpriteState.RUNNING_RIGHT);
-
 		// Checks if the player changed direction. If so, the body turns.
 		if (ArrayOperations.contains(SpriteController.LEFT_SPRITE_STATES,
 				player.getShape(PassiveAttributes.PLAYER_ALL).getCurrentSpriteState())) {
 			player.mirrorX();
 		}
 
+		player.getShape(PassiveAttributes.PLAYER_ALL).setCurrentSpriteState(SpriteState.RUNNING_RIGHT);
 		player.setAngle(0f);
 	}
 
@@ -539,6 +539,7 @@ public class Kane extends Game {
 	@Override
 	public void playerStandsOnPhysical(Shape playerFeet, Shape physical) {
 		playerCanJump = true;
+		System.out.println("Ground");
 	}
 
 	@Override
@@ -550,6 +551,7 @@ public class Kane extends Game {
 	@Override
 	public void playerFeetLeavePhysical(Shape playerFeet, Shape physical) {
 		playerCanJump = false;
+		System.out.println("Air");
 	}
 
 	@Override
