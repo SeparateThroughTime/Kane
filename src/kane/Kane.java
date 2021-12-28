@@ -3,7 +3,6 @@
 	ContactPoint: BoxPolygon, PolygonPolygon -> Ghost Contacts
 	Rotation
 	Speed-Adjuster (Jumping agains dynamics increases jump heigth -> Not a bug but a feature?)
-	Standing-Walk-Bug, Mirroring Bug (Pressing left and right)
 	Inventory not working when camera moved
 	Flickering...
 	Attack direction when shape 0 of attacker has static sprite (maybe wont be appearing)

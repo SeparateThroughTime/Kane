@@ -28,4 +28,8 @@ public abstract class GameEvent {
 	public void reduceFrameCounter() {
 		frameCounter--;
 	}
+	
+	public void killEvent() {
+		frameCounter = EVENT_DURATION;
+	}
 }

@@ -16,7 +16,14 @@ public class Mob extends Body {
 	private Vec2f walkAcc;
 	private int walkSpeed;
 	private Vec2f jumpAcc;
-	private HashMap<MobActions, Boolean> activePlayerActions;
+	private HashMap<MobActions, Boolean> activeActions;
+	private WalkingLeft currentWalkingLeftEvent;
+	private WalkingRight currentWalkingRightEvent;
+
+	public HashMap<MobActions, Boolean> getActiveActions() {
+		return activeActions;
+	}
+
 	private Game g;
 
 	private int invulnerabilityCooldown;
@@ -27,6 +34,12 @@ public class Mob extends Body {
 		this.health = maxHealth;
 		this.setDamage(damage);
 		this.g = g;
+
+		activeActions = new HashMap<MobActions, Boolean>();
+		activeActions.put(MobActions.WALK_LEFT, false);
+		activeActions.put(MobActions.WALK_RIGHT, false);
+		activeActions.put(MobActions.JUMPING, false);
+		activeActions.put(MobActions.ATTACKING, false);
 	}
 
 	public int getHealth() {
@@ -85,7 +98,7 @@ public class Mob extends Body {
 			acc.add(-200 / Game.DELTATIME, 200 / Game.DELTATIME);
 		}
 	}
-	
+
 	public void invulnerabilityCooldown() {
 		if (invulnerabilityCooldown > 0) {
 			invulnerabilityCooldown--;
@@ -115,12 +128,20 @@ public class Mob extends Body {
 	public void setJumpAcc(Vec2f jumpAcc) {
 		this.jumpAcc = jumpAcc;
 	}
-	
+
 	public void walkRight() {
-		g.addEvent(new WalkingRight(g, this));
+		currentWalkingRightEvent = new WalkingRight(g, this);
+		g.addEvent(currentWalkingRightEvent);
+		if (activeActions.get(MobActions.WALK_LEFT)) {
+			currentWalkingLeftEvent.killEvent();
+		}
 	}
-	
+
 	public void walkLeft() {
-		g.addEvent(new WalkingLeft(g, this));
+		currentWalkingLeftEvent = new WalkingLeft(g, this);
+		g.addEvent(currentWalkingLeftEvent);
+		if (activeActions.get(MobActions.WALK_RIGHT)) {
+			currentWalkingRightEvent.killEvent();
+		}
 	}
 }
