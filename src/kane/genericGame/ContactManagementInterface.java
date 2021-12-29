@@ -14,12 +14,6 @@ public interface ContactManagementInterface {
 	public void playerTouchCameraDown(Shape cameraDown, Shape playerAll);
 	public void playerTouchCameraMidX(Shape cameraMidX, Shape playerAll);
 	public void playerTouchCameraMidY(Shape cameraMidY, Shape playerAll);
-	public void playerLeaveCameraLeft(Shape cameraLeft, Shape playerAll);
-	public void playerLeaveCameraRight(Shape cameraRight, Shape playerAll);
-	public void playerLeaveCameraUp(Shape cameraUp, Shape playerAll);
-	public void playerLeaveCameraDown(Shape cameraDown, Shape playerAll);
-	public void playerLeaveCameraMidX(Shape cameraMidX, Shape playerAll);
-	public void playerLeaveCameraMidY(Shape cameraMidY, Shape playerAll);
 	
 	public void playerCollectsSword(Shape sword, Shape playerAll);
 	

@@ -11,7 +11,6 @@ import kane.genericGame.userInteraction.Keyboard;
 import kane.genericGame.userInteraction.KeyboardInterface;
 import kane.genericGame.userInteraction.Mouse;
 import kane.genericGame.userInteraction.MouseInterface;
-import kane.math.Vec2f;
 import kane.physics.Body;
 import kane.physics.Physics;
 import kane.physics.contacts.ContactListener;
@@ -25,19 +24,14 @@ import kane.renderer.ResolutionSpecification;
  */
 public abstract class Game implements WindowListener, KeyboardInterface, MouseInterface, ContactManagementInterface {
 
-	public static final float BACKGROUND_SPEED = 0.5f;
-	
 	protected ResolutionSpecification resSpecs;
-
-	private final String TITLE;
+	private final String title;
 	private JFrame frame;
 
 	protected boolean[] keyState = new boolean[128];
 	protected boolean[] mouseState = new boolean[16];
 	protected Mouse mouseListener;
 	protected Keyboard keyListener;
-	protected int mapLen;
-	protected int mapHeight;
 
 	public Keyboard getKeyListener() {
 		return keyListener;
@@ -71,18 +65,13 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	 */
 	public Game(String title) {
 		// init Window
-		this.TITLE = title;
+		this.title = title;
 
 		resSpecs = new ResolutionSpecification(600, 800, 600, 800);
-		
-		player = new Mob(this, 100, 130, 3, 1);
-		player.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
-		player.setJumpAcc(new Vec2f(0, 200 / DELTATIME));
-		player.setWalkSpeed(300);
 
 		contactListener = new ContactListener(this);
 		physics = new Physics(DELTATIME, contactListener);
-		renderer = new Renderer(resSpecs, physics, this, player);
+		renderer = new Renderer(resSpecs, physics, this);
 		mouseListener = new Mouse(resSpecs, this);
 		keyListener = new Keyboard(this);
 		
@@ -232,7 +221,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 
 			// FPS Output
 			if (System.nanoTime() - startFpsTime >= NANO_SECOND) {
-				frame.setTitle(String.format("%s: Frames: %d, Bodie: %d", TITLE, numFrames, physics.getNumBodies()));
+				frame.setTitle(String.format("%s: Frames: %d, Bodie: %d", title, numFrames, physics.getNumBodies()));
 				startFpsTime = System.nanoTime();
 				numFrames = 0;
 			}
@@ -342,17 +331,5 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 			events[i - 1] = events[i];
 		}
 		numEvents--;
-	}
-	
-	public ResolutionSpecification getResSpecs() {
-		return resSpecs;
-	}
-	
-	public int getMapLen() {
-		return mapLen;
-	}
-	
-	public int getMapHeight() {
-		return mapHeight;
 	}
 }

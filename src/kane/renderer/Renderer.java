@@ -9,8 +9,6 @@ import java.io.File;
 import javax.swing.JPanel;
 
 import kane.genericGame.Game;
-import kane.genericGame.Mob;
-import kane.genericGame.gameEvent.camera.MoveBackground;
 import kane.math.Scalar;
 import kane.math.Vec2f;
 import kane.physics.AABB;
@@ -35,7 +33,7 @@ public class Renderer extends JPanel {
 	private ResolutionSpecification resSpecs;
 	private float multiplicator;
 	private final Physics physics;
-	private final Game g;
+	private final Game game;
 	private Shape[] renderedShapes;
 	private int numRenderedShapes;
 	private Camera camera;
@@ -44,11 +42,11 @@ public class Renderer extends JPanel {
 	public boolean showContacts = false;
 	public boolean showAABBs = false;
 
-	public Renderer(ResolutionSpecification resSpecs, Physics physics, Game game, Mob player) {
+	public Renderer(ResolutionSpecification resSpecs, Physics physics, Game game) {
 		this.resSpecs = resSpecs;
 		this.physics = physics;
-		this.g = game;
-		this.camera = new Camera(g, resSpecs, player);
+		this.game = game;
+		this.camera = new Camera(resSpecs);
 		this.physics.addBody(camera);
 		this.multiplicator = 1f;
 		setFocusable(true);
@@ -137,7 +135,7 @@ public class Renderer extends JPanel {
 						SpriteController[] spriteControllers = shape.getSpriteControllers();
 						for (SpriteController spriteController : spriteControllers) {
 							float scale = spriteController.getScale();
-							if (!g.pause) {
+							if (!game.pause) {
 								spriteController.step();
 							}
 							BufferedImage frame = spriteController.getFrame();
@@ -364,9 +362,5 @@ public class Renderer extends JPanel {
 
 	public Background getGameBackground() {
 		return background;
-	}
-	
-	public void moveBackground() {
-		g.addEvent(new MoveBackground(g, this));
 	}
 }

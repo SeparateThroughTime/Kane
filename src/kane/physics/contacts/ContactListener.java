@@ -31,6 +31,26 @@ public class ContactListener {
 				ActiveAttributes activeA = activeShape.getActiveAttribute(j);
 				for (int k = 0; k < passiveShape.getNumPassiveAttributes(); k++) {
 					PassiveAttributes passiveA = passiveShape.getPassiveAttribute(j);
+					if (activeA == ActiveAttributes.CAMERA_RIGHT && passiveA == PassiveAttributes.PLAYER_ALL) {
+						penetrationInterface.playerTouchCameraRight(activeShape, passiveShape);
+						
+					} else if (activeA == ActiveAttributes.CAMERA_LEFT && passiveA == PassiveAttributes.PLAYER_ALL) {
+						penetrationInterface.playerTouchCameraLeft(activeShape, passiveShape);
+						
+					} else if (activeA == ActiveAttributes.CAMERA_MID_X && passiveA == PassiveAttributes.PLAYER_ALL) {
+						penetrationInterface.playerTouchCameraMidX(activeShape, passiveShape);
+						
+					}
+					if (activeA == ActiveAttributes.CAMERA_UP && passiveA == PassiveAttributes.PLAYER_ALL) {
+						penetrationInterface.playerTouchCameraUp(activeShape, passiveShape);
+						
+					} else if (activeA == ActiveAttributes.CAMERA_DOWN && passiveA == PassiveAttributes.PLAYER_ALL) {
+						penetrationInterface.playerTouchCameraDown(activeShape, passiveShape);
+						
+					} else if (activeA == ActiveAttributes.CAMERA_MID_Y && passiveA == PassiveAttributes.PLAYER_ALL) {
+						penetrationInterface.playerTouchCameraMidY(activeShape, passiveShape);
+						
+					}
 					if (activeA == ActiveAttributes.SWORD && passiveA == PassiveAttributes.PLAYER_ALL) {
 						penetrationInterface.playerCollectsSword(activeShape, passiveShape);
 
@@ -56,34 +76,12 @@ public class ContactListener {
 				passiveShape = pair.getShapeA();
 			}
 			for (int j = 0; j < activeShape.getNumActiveAttributes(); j++) {
-				ActiveAttributes activeA = activeShape.getActiveAttribute(j);
+				ActiveAttributes activeE = activeShape.getActiveAttribute(j);
 				for (int k = 0; k < passiveShape.getNumPassiveAttributes(); k++) {
-					PassiveAttributes passiveA = passiveShape.getPassiveAttribute(j);
-					if (activeA == ActiveAttributes.PLAYER_FEETS && passiveA == PassiveAttributes.PHYSICAL) {
+					PassiveAttributes passiveE = passiveShape.getPassiveAttribute(j);
+					if (activeE == ActiveAttributes.PLAYER_FEETS && passiveE == PassiveAttributes.PHYSICAL) {
 						penetrationInterface.mobStandsOnPhysical(activeShape, passiveShape);
 					}
-					
-					if (activeA == ActiveAttributes.CAMERA_RIGHT && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerTouchCameraRight(activeShape, passiveShape);
-						
-					} else if (activeA == ActiveAttributes.CAMERA_LEFT && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerTouchCameraLeft(activeShape, passiveShape);
-						
-					} else if (activeA == ActiveAttributes.CAMERA_MID_X && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerTouchCameraMidX(activeShape, passiveShape);
-						
-					}
-					if (activeA == ActiveAttributes.CAMERA_UP && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerTouchCameraUp(activeShape, passiveShape);
-						
-					} else if (activeA == ActiveAttributes.CAMERA_DOWN && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerTouchCameraDown(activeShape, passiveShape);
-						
-					} else if (activeA == ActiveAttributes.CAMERA_MID_Y && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerTouchCameraMidY(activeShape, passiveShape);
-						
-					}
-					
 				}
 			}
 		}
@@ -101,32 +99,11 @@ public class ContactListener {
 				passiveShape = pair.getShapeA();
 			}
 			for (int j = 0; j < activeShape.getNumActiveAttributes(); j++) {
-				ActiveAttributes activeA = activeShape.getActiveAttribute(j);
+				ActiveAttributes activeE = activeShape.getActiveAttribute(j);
 				for (int k = 0; k < passiveShape.getNumPassiveAttributes(); k++) {
-					PassiveAttributes passiveA = passiveShape.getPassiveAttribute(j);
-					if (activeA == ActiveAttributes.PLAYER_FEETS && passiveA == PassiveAttributes.PHYSICAL) {
+					PassiveAttributes passiveE = passiveShape.getPassiveAttribute(j);
+					if (activeE == ActiveAttributes.PLAYER_FEETS && passiveE == PassiveAttributes.PHYSICAL) {
 						penetrationInterface.mobFeetLeavePhysical(activeShape, passiveShape);
-					}
-					
-					if (activeA == ActiveAttributes.CAMERA_RIGHT && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerLeaveCameraRight(activeShape, passiveShape);
-						
-					} else if (activeA == ActiveAttributes.CAMERA_LEFT && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerLeaveCameraLeft(activeShape, passiveShape);
-						
-					} else if (activeA == ActiveAttributes.CAMERA_MID_X && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerLeaveCameraMidX(activeShape, passiveShape);
-						
-					}
-					if (activeA == ActiveAttributes.CAMERA_UP && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerLeaveCameraUp(activeShape, passiveShape);
-						
-					} else if (activeA == ActiveAttributes.CAMERA_DOWN && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerLeaveCameraDown(activeShape, passiveShape);
-						
-					} else if (activeA == ActiveAttributes.CAMERA_MID_Y && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerLeaveCameraMidY(activeShape, passiveShape);
-						
 					}
 				}
 			}
