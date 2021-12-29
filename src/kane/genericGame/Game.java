@@ -25,6 +25,8 @@ import kane.renderer.ResolutionSpecification;
 public abstract class Game implements WindowListener, KeyboardInterface, MouseInterface, ContactManagementInterface {
 
 	protected ResolutionSpecification resSpecs;
+	protected int mapLen;
+	protected int mapHeight;
 	private final String title;
 	private JFrame frame;
 
@@ -331,5 +333,24 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 			events[i - 1] = events[i];
 		}
 		numEvents--;
+	}
+	
+	public ResolutionSpecification getResSpecs() {
+		return resSpecs;
+	}
+	
+	public int getMapLen() {
+		return mapLen;
+	}
+
+	public void setMapLen(int mapLen) {
+		this.mapLen = mapLen;
+	}
+	public int getMapHeight() {
+		return mapHeight;
+	}
+
+	public void setMapHeight(int mapHeight) {
+		this.mapHeight = mapHeight;
 	}
 }

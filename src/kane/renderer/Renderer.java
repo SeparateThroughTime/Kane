@@ -33,7 +33,7 @@ public class Renderer extends JPanel {
 	private ResolutionSpecification resSpecs;
 	private float multiplicator;
 	private final Physics physics;
-	private final Game game;
+	private final Game g;
 	private Shape[] renderedShapes;
 	private int numRenderedShapes;
 	private Camera camera;
@@ -42,11 +42,11 @@ public class Renderer extends JPanel {
 	public boolean showContacts = false;
 	public boolean showAABBs = false;
 
-	public Renderer(ResolutionSpecification resSpecs, Physics physics, Game game) {
+	public Renderer(ResolutionSpecification resSpecs, Physics physics, Game g) {
 		this.resSpecs = resSpecs;
 		this.physics = physics;
-		this.game = game;
-		this.camera = new Camera(resSpecs);
+		this.g = g;
+		this.camera = new Camera(resSpecs, g);
 		this.physics.addBody(camera);
 		this.multiplicator = 1f;
 		setFocusable(true);
@@ -135,7 +135,7 @@ public class Renderer extends JPanel {
 						SpriteController[] spriteControllers = shape.getSpriteControllers();
 						for (SpriteController spriteController : spriteControllers) {
 							float scale = spriteController.getScale();
-							if (!game.pause) {
+							if (!g.pause) {
 								spriteController.step();
 							}
 							BufferedImage frame = spriteController.getFrame();

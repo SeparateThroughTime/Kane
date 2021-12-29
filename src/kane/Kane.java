@@ -75,8 +75,6 @@ public class Kane extends Game {
 	Vec2f cameraMovementAccX;
 	Vec2f cameraMovementAccY;
 	int cameraMovementSpeedY;
-	int mapLen;
-	int mapHeight;
 	Item currentItem;
 
 	@Override
@@ -190,6 +188,7 @@ public class Kane extends Game {
 		cameraMovementAccX = new Vec2f(player.getWalkAcc()).mult(0.5f);
 		cameraMovementAccY = new Vec2f(cameraMovementAccX).perpLeft();
 		cameraMovementSpeedY = player.getWalkSpeed() * 2;
+		renderer.getCamera().bindCameraToMap();
 
 //		changeResolution(Resolution.SOL1176x664);
 
@@ -198,24 +197,6 @@ public class Kane extends Game {
 	@Override
 	protected void mechanicsLoop() {
 		Vec2f cameraPos = renderer.getCamera().getPos();
-		if (cameraPos.getX() - resSpecs.gameWidth * 0.5f < 0) {
-			cameraPos.setX(resSpecs.gameWidth * 0.5f);
-			renderer.getCamera().getAcc().setX(0);
-			renderer.getCamera().getVel().setX(0);
-		} else if (cameraPos.getX() + resSpecs.gameWidth * 0.5f > mapLen) {
-			cameraPos.setX(mapLen - resSpecs.gameWidth * 0.5f);
-			renderer.getCamera().getAcc().setX(0);
-			renderer.getCamera().getVel().setX(0);
-		}
-		if (cameraPos.getY() - resSpecs.GAME_HEIGHT * 0.5f < 0) {
-			cameraPos.setY(resSpecs.GAME_HEIGHT * 0.5f);
-			renderer.getCamera().getAcc().setY(0);
-			renderer.getCamera().getVel().setY(0);
-		} else if (cameraPos.getY() + resSpecs.GAME_HEIGHT * 0.5f > mapHeight) {
-			cameraPos.setY(mapHeight - resSpecs.GAME_HEIGHT * 0.5f);
-			renderer.getCamera().getAcc().setY(0);
-			renderer.getCamera().getVel().setY(0);
-		}
 
 		if (renderer.getGameBackground() != null) {
 			int backgroundPos = (int) ((cameraPos.dot(new Vec2f(1, 0)) - resSpecs.gameWidth * 0.5f) * BACKGROUND_SPEED);

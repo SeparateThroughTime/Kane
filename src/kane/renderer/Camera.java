@@ -3,6 +3,8 @@ package kane.renderer;
 import java.awt.Color;
 
 import kane.genericGame.ActiveAttributes;
+import kane.genericGame.Game;
+import kane.genericGame.gameEvent.camera.BindCameraToMap;
 import kane.math.Vec2f;
 import kane.physics.AABB;
 import kane.physics.Body;
@@ -20,9 +22,11 @@ public class Camera extends Body {
 	private Vec2f windowRad;
 	public Vec2f zeroPoint;
 	private ResolutionSpecification resSpecs;
+	private Game g;
 
-	public Camera(ResolutionSpecification resSpecs) {
+	public Camera(ResolutionSpecification resSpecs, Game g) {
 		super(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2);
+		this.g = g;
 
 		this.resSpecs = resSpecs;
 		this.zeroPoint = new Vec2f();
@@ -105,6 +109,10 @@ public class Camera extends Body {
 	 */
 	public AABB getWindow() {
 		return window;
+	}
+	
+	public void bindCameraToMap() {
+		g.addEvent(new BindCameraToMap(g, this));
 	}
 	
 }
