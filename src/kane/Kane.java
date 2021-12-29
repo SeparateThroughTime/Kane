@@ -65,18 +65,13 @@ public class Kane extends Game {
 
 	}
 
-	public static float BACKGROUND_SPEED = 0.5f;
-
 	Material mStatic = new Material(0, 1f);
 	Material mDynamic = new Material(1, 0.9f);
 	Material mEvent = new Material(0, 0);
 	Material mInterface = new Material(1, 0);
 	Body sword;
-	Vec2f cameraMovementAccX;
 	Vec2f cameraMovementAccY;
 	int cameraMovementSpeedY;
-	int mapLen;
-	int mapHeight;
 	Item currentItem;
 
 	@Override
@@ -104,9 +99,11 @@ public class Kane extends Game {
 		physics.addBody(body);
 
 		// Create player
-		currentItem = inventory.getItem("None");
-
 		player = new Mob(this, 100, 130, 3, 1);
+		player.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
+		player.setJumpAcc(new Vec2f(0, 200 / DELTATIME));
+		player.setWalkSpeed(300);
+		currentItem = inventory.getItem("None");
 		player.addShape(new Box(0, 0, player, new Vec2f(16, 32), Color.GREEN, mDynamic, 2));
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PLAYER_ALL);
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
@@ -121,9 +118,6 @@ public class Kane extends Game {
 		SpriteController[] spriteControllers = currentItem.getPlayerSpriteControllers();
 		player.getShape(0).setSpriteControllers(spriteControllers);
 		physics.addBody(player);
-		player.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
-		player.setJumpAcc(new Vec2f(0, 200 / DELTATIME));
-		player.setWalkSpeed(300);
 
 		// Sword
 		sword = new Body(200, 130);
@@ -187,9 +181,12 @@ public class Kane extends Game {
 		renderer.changeBackground(file);
 
 		// camera
-		cameraMovementAccX = new Vec2f(player.getWalkAcc()).mult(0.5f);
-		cameraMovementAccY = new Vec2f(cameraMovementAccX).perpLeft();
+		
+		renderer.createCamera();
+		cameraMovementAccY = new Vec2f(renderer.getCamera().getMovementAccX()).perpLeft();
 		cameraMovementSpeedY = player.getWalkSpeed() * 2;
+		renderer.getCamera().bindCameraToMap();
+		renderer.moveBackground();
 
 //		changeResolution(Resolution.SOL1176x664);
 
@@ -197,30 +194,6 @@ public class Kane extends Game {
 
 	@Override
 	protected void mechanicsLoop() {
-		Vec2f cameraPos = renderer.getCamera().getPos();
-		if (cameraPos.getX() - resSpecs.gameWidth * 0.5f < 0) {
-			cameraPos.setX(resSpecs.gameWidth * 0.5f);
-			renderer.getCamera().getAcc().setX(0);
-			renderer.getCamera().getVel().setX(0);
-		} else if (cameraPos.getX() + resSpecs.gameWidth * 0.5f > mapLen) {
-			cameraPos.setX(mapLen - resSpecs.gameWidth * 0.5f);
-			renderer.getCamera().getAcc().setX(0);
-			renderer.getCamera().getVel().setX(0);
-		}
-		if (cameraPos.getY() - resSpecs.GAME_HEIGHT * 0.5f < 0) {
-			cameraPos.setY(resSpecs.GAME_HEIGHT * 0.5f);
-			renderer.getCamera().getAcc().setY(0);
-			renderer.getCamera().getVel().setY(0);
-		} else if (cameraPos.getY() + resSpecs.GAME_HEIGHT * 0.5f > mapHeight) {
-			cameraPos.setY(mapHeight - resSpecs.GAME_HEIGHT * 0.5f);
-			renderer.getCamera().getAcc().setY(0);
-			renderer.getCamera().getVel().setY(0);
-		}
-
-		if (renderer.getGameBackground() != null) {
-			int backgroundPos = (int) ((cameraPos.dot(new Vec2f(1, 0)) - resSpecs.gameWidth * 0.5f) * BACKGROUND_SPEED);
-			renderer.getGameBackground().setOffsetX(backgroundPos);
-		}
 	}
 
 	@Override
@@ -475,18 +448,12 @@ public class Kane extends Game {
 
 	@Override
 	public void playerTouchCameraLeft(Shape cameraLeft, Shape playerAll) {
-		renderer.getCamera().getAcc().sub(cameraMovementAccX);
-		if (-renderer.getCamera().getVel().getX() > player.getWalkSpeed()) {
-			renderer.getCamera().getVel().setX(-player.getWalkSpeed());
-		}
+		renderer.getCamera().moveCameraLeft();
 	}
 
 	@Override
 	public void playerTouchCameraRight(Shape cameraRight, Shape playerAll) {
-		renderer.getCamera().getAcc().add(cameraMovementAccX);
-		if (renderer.getCamera().getVel().getX() > player.getWalkSpeed()) {
-			renderer.getCamera().getVel().setX(player.getWalkSpeed());
-		}
+		renderer.getCamera().moveCameraRight();
 	}
 
 	@Override
@@ -507,7 +474,7 @@ public class Kane extends Game {
 
 	@Override
 	public void playerTouchCameraMidX(Shape cameraMidX, Shape playerAll) {
-		renderer.getCamera().getVel().setX(inventory.getVel().getX() * 0.9f);
+		renderer.getCamera().SlowCameraX();
 	}
 
 	@Override

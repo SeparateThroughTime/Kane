@@ -1,4 +1,4 @@
-package kane.genericGame.gameEvent;
+package kane.genericGame.gameEvent.mob;
 
 import kane.genericGame.Game;
 import kane.genericGame.GameEvent;
