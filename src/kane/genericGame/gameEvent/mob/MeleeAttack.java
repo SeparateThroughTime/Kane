@@ -1,4 +1,4 @@
-package kane.genericGame.gameEvent.camera;
+package kane.genericGame.gameEvent.mob;
 
 import kane.genericGame.ActiveAttributes;
 import kane.genericGame.Game;
