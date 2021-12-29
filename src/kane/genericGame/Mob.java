@@ -2,9 +2,9 @@ package kane.genericGame;
 
 import java.util.HashMap;
 
-import kane.genericGame.gameEvent.Jump;
-import kane.genericGame.gameEvent.WalkingLeft;
-import kane.genericGame.gameEvent.WalkingRight;
+import kane.genericGame.gameEvent.camera.Jump;
+import kane.genericGame.gameEvent.camera.WalkingLeft;
+import kane.genericGame.gameEvent.camera.WalkingRight;
 import kane.math.Vec2f;
 import kane.physics.Body;
 

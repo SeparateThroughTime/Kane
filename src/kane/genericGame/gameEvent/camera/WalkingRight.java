@@ -1,4 +1,4 @@
-package kane.genericGame.gameEvent;
+package kane.genericGame.gameEvent.camera;
 
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MoveAction;
 
