@@ -5,9 +5,12 @@ import java.awt.Color;
 import kane.genericGame.ActiveAttributes;
 import kane.genericGame.Game;
 import kane.genericGame.gameEvent.camera.BindCameraToMap;
+import kane.genericGame.gameEvent.camera.MoveCameraDown;
 import kane.genericGame.gameEvent.camera.MoveCameraLeft;
 import kane.genericGame.gameEvent.camera.MoveCameraRight;
+import kane.genericGame.gameEvent.camera.MoveCameraUp;
 import kane.genericGame.gameEvent.camera.SlowCameraX;
+import kane.genericGame.gameEvent.camera.SlowCameraY;
 import kane.math.Vec2f;
 import kane.physics.AABB;
 import kane.physics.Body;
@@ -27,12 +30,16 @@ public class Camera extends Body {
 	private ResolutionSpecification resSpecs;
 	private Game g;
 	private Vec2f movementAccX;
+	private Vec2f movementAccY;
+	private int movementSpeedY;
 
 	public Camera(ResolutionSpecification resSpecs, Game g) {
 		super(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2);
 		this.g = g;
 		
 		movementAccX = new Vec2f(g.getPlayer().getWalkAcc()).mult(0.5f);
+		movementAccY = new Vec2f(movementAccX).perpLeft();
+		movementSpeedY = g.getPlayer().getWalkSpeed() * 2;
 
 		this.resSpecs = resSpecs;
 		this.zeroPoint = new Vec2f();
@@ -133,8 +140,36 @@ public class Camera extends Body {
 		g.addEvent(new MoveCameraRight(g, this, g.getPlayer()));
 	}
 	
+	public void moveCameraUp() {
+		g.addEvent(new MoveCameraUp(g, this));
+	}
+	
+	public void moveCameraDown() {
+		g.addEvent(new MoveCameraDown(g, this));
+	}
+	
 	public void SlowCameraX() {
 		g.addEvent(new SlowCameraX(g, this));
+	}
+	
+	public void SlowCameraY() {
+		g.addEvent(new SlowCameraY(g, this));
+	}
+
+	public Vec2f getMovementAccY() {
+		return movementAccY;
+	}
+
+	public void setMovementAccY(Vec2f movementAccY) {
+		this.movementAccY = movementAccY;
+	}
+
+	public int getMovementSpeedY() {
+		return movementSpeedY;
+	}
+
+	public void setMovementSpeedY(int movementSpeedY) {
+		this.movementSpeedY = movementSpeedY;
 	}
 	
 }

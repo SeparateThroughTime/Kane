@@ -4,7 +4,6 @@
 	Rotation
 	Speed-Adjuster (Jumping agains dynamics increases jump heigth -> Not a bug but a feature?)
 	Inventory not working when camera moved
-	Flickering...
 	Attack direction when shape 0 of attacker has static sprite (maybe wont be appearing)
 	Mobs
 	HUD
@@ -70,8 +69,6 @@ public class Kane extends Game {
 	Material mEvent = new Material(0, 0);
 	Material mInterface = new Material(1, 0);
 	Body sword;
-	Vec2f cameraMovementAccY;
-	int cameraMovementSpeedY;
 	Item currentItem;
 
 	@Override
@@ -183,8 +180,6 @@ public class Kane extends Game {
 		// camera
 		
 		renderer.createCamera();
-		cameraMovementAccY = new Vec2f(renderer.getCamera().getMovementAccX()).perpLeft();
-		cameraMovementSpeedY = player.getWalkSpeed() * 2;
 		renderer.getCamera().bindCameraToMap();
 		renderer.moveBackground();
 
@@ -458,18 +453,12 @@ public class Kane extends Game {
 
 	@Override
 	public void playerTouchCameraUp(Shape cameraUp, Shape playerAll) {
-		renderer.getCamera().getAcc().add(cameraMovementAccY);
-		if (renderer.getCamera().getVel().getY() > cameraMovementSpeedY) {
-			renderer.getCamera().getVel().setY(cameraMovementSpeedY);
-		}
+		renderer.getCamera().moveCameraUp();
 	}
 
 	@Override
 	public void playerTouchCameraDown(Shape cameraDown, Shape playerAll) {
-		renderer.getCamera().getAcc().sub(cameraMovementAccY);
-		if (-renderer.getCamera().getVel().getY() > cameraMovementSpeedY) {
-			renderer.getCamera().getVel().setY(-cameraMovementSpeedY);
-		}
+		renderer.getCamera().moveCameraDown();
 	}
 
 	@Override
@@ -479,7 +468,7 @@ public class Kane extends Game {
 
 	@Override
 	public void playerTouchCameraMidY(Shape cameraMidY, Shape playerAll) {
-		renderer.getCamera().getVel().setY(inventory.getVel().getY() * 0.9f);
+		renderer.getCamera().SlowCameraY();
 	}
 
 	@Override
