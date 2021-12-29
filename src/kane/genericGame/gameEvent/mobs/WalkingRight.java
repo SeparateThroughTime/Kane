@@ -1,6 +1,4 @@
-package kane.genericGame.gameEvent;
-
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MoveAction;
+package kane.genericGame.gameEvent.mobs;
 
 import kane.genericGame.Game;
 import kane.genericGame.GameEvent;

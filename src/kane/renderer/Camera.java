@@ -3,6 +3,15 @@ package kane.renderer;
 import java.awt.Color;
 
 import kane.genericGame.ActiveAttributes;
+import kane.genericGame.Game;
+import kane.genericGame.Mob;
+import kane.genericGame.gameEvent.camera.BindCameraToMap;
+import kane.genericGame.gameEvent.camera.MoveCameraDown;
+import kane.genericGame.gameEvent.camera.MoveCameraLeft;
+import kane.genericGame.gameEvent.camera.MoveCameraRight;
+import kane.genericGame.gameEvent.camera.MoveCameraUp;
+import kane.genericGame.gameEvent.camera.StopCameraMovementX;
+import kane.genericGame.gameEvent.camera.StopCameraMovementY;
 import kane.math.Vec2f;
 import kane.physics.AABB;
 import kane.physics.Body;
@@ -20,13 +29,29 @@ public class Camera extends Body {
 	private Vec2f windowRad;
 	public Vec2f zeroPoint;
 	private ResolutionSpecification resSpecs;
+	private Vec2f movementAccX;
+	private Vec2f movementAccY;
+	private int movementSpeedY;
+	private Game g;
+	private MoveCameraRight moveRight;
+	private MoveCameraDown moveDown;
+	private MoveCameraLeft moveLeft;
+	private MoveCameraUp moveUp;
+	private Mob player;
 
-	public Camera(ResolutionSpecification resSpecs) {
+	public Camera(Game g, ResolutionSpecification resSpecs, Mob player) {
 		super(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2);
+		this.g = g;
+		this.player = player;
 
 		this.resSpecs = resSpecs;
 		this.zeroPoint = new Vec2f();
 		setReactToGravity(false);
+		movementAccX = new Vec2f(player.getWalkAcc()).mult(0.5f);
+		movementAccY = new Vec2f(getMovementAccX()).perpLeft();
+		movementSpeedY = player.getWalkSpeed() * 2;
+		bindCameraToMap();
+		
 		createCamera();
 	}
 
@@ -105,6 +130,74 @@ public class Camera extends Body {
 	 */
 	public AABB getWindow() {
 		return window;
+	}
+
+	public Vec2f getMovementAccX() {
+		return movementAccX;
+	}
+
+	public void setMovementAccX(Vec2f movementAccX) {
+		this.movementAccX = movementAccX;
+	}
+
+	public Vec2f getMovementAccY() {
+		return movementAccY;
+	}
+
+	public void setMovementAccY(Vec2f movementAccY) {
+		this.movementAccY = movementAccY;
+	}
+
+	public int getMovementSpeedY() {
+		return movementSpeedY;
+	}
+
+	public void setMovementSpeedY(int cameraMovementSpeedY) {
+		this.movementSpeedY = cameraMovementSpeedY;
+	}
+	
+	public void bindCameraToMap() {
+		g.addEvent(new BindCameraToMap(g, this));
+	}
+	
+	public void startMoveLeft() {
+		moveLeft = new MoveCameraLeft(g, this, player);
+		g.addEvent(moveLeft);
+	}
+	
+	public void stopMoveLeft() {
+		moveLeft.killEvent();
+		g.addEvent(new StopCameraMovementX(g, this));
+	}
+	
+	public void startMoveRight() {
+		moveRight = new MoveCameraRight(g, this, player);
+		g.addEvent(moveRight);
+	}
+	
+	public void stopMoveRight() {
+		moveRight.killEvent();
+		g.addEvent(new StopCameraMovementX(g, this));
+	}
+	
+	public void startMoveUp() {
+		moveUp = new MoveCameraUp(g, this);
+		g.addEvent(moveUp);
+	}
+	
+	public void stopMoveUp() {
+		moveUp.killEvent();
+		g.addEvent(new StopCameraMovementY(g, this));
+	}
+	
+	public void startMoveDown() {
+		moveDown = new MoveCameraDown(g, this);
+		g.addEvent(moveDown);
+	}
+	
+	public void stopMoveDown() {
+		moveDown.killEvent();
+		g.addEvent(new StopCameraMovementY(g, this));
 	}
 	
 }

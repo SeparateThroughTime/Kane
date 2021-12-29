@@ -26,26 +26,22 @@ package kane;
 
 import java.awt.Color;
 import java.io.File;
-import java.util.HashMap;
 
 import kane.genericGame.ActiveAttributes;
 import kane.genericGame.Game;
 import kane.genericGame.Item;
 import kane.genericGame.Mob;
 import kane.genericGame.PassiveAttributes;
-import kane.genericGame.MobActions;
 import kane.genericGame.item.SWORD;
-import kane.genericGame.userInteraction.Keys;
-import kane.math.ArrayOperations;
-import kane.math.Scalar;
 import kane.math.Vec2f;
 import kane.physics.Body;
 import kane.physics.Material;
 import kane.physics.Shape;
-import kane.physics.ShapePair;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.LineSegment;
 import kane.physics.shapes.Polygon;
+import kane.renderer.Camera;
+import kane.renderer.Resolution;
 import kane.renderer.Sprite;
 import kane.renderer.SpriteController;
 import kane.renderer.SpriteState;
@@ -65,18 +61,13 @@ public class Kane extends Game {
 
 	}
 
-	public static float BACKGROUND_SPEED = 0.5f;
+	
 
 	Material mStatic = new Material(0, 1f);
 	Material mDynamic = new Material(1, 0.9f);
 	Material mEvent = new Material(0, 0);
 	Material mInterface = new Material(1, 0);
 	Body sword;
-	Vec2f cameraMovementAccX;
-	Vec2f cameraMovementAccY;
-	int cameraMovementSpeedY;
-	int mapLen;
-	int mapHeight;
 	Item currentItem;
 
 	@Override
@@ -106,7 +97,6 @@ public class Kane extends Game {
 		// Create player
 		currentItem = inventory.getItem("None");
 
-		player = new Mob(this, 100, 130, 3, 1);
 		player.addShape(new Box(0, 0, player, new Vec2f(16, 32), Color.GREEN, mDynamic, 2));
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PLAYER_ALL);
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
@@ -144,25 +134,6 @@ public class Kane extends Game {
 		sword.getShape(0).setSpriteControllers(spriteControllers);
 		physics.addBody(sword);
 
-//		// Create Blob
-//		Mob blob = new Mob(300, 130, 3, 1);
-//		points = new Vec2f[4];
-//		points[0] = new Vec2f(-32, -16);
-//		points[1] = new Vec2f(32, -16);
-//		points[2] = new Vec2f(32, 16);
-//		points[3] = new Vec2f(-32, 16);
-//		blob.addShape(new Polygon(0, 0, blob, Color.YELLOW, points, mDynamic, 2));
-//		blob.getShape(0).addPassiveAttribute(PassiveAttributes.MOB_ALL);
-//		blob.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
-//		sprite = new Sprite(new File("sprites\\Mobs\\Blob\\Blob.png"), 2, 2);
-//		sprite.addState(SpriteState.STATIC, new int[] { 0 });
-//		spriteControllers = new SpriteController[1];
-//		spriteControllers[0] = new SpriteController(sprite);
-//		spriteControllers[0].setSpritePosOffset(new Vec2f(-32, -16));
-//		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC);
-//		blob.getShape(0).setSpriteControllers(spriteControllers);
-//		physics.addBody(blob);
-
 		// Create Blob
 		Mob blob = new Mob(this, 300, 130, 3, 1);
 		points = new Vec2f[4];
@@ -185,11 +156,7 @@ public class Kane extends Game {
 		// Create Background
 		file = new File("sprites\\backgrounds\\background.png");
 		renderer.changeBackground(file);
-
-		// camera
-		cameraMovementAccX = new Vec2f(player.getWalkAcc()).mult(0.5f);
-		cameraMovementAccY = new Vec2f(cameraMovementAccX).perpLeft();
-		cameraMovementSpeedY = player.getWalkSpeed() * 2;
+		renderer.moveBackground();
 
 //		changeResolution(Resolution.SOL1176x664);
 
@@ -197,30 +164,7 @@ public class Kane extends Game {
 
 	@Override
 	protected void mechanicsLoop() {
-		Vec2f cameraPos = renderer.getCamera().getPos();
-		if (cameraPos.getX() - resSpecs.gameWidth * 0.5f < 0) {
-			cameraPos.setX(resSpecs.gameWidth * 0.5f);
-			renderer.getCamera().getAcc().setX(0);
-			renderer.getCamera().getVel().setX(0);
-		} else if (cameraPos.getX() + resSpecs.gameWidth * 0.5f > mapLen) {
-			cameraPos.setX(mapLen - resSpecs.gameWidth * 0.5f);
-			renderer.getCamera().getAcc().setX(0);
-			renderer.getCamera().getVel().setX(0);
-		}
-		if (cameraPos.getY() - resSpecs.GAME_HEIGHT * 0.5f < 0) {
-			cameraPos.setY(resSpecs.GAME_HEIGHT * 0.5f);
-			renderer.getCamera().getAcc().setY(0);
-			renderer.getCamera().getVel().setY(0);
-		} else if (cameraPos.getY() + resSpecs.GAME_HEIGHT * 0.5f > mapHeight) {
-			cameraPos.setY(mapHeight - resSpecs.GAME_HEIGHT * 0.5f);
-			renderer.getCamera().getAcc().setY(0);
-			renderer.getCamera().getVel().setY(0);
-		}
-
-		if (renderer.getGameBackground() != null) {
-			int backgroundPos = (int) ((cameraPos.dot(new Vec2f(1, 0)) - resSpecs.gameWidth * 0.5f) * BACKGROUND_SPEED);
-			renderer.getGameBackground().setOffsetX(backgroundPos);
-		}
+		
 	}
 
 	@Override
@@ -475,44 +419,66 @@ public class Kane extends Game {
 
 	@Override
 	public void playerTouchCameraLeft(Shape cameraLeft, Shape playerAll) {
-		renderer.getCamera().getAcc().sub(cameraMovementAccX);
-		if (-renderer.getCamera().getVel().getX() > player.getWalkSpeed()) {
-			renderer.getCamera().getVel().setX(-player.getWalkSpeed());
-		}
+		renderer.getCamera().startMoveLeft();
 	}
 
 	@Override
 	public void playerTouchCameraRight(Shape cameraRight, Shape playerAll) {
-		renderer.getCamera().getAcc().add(cameraMovementAccX);
-		if (renderer.getCamera().getVel().getX() > player.getWalkSpeed()) {
-			renderer.getCamera().getVel().setX(player.getWalkSpeed());
-		}
+		renderer.getCamera().startMoveRight();
 	}
 
 	@Override
 	public void playerTouchCameraUp(Shape cameraUp, Shape playerAll) {
-		renderer.getCamera().getAcc().add(cameraMovementAccY);
-		if (renderer.getCamera().getVel().getY() > cameraMovementSpeedY) {
-			renderer.getCamera().getVel().setY(cameraMovementSpeedY);
-		}
+		renderer.getCamera().startMoveUp();
 	}
 
 	@Override
 	public void playerTouchCameraDown(Shape cameraDown, Shape playerAll) {
-		renderer.getCamera().getAcc().sub(cameraMovementAccY);
-		if (-renderer.getCamera().getVel().getY() > cameraMovementSpeedY) {
-			renderer.getCamera().getVel().setY(-cameraMovementSpeedY);
-		}
+		renderer.getCamera().startMoveDown();
 	}
-
+	
 	@Override
 	public void playerTouchCameraMidX(Shape cameraMidX, Shape playerAll) {
-		renderer.getCamera().getVel().setX(inventory.getVel().getX() * 0.9f);
+		
 	}
 
 	@Override
 	public void playerTouchCameraMidY(Shape cameraMidY, Shape playerAll) {
-		renderer.getCamera().getVel().setY(inventory.getVel().getY() * 0.9f);
+		
+	}
+	
+	@Override
+	public void playerLeaveCameraLeft(Shape cameraLeft, Shape playerAll) {
+		renderer.getCamera().stopMoveLeft();
+		
+	}
+
+	@Override
+	public void playerLeaveCameraRight(Shape cameraRight, Shape playerAll) {
+		renderer.getCamera().stopMoveRight();
+		
+	}
+
+	@Override
+	public void playerLeaveCameraUp(Shape cameraUp, Shape playerAll) {
+		renderer.getCamera().stopMoveUp();
+		
+	}
+
+	@Override
+	public void playerLeaveCameraDown(Shape cameraDown, Shape playerAll) {
+		renderer.getCamera().stopMoveDown();
+		
+	}
+
+	@Override
+	public void playerLeaveCameraMidX(Shape cameraMidX, Shape playerAll) {
+		
+	}
+
+	@Override
+	public void playerLeaveCameraMidY(Shape cameraMidY, Shape playerAll) {
+		
 	}
 
 	@Override
@@ -539,4 +505,5 @@ public class Kane extends Game {
 		int damage = player.getDamage();
 		mob.hit(damage, player.getPos());
 	}
+	
 }

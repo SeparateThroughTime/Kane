@@ -4,7 +4,7 @@ import java.io.File;
 
 import kane.genericGame.Game;
 import kane.genericGame.Item;
-import kane.genericGame.gameEvent.MeleeAttack;
+import kane.genericGame.gameEvent.mobs.MeleeAttack;
 import kane.math.Vec2f;
 import kane.renderer.Sprite;
 import kane.renderer.SpriteController;
