@@ -225,17 +225,7 @@ public class Kane extends Game {
 
 	@Override
 	protected void postMechanicsLoops() {
-		Vec2f cameraPos = new Vec2f(Scalar.round(renderer.getCamera().getPos().getX()),
-				Scalar.round(renderer.getCamera().getPos().getY()));
-		for (int i = 0; i < physics.getNumBodies(); i++) {
-			Body body = physics.getBodies(i);
-			for (int j = 0; j < body.getNumShapes(); j++) {
-				Shape shape = body.getShape(j);
-				if (shape.hasPassiveAtrribute(PassiveAttributes.INVENTORY)) {
-					body.getPos().set(new Vec2f(cameraPos));
-				}
-			}
-		}
+
 	}
 
 	@Override
