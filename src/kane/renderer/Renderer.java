@@ -9,6 +9,7 @@ import java.io.File;
 import javax.swing.JPanel;
 
 import kane.genericGame.Game;
+import kane.genericGame.gameEvent.camera.MoveBackground;
 import kane.math.Scalar;
 import kane.math.Vec2f;
 import kane.physics.AABB;
@@ -362,5 +363,9 @@ public class Renderer extends JPanel {
 
 	public Background getGameBackground() {
 		return background;
+	}
+	
+	public void moveBackground() {
+		g.addEvent(new MoveBackground(g, this));
 	}
 }

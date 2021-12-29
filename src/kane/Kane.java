@@ -65,8 +65,6 @@ public class Kane extends Game {
 
 	}
 
-	public static float BACKGROUND_SPEED = 0.5f;
-
 	Material mStatic = new Material(0, 1f);
 	Material mDynamic = new Material(1, 0.9f);
 	Material mEvent = new Material(0, 0);
@@ -189,6 +187,7 @@ public class Kane extends Game {
 		cameraMovementAccY = new Vec2f(cameraMovementAccX).perpLeft();
 		cameraMovementSpeedY = player.getWalkSpeed() * 2;
 		renderer.getCamera().bindCameraToMap();
+		renderer.moveBackground();
 
 //		changeResolution(Resolution.SOL1176x664);
 
@@ -196,12 +195,6 @@ public class Kane extends Game {
 
 	@Override
 	protected void mechanicsLoop() {
-		Vec2f cameraPos = renderer.getCamera().getPos();
-
-		if (renderer.getGameBackground() != null) {
-			int backgroundPos = (int) ((cameraPos.dot(new Vec2f(1, 0)) - resSpecs.gameWidth * 0.5f) * BACKGROUND_SPEED);
-			renderer.getGameBackground().setOffsetX(backgroundPos);
-		}
 	}
 
 	@Override

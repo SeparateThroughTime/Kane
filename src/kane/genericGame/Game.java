@@ -24,6 +24,8 @@ import kane.renderer.ResolutionSpecification;
  */
 public abstract class Game implements WindowListener, KeyboardInterface, MouseInterface, ContactManagementInterface {
 
+	public static final float BACKGROUND_SPEED = 0.5f;
+	
 	protected ResolutionSpecification resSpecs;
 	protected int mapLen;
 	protected int mapHeight;
