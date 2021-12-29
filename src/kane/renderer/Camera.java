@@ -106,5 +106,5 @@ public class Camera extends Body {
 	public AABB getWindow() {
 		return window;
 	}
-
+	
 }

@@ -215,7 +215,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 				}
 				accumulatedTime -= DELTATIME;
 			}
-
+			
 			renderer.renderGame();
 			numFrames++;
 
