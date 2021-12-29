@@ -11,6 +11,7 @@ import kane.genericGame.userInteraction.Keyboard;
 import kane.genericGame.userInteraction.KeyboardInterface;
 import kane.genericGame.userInteraction.Mouse;
 import kane.genericGame.userInteraction.MouseInterface;
+import kane.math.Vec2f;
 import kane.physics.Body;
 import kane.physics.Physics;
 import kane.physics.contacts.ContactListener;
@@ -72,6 +73,11 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		this.title = title;
 
 		resSpecs = new ResolutionSpecification(600, 800, 600, 800);
+		
+		player = new Mob(this, 100, 130, 3, 1);
+		player.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
+		player.setJumpAcc(new Vec2f(0, 200 / DELTATIME));
+		player.setWalkSpeed(300);
 
 		contactListener = new ContactListener(this);
 		physics = new Physics(DELTATIME, contactListener);
