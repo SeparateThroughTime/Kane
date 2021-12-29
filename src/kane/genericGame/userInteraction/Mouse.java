@@ -6,6 +6,7 @@ import java.awt.event.MouseMotionListener;
 
 import kane.math.Scalar;
 import kane.math.Vec2i;
+import kane.renderer.Camera;
 import kane.renderer.ResolutionSpecification;
 
 /**
@@ -20,6 +21,7 @@ public class Mouse implements MouseListener, MouseMotionListener{
 	protected Vec2i mousePos = new Vec2i();
 	protected boolean[] mouseState = new boolean[NUMBUTTONS];
 	private MouseInterface mouseInt;
+	private Camera camera;
 
 	/**
 	 * 
@@ -46,6 +48,10 @@ public class Mouse implements MouseListener, MouseMotionListener{
 		}
 	}
 	
+	public void addCamera(Camera camera) {
+		this.camera = camera;
+	}
+	
 	/**
 	 * Returns the current Position of the mouse
 	 * @return -Vec2i
@@ -66,11 +72,17 @@ public class Mouse implements MouseListener, MouseMotionListener{
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		mousePos.set(e.getX(), Scalar.getY(e.getY(), resSpecs.height));
+		if (camera != null) {
+			mousePos.add(camera.zeroPoint.toVec2i());
+		}
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		mousePos.set(e.getX(), Scalar.getY(e.getY(), resSpecs.height));
+		if (camera != null) {
+			mousePos.add(camera.zeroPoint.toVec2i());
+		}
 	}
 
 	// MouseListener

@@ -182,6 +182,7 @@ public class Kane extends Game {
 		renderer.createCamera();
 		renderer.getCamera().bindCameraToMap();
 		renderer.moveBackground();
+		mouseListener.addCamera(renderer.getCamera());
 
 //		changeResolution(Resolution.SOL1176x664);
 
@@ -436,6 +437,7 @@ public class Kane extends Game {
 			}
 		}
 		if (showInventory) {
+			inventory.getPos().set(renderer.getCamera().getPos());
 			inventory.showItems();
 		}
 
