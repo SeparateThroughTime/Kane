@@ -73,11 +73,6 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		this.title = title;
 
 		resSpecs = new ResolutionSpecification(600, 800, 600, 800);
-		
-		player = new Mob(this, 100, 130, 3, 1);
-		player.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
-		player.setJumpAcc(new Vec2f(0, 200 / DELTATIME));
-		player.setWalkSpeed(300);
 
 		contactListener = new ContactListener(this);
 		physics = new Physics(DELTATIME, contactListener);

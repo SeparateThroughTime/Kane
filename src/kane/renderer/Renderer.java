@@ -47,10 +47,13 @@ public class Renderer extends JPanel {
 		this.resSpecs = resSpecs;
 		this.physics = physics;
 		this.g = g;
-		this.camera = new Camera(resSpecs, g);
-		this.physics.addBody(camera);
 		this.multiplicator = 1f;
 		setFocusable(true);
+	}
+	
+	public void createCamera() {
+		this.camera = new Camera(resSpecs, g);
+		this.physics.addBody(camera);
 	}
 
 	public void paintComponent(Graphics g) {

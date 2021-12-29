@@ -99,6 +99,10 @@ public class Kane extends Game {
 		physics.addBody(body);
 
 		// Create player
+		player = new Mob(this, 100, 130, 3, 1);
+		player.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
+		player.setJumpAcc(new Vec2f(0, 200 / DELTATIME));
+		player.setWalkSpeed(300);
 		currentItem = inventory.getItem("None");
 		player.addShape(new Box(0, 0, player, new Vec2f(16, 32), Color.GREEN, mDynamic, 2));
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PLAYER_ALL);
@@ -178,6 +182,7 @@ public class Kane extends Game {
 
 		// camera
 		
+		renderer.createCamera();
 		cameraMovementAccY = new Vec2f(renderer.getCamera().getMovementAccX()).perpLeft();
 		cameraMovementSpeedY = player.getWalkSpeed() * 2;
 		renderer.getCamera().bindCameraToMap();
