@@ -1,6 +1,5 @@
 /*TODO
 
-	Items not showing sometimes in Inventory
 	Attack direction when shape 0 of attacker has static sprite (maybe wont be appearing)
 	Mobs
 	HUD
@@ -193,6 +192,7 @@ public class Kane extends Game {
 
 	@Override
 	protected void mechanicsLoop() {
+		
 	}
 
 	@Override
@@ -441,6 +441,8 @@ public class Kane extends Game {
 		}
 		if (showInventory) {
 			inventory.getPos().set(renderer.getCamera().getPos());
+			// AABB dont update through physics engine because the game is paused
+			inventory.updateAABB(inventory.getPos(), 5f);
 			inventory.showItems();
 		}
 
