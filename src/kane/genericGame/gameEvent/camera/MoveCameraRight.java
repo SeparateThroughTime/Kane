@@ -11,7 +11,7 @@ public class MoveCameraRight extends GameEvent {
 	private Mob player;
 
 	public MoveCameraRight(Game g, Camera camera, Mob player) {
-		super(g, 2);
+		super(g, 1);
 		this.camera = camera;
 		this.player = player;
 	}

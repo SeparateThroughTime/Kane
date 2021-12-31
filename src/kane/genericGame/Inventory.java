@@ -37,7 +37,7 @@ public class Inventory extends Body {
 	}
 
 	private void createInventory() {
-		addShape(new Point(0, 0, this, Color.BLUE, mInterface, 1));
+		addShape(new Point(0, 0, this, Color.BLUE, mInterface, 3));
 		getShape(0).setVisible(false);
 		getShape(0).setCollision(false);
 		getShape(0).addPassiveAttribute(PassiveAttributes.INVENTORY);
@@ -52,42 +52,42 @@ public class Inventory extends Body {
 		getShape(0).setSpriteControllers(spriteControllers);
 
 		// Slots
-		addShape(new Box(-144, 48, this, new Vec2f(32, 32), Color.RED, mInterface, 2));
+		addShape(new Box(-144, 48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
 		getShape(1).setVisible(false);
 		getShape(1).setCollision(false);
 		getShape(1).addPassiveAttribute(PassiveAttributes.INVENTORY);
 
-		addShape(new Box(-48, 48, this, new Vec2f(32, 32), Color.RED, mInterface, 2));
+		addShape(new Box(-48, 48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
 		getShape(2).setVisible(false);
 		getShape(2).setCollision(false);
 		getShape(2).addPassiveAttribute(PassiveAttributes.INVENTORY);
 
-		addShape(new Box(48, 48, this, new Vec2f(32, 32), Color.RED, mInterface, 2));
+		addShape(new Box(48, 48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
 		getShape(3).setVisible(false);
 		getShape(3).setCollision(false);
 		getShape(3).addPassiveAttribute(PassiveAttributes.INVENTORY);
 
-		addShape(new Box(144, 48, this, new Vec2f(32, 32), Color.RED, mInterface, 2));
+		addShape(new Box(144, 48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
 		getShape(4).setVisible(false);
 		getShape(4).setCollision(false);
 		getShape(4).addPassiveAttribute(PassiveAttributes.INVENTORY);
 
-		addShape(new Box(-144, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 2));
+		addShape(new Box(-144, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
 		getShape(5).setVisible(false);
 		getShape(5).setCollision(false);
 		getShape(5).addPassiveAttribute(PassiveAttributes.INVENTORY);
 
-		addShape(new Box(-48, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 2));
+		addShape(new Box(-48, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
 		getShape(6).setVisible(false);
 		getShape(6).setCollision(false);
 		getShape(6).addPassiveAttribute(PassiveAttributes.INVENTORY);
 
-		addShape(new Box(48, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 2));
+		addShape(new Box(48, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
 		getShape(7).setVisible(false);
 		getShape(7).setCollision(false);
 		getShape(7).addPassiveAttribute(PassiveAttributes.INVENTORY);
 
-		addShape(new Box(144, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 2));
+		addShape(new Box(144, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
 		getShape(8).setVisible(false);
 		getShape(8).setCollision(false);
 		getShape(8).addPassiveAttribute(PassiveAttributes.INVENTORY);

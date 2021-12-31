@@ -1,9 +1,6 @@
 /*TODO
 
-	ContactPoint: BoxPolygon, PolygonPolygon -> Ghost Contacts
-	Rotation
-	Speed-Adjuster (Jumping agains dynamics increases jump heigth -> Not a bug but a feature?)
-	Inventory not working when camera moved
+	Items not showing sometimes in Inventory
 	Attack direction when shape 0 of attacker has static sprite (maybe wont be appearing)
 	Mobs
 	HUD
@@ -19,6 +16,12 @@
 	StartMenu
 	Save
 	
+	Dead End To Do:
+	Rotation
+	
+	Wait for relevance To Do:
+	ContactPoint: BoxPolygon, PolygonPolygon -> Ghost Contacts
+	Speed-Adjuster (Jumping agains dynamics increases jump heigth -> Not a bug but a feature?)
 
 */
 package kane;
@@ -434,7 +437,7 @@ public class Kane extends Game {
 			Shape shape = inventory.getShape(i);
 			if (shape.hasPassiveAtrribute(PassiveAttributes.INVENTORY)) {
 				shape.setVisible(showInventory);
-			}
+				}
 		}
 		if (showInventory) {
 			inventory.getPos().set(renderer.getCamera().getPos());
