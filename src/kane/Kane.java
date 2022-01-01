@@ -34,7 +34,10 @@ import kane.genericGame.ActiveAttributes;
 import kane.genericGame.Game;
 import kane.genericGame.Item;
 import kane.genericGame.Mob;
+import kane.genericGame.MobActions;
 import kane.genericGame.PassiveAttributes;
+import kane.genericGame.WalkingAIs;
+import kane.genericGame.gameEvent.mob.GumbaWalk;
 import kane.genericGame.item.SWORD;
 import kane.math.Vec2f;
 import kane.physics.Body;
@@ -140,10 +143,10 @@ public class Kane extends Game {
 		blob.addShape(new Box(0, 0, blob, new Vec2f(32, 16), Color.YELLOW, mDynamic, 2));
 		blob.getShape(0).addPassiveAttribute(PassiveAttributes.MOB_ALL);
 		blob.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
-		blob.addShape(new Box(31, 0, blob, new Vec2f(2, 16), Color.YELLOW, mEvent, 2));
+		blob.addShape(new Box(31, 0, blob, new Vec2f(2, 15), Color.YELLOW, mEvent, 2));
 		blob.getShape(1).addPassiveAttribute(PassiveAttributes.MOB_RIGHT);
 		blob.getShape(1).setCollision(false);
-		blob.addShape(new Box(-31, 0, blob, new Vec2f(2, 16), Color.YELLOW, mEvent, 2));
+		blob.addShape(new Box(-31, 0, blob, new Vec2f(2, 15), Color.YELLOW, mEvent, 2));
 		blob.getShape(2).addPassiveAttribute(PassiveAttributes.MOB_LEFT);
 		blob.getShape(2).setCollision(false);
 		sprite = new Sprite(new File("sprites\\Mobs\\Blob\\Blob.png"), 2, 2);
@@ -153,6 +156,11 @@ public class Kane extends Game {
 		spriteControllers[0].setSpritePosOffset(new Vec2f(-32, -16));
 		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC);
 		blob.getShape(0).setSpriteControllers(spriteControllers);
+		blob.getActiveActions().put(MobActions.GUMBA_WALK, true);
+		blob.setWalkingAI(WalkingAIs.GUMBA_WALK);
+		blob.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
+		blob.setJumpAcc(new Vec2f(0, 200 / DELTATIME));
+		blob.setWalkSpeed(200);
 		physics.addBody(blob);
 
 		// Create Background

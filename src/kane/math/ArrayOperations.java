@@ -71,11 +71,12 @@ public class ArrayOperations {
 		for (int i = 0; i < numElementsToCheck - numRemovals; i++) {
 			T element = array[i];
 			if (object.equals(element)) {
-				for (int j = i; j < numElementsToCheck - numRemovals - 1; j++) {
+				numRemovals++;
+				for (int j = i; j < numElementsToCheck - numRemovals; j++) {
 					array[j] = array[j + 1];
 				}
-				array[numElementsToCheck - numRemovals - 1] = null;
-				numRemovals++;
+				array[numElementsToCheck - numRemovals] = null;
+				
 			}
 		}
 		return numRemovals;

@@ -2,6 +2,7 @@ package kane.genericGame;
 
 import java.util.HashMap;
 
+import kane.genericGame.gameEvent.mob.GumbaWalk;
 import kane.genericGame.gameEvent.mob.Jump;
 import kane.genericGame.gameEvent.mob.WalkingLeft;
 import kane.genericGame.gameEvent.mob.WalkingRight;
@@ -21,6 +22,7 @@ public class Mob extends Body {
 	private HashMap<MobActions, Boolean> activeActions;
 	private WalkingLeft currentWalkingLeftEvent;
 	private WalkingRight currentWalkingRightEvent;
+	private GameEvent currentWalkingAI;
 
 	public HashMap<MobActions, Boolean> getActiveActions() {
 		return activeActions;
@@ -37,12 +39,14 @@ public class Mob extends Body {
 		this.setDamage(damage);
 		this.g = g;
 		canJump = true;
+		walkAcc = new Vec2f();
 
 		activeActions = new HashMap<MobActions, Boolean>();
 		activeActions.put(MobActions.WALK_LEFT, false);
 		activeActions.put(MobActions.WALK_RIGHT, false);
 		activeActions.put(MobActions.JUMPING, false);
 		activeActions.put(MobActions.ATTACKING, false);
+		activeActions.put(MobActions.GUMBA_WALK, false);
 	}
 
 	public int getHealth() {
@@ -113,7 +117,7 @@ public class Mob extends Body {
 	}
 
 	public void setWalkAcc(Vec2f walkAcc) {
-		this.walkAcc = walkAcc;
+		this.walkAcc.set(walkAcc);
 	}
 
 	public int getWalkSpeed() {
@@ -147,7 +151,7 @@ public class Mob extends Body {
 			currentWalkingRightEvent.killEvent();
 		}
 	}
-	
+
 	public void jump() {
 		if (canJump) {
 			g.addEvent(new Jump(g, this));
@@ -160,5 +164,19 @@ public class Mob extends Body {
 
 	public void setCanJump(boolean canJump) {
 		this.canJump = canJump;
+	}
+
+	public void setWalkingAI(WalkingAIs ai) {
+		if (currentWalkingAI != null) {
+			currentWalkingAI.killEvent();
+		}
+		switch (ai) {
+		case GUMBA_WALK:
+			g.addEvent(new GumbaWalk(g, this));
+			break;
+
+		default:
+			break;
+		}
 	}
 }

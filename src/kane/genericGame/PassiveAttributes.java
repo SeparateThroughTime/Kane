@@ -10,6 +10,7 @@ public enum PassiveAttributes {
 	MOB_LEFT,
 	MOB_RIGHT,
 	
+	
 	PHYSICAL,
 	
 	ATTACKING_FIELD,

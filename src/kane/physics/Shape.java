@@ -423,11 +423,29 @@ public abstract class Shape {
 	}
 	
 	public void remColidedShape(Shape shape) {
-		this.numColidedShapes = ArrayOperations.remObjectStatic(colidedShapes, shape, numColidedShapes);
+		this.numColidedShapes -= ArrayOperations.remObjectStatic(colidedShapes, shape, numColidedShapes);
 	}
 	
-	public void resetColidedShapes() {
-		this.colidedShapes = new Shape[MAX_COLIDED_SHAPES];
-		this.numColidedShapes = 0;
+	public Shape[] getColidedShapes(ActiveAttributes attribute) {
+		Shape[] shapes = ArrayOperations.cutArray(colidedShapes, numColidedShapes);
+		int removedShapes = 0;
+		for (Shape shape : shapes) {
+			if (!shape.hasActiveAtrribute(attribute)) {
+				removedShapes += ArrayOperations.remObjectStatic(shapes, shape, numColidedShapes);
+			}
+		}
+		return ArrayOperations.cutArray(shapes, numColidedShapes - removedShapes);
+	}
+	
+	public Shape[] getColidedShapes(PassiveAttributes attribute) {
+		Shape[] shapes = ArrayOperations.cutArray(colidedShapes, numColidedShapes);
+		int removedShapes = 0;
+		for (int i = 0; i < numColidedShapes - removedShapes; i++) {
+			Shape shape = shapes[i];
+			if (!shape.hasPassiveAtrribute(attribute)) {
+				removedShapes += ArrayOperations.remObjectStatic(shapes, shape, numColidedShapes - removedShapes);
+			}
+		}
+		return ArrayOperations.cutArray(shapes, numColidedShapes - removedShapes);
 	}
 }

@@ -4,5 +4,7 @@ public enum MobActions {
 	WALK_LEFT,
 	WALK_RIGHT,
 	JUMPING,
-	ATTACKING;
+	ATTACKING,
+	
+	GUMBA_WALK;
 }
