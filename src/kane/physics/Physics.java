@@ -100,7 +100,8 @@ public class Physics {
 					for (int l = 0; l < bodyB.getNumShapes(); l++) {
 						Shape shapeB = bodyB.getShape(l);
 						if (!aabbOverlaps[i][j][k][l]) {
-							if (shapeA.getAABB().overlaps(shapeB.getAABB()) && !bodyA.isRemoved() && !bodyB.isRemoved()) {
+							if (shapeA.getAABB().overlaps(shapeB.getAABB()) && !bodyA.isRemoved()
+									&& !bodyB.isRemoved()) {
 								aabbOverlaps[i][j][k][l] = true;
 								shapePairIds[i][j][k][l] = numShapePairs;
 								// Workaround "interchanged Body IDs"
@@ -114,7 +115,8 @@ public class Physics {
 								shapePairs[numShapePairs++] = new ShapePair(shapeA, shapeB);
 							}
 						} else {
-							if (!shapeA.getAABB().overlaps(shapeB.getAABB()) || bodyA.isRemoved() || bodyB.isRemoved()) {
+							if (!shapeA.getAABB().overlaps(shapeB.getAABB()) || bodyA.isRemoved()
+									|| bodyB.isRemoved()) {
 								aabbOverlaps[i][j][k][l] = false;
 								shapePairs[shapePairIds[i][j][k][l]] = null;
 								// Workaround "interchanged Body IDs"

@@ -1,7 +1,5 @@
 package kane.genericGame.gameEvent.mob;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MoveAction;
-
 import kane.genericGame.Game;
 import kane.genericGame.GameEvent;
 import kane.genericGame.Mob;
@@ -25,11 +23,11 @@ public class WalkingRight extends GameEvent {
 	public void start() {
 		// Checks if the player changed direction. If so, the body turns.
 		if (ArrayOperations.contains(SpriteController.LEFT_SPRITE_STATES,
-				walker.getShape(PassiveAttributes.PLAYER_ALL).getCurrentSpriteState())) {
+				walker.getShape(PassiveAttributes.MOB_ALL).getCurrentSpriteState())) {
 			walker.mirrorX();
 		}
 
-		walker.getShape(PassiveAttributes.PLAYER_ALL).setCurrentSpriteState(SpriteState.RUNNING_RIGHT);
+		walker.getShape(PassiveAttributes.MOB_ALL).setCurrentSpriteState(SpriteState.RUNNING_RIGHT);
 		walker.setAngle(0f);
 		walker.getActiveActions().put(MobActions.WALK_RIGHT, true);
 	}
@@ -47,7 +45,7 @@ public class WalkingRight extends GameEvent {
 
 	@Override
 	public void end() {
-		walker.getShape(PassiveAttributes.PLAYER_ALL).setCurrentSpriteState(SpriteState.STANDING_RIGHT);
+		walker.getShape(PassiveAttributes.MOB_ALL).setCurrentSpriteState(SpriteState.STANDING_RIGHT);
 		walker.getActiveActions().put(MobActions.WALK_RIGHT, false);
 	}
 

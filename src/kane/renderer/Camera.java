@@ -25,6 +25,7 @@ public class Camera extends Body {
 
 	private Material mInterface = new Material(1, 0);
 	private AABB window;
+	private AABB aiRange;
 	private Vec2f windowRad;
 	public Vec2f zeroPoint;
 	private ResolutionSpecification resSpecs;
@@ -36,7 +37,7 @@ public class Camera extends Body {
 	public Camera(ResolutionSpecification resSpecs, Game g) {
 		super(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2);
 		this.g = g;
-		
+
 		movementAccX = new Vec2f(g.getPlayer().getWalkAcc()).mult(0.5f);
 		movementAccY = new Vec2f(movementAccX).perpLeft();
 		movementSpeedY = g.getPlayer().getWalkSpeed() * 2;
@@ -101,8 +102,15 @@ public class Camera extends Body {
 	public void update() {
 		Vec2f min = new Vec2f(getPos()).sub(windowRad);
 		Vec2f max = new Vec2f(getPos()).add(windowRad);
+		Vec2f aiMin = new Vec2f(min).add(100, 100);
+		Vec2f aiMax = new Vec2f(max).add(100, 100);
 		window = new AABB(min, max);
+		aiRange = new AABB(aiMin, aiMax);
 		zeroPoint = min;
+	}
+
+	public AABB getAiRange() {
+		return aiRange;
 	}
 
 	/**
@@ -123,35 +131,35 @@ public class Camera extends Body {
 	public AABB getWindow() {
 		return window;
 	}
-	
+
 	public void bindCameraToMap() {
 		g.addEvent(new BindCameraToMap(g, this));
 	}
-	
+
 	public Vec2f getMovementAccX() {
 		return movementAccX;
 	}
-	
+
 	public void moveCameraLeft() {
 		g.addEvent(new MoveCameraLeft(g, this, g.getPlayer()));
 	}
-	
+
 	public void moveCameraRight() {
 		g.addEvent(new MoveCameraRight(g, this, g.getPlayer()));
 	}
-	
+
 	public void moveCameraUp() {
 		g.addEvent(new MoveCameraUp(g, this));
 	}
-	
+
 	public void moveCameraDown() {
 		g.addEvent(new MoveCameraDown(g, this));
 	}
-	
+
 	public void SlowCameraX() {
 		g.addEvent(new SlowCameraX(g, this));
 	}
-	
+
 	public void SlowCameraY() {
 		g.addEvent(new SlowCameraY(g, this));
 	}
@@ -171,5 +179,5 @@ public class Camera extends Body {
 	public void setMovementSpeedY(int movementSpeedY) {
 		this.movementSpeedY = movementSpeedY;
 	}
-	
+
 }

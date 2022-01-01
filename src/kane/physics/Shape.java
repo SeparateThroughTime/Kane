@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import kane.genericGame.ActiveAttributes;
 import kane.genericGame.PassiveAttributes;
+import kane.math.ArrayOperations;
 import kane.math.Vec2f;
 import kane.math.Vec2i;
 import kane.renderer.SpriteController;
@@ -34,6 +35,9 @@ public abstract class Shape {
 	protected float invMass;
 	protected final Vec2f centerOfMass;
 	protected float momentOfInertia;
+	public static int MAX_COLIDED_SHAPES = 10;
+	protected Shape[] colidedShapes;
+	protected int numColidedShapes;
 
 	protected static int MAX_ACTIVE_ATTRIBUTES = 5;
 	protected static int MAX_PASSIVE_ATTRIBUTES = 5;
@@ -85,6 +89,7 @@ public abstract class Shape {
 		this.hasSprite = false;
 		this.centerOfMass = new Vec2f();
 		this.RENDER_LAYER = renderLayer > MAX_RENDER_LAYER ? MAX_RENDER_LAYER : renderLayer;
+		this.colidedShapes = new Shape[MAX_COLIDED_SHAPES];
 	}
 
 	/**
@@ -408,4 +413,17 @@ public abstract class Shape {
 	protected abstract void mirrorX();
 	
 	protected abstract void mirrorY();
+	
+	public Shape[] getColidedShapes() {
+		return ArrayOperations.cutArray(colidedShapes, numColidedShapes);
+	}
+
+	public void addColidedShape(Shape shape) {
+		this.colidedShapes[numColidedShapes++] = shape;
+	}
+	
+	public void resetColidedShapes() {
+		this.colidedShapes = new Shape[MAX_COLIDED_SHAPES];
+		this.numColidedShapes = 0;
+	}
 }

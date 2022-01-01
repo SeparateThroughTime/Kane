@@ -1,7 +1,7 @@
 /*TODO
 
-	Attack direction when shape 0 of attacker has static sprite (maybe wont be appearing)
 	Mobs
+	Jump on Head attack
 	HUD
 	Items and additional mechanics
 	Visual Effects
@@ -21,6 +21,7 @@
 	Wait for relevance To Do:
 	ContactPoint: BoxPolygon, PolygonPolygon -> Ghost Contacts
 	Speed-Adjuster (Jumping agains dynamics increases jump heigth -> Not a bug but a feature?)
+	Attack direction when shape 0 of attacker has static sprite (maybe wont be appearing)
 
 */
 package kane;
@@ -104,7 +105,7 @@ public class Kane extends Game {
 		player.setWalkSpeed(300);
 		currentItem = inventory.getItem("None");
 		player.addShape(new Box(0, 0, player, new Vec2f(16, 32), Color.GREEN, mDynamic, 2));
-		player.getShape(0).addPassiveAttribute(PassiveAttributes.PLAYER_ALL);
+		player.getShape(0).addPassiveAttribute(PassiveAttributes.MOB_ALL);
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
 		player.addShape(new Box(0, -22, player, new Vec2f(15, 10), Color.WHITE, mEvent, 2));
 		player.getShape(1).setCollision(false);
@@ -159,13 +160,13 @@ public class Kane extends Game {
 		// Create Blob
 		Mob blob = new Mob(this, 300, 130, 3, 1);
 		points = new Vec2f[4];
-		points[0] = new Vec2f(-32, -16);
-		points[1] = new Vec2f(32, -16);
-		points[2] = new Vec2f(32, 16);
-		points[3] = new Vec2f(-32, 16);
 		blob.addShape(new Box(0, 0, blob, new Vec2f(32, 16), Color.YELLOW, mDynamic, 2));
 		blob.getShape(0).addPassiveAttribute(PassiveAttributes.MOB_ALL);
 		blob.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
+		blob.addShape(new Box(31, 0, blob, new Vec2f(2, 16), Color.YELLOW, mEvent, 2));
+		blob.getShape(1).addPassiveAttribute(PassiveAttributes.MOB_RIGHT);
+		blob.addShape(new Box(-31, 0, blob, new Vec2f(2, 16), Color.YELLOW, mEvent, 2));
+		blob.getShape(2).addPassiveAttribute(PassiveAttributes.MOB_LEFT);
 		sprite = new Sprite(new File("sprites\\Mobs\\Blob\\Blob.png"), 2, 2);
 		sprite.addState(SpriteState.STATIC, new int[] { 0 });
 		spriteControllers = new SpriteController[1];
