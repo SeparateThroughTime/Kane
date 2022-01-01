@@ -20,7 +20,8 @@
 	
 	Wait for relevance To Do:
 	ContactPoint: BoxPolygon, PolygonPolygon -> Ghost Contacts
-	Speed-Adjuster (Jumping agains dynamics increases jump heigth -> Not a bug but a feature?)
+	Speed-Adjuster (Jumping against dynamics increases jump heigth)
+		Its probably not the cause of friction but something else)
 	Attack direction when shape 0 of attacker has static sprite (maybe wont be appearing)
 
 */
@@ -28,23 +29,17 @@ package kane;
 
 import java.awt.Color;
 import java.io.File;
-import java.util.HashMap;
 
 import kane.genericGame.ActiveAttributes;
 import kane.genericGame.Game;
 import kane.genericGame.Item;
 import kane.genericGame.Mob;
 import kane.genericGame.PassiveAttributes;
-import kane.genericGame.MobActions;
 import kane.genericGame.item.SWORD;
-import kane.genericGame.userInteraction.Keys;
-import kane.math.ArrayOperations;
-import kane.math.Scalar;
 import kane.math.Vec2f;
 import kane.physics.Body;
 import kane.physics.Material;
 import kane.physics.Shape;
-import kane.physics.ShapePair;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.LineSegment;
 import kane.physics.shapes.Polygon;
@@ -138,25 +133,6 @@ public class Kane extends Game {
 		sword.getShape(0).setSpriteControllers(spriteControllers);
 		physics.addBody(sword);
 
-//		// Create Blob
-//		Mob blob = new Mob(300, 130, 3, 1);
-//		points = new Vec2f[4];
-//		points[0] = new Vec2f(-32, -16);
-//		points[1] = new Vec2f(32, -16);
-//		points[2] = new Vec2f(32, 16);
-//		points[3] = new Vec2f(-32, 16);
-//		blob.addShape(new Polygon(0, 0, blob, Color.YELLOW, points, mDynamic, 2));
-//		blob.getShape(0).addPassiveAttribute(PassiveAttributes.MOB_ALL);
-//		blob.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
-//		sprite = new Sprite(new File("sprites\\Mobs\\Blob\\Blob.png"), 2, 2);
-//		sprite.addState(SpriteState.STATIC, new int[] { 0 });
-//		spriteControllers = new SpriteController[1];
-//		spriteControllers[0] = new SpriteController(sprite);
-//		spriteControllers[0].setSpritePosOffset(new Vec2f(-32, -16));
-//		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC);
-//		blob.getShape(0).setSpriteControllers(spriteControllers);
-//		physics.addBody(blob);
-
 		// Create Blob
 		Mob blob = new Mob(this, 300, 130, 3, 1);
 		points = new Vec2f[4];
@@ -165,8 +141,10 @@ public class Kane extends Game {
 		blob.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
 		blob.addShape(new Box(31, 0, blob, new Vec2f(2, 16), Color.YELLOW, mEvent, 2));
 		blob.getShape(1).addPassiveAttribute(PassiveAttributes.MOB_RIGHT);
+		blob.getShape(1).setCollision(false);
 		blob.addShape(new Box(-31, 0, blob, new Vec2f(2, 16), Color.YELLOW, mEvent, 2));
 		blob.getShape(2).addPassiveAttribute(PassiveAttributes.MOB_LEFT);
+		blob.getShape(2).setCollision(false);
 		sprite = new Sprite(new File("sprites\\Mobs\\Blob\\Blob.png"), 2, 2);
 		sprite.addState(SpriteState.STATIC, new int[] { 0 });
 		spriteControllers = new SpriteController[1];

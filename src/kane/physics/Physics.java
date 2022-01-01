@@ -66,9 +66,10 @@ public class Physics {
 
 			}
 		}
-
+		
 		// Solve Friction
 		contactSolver.solveFriction(shapePairs, numShapePairs);
+
 	}
 
 	public void step(float deltaTime) {
@@ -146,9 +147,12 @@ public class Physics {
 			}
 		}
 		numShapePairs -= countGaps;
+		
 
 		// Contacts management
 		cgf.generate(contactSolver, shapePairs, numShapePairs);
+
+		
 
 		// set velocity for penetrations
 		contactSolver.solveVelocity(shapePairs, numShapePairs);

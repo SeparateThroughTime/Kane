@@ -82,6 +82,8 @@ public class ContactGeneratorFactory {
 				if (shapePair.getContact() != null) {
 					if (shapePair.getContact().getDistance() <= 0) {
 						contactListener.penetrated(shapePair);
+						shapeA.addColidedShape(shapeB);
+						shapeB.addColidedShape(shapeA);
 						if (!shapePair.isPenetration()) {
 							contactListener.penetration(shapePair);
 							shapePair.setPenetration(true);
