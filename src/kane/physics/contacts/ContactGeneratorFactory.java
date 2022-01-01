@@ -82,14 +82,16 @@ public class ContactGeneratorFactory {
 				if (shapePair.getContact() != null) {
 					if (shapePair.getContact().getDistance() <= 0) {
 						contactListener.penetrated(shapePair);
-						shapeA.addColidedShape(shapeB);
-						shapeB.addColidedShape(shapeA);
 						if (!shapePair.isPenetration()) {
 							contactListener.penetration(shapePair);
+							shapeA.addColidedShape(shapeB);
+							shapeB.addColidedShape(shapeA);
 							shapePair.setPenetration(true);
 						}
 					} else if (shapePair.isPenetration()) {
 						contactListener.separation(shapePair);
+						shapeA.remColidedShape(shapeB);
+						shapeB.remColidedShape(shapeA);
 						shapePair.setPenetration(false);
 					}
 				}

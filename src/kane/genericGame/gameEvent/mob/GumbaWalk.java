@@ -5,6 +5,7 @@ import java.awt.Event;
 import kane.genericGame.Game;
 import kane.genericGame.GameEvent;
 import kane.genericGame.Mob;
+import kane.genericGame.PassiveAttributes;
 
 public class GumbaWalk extends GameEvent{
 	
@@ -30,7 +31,7 @@ public class GumbaWalk extends GameEvent{
 	@Override
 	public void procedure() {
 		if (leftWalk) {
-			if (walker)
+			if (walker.getShape(PassiveAttributes.MOB_LEFT).getColidedShapes())
 		}
 		
 		reduceFrameCounter();

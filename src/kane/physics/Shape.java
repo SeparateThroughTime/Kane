@@ -35,7 +35,7 @@ public abstract class Shape {
 	protected float invMass;
 	protected final Vec2f centerOfMass;
 	protected float momentOfInertia;
-	public static int MAX_COLIDED_SHAPES = 10;
+	public static int MAX_COLIDED_SHAPES = 50;
 	protected Shape[] colidedShapes;
 	protected int numColidedShapes;
 
@@ -420,6 +420,10 @@ public abstract class Shape {
 
 	public void addColidedShape(Shape shape) {
 		this.colidedShapes[numColidedShapes++] = shape;
+	}
+	
+	public void remColidedShape(Shape shape) {
+		this.numColidedShapes = ArrayOperations.remObjectStatic(colidedShapes, shape, numColidedShapes);
 	}
 	
 	public void resetColidedShapes() {
