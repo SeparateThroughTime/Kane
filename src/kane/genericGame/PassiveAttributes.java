@@ -4,6 +4,8 @@ package kane.genericGame;
  * This is a list of all passive attributes, which a shape can have.
  */
 public enum PassiveAttributes {
+	PLAYER_ALL,
+	
 	MOB_ALL,
 	MOB_LEFT,
 	MOB_RIGHT,
