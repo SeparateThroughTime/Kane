@@ -18,6 +18,7 @@ public class ShapePair {
 		this.shapeB = shapeB;
 		contact = null;
 		setCollideable(true);
+		penetraion = false;
 	}
 
 	/**

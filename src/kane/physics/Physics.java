@@ -75,7 +75,7 @@ public class Physics {
 	public void step(float deltaTime) {
 
 		// Acceleration integration
-		float aabbTolerance = 5;
+		float aabbTolerance = 10;
 		for (int i = 0; i < numBodies; i++) {
 			Body body = bodies[i];
 			if (!body.isRemoved()) {

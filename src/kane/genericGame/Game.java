@@ -3,7 +3,6 @@ package kane.genericGame;
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.util.HashMap;
 
 import javax.swing.JFrame;
 
@@ -11,7 +10,6 @@ import kane.genericGame.userInteraction.Keyboard;
 import kane.genericGame.userInteraction.KeyboardInterface;
 import kane.genericGame.userInteraction.Mouse;
 import kane.genericGame.userInteraction.MouseInterface;
-import kane.math.Vec2f;
 import kane.physics.Body;
 import kane.physics.Physics;
 import kane.physics.contacts.ContactListener;
@@ -262,7 +260,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 			if (event.getFrameCounter() == 0) {
 				event.start();
 			} else if (event.getFrameCounter() < event.EVENT_DURATION) {
-				event.procedure();
+
 			} else {
 				event.end();
 				remEvent(i);

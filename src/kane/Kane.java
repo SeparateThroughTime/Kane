@@ -181,8 +181,7 @@ public class Kane extends Game {
 
 	@Override
 	protected void mechanicsLoop() {
-//		System.out.println(player.getShape(PassiveAttributes.PLAYER_ALL).getColidedShapes().length);
-		System.out.println(physics.getNumShapePairs());
+		
 	}
 
 	@Override
