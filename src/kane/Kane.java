@@ -1,5 +1,6 @@
 /*TODO
 
+	OutOfBound ColidedShapes
 	Mobs
 	Jump on Head attack
 	HUD
@@ -99,7 +100,7 @@ public class Kane extends Game {
 		// Create player
 		player = new Mob(this, 100, 130, 3, 1);
 		player.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
-		player.setJumpAcc(new Vec2f(0, 200 / DELTATIME));
+		player.setJumpAcc(new Vec2f(0, 400 / DELTATIME));
 		player.setWalkSpeed(300);
 		currentItem = inventory.getItem("None");
 		player.addShape(new Box(0, 0, player, new Vec2f(16, 32), Color.GREEN, mDynamic, 2));
@@ -160,7 +161,7 @@ public class Kane extends Game {
 		blob.setWalkingAI(WalkingAIs.GUMBA_WALK);
 		blob.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
 		blob.setJumpAcc(new Vec2f(0, 200 / DELTATIME));
-		blob.setWalkSpeed(200);
+		blob.setWalkSpeed(50);
 		physics.addBody(blob);
 
 		// Create Background
@@ -168,7 +169,7 @@ public class Kane extends Game {
 		renderer.changeBackground(file);
 
 		// camera
-		
+
 		renderer.createCamera();
 		renderer.getCamera().bindCameraToMap();
 		renderer.moveBackground();
@@ -180,7 +181,8 @@ public class Kane extends Game {
 
 	@Override
 	protected void mechanicsLoop() {
-		
+//		System.out.println(player.getShape(PassiveAttributes.PLAYER_ALL).getColidedShapes().length);
+		System.out.println(physics.getNumShapePairs());
 	}
 
 	@Override
@@ -230,9 +232,7 @@ public class Kane extends Game {
 
 	@Override
 	public void leftArrowClick() {
-		if (!pause) {
-			player.walkLeft();
-		}
+		player.walkLeft();
 	}
 
 	@Override
@@ -241,13 +241,12 @@ public class Kane extends Game {
 
 	@Override
 	public void leftArrowReleased() {
+		player.stopWalkLeft();
 	}
 
 	@Override
 	public void rightArrowClick() {
-		if (!pause) {
-			player.walkRight();
-		}
+		player.walkRight();
 	}
 
 	@Override
@@ -256,6 +255,8 @@ public class Kane extends Game {
 
 	@Override
 	public void rightArrowReleased() {
+		player.stopWalkRight();
+
 	}
 
 	@Override
@@ -425,7 +426,7 @@ public class Kane extends Game {
 			Shape shape = inventory.getShape(i);
 			if (shape.hasPassiveAtrribute(PassiveAttributes.INVENTORY)) {
 				shape.setVisible(showInventory);
-				}
+			}
 		}
 		if (showInventory) {
 			inventory.getPos().set(renderer.getCamera().getPos());

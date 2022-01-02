@@ -143,12 +143,24 @@ public class Mob extends Body {
 			currentWalkingLeftEvent.killEvent();
 		}
 	}
+	
+	public void stopWalkRight() {
+		if(currentWalkingRightEvent != null) {
+			currentWalkingRightEvent.killEvent();
+		}
+	}
 
 	public void walkLeft() {
 		currentWalkingLeftEvent = new WalkingLeft(g, this);
 		g.addEvent(currentWalkingLeftEvent);
 		if (activeActions.get(MobActions.WALK_RIGHT)) {
 			currentWalkingRightEvent.killEvent();
+		}
+	}
+	
+	public void stopWalkLeft() {
+		if(currentWalkingLeftEvent != null) {
+			currentWalkingLeftEvent.killEvent();
 		}
 	}
 

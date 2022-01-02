@@ -21,33 +21,31 @@ public class WalkingLeft extends GameEvent {
 
 	@Override
 	public void start() {
-			// Checks if the player changed direction. If so, the body turns.
-			if (ArrayOperations.contains(SpriteController.RIGHT_SPRITE_STATES,
-					walker.getShape(PassiveAttributes.MOB_ALL).getCurrentSpriteState())) {
-				walker.mirrorX();
-			}
+		// Checks if the player changed direction. If so, the body turns.
+		if (ArrayOperations.contains(SpriteController.RIGHT_SPRITE_STATES,
+				walker.getShape(PassiveAttributes.MOB_ALL).getCurrentSpriteState())) {
+			walker.mirrorX();
+		}
 
-			walker.getShape(PassiveAttributes.MOB_ALL).setCurrentSpriteState(SpriteState.RUNNING_LEFT);
-			walker.setAngle(0f);
-			walker.getActiveActions().put(MobActions.WALK_LEFT, true);
+		walker.getShape(PassiveAttributes.MOB_ALL).setCurrentSpriteState(SpriteState.RUNNING_LEFT);
+		walker.setAngle(0f);
+		walker.getActiveActions().put(MobActions.WALK_LEFT, true);
 	}
 
 	@Override
 	public void procedure() {
-			walker.getAcc().setX(-walker.getWalkAcc().getX());
-			if (-walker.getVel().getX() > walker.getWalkSpeed()) {
-				walker.getVel().setX(-walker.getWalkSpeed());
-			}
-
-			if (g.getKeyListener().isKeyPressed(Keys.LEFT)) {
-				reduceFrameCounter();
+		walker.getAcc().setX(-walker.getWalkAcc().getX());
+		if (-walker.getVel().getX() > walker.getWalkSpeed()) {
+			walker.getVel().setX(-walker.getWalkSpeed());
 		}
+
+		reduceFrameCounter();
 	}
 
 	@Override
 	public void end() {
-			walker.getShape(PassiveAttributes.MOB_ALL).setCurrentSpriteState(SpriteState.STANDING_LEFT);
-			walker.getActiveActions().put(MobActions.WALK_LEFT, false);
+		walker.getShape(PassiveAttributes.MOB_ALL).setCurrentSpriteState(SpriteState.STANDING_LEFT);
+		walker.getActiveActions().put(MobActions.WALK_LEFT, false);
 	}
 
 }

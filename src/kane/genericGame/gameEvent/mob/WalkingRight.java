@@ -38,9 +38,7 @@ public class WalkingRight extends GameEvent {
 		if (walker.getVel().getX() > walker.getWalkSpeed()) {
 			walker.getVel().setX(walker.getWalkSpeed());
 		}
-		if (g.getKeyListener().isKeyPressed(Keys.RIGHT)) {
-			reduceFrameCounter();
-		}
+		reduceFrameCounter();
 	}
 
 	@Override

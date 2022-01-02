@@ -443,7 +443,7 @@ public abstract class Shape {
 		for (int i = 0; i < numColidedShapes - removedShapes; i++) {
 			Shape shape = shapes[i];
 			if (!shape.hasPassiveAtrribute(attribute)) {
-				removedShapes += ArrayOperations.remObjectStatic(shapes, shape, numColidedShapes - removedShapes);
+				ArrayOperations.remSingleObjectStatic(shapes, i--, numColidedShapes - removedShapes++);
 			}
 		}
 		return ArrayOperations.cutArray(shapes, numColidedShapes - removedShapes);

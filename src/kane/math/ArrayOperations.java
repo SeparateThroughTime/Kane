@@ -81,4 +81,11 @@ public class ArrayOperations {
 		}
 		return numRemovals;
 	}
+	
+	public static <T> void remSingleObjectStatic(T[] array, int index, int numElementsToCheck) {
+		for (int i = index; i < numElementsToCheck - 1; i++) {
+			array[i] = array[i + 1];
+		}
+		array[numElementsToCheck - 1] = null;
+	}
 }
