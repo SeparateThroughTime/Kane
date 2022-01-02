@@ -260,7 +260,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 			if (event.getFrameCounter() == 0) {
 				event.start();
 			} else if (event.getFrameCounter() < event.EVENT_DURATION) {
-
+				event.procedure();
 			} else {
 				event.end();
 				remEvent(i);

@@ -1,6 +1,4 @@
 /*TODO
-
-	OutOfBound ColidedShapes
 	Mobs
 	Jump on Head attack
 	HUD
@@ -20,6 +18,7 @@
 	Rotation
 	
 	Wait for relevance To Do:
+	Separation of shapepair is not executed when shapePair separates too fast -> Workaround is increasing aabb_tolerance in physics.
 	ContactPoint: BoxPolygon, PolygonPolygon -> Ghost Contacts
 	Speed-Adjuster (Jumping against dynamics increases jump heigth)
 		Its probably not the cause of friction but something else)
@@ -181,7 +180,7 @@ public class Kane extends Game {
 
 	@Override
 	protected void mechanicsLoop() {
-		
+		System.out.println(player.getShape(PassiveAttributes.PLAYER_ALL).getColidedShapes().length);
 	}
 
 	@Override

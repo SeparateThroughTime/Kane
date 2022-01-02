@@ -28,7 +28,6 @@ public class GumbaWalk extends GameEvent {
 	public void procedure() {
 		if (leftWalk) {
 			if (walker.getShape(PassiveAttributes.MOB_LEFT).getColidedShapes(PassiveAttributes.PHYSICAL).length > 0) {
-				System.out.println("turnRight");
 				leftWalk = false;
 				currentWalkEvent.killEvent();
 				currentWalkEvent = new WalkingRight(g, walker);
@@ -36,7 +35,6 @@ public class GumbaWalk extends GameEvent {
 			}
 		} else if (walker.getShape(PassiveAttributes.MOB_RIGHT)
 				.getColidedShapes(PassiveAttributes.PHYSICAL).length > 0) {
-			System.out.println("turnLeft");
 			leftWalk = true;
 			currentWalkEvent.killEvent();
 			currentWalkEvent = new WalkingLeft(g, walker);

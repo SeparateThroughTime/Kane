@@ -10,7 +10,8 @@ import kane.physics.contacts.ContactSolver;
  */
 public class Physics {
 
-	private final int MAX_BODIES = 1000;
+	public static final float AABB_TOLERANCE = 10;
+	public static final int MAX_BODIES = 1000;
 	private Body[] bodies;
 	private int numBodies;
 
@@ -75,17 +76,16 @@ public class Physics {
 	public void step(float deltaTime) {
 
 		// Acceleration integration
-		float aabbTolerance = 10;
 		for (int i = 0; i < numBodies; i++) {
 			Body body = bodies[i];
 			if (!body.isRemoved()) {
 				if (body.getImpulseRate() > 0) {
 					body.getVel().addMult(body.getAcc(), deltaTime);
 					Vec2f nextPos = new Vec2f(body.getPos()).addMult(body.getVel(), deltaTime);
-					body.updateAABB(nextPos, aabbTolerance);
+					body.updateAABB(nextPos, AABB_TOLERANCE);
 					body.getAcc().zero();
 				} else {
-					body.updateAABB(body.getPos(), aabbTolerance);
+					body.updateAABB(body.getPos(), AABB_TOLERANCE);
 
 				}
 			}
