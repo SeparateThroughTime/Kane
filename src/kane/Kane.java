@@ -109,6 +109,7 @@ public class Kane extends Game {
 		player.addShape(new Box(0, -22, player, new Vec2f(15, 10), Color.WHITE, mEvent, 2));
 		player.getShape(1).setCollision(false);
 		player.getShape(1).addActiveAttribute(ActiveAttributes.PLAYER_FEETS);
+		player.getShape(1).addActiveAttribute(ActiveAttributes.ATTACKING_FIELD);
 		player.getShape(1).setVisible(true);
 		player.addShape(new Box(32, 0, player, new Vec2f(8, 32), Color.RED, mEvent, 2));
 		player.getShape(2).setCollision(false);
@@ -143,12 +144,16 @@ public class Kane extends Game {
 		blob.addShape(new Box(0, 0, blob, new Vec2f(32, 16), Color.YELLOW, mDynamic, 2));
 		blob.getShape(0).addPassiveAttribute(PassiveAttributes.MOB_ALL);
 		blob.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
-		blob.addShape(new Box(31, 0, blob, new Vec2f(2, 15), Color.YELLOW, mEvent, 2));
+		blob.addShape(new Box(31, 0, blob, new Vec2f(1, 15), Color.YELLOW, mEvent, 2));
 		blob.getShape(1).addPassiveAttribute(PassiveAttributes.MOB_RIGHT);
 		blob.getShape(1).setCollision(false);
-		blob.addShape(new Box(-31, 0, blob, new Vec2f(2, 15), Color.YELLOW, mEvent, 2));
+		blob.addShape(new Box(-31, 0, blob, new Vec2f(1, 15), Color.YELLOW, mEvent, 2));
 		blob.getShape(2).addPassiveAttribute(PassiveAttributes.MOB_LEFT);
 		blob.getShape(2).setCollision(false);
+		blob.addShape(new Box(0, -2, blob, new Vec2f(32, 15), Color.YELLOW, mEvent, 2));
+		blob.getShape(3).addActiveAttribute(ActiveAttributes.ATTACKING_FIELD);
+		blob.getActiveActions().put(MobActions.ATTACKING, true);
+		blob.getShape(3).setCollision(false);
 		sprite = new Sprite(new File("sprites\\Mobs\\Blob\\Blob.png"), 2, 2);
 		sprite.addState(SpriteState.STATIC, new int[] { 0 });
 		spriteControllers = new SpriteController[1];
@@ -180,7 +185,6 @@ public class Kane extends Game {
 
 	@Override
 	protected void mechanicsLoop() {
-		System.out.println(player.getShape(PassiveAttributes.PLAYER_ALL).getColidedShapes().length);
 	}
 
 	@Override
