@@ -16,6 +16,7 @@ public interface ContactManagementInterface {
 	public void playerTouchCameraMidY(Shape cameraMidY, Shape playerAll);
 	
 	public void playerCollectsSword(Shape sword, Shape playerAll);
+	public void mobJumpsOnMob(Shape playerFeet, Shape mobAll);
 	
 	public void mobStandsOnPhysical(Shape mobFeet, Shape physical);
 	public void mobFeetLeavePhysical(Shape mobFeet, Shape physical);

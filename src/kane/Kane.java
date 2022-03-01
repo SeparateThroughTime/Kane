@@ -35,7 +35,7 @@ import kane.genericGame.Item;
 import kane.genericGame.Mob;
 import kane.genericGame.MobActions;
 import kane.genericGame.PassiveAttributes;
-import kane.genericGame.WalkingAIs;
+import kane.genericGame.AIs;
 import kane.genericGame.gameEvent.mob.GumbaWalk;
 import kane.genericGame.item.SWORD;
 import kane.math.Vec2f;
@@ -107,7 +107,7 @@ public class Kane extends Game {
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PHYSICAL);
 		player.addShape(new Box(0, -22, player, new Vec2f(15, 10), Color.WHITE, mEvent, 2));
 		player.getShape(1).setCollision(false);
-		player.getShape(1).addActiveAttribute(ActiveAttributes.PLAYER_FEETS);
+		player.getShape(1).addActiveAttribute(ActiveAttributes.MOB_FEETS);
 		player.getShape(1).addActiveAttribute(ActiveAttributes.ATTACKING_FIELD);
 		player.getShape(1).setVisible(true);
 		player.addShape(new Box(32, 0, player, new Vec2f(8, 32), Color.RED, mEvent, 2));
@@ -149,7 +149,7 @@ public class Kane extends Game {
 		blob.addShape(new Box(-31, 0, blob, new Vec2f(1, 15), Color.YELLOW, mEvent, 2));
 		blob.getShape(2).addPassiveAttribute(PassiveAttributes.MOB_LEFT);
 		blob.getShape(2).setCollision(false);
-		blob.addShape(new Box(0, -2, blob, new Vec2f(40, 15), Color.YELLOW, mEvent, 2));
+		blob.addShape(new Box(0, -2, blob, new Vec2f(32, 15), Color.YELLOW, mEvent, 2));
 		blob.getShape(3).addActiveAttribute(ActiveAttributes.ATTACKING_FIELD);
 		blob.getShape(3).setCollision(false);
 		sprite = new Sprite(new File("sprites\\Mobs\\Blob\\Blob.png"), 2, 2);
@@ -160,7 +160,7 @@ public class Kane extends Game {
 		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC);
 		blob.getShape(0).setSpriteControllers(spriteControllers);
 		blob.getActiveActions().put(MobActions.GUMBA_WALK, true);
-		blob.setWalkingAI(WalkingAIs.GUMBA_WALK);
+		blob.setAI(AIs.GUMBA);
 		blob.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
 		blob.setJumpAcc(new Vec2f(0, 200 / DELTATIME));
 		blob.setWalkSpeed(50);
@@ -491,5 +491,11 @@ public class Kane extends Game {
 		Mob attackingMob = (Mob) attackingField.getBody();
 		int damage = attackingMob.getDamage();
 		attackedMob.hit(damage, attackingMob.getPos());
+	}
+
+	@Override
+	public void mobJumpsOnMob(Shape mobFeet, Shape mobAll) {
+		Mob jumpingMob = (Mob) mobFeet.getBody();
+		jumpingMob.getVel().setY(300);
 	}
 }

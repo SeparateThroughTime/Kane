@@ -4,10 +4,7 @@ package kane.genericGame;
  * This is a list of all active attributes, which a shape can have.
  */
 public enum ActiveAttributes {
-	PLAYER_FEETS,
-	PLAYER_HEAD,
-	PLAYER_FRONT,
-	PLAYER_BACK,
+	MOB_FEETS,
 	
 	ATTACKING_FIELD,
 	

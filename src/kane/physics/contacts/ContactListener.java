@@ -79,8 +79,11 @@ public class ContactListener {
 				ActiveAttributes activeA = activeShape.getActiveAttribute(j);
 				for (int k = 0; k < passiveShape.getNumPassiveAttributes(); k++) {
 					PassiveAttributes passiveA = passiveShape.getPassiveAttribute(k);
-					if (activeA == ActiveAttributes.PLAYER_FEETS && passiveA == PassiveAttributes.PHYSICAL) {
+					if (activeA == ActiveAttributes.MOB_FEETS && passiveA == PassiveAttributes.PHYSICAL) {
 						penetrationInterface.mobStandsOnPhysical(activeShape, passiveShape);
+					}
+					if (activeA == ActiveAttributes.MOB_FEETS && passiveA == PassiveAttributes.MOB_ALL) {
+						penetrationInterface.mobJumpsOnMob(activeShape, passiveShape);
 					}
 				}
 			}
@@ -102,7 +105,7 @@ public class ContactListener {
 				ActiveAttributes activeA = activeShape.getActiveAttribute(j);
 				for (int k = 0; k < passiveShape.getNumPassiveAttributes(); k++) {
 					PassiveAttributes passiveA = passiveShape.getPassiveAttribute(k);
-					if (activeA == ActiveAttributes.PLAYER_FEETS && passiveA == PassiveAttributes.PHYSICAL) {
+					if (activeA == ActiveAttributes.MOB_FEETS && passiveA == PassiveAttributes.PHYSICAL) {
 						penetrationInterface.mobFeetLeavePhysical(activeShape, passiveShape);
 					}
 				}

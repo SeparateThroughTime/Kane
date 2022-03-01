@@ -2,6 +2,7 @@ package kane.genericGame;
 
 import java.util.HashMap;
 
+import kane.genericGame.gameEvent.mob.WalkAwayFromPos;
 import kane.genericGame.gameEvent.mob.GumbaWalk;
 import kane.genericGame.gameEvent.mob.Jump;
 import kane.genericGame.gameEvent.mob.WalkingLeft;
@@ -24,6 +25,7 @@ public class Mob extends Body {
 	private WalkingLeft currentWalkingLeftEvent;
 	private WalkingRight currentWalkingRightEvent;
 	private GameEvent currentWalkingAI;
+	private AIs ai;
 
 	public HashMap<MobActions, Boolean> getActiveActions() {
 		return activeActions;
@@ -95,15 +97,25 @@ public class Mob extends Body {
 			reduceHealth(damage);
 			invulnerabilityCooldown = INVULNERABILITY_TIME;
 			bump(attackersPos);
+
+			if (ai != null) {
+				switch (ai) {
+				case GUMBA:
+					g.addEvent(new WalkAwayFromPos(g, this, attackersPos));
+				default:
+					break;
+				}
+			}
 		}
+
 	}
 
 	private void bump(Vec2f attackersPos) {
 		float attackersRelPosX = attackersPos.getX() - pos.getX();
 		if (attackersRelPosX < 0) {
-			acc.add(200 / Game.DELTATIME, 200 / Game.DELTATIME);
+			vel.set(200, 100);
 		} else {
-			acc.add(-200 / Game.DELTATIME, 200 / Game.DELTATIME);
+			vel.set(-200, 100);
 		}
 	}
 
@@ -136,31 +148,37 @@ public class Mob extends Body {
 	public void setJumpAcc(Vec2f jumpAcc) {
 		this.jumpAcc = jumpAcc;
 	}
-
-	public void walkRight() {
-		if (activeActions.get(MobActions.WALK_LEFT)) {
-			currentWalkingLeftEvent.killEvent();
-		}
-		currentWalkingRightEvent = new WalkingRight(g, this);
-		g.addEvent(currentWalkingRightEvent);
-	}
 	
-	public void stopWalkRight() {
-		if(currentWalkingRightEvent != null) {
-			currentWalkingRightEvent.killEvent();
-		}
-	}
-
-	public void walkLeft() {
+	private void killWalkingEvents() {
 		if (activeActions.get(MobActions.WALK_RIGHT)) {
 			currentWalkingRightEvent.killEvent();
 		}
+		if (activeActions.get(MobActions.WALK_LEFT)) {
+			currentWalkingLeftEvent.killEvent();
+		}
+	}
+
+	public void walkRight() {
+		killWalkingEvents();
+		currentWalkingRightEvent = new WalkingRight(g, this);
+		g.addEvent(currentWalkingRightEvent);
+	}
+
+	public void stopWalkRight() {
+		if (currentWalkingRightEvent != null) {
+			currentWalkingRightEvent.killEvent();
+		}
+	}
+	
+	
+	public void walkLeft() {
+		killWalkingEvents();
 		currentWalkingLeftEvent = new WalkingLeft(g, this);
 		g.addEvent(currentWalkingLeftEvent);
 	}
-	
+
 	public void stopWalkLeft() {
-		if(currentWalkingLeftEvent != null) {
+		if (currentWalkingLeftEvent != null) {
 			currentWalkingLeftEvent.killEvent();
 		}
 	}
@@ -179,12 +197,9 @@ public class Mob extends Body {
 		this.canJump = canJump;
 	}
 
-	public void setWalkingAI(WalkingAIs ai) {
-		if (currentWalkingAI != null) {
-			currentWalkingAI.killEvent();
-		}
+	public void startWalkingAI() {
 		switch (ai) {
-		case GUMBA_WALK:
+		case GUMBA:
 			g.addEvent(new GumbaWalk(g, this));
 			break;
 
@@ -192,16 +207,21 @@ public class Mob extends Body {
 			break;
 		}
 	}
-	
+
 	public void refreshSpriteStates() {
-		if(activeActions.get(MobActions.STAND_LEFT)) {
+		if (activeActions.get(MobActions.STAND_LEFT)) {
 			setCurrentSpriteState(SpriteState.STANDING_LEFT);
-		} else if(activeActions.get(MobActions.STAND_RIGHT)) {
+		} else if (activeActions.get(MobActions.STAND_RIGHT)) {
 			setCurrentSpriteState(SpriteState.STANDING_RIGHT);
-		} else if(activeActions.get(MobActions.WALK_LEFT)) {
+		} else if (activeActions.get(MobActions.WALK_LEFT)) {
 			setCurrentSpriteState(SpriteState.RUNNING_LEFT);
-		} else if(activeActions.get(MobActions.WALK_RIGHT)) {
+		} else if (activeActions.get(MobActions.WALK_RIGHT)) {
 			setCurrentSpriteState(SpriteState.RUNNING_RIGHT);
 		}
+	}
+
+	public void setAI(AIs ai) {
+		this.ai = ai;
+		startWalkingAI();
 	}
 }
