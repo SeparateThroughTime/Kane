@@ -19,5 +19,5 @@ public interface ContactManagementInterface {
 	
 	public void mobStandsOnPhysical(Shape mobFeet, Shape physical);
 	public void mobFeetLeavePhysical(Shape mobFeet, Shape physical);
-	public void playerAttacksMob(Shape attackingField, Shape mobAll);
+	public void mobAttacksMob(Shape attackingField, Shape attackedMobAll);
 }

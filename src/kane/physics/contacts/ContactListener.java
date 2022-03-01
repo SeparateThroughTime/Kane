@@ -30,7 +30,7 @@ public class ContactListener {
 			for (int j = 0; j < activeShape.getNumActiveAttributes(); j++) {
 				ActiveAttributes activeA = activeShape.getActiveAttribute(j);
 				for (int k = 0; k < passiveShape.getNumPassiveAttributes(); k++) {
-					PassiveAttributes passiveA = passiveShape.getPassiveAttribute(j);
+					PassiveAttributes passiveA = passiveShape.getPassiveAttribute(k);
 					if (activeA == ActiveAttributes.CAMERA_RIGHT && passiveA == PassiveAttributes.PLAYER_ALL) {
 						penetrationInterface.playerTouchCameraRight(activeShape, passiveShape);
 						
@@ -56,7 +56,7 @@ public class ContactListener {
 
 					}
 					if (activeA == ActiveAttributes.ATTACKING_FIELD && passiveA == PassiveAttributes.MOB_ALL) {
-						penetrationInterface.playerAttacksMob(activeShape, passiveShape);
+						penetrationInterface.mobAttacksMob(activeShape, passiveShape);
 					}
 				}
 
@@ -76,10 +76,10 @@ public class ContactListener {
 				passiveShape = pair.getShapeA();
 			}
 			for (int j = 0; j < activeShape.getNumActiveAttributes(); j++) {
-				ActiveAttributes activeE = activeShape.getActiveAttribute(j);
+				ActiveAttributes activeA = activeShape.getActiveAttribute(j);
 				for (int k = 0; k < passiveShape.getNumPassiveAttributes(); k++) {
-					PassiveAttributes passiveE = passiveShape.getPassiveAttribute(j);
-					if (activeE == ActiveAttributes.PLAYER_FEETS && passiveE == PassiveAttributes.PHYSICAL) {
+					PassiveAttributes passiveA = passiveShape.getPassiveAttribute(k);
+					if (activeA == ActiveAttributes.PLAYER_FEETS && passiveA == PassiveAttributes.PHYSICAL) {
 						penetrationInterface.mobStandsOnPhysical(activeShape, passiveShape);
 					}
 				}
@@ -99,10 +99,10 @@ public class ContactListener {
 				passiveShape = pair.getShapeA();
 			}
 			for (int j = 0; j < activeShape.getNumActiveAttributes(); j++) {
-				ActiveAttributes activeE = activeShape.getActiveAttribute(j);
+				ActiveAttributes activeA = activeShape.getActiveAttribute(j);
 				for (int k = 0; k < passiveShape.getNumPassiveAttributes(); k++) {
-					PassiveAttributes passiveE = passiveShape.getPassiveAttribute(j);
-					if (activeE == ActiveAttributes.PLAYER_FEETS && passiveE == PassiveAttributes.PHYSICAL) {
+					PassiveAttributes passiveA = passiveShape.getPassiveAttribute(k);
+					if (activeA == ActiveAttributes.PLAYER_FEETS && passiveA == PassiveAttributes.PHYSICAL) {
 						penetrationInterface.mobFeetLeavePhysical(activeShape, passiveShape);
 					}
 				}

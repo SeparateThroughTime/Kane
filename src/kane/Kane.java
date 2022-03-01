@@ -22,7 +22,6 @@
 	ContactPoint: BoxPolygon, PolygonPolygon -> Ghost Contacts
 	Speed-Adjuster (Jumping against dynamics increases jump heigth)
 		Its probably not the cause of friction but something else)
-	Attack direction when shape 0 of attacker has static sprite (maybe wont be appearing)
 
 */
 package kane;
@@ -150,9 +149,8 @@ public class Kane extends Game {
 		blob.addShape(new Box(-31, 0, blob, new Vec2f(1, 15), Color.YELLOW, mEvent, 2));
 		blob.getShape(2).addPassiveAttribute(PassiveAttributes.MOB_LEFT);
 		blob.getShape(2).setCollision(false);
-		blob.addShape(new Box(0, -2, blob, new Vec2f(32, 15), Color.YELLOW, mEvent, 2));
+		blob.addShape(new Box(0, -2, blob, new Vec2f(40, 15), Color.YELLOW, mEvent, 2));
 		blob.getShape(3).addActiveAttribute(ActiveAttributes.ATTACKING_FIELD);
-		blob.getActiveActions().put(MobActions.ATTACKING, true);
 		blob.getShape(3).setCollision(false);
 		sprite = new Sprite(new File("sprites\\Mobs\\Blob\\Blob.png"), 2, 2);
 		sprite.addState(SpriteState.STATIC, new int[] { 0 });
@@ -488,9 +486,10 @@ public class Kane extends Game {
 	}
 
 	@Override
-	public void playerAttacksMob(Shape attackingField, Shape mobAll) {
-		Mob mob = (Mob) mobAll.getBody();
-		int damage = player.getDamage();
-		mob.hit(damage, player.getPos());
+	public void mobAttacksMob(Shape attackingField, Shape attackedMobAll) {
+		Mob attackedMob = (Mob) attackedMobAll.getBody();
+		Mob attackingMob = (Mob) attackingField.getBody();
+		int damage = attackingMob.getDamage();
+		attackedMob.hit(damage, attackingMob.getPos());
 	}
 }

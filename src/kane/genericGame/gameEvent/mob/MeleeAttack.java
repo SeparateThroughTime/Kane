@@ -33,26 +33,8 @@ public class MeleeAttack extends GameEvent {
 
 		}
 
-//		// TODO: Potential Bug: If spritestate of shape 0 is static the attack would be
-//		// always in right direction
-//		Shape[] spriteShapes = attacker.getSpriteShapes();
-//		previousSpriteStates = new SpriteState[spriteShapes.length];
-//		boolean leftAttack = ArrayOperations.contains(SpriteController.LEFT_SPRITE_STATES,
-//				spriteShapes[0].getCurrentSpriteState());
-//		for (int i = 0; i < spriteShapes.length; i++) {
-//			previousSpriteStates[i] = spriteShapes[i].getCurrentSpriteState();
-//			if (attacker.getActiveActions().get(MobActions.WALK_LEFT)) {
-//				spriteShapes[i].setCurrentSpriteState(SpriteState.ATTACK_LEFT);
-//			} else {
-//				spriteShapes[i].setCurrentSpriteState(SpriteState.ATTACK_RIGHT);
-//			}
-//
-//		}
-
 		attackShape = attacker.getShape(PassiveAttributes.ATTACKING_FIELD);
 		attackShape.addActiveAttribute(ActiveAttributes.ATTACKING_FIELD);
-
-		procedure();
 	}
 
 	@Override
@@ -64,11 +46,6 @@ public class MeleeAttack extends GameEvent {
 	public void end() {
 		attacker.getActiveActions().put(MobActions.ATTACKING, false);
 		attacker.refreshSpriteStates();
-		
-//		for (int i = 0; i < spriteShapes.length; i++) {
-//			SpriteState spriteState = previousSpriteStates[i];
-//			spriteShapes[i].setCurrentSpriteState(spriteState);
-//		}
 
 		attackShape.remActiveAttribute(ActiveAttributes.ATTACKING_FIELD);
 	}
