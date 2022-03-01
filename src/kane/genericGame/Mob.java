@@ -8,6 +8,7 @@ import kane.genericGame.gameEvent.mob.WalkingLeft;
 import kane.genericGame.gameEvent.mob.WalkingRight;
 import kane.math.Vec2f;
 import kane.physics.Body;
+import kane.renderer.SpriteState;
 
 public class Mob extends Body {
 	private static final int INVULNERABILITY_TIME = 30;
@@ -137,11 +138,11 @@ public class Mob extends Body {
 	}
 
 	public void walkRight() {
-		currentWalkingRightEvent = new WalkingRight(g, this);
-		g.addEvent(currentWalkingRightEvent);
 		if (activeActions.get(MobActions.WALK_LEFT)) {
 			currentWalkingLeftEvent.killEvent();
 		}
+		currentWalkingRightEvent = new WalkingRight(g, this);
+		g.addEvent(currentWalkingRightEvent);
 	}
 	
 	public void stopWalkRight() {
@@ -151,11 +152,11 @@ public class Mob extends Body {
 	}
 
 	public void walkLeft() {
-		currentWalkingLeftEvent = new WalkingLeft(g, this);
-		g.addEvent(currentWalkingLeftEvent);
 		if (activeActions.get(MobActions.WALK_RIGHT)) {
 			currentWalkingRightEvent.killEvent();
 		}
+		currentWalkingLeftEvent = new WalkingLeft(g, this);
+		g.addEvent(currentWalkingLeftEvent);
 	}
 	
 	public void stopWalkLeft() {
@@ -189,6 +190,18 @@ public class Mob extends Body {
 
 		default:
 			break;
+		}
+	}
+	
+	public void refreshSpriteStates() {
+		if(activeActions.get(MobActions.STAND_LEFT)) {
+			setCurrentSpriteState(SpriteState.STANDING_LEFT);
+		} else if(activeActions.get(MobActions.STAND_RIGHT)) {
+			setCurrentSpriteState(SpriteState.STANDING_RIGHT);
+		} else if(activeActions.get(MobActions.WALK_LEFT)) {
+			setCurrentSpriteState(SpriteState.RUNNING_LEFT);
+		} else if(activeActions.get(MobActions.WALK_RIGHT)) {
+			setCurrentSpriteState(SpriteState.RUNNING_RIGHT);
 		}
 	}
 }

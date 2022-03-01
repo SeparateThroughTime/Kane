@@ -30,6 +30,8 @@ public class WalkingLeft extends GameEvent {
 		walker.getShape(PassiveAttributes.MOB_ALL).setCurrentSpriteState(SpriteState.RUNNING_LEFT);
 		walker.setAngle(0f);
 		walker.getActiveActions().put(MobActions.WALK_LEFT, true);
+		walker.getActiveActions().put(MobActions.STAND_LEFT, false);
+		walker.getActiveActions().put(MobActions.STAND_RIGHT, false);
 	}
 
 	@Override
@@ -46,6 +48,7 @@ public class WalkingLeft extends GameEvent {
 	public void end() {
 		walker.getShape(PassiveAttributes.MOB_ALL).setCurrentSpriteState(SpriteState.STANDING_LEFT);
 		walker.getActiveActions().put(MobActions.WALK_LEFT, false);
+		walker.getActiveActions().put(MobActions.STAND_LEFT, true);
 	}
 
 }

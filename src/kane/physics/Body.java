@@ -4,6 +4,7 @@ import kane.genericGame.ActiveAttributes;
 import kane.genericGame.PassiveAttributes;
 import kane.math.ArrayOperations;
 import kane.math.Vec2f;
+import kane.renderer.SpriteState;
 
 /**
  * A Body can have many Shapes. The Body is the moving (or not moving) object in
@@ -402,7 +403,7 @@ public class Body {
 	 * Returns all shapes with sprites
 	 * @return
 	 */
-	public Shape[] getSpriteShapes() {
+	private Shape[] getSpriteShapes() {
 		Shape[] spriteShapes = new Shape[0];
 		for (int i = 0; i < numShapes; i++) {
 			Shape shape = shapes[i];
@@ -411,5 +412,12 @@ public class Body {
 			}
 		}
 		return spriteShapes;
+	}
+	
+	public void setCurrentSpriteState(SpriteState state) {
+		Shape[] spriteShapes = getSpriteShapes();
+		for (Shape shape : spriteShapes) {
+			shape.setCurrentSpriteState(state);
+		}
 	}
 }
