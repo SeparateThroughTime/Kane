@@ -43,20 +43,38 @@ public class SWORD extends Item {
 		
 		PLAYER_SPRITES[0].addState(SpriteState.STANDING_RIGHT, new int[] { 0 });
 		PLAYER_SPRITES[0].addState(SpriteState.RUNNING_RIGHT, new int[] { 0 });
+		PLAYER_SPRITES[0].addState(SpriteState.HIT_RIGHT, new int[] { 0 });
+		PLAYER_SPRITES[0].addState(SpriteState.JUMP_RIGHT, new int[] { 0 });
+		PLAYER_SPRITES[0].addState(SpriteState.FALL_RIGHT, new int[] { 0 });
 		PLAYER_SPRITES[0].addState(SpriteState.STANDING_LEFT, new int[] { 1 });
 		PLAYER_SPRITES[0].addState(SpriteState.RUNNING_LEFT, new int[] { 1 });
+		PLAYER_SPRITES[0].addState(SpriteState.HIT_LEFT, new int[] { 1 });
+		PLAYER_SPRITES[0].addState(SpriteState.JUMP_LEFT, new int[] { 1 });
+		PLAYER_SPRITES[0].addState(SpriteState.FALL_LEFT, new int[] { 1 });
 		
 		PLAYER_SPRITES[1].addState(SpriteState.STANDING_RIGHT, new int[] { 0 });
 		PLAYER_SPRITES[1].addState(SpriteState.RUNNING_RIGHT, new int[] { 1, 2, 3, 4 });
 		PLAYER_SPRITES[1].addState(SpriteState.STANDING_LEFT, new int[] { 6 });
+		PLAYER_SPRITES[1].addState(SpriteState.HIT_RIGHT, new int[] { 0 });
+		PLAYER_SPRITES[1].addState(SpriteState.JUMP_RIGHT, new int[] { 4 });
+		PLAYER_SPRITES[1].addState(SpriteState.FALL_RIGHT, new int[] { 3 });
 		PLAYER_SPRITES[1].addState(SpriteState.RUNNING_LEFT, new int[] { 7, 8, 9, 10 });
 		PLAYER_SPRITES[1].addState(SpriteState.ATTACK_RIGHT, new int[] { 5 });
 		PLAYER_SPRITES[1].addState(SpriteState.ATTACK_LEFT, new int[] { 11 });
+		PLAYER_SPRITES[1].addState(SpriteState.HIT_LEFT, new int[] { 7 });
+		PLAYER_SPRITES[1].addState(SpriteState.JUMP_LEFT, new int[] { 11 });
+		PLAYER_SPRITES[1].addState(SpriteState.FALL_LEFT, new int[] { 10 });
 		
 		PLAYER_SPRITES[2].addState(SpriteState.STANDING_RIGHT, new int[] { 0 });
 		PLAYER_SPRITES[2].addState(SpriteState.RUNNING_RIGHT, new int[] { 1, 2, 3, 4, });
+		PLAYER_SPRITES[2].addState(SpriteState.HIT_RIGHT, new int[] { 0 });
+		PLAYER_SPRITES[2].addState(SpriteState.JUMP_RIGHT, new int[] { 4 });
+		PLAYER_SPRITES[2].addState(SpriteState.FALL_RIGHT, new int[] { 3 });
 		PLAYER_SPRITES[2].addState(SpriteState.STANDING_LEFT, new int[] { 5 });
 		PLAYER_SPRITES[2].addState(SpriteState.RUNNING_LEFT, new int[] { 6, 7, 8, 9 });
+		PLAYER_SPRITES[2].addState(SpriteState.HIT_LEFT, new int[] { 5 });
+		PLAYER_SPRITES[2].addState(SpriteState.JUMP_LEFT, new int[] { 9 });
+		PLAYER_SPRITES[2].addState(SpriteState.FALL_LEFT, new int[] { 8 });
 		
 		PLAYER_SPRITE_CONTROLLERS[0].setCurrentSpriteState(SpriteState.STANDING_RIGHT);
 		PLAYER_SPRITE_CONTROLLERS[0].setSpritePosOffset(new Vec2f(-32, -32));

@@ -10,7 +10,7 @@ import kane.physics.contacts.ContactSolver;
  */
 public class Physics {
 
-	public static final float AABB_TOLERANCE = 10;
+	public static final float AABB_TOLERANCE = 20;
 	public static final int MAX_BODIES = 1000;
 	private Body[] bodies;
 	private int numBodies;
@@ -29,7 +29,7 @@ public class Physics {
 	private ContactGeneratorFactory cgf;
 	private ContactSolver contactSolver;
 
-	private Vec2f gravity = new Vec2f(0, -10f);
+	private Vec2f gravity = new Vec2f(0, -35f);
 
 	/**
 	 * 

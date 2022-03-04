@@ -1,12 +1,12 @@
 package kane.genericGame;
 
 public enum MobActions {
-	WALK_LEFT,
-	WALK_RIGHT,
-	STAND_LEFT,
-	STAND_RIGHT,
+	WALK,
+	STAND,
 	JUMPING,
 	ATTACKING,
+	HIT,
+	FALLING,
 	
 	GUMBA_WALK;
 }

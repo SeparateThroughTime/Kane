@@ -19,13 +19,13 @@ public class Mob extends Body {
 	private int damage;
 	private Vec2f walkAcc;
 	private int walkSpeed;
-	private boolean canJump;
+	private boolean onGround;
 	private Vec2f jumpAcc;
 	private HashMap<MobActions, Boolean> activeActions;
 	private WalkingLeft currentWalkingLeftEvent;
 	private WalkingRight currentWalkingRightEvent;
-	private GameEvent currentWalkingAI;
 	private AIs ai;
+	private MobDirection direction;
 
 	public HashMap<MobActions, Boolean> getActiveActions() {
 		return activeActions;
@@ -41,14 +41,15 @@ public class Mob extends Body {
 		this.health = maxHealth;
 		this.setDamage(damage);
 		this.g = g;
-		canJump = true;
+		onGround = true;
 		walkAcc = new Vec2f();
 
 		activeActions = new HashMap<MobActions, Boolean>();
-		activeActions.put(MobActions.WALK_LEFT, false);
-		activeActions.put(MobActions.WALK_RIGHT, false);
+		activeActions.put(MobActions.WALK, false);
 		activeActions.put(MobActions.JUMPING, false);
 		activeActions.put(MobActions.ATTACKING, false);
+		activeActions.put(MobActions.FALLING, false);
+		activeActions.put(MobActions.HIT, false);
 		activeActions.put(MobActions.GUMBA_WALK, false);
 	}
 
@@ -93,8 +94,9 @@ public class Mob extends Body {
 	}
 
 	public void hit(int damage, Vec2f attackersPos) {
+		// TODO reenable damage
 		if (invulnerabilityCooldown == 0) {
-			reduceHealth(damage);
+//			reduceHealth(damage);
 			invulnerabilityCooldown = INVULNERABILITY_TIME;
 			bump(attackersPos);
 
@@ -148,20 +150,22 @@ public class Mob extends Body {
 	public void setJumpAcc(Vec2f jumpAcc) {
 		this.jumpAcc = jumpAcc;
 	}
-	
+
 	private void killWalkingEvents() {
-		if (activeActions.get(MobActions.WALK_RIGHT)) {
+		if (currentWalkingRightEvent != null) {
 			currentWalkingRightEvent.killEvent();
 		}
-		if (activeActions.get(MobActions.WALK_LEFT)) {
+		if (currentWalkingLeftEvent != null) {
 			currentWalkingLeftEvent.killEvent();
 		}
 	}
 
 	public void walkRight() {
-		killWalkingEvents();
-		currentWalkingRightEvent = new WalkingRight(g, this);
-		g.addEvent(currentWalkingRightEvent);
+		if (onGround) {
+			killWalkingEvents();
+			currentWalkingRightEvent = new WalkingRight(g, this);
+			g.addEvent(currentWalkingRightEvent);
+		}
 	}
 
 	public void stopWalkRight() {
@@ -169,12 +173,13 @@ public class Mob extends Body {
 			currentWalkingRightEvent.killEvent();
 		}
 	}
-	
-	
+
 	public void walkLeft() {
-		killWalkingEvents();
-		currentWalkingLeftEvent = new WalkingLeft(g, this);
-		g.addEvent(currentWalkingLeftEvent);
+		if (onGround) {
+			killWalkingEvents();
+			currentWalkingLeftEvent = new WalkingLeft(g, this);
+			g.addEvent(currentWalkingLeftEvent);
+		}
 	}
 
 	public void stopWalkLeft() {
@@ -184,17 +189,17 @@ public class Mob extends Body {
 	}
 
 	public void jump() {
-		if (canJump) {
+		if (onGround) {
 			g.addEvent(new Jump(g, this));
 		}
 	}
 
-	public boolean getCanJump() {
-		return canJump;
+	public boolean isOnGround() {
+		return onGround;
 	}
 
-	public void setCanJump(boolean canJump) {
-		this.canJump = canJump;
+	public void setOnGround(boolean canJump) {
+		this.onGround = canJump;
 	}
 
 	public void startWalkingAI() {
@@ -209,19 +214,57 @@ public class Mob extends Body {
 	}
 
 	public void refreshSpriteStates() {
-		if (activeActions.get(MobActions.STAND_LEFT)) {
-			setCurrentSpriteState(SpriteState.STANDING_LEFT);
-		} else if (activeActions.get(MobActions.STAND_RIGHT)) {
-			setCurrentSpriteState(SpriteState.STANDING_RIGHT);
-		} else if (activeActions.get(MobActions.WALK_LEFT)) {
-			setCurrentSpriteState(SpriteState.RUNNING_LEFT);
-		} else if (activeActions.get(MobActions.WALK_RIGHT)) {
-			setCurrentSpriteState(SpriteState.RUNNING_RIGHT);
+		if (direction.equals(MobDirection.LEFT)) {
+			if (activeActions.get(MobActions.STAND)) {
+				setCurrentSpriteState(SpriteState.STANDING_LEFT);
+			} else if (activeActions.get(MobActions.WALK)) {
+				setCurrentSpriteState(SpriteState.RUNNING_LEFT);
+			} else if (activeActions.get(MobActions.JUMPING)) {
+				setCurrentSpriteState(SpriteState.JUMP_LEFT);
+			} else if (activeActions.get(MobActions.FALLING)) {
+				setCurrentSpriteState(SpriteState.FALL_LEFT);
+			}
+			
+			if (activeActions.get(MobActions.ATTACKING)) {
+				setCurrentSpriteState(SpriteState.ATTACK_LEFT);
+			}
+			
+			if (activeActions.get(MobActions.HIT)) {
+				setCurrentSpriteState(SpriteState.HIT_LEFT);
+			}
+
+		} else if (direction.equals(MobDirection.RIGHT)) {
+			if (activeActions.get(MobActions.STAND)) {
+				setCurrentSpriteState(SpriteState.STANDING_RIGHT);
+			} else if (activeActions.get(MobActions.WALK)) {
+				setCurrentSpriteState(SpriteState.RUNNING_RIGHT);
+			} else if (activeActions.get(MobActions.JUMPING)) {
+				setCurrentSpriteState(SpriteState.JUMP_RIGHT);
+			} else if (activeActions.get(MobActions.FALLING)) {
+				setCurrentSpriteState(SpriteState.FALL_RIGHT);
+			}
+			
+			if (activeActions.get(MobActions.ATTACKING)) {
+				setCurrentSpriteState(SpriteState.ATTACK_RIGHT);
+			}
+			
+			if (activeActions.get(MobActions.HIT)) {
+				setCurrentSpriteState(SpriteState.HIT_RIGHT);
+			}
 		}
 	}
+
 
 	public void setAI(AIs ai) {
 		this.ai = ai;
 		startWalkingAI();
+	}
+
+	public MobDirection getDirection() {
+		return direction;
+	}
+
+	public void setDirection(MobDirection direction) {
+		this.direction = direction;
 	}
 }

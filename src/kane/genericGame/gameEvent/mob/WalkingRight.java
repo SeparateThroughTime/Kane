@@ -4,6 +4,7 @@ import kane.genericGame.Game;
 import kane.genericGame.GameEvent;
 import kane.genericGame.Mob;
 import kane.genericGame.MobActions;
+import kane.genericGame.MobDirection;
 import kane.genericGame.PassiveAttributes;
 import kane.genericGame.userInteraction.Keys;
 import kane.math.ArrayOperations;
@@ -29,9 +30,9 @@ public class WalkingRight extends GameEvent {
 
 		walker.getShape(PassiveAttributes.MOB_ALL).setCurrentSpriteState(SpriteState.RUNNING_RIGHT);
 		walker.setAngle(0f);
-		walker.getActiveActions().put(MobActions.WALK_RIGHT, true);
-		walker.getActiveActions().put(MobActions.STAND_LEFT, false);
-		walker.getActiveActions().put(MobActions.STAND_RIGHT, false);
+		walker.setDirection(MobDirection.RIGHT);
+		walker.getActiveActions().put(MobActions.WALK, true);
+		walker.getActiveActions().put(MobActions.STAND, false);
 	}
 
 	@Override
@@ -46,8 +47,8 @@ public class WalkingRight extends GameEvent {
 	@Override
 	public void end() {
 		walker.getShape(PassiveAttributes.MOB_ALL).setCurrentSpriteState(SpriteState.STANDING_RIGHT);
-		walker.getActiveActions().put(MobActions.WALK_RIGHT, false);
-		walker.getActiveActions().put(MobActions.STAND_RIGHT, true);
+		walker.getActiveActions().put(MobActions.WALK, false);
+		walker.getActiveActions().put(MobActions.STAND, true);
 	}
 
 }

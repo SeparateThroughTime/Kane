@@ -5,10 +5,9 @@ import kane.genericGame.Game;
 import kane.genericGame.GameEvent;
 import kane.genericGame.Mob;
 import kane.genericGame.MobActions;
+import kane.genericGame.MobDirection;
 import kane.genericGame.PassiveAttributes;
-import kane.math.ArrayOperations;
 import kane.physics.Shape;
-import kane.renderer.SpriteController;
 import kane.renderer.SpriteState;
 
 public class MeleeAttack extends GameEvent {
@@ -25,8 +24,7 @@ public class MeleeAttack extends GameEvent {
 	@Override
 	public void start() {
 		attacker.getActiveActions().put(MobActions.ATTACKING, true);
-		if (attacker.getActiveActions().get(MobActions.WALK_LEFT)
-				|| attacker.getActiveActions().get(MobActions.STAND_LEFT)) {
+		if (attacker.getDirection().equals(MobDirection.LEFT)) {
 			attacker.setCurrentSpriteState(SpriteState.ATTACK_LEFT);
 		} else {
 			attacker.setCurrentSpriteState(SpriteState.ATTACK_RIGHT);

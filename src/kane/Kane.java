@@ -1,6 +1,6 @@
 /*TODO
+ 	Changing Items while character is positioned left causes bug.
 	Mobs
-	Jump on Head attack
 	HUD
 	Items and additional mechanics
 	Visual Effects
@@ -29,14 +29,13 @@ package kane;
 import java.awt.Color;
 import java.io.File;
 
+import kane.genericGame.AIs;
 import kane.genericGame.ActiveAttributes;
 import kane.genericGame.Game;
 import kane.genericGame.Item;
 import kane.genericGame.Mob;
 import kane.genericGame.MobActions;
 import kane.genericGame.PassiveAttributes;
-import kane.genericGame.AIs;
-import kane.genericGame.gameEvent.mob.GumbaWalk;
 import kane.genericGame.item.SWORD;
 import kane.math.Vec2f;
 import kane.physics.Body;
@@ -98,7 +97,7 @@ public class Kane extends Game {
 		// Create player
 		player = new Mob(this, 100, 130, 3, 1);
 		player.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
-		player.setJumpAcc(new Vec2f(0, 400 / DELTATIME));
+		player.setJumpAcc(new Vec2f(0, 800 / DELTATIME));
 		player.setWalkSpeed(300);
 		currentItem = inventory.getItem("None");
 		player.addShape(new Box(0, 0, player, new Vec2f(16, 32), Color.GREEN, mDynamic, 2));
@@ -470,7 +469,7 @@ public class Kane extends Game {
 	@Override
 	public void mobStandsOnPhysical(Shape mobFeet, Shape physical) {
 		Mob mob = (Mob) mobFeet.getBody();
-		mob.setCanJump(true);
+		mob.setOnGround(true);
 	}
 
 	@Override
@@ -482,7 +481,7 @@ public class Kane extends Game {
 	@Override
 	public void mobFeetLeavePhysical(Shape mobFeet, Shape physical) {
 		Mob mob = (Mob) mobFeet.getBody();
-		mob.setCanJump(false);
+		mob.setOnGround(false);
 	}
 
 	@Override

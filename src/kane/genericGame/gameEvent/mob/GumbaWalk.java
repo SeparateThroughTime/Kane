@@ -4,6 +4,7 @@ import kane.genericGame.Game;
 import kane.genericGame.GameEvent;
 import kane.genericGame.Mob;
 import kane.genericGame.MobActions;
+import kane.genericGame.MobDirection;
 import kane.genericGame.PassiveAttributes;
 
 public class GumbaWalk extends GameEvent {
@@ -24,7 +25,7 @@ public class GumbaWalk extends GameEvent {
 
 	@Override
 	public void procedure() {
-		if (walker.getActiveActions().get(MobActions.WALK_LEFT)) {
+		if (walker.getDirection().equals(MobDirection.LEFT)) {
 			if (walker.getShape(PassiveAttributes.MOB_LEFT).getColidedShapes(PassiveAttributes.PHYSICAL).length > 0) {
 				walker.walkRight();
 			}
