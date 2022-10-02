@@ -1,9 +1,11 @@
-package kane.genericGame;
+package kane.genericGame.hud;
 
 import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
 
+import kane.genericGame.Item;
+import kane.genericGame.PassiveAttributes;
 import kane.genericGame.item.NONE;
 import kane.genericGame.item.SWORD;
 import kane.math.Vec2f;
@@ -42,13 +44,13 @@ public class Inventory extends Body {
 		getShape(0).setCollision(false);
 		getShape(0).addPassiveAttribute(PassiveAttributes.INVENTORY);
 		setReactToGravity(false);
-		File file = new File("sprites\\interface\\inventory.png");
-		Sprite sprite = new Sprite(file, 14, 8);
+		File file = new File("sprites\\interface\\Inventory.png");
+		Sprite sprite = new Sprite(file, 224, 128);
 		sprite.addState(SpriteState.STATIC, new int[] { 0 });
 		SpriteController[] spriteControllers = new SpriteController[1];
 		spriteControllers[0] = new SpriteController(sprite);
 		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC);
-		spriteControllers[0].setSpritePosOffset(new Vec2f(-224, -128));
+		spriteControllers[0].setSpritePosOffset(new Vec2f(-resSpecs.gameWidth / 4 - 24, -resSpecs.GAME_HEIGHT / 4 + 24));
 		getShape(0).setSpriteControllers(spriteControllers);
 
 		// Slots

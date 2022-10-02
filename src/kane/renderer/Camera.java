@@ -1,6 +1,7 @@
 package kane.renderer;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import kane.genericGame.ActiveAttributes;
 import kane.genericGame.Game;
@@ -33,6 +34,7 @@ public class Camera extends Body {
 	private Vec2f movementAccX;
 	private Vec2f movementAccY;
 	private int movementSpeedY;
+	private ArrayList<Body> hudBodies = new ArrayList<Body>();
 
 	public Camera(ResolutionSpecification resSpecs, Game g) {
 		super(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2);
@@ -107,6 +109,10 @@ public class Camera extends Body {
 		window = new AABB(min, max);
 		aiRange = new AABB(aiMin, aiMax);
 		zeroPoint = min;
+		
+		for(Body body : hudBodies) {
+			body.getPos().set(getPos());
+		}
 	}
 
 	public AABB getAiRange() {
@@ -178,6 +184,10 @@ public class Camera extends Body {
 
 	public void setMovementSpeedY(int movementSpeedY) {
 		this.movementSpeedY = movementSpeedY;
+	}
+	
+	public void addHudBody(Body body) {
+		hudBodies.add(body);
 	}
 
 }

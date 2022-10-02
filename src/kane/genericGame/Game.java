@@ -6,6 +6,8 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 
+import kane.genericGame.hud.HudBar;
+import kane.genericGame.hud.Inventory;
 import kane.genericGame.userInteraction.Keyboard;
 import kane.genericGame.userInteraction.KeyboardInterface;
 import kane.genericGame.userInteraction.Mouse;
@@ -53,6 +55,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	protected Physics physics;
 	protected Renderer renderer;
 	protected Inventory inventory;
+	protected HudBar healthBar;
 	protected Mob player;
 	protected ContactListener contactListener;
 

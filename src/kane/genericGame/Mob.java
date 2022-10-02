@@ -96,7 +96,7 @@ public class Mob extends Body {
 	public void hit(int damage, Vec2f attackersPos) {
 		// TODO reenable damage
 		if (invulnerabilityCooldown == 0) {
-//			reduceHealth(damage);
+			reduceHealth(damage);
 			invulnerabilityCooldown = INVULNERABILITY_TIME;
 			bump(attackersPos);
 

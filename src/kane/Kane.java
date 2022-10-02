@@ -1,8 +1,8 @@
 /*TODO
- 	Changing Items while character is positioned left causes bug.
-	Mobs
 	HUD
-	Items and additional mechanics
+		Healthbar Pos
+		Healthbar going down
+	Hud Flickering while camera Movement
 	Visual Effects
 	Sounds
 	Object Editor
@@ -13,6 +13,41 @@
 	Campaign Editor
 	StartMenu
 	Save
+	
+	Events:
+		WalkAI
+			KoopaWalk
+			WalkToPlayer
+			BooHooWalk
+			MosquitoWalk
+			BatWalk
+			TeleWalk
+			JumpWalk
+			PiercingMissile
+			ThrowMissile
+			SearchingMissile
+		TurnLeft
+		TurnRight
+		Attack
+			MissileAttack
+			JumpAttack
+			FlyingAttack
+			ElectricField
+			Pushback
+		RotateWorld
+		JumpingShoes
+		Heal
+		MushroomEffect
+		Transform(Vampire)
+		Sanity(Fire)
+		Sanity(Ice)
+		
+	Mechanics:
+		Tauch-Level
+		Lohrenfahrt
+		Eis
+		Flug-Level
+		Kanonen-Transport
 	
 	Dead End To Do:
 	Rotation
@@ -27,7 +62,11 @@
 package kane;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import kane.genericGame.AIs;
 import kane.genericGame.ActiveAttributes;
@@ -36,6 +75,7 @@ import kane.genericGame.Item;
 import kane.genericGame.Mob;
 import kane.genericGame.MobActions;
 import kane.genericGame.PassiveAttributes;
+import kane.genericGame.hud.HudBar;
 import kane.genericGame.item.SWORD;
 import kane.math.Vec2f;
 import kane.physics.Body;
@@ -127,7 +167,7 @@ public class Kane extends Game {
 		sword.addShape(new Polygon(0, 0, sword, Color.YELLOW, points, mDynamic, 2));
 		sword.getShape(0).addActiveAttribute(ActiveAttributes.SWORD);
 		File file = new File("sprites\\items\\sword.png");
-		Sprite sprite = new Sprite(file, 1, 1);
+		Sprite sprite = new Sprite(file, 16, 16);
 		sprite.addState(SpriteState.STATIC, new int[] { 0 });
 		spriteControllers = new SpriteController[1];
 		spriteControllers[0] = new SpriteController(sprite);
@@ -151,7 +191,7 @@ public class Kane extends Game {
 		blob.addShape(new Box(0, -2, blob, new Vec2f(32, 15), Color.YELLOW, mEvent, 2));
 		blob.getShape(3).addActiveAttribute(ActiveAttributes.ATTACKING_FIELD);
 		blob.getShape(3).setCollision(false);
-		sprite = new Sprite(new File("sprites\\Mobs\\Blob\\Blob.png"), 2, 2);
+		sprite = new Sprite(new File("sprites\\Mobs\\Blob\\Blob.png"), 32, 32);
 		sprite.addState(SpriteState.STATIC, new int[] { 0 });
 		spriteControllers = new SpriteController[1];
 		spriteControllers[0] = new SpriteController(sprite);
@@ -177,7 +217,26 @@ public class Kane extends Game {
 		mouseListener.addCamera(renderer.getCamera());
 
 //		changeResolution(Resolution.SOL1176x664);
+		
+		// healtBar
+		file = new File("sprites\\interface\\HealthBar.png");
+		BufferedImage img;
+		try {
+			img = ImageIO.read(file);
+			healthBar = new HudBar(resSpecs, img, 0);
+			physics.addBody(healthBar);
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		// add Hud to Camera
+		renderer.getCamera().addHudBody(inventory);
+		renderer.getCamera().addHudBody(healthBar);
 
+	}
+	
+	public void refreshHealthBar() {
+		
 	}
 
 	@Override
@@ -430,9 +489,9 @@ public class Kane extends Game {
 			}
 		}
 		if (showInventory) {
-			inventory.getPos().set(renderer.getCamera().getPos());
-			// AABB dont update through physics engine because the game is paused
-			inventory.updateAABB(inventory.getPos(), 5f);
+//			inventory.getPos().set(renderer.getCamera().getPos());
+//			// AABB dont update through physics engine because the game is paused
+//			inventory.updateAABB(inventory.getPos(), 5f);
 			inventory.showItems();
 		}
 
@@ -492,6 +551,10 @@ public class Kane extends Game {
 		Mob attackingMob = (Mob) attackingField.getBody();
 		int damage = attackingMob.getDamage();
 		attackedMob.hit(damage, attackingMob.getPos());
+		
+		if (attackedMob.hasShapeWithPassiveAttribute(PassiveAttributes.PLAYER_ALL)) {
+			refreshHealthBar();
+		}
 	}
 
 	@Override

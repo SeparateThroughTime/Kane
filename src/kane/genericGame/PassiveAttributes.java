@@ -17,6 +17,7 @@ public enum PassiveAttributes {
 	
 	INVENTORY,
 	INVENTORY_SLOT,
+	HUD,
 	
 	HAS_SPRITE;
 }

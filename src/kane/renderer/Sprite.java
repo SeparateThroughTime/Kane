@@ -14,7 +14,6 @@ import kane.math.Vec2f;
 public class Sprite {
 	// This class manages sprites.
 
-	public static final int PIXELS = 16;
 	public static final float SCALE = 2f;
 
 	// FRAME_WIDTH and FRAME_HEIGHT defines how many 32x32 blocks are used for one
@@ -27,6 +26,15 @@ public class Sprite {
 	protected SpriteState[] assignedSpriteStates;
 
 	private Map<SpriteState, int[]> states;
+	
+	public Sprite(BufferedImage img, int frameWidth, int frameHeight) {
+		assignedSpriteStates = new SpriteState[0];
+		this.FRAME_HEIGHT = frameHeight;
+		this.FRAME_WIDTH = frameWidth;
+		this.states = new HashMap<SpriteState, int[]>();
+		init(img);
+		
+	}
 
 	public Sprite(File file, int frameWidth, int frameHeight) {
 		assignedSpriteStates = new SpriteState[0];
@@ -36,26 +44,32 @@ public class Sprite {
 		BufferedImage img;
 		try {
 			img = ImageIO.read(file);
-			int imgWidth = img.getWidth(null);
-			int imgHeight = img.getHeight(null);
-			int pixelPerFrame = PIXELS * PIXELS * FRAME_WIDTH * FRAME_HEIGHT;
-			this.PIXEL_PER_FRAME = pixelPerFrame;
-			int frameCount = (imgWidth * imgHeight) / pixelPerFrame;
-//			spritePixels = new int[frameCount][pixelPerFrame];
-			int pixelPerFrameX = PIXELS * FRAME_WIDTH;
-			int pixelPerFrameY = PIXELS * FRAME_HEIGHT;
-			int frameCountX = imgWidth / pixelPerFrameX;
-			int frameCountY = imgHeight / pixelPerFrameY;
-			frames = new BufferedImage[frameCount];
-
-			for (int x = 0; x < frameCountX; x++) {
-				for (int y = 0; y < frameCountY; y++) {
-					frames[x + y * frameCountX] = img.getSubimage(x * pixelPerFrameX, y * pixelPerFrameY,
-							pixelPerFrameX, pixelPerFrameY);
-				}
-			}
-		} catch (IOException e) {
+			init(img);
+		}catch (IOException e) {
 			e.printStackTrace();
+		}
+		
+		
+		 
+	}
+	
+	private void init(BufferedImage img) {
+		int imgWidth = img.getWidth(null);
+		int imgHeight = img.getHeight(null);
+		this.PIXEL_PER_FRAME = FRAME_WIDTH * FRAME_HEIGHT;
+		int frameCount = (imgWidth * imgHeight) / PIXEL_PER_FRAME;
+//			spritePixels = new int[frameCount][pixelPerFrame];
+		int pixelPerFrameX = FRAME_WIDTH;
+		int pixelPerFrameY = FRAME_HEIGHT;
+		int frameCountX = imgWidth / pixelPerFrameX;
+		int frameCountY = imgHeight / pixelPerFrameY;
+		frames = new BufferedImage[frameCount];
+
+		for (int x = 0; x < frameCountX; x++) {
+			for (int y = 0; y < frameCountY; y++) {
+				frames[x + y * frameCountX] = img.getSubimage(x * pixelPerFrameX, y * pixelPerFrameY,
+						pixelPerFrameX, pixelPerFrameY);
+			}
 		}
 	}
 

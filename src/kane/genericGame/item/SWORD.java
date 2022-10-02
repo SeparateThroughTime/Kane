@@ -15,16 +15,16 @@ import kane.renderer.SpriteState;
 public class SWORD extends Item {
 	public static final int STANDARD_AMOUNT = 5;
 	
-	private static final Sprite ITEM_SPRITE = new Sprite(new File("sprites\\\\items\\\\sword.png"), 1, 1);
+	private static final Sprite ITEM_SPRITE = new Sprite(new File("sprites\\\\items\\\\sword.png"), 16, 16);
 	
 	private static final SpriteController[] ITEM_SPRITE_CONTROLLERS = {
 			new SpriteController(ITEM_SPRITE)
 	};
 	
 	private static final Sprite[] PLAYER_SPRITES = {
-			new Sprite(new File("sprites\\player\\playerHead.png"), 2, 2),
-			new Sprite(new File("sprites\\player\\playerUpperSword.png"), 2, 2),
-			new Sprite(new File("sprites\\player\\playerLower.png"), 2, 2)
+			new Sprite(new File("sprites\\player\\playerHead.png"), 32, 32),
+			new Sprite(new File("sprites\\player\\playerUpperSword.png"), 32, 32),
+			new Sprite(new File("sprites\\player\\playerLower.png"), 32, 32)
 	};
 
 	private static final SpriteController[] PLAYER_SPRITE_CONTROLLERS = {
