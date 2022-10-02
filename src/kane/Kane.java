@@ -204,7 +204,9 @@ public class Kane extends Game {
 					if (item != null) {
 						currentItem = item;
 						SpriteController[] spriteControllers = item.getPlayerSpriteControllers();
-						player.getShape(0).setSpriteControllers(spriteControllers);
+						SpriteState spriteState = player.getShape(PassiveAttributes.MOB_ALL).getCurrentSpriteState();
+						player.getShape(PassiveAttributes.MOB_ALL).setSpriteControllers(spriteControllers);
+						player.getShape(PassiveAttributes.MOB_ALL).setCurrentSpriteState(spriteState);
 					}
 				}
 			}
