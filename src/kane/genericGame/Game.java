@@ -98,9 +98,6 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		frame.add(renderer);
 		frame.pack();
 
-		inventory = new Inventory(resSpecs);
-		physics.addBody(inventory);
-
 		frame.setVisible(true);
 	}
 
@@ -184,7 +181,6 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		frame.pack();
 
 		renderer.changeResolution();
-		inventory.changeResolution();
 	}
 
 	/**

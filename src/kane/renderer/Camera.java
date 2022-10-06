@@ -12,10 +12,13 @@ import kane.genericGame.gameEvent.camera.MoveCameraRight;
 import kane.genericGame.gameEvent.camera.MoveCameraUp;
 import kane.genericGame.gameEvent.camera.SlowCameraX;
 import kane.genericGame.gameEvent.camera.SlowCameraY;
+import kane.genericGame.hud.HudBar;
+import kane.genericGame.hud.Inventory;
 import kane.math.Vec2f;
 import kane.physics.AABB;
 import kane.physics.Body;
 import kane.physics.Material;
+import kane.physics.Shape;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.Point;
 
@@ -34,7 +37,8 @@ public class Camera extends Body {
 	private Vec2f movementAccX;
 	private Vec2f movementAccY;
 	private int movementSpeedY;
-	private ArrayList<Body> hudBodies = new ArrayList<Body>();
+	private Inventory inventory;
+	private ArrayList<HudBar> hudBars = new ArrayList<HudBar>();
 
 	public Camera(ResolutionSpecification resSpecs, Game g) {
 		super(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2);
@@ -109,10 +113,6 @@ public class Camera extends Body {
 		window = new AABB(min, max);
 		aiRange = new AABB(aiMin, aiMax);
 		zeroPoint = min;
-		
-		for(Body body : hudBodies) {
-			body.getPos().set(getPos());
-		}
 	}
 
 	public AABB getAiRange() {
@@ -127,6 +127,7 @@ public class Camera extends Body {
 	public void changeResolution() {
 		clearBody();
 		createCamera();
+		inventory.changeResolution();
 	}
 
 	/**
@@ -185,9 +186,20 @@ public class Camera extends Body {
 	public void setMovementSpeedY(int movementSpeedY) {
 		this.movementSpeedY = movementSpeedY;
 	}
-	
-	public void addHudBody(Body body) {
-		hudBodies.add(body);
+
+	public Inventory initInventory() {
+		Shape mainShape = addShape(new Point(0, 0, this, Color.BLUE, mInterface, 3));
+		Shape[] slotShapes = new Shape[8];
+		slotShapes[0] = addShape(new Box(-144, 48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
+		slotShapes[1] = addShape(new Box(-48, 48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
+		slotShapes[2] = addShape(new Box(48, 48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
+		slotShapes[3] = addShape(new Box(144, 48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
+		slotShapes[4] = addShape(new Box(-144, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
+		slotShapes[5] = addShape(new Box(-48, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
+		slotShapes[6] = addShape(new Box(48, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
+		slotShapes[7] = addShape(new Box(144, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
+		inventory = new Inventory(mainShape, slotShapes, resSpecs);
+		return inventory;
 	}
 
 }

@@ -29,7 +29,7 @@ public class Body {
 	private boolean removed;
 	
 	protected Shape[] shapes;
-	public static final int MAX_SHAPES = 10;
+	public static final int MAX_SHAPES = 16;
 	protected int numShapes;
 
 	public float getAngleVel() {
@@ -124,15 +124,15 @@ public class Body {
 	 * @param shape
 	 * @return -true if successful. Otherwise false
 	 */
-	public boolean addShape(Shape shape) {
+	public Shape addShape(Shape shape) {
 		if (numShapes < MAX_SHAPES) {
 			shapes[numShapes++] = shape;
 			updateMass();
 			calculateCenterOfMass();
 			calculateMomentOfInertia();
-			return true;
+			return shape;
 		} else {
-			return false;
+			return null;
 		}
 	}
 

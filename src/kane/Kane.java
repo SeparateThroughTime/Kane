@@ -136,6 +136,15 @@ public class Kane extends Game {
 		player.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
 		player.setJumpAcc(new Vec2f(0, 800 / DELTATIME));
 		player.setWalkSpeed(300);
+
+		// camera
+		renderer.createCamera();
+		renderer.getCamera().bindCameraToMap();
+		renderer.moveBackground();
+		mouseListener.addCamera(renderer.getCamera());
+		inventory = renderer.getCamera().initInventory();
+		
+		// Set player Item
 		currentItem = inventory.getItem("None");
 		player.addShape(new Box(0, 0, player, new Vec2f(16, 32), Color.GREEN, mDynamic, 2));
 		player.getShape(0).addPassiveAttribute(PassiveAttributes.PLAYER_ALL);
@@ -206,15 +215,8 @@ public class Kane extends Game {
 		file = new File("sprites\\backgrounds\\background.png");
 		renderer.changeBackground(file);
 
-		// camera
-
-		renderer.createCamera();
-		renderer.getCamera().bindCameraToMap();
-		renderer.moveBackground();
-		mouseListener.addCamera(renderer.getCamera());
-
 //		changeResolution(Resolution.SOL1176x664);
-		
+
 		// healthBar
 		file = new File("sprites\\interface\\HealthBar.png");
 		BufferedImage img;
@@ -223,24 +225,20 @@ public class Kane extends Game {
 			healthBar = new HudBar(resSpecs, img, 0);
 			physics.addBody(healthBar);
 			refreshHealthBar();
-		}catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		// add Hud to Camera
-		renderer.getCamera().addHudBody(inventory);
-		renderer.getCamera().addHudBody(healthBar);
 
 	}
-	
+
 	public void refreshHealthBar() {
 		if (player.getHealth() > 0) {
 			healthBar.refreshHudBar((float) player.getHealth() / HudBar.MAX_PLAYER_HEALTH);
+		} else {
+			healthBar.refreshHudBar(0);
+
 		}
-		else {healthBar.refreshHudBar(0);
-			
-		}
-		
+
 	}
 
 	@Override
@@ -260,10 +258,10 @@ public class Kane extends Game {
 	@Override
 	public void leftMouseReleased() {
 		if (showInventory) {
-			for (int i = 1; i < inventory.getNumShapes(); i++) {
-				Shape slot = inventory.getShape(i);
+			for (int i = 0; i < inventory.NUM_SLOTS; i++) {
+				Shape slot = inventory.getSlot(i);
 				if (slot.isPointInShape(mouseListener.getMousePos())) {
-					Item item = inventory.getItem(i - 1);
+					Item item = inventory.getItem(i);
 					if (item != null) {
 						currentItem = item;
 						SpriteController[] spriteControllers = item.getPlayerSpriteControllers();
@@ -486,18 +484,7 @@ public class Kane extends Game {
 	public void iClick() {
 		showInventory = !showInventory;
 		pause = showInventory;
-		for (int i = 0; i < inventory.getNumShapes(); i++) {
-			Shape shape = inventory.getShape(i);
-			if (shape.hasPassiveAtrribute(PassiveAttributes.INVENTORY)) {
-				shape.setVisible(showInventory);
-			}
-		}
-		if (showInventory) {
-//			inventory.getPos().set(renderer.getCamera().getPos());
-//			// AABB dont update through physics engine because the game is paused
-//			inventory.updateAABB(inventory.getPos(), 5f);
-			inventory.showItems();
-		}
+		inventory.setVisible(showInventory);
 
 	}
 
@@ -555,7 +542,7 @@ public class Kane extends Game {
 		Mob attackingMob = (Mob) attackingField.getBody();
 		int damage = attackingMob.getDamage();
 		attackedMob.hit(damage, attackingMob.getPos());
-		
+
 		if (attackedMob.hasShapeWithPassiveAttribute(PassiveAttributes.PLAYER_ALL)) {
 			refreshHealthBar();
 		}

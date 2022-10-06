@@ -9,23 +9,26 @@ import kane.genericGame.PassiveAttributes;
 import kane.genericGame.item.NONE;
 import kane.genericGame.item.SWORD;
 import kane.math.Vec2f;
-import kane.physics.Body;
 import kane.physics.Material;
+import kane.physics.Shape;
 import kane.physics.shapes.Box;
-import kane.physics.shapes.Point;
 import kane.renderer.ResolutionSpecification;
 import kane.renderer.Sprite;
 import kane.renderer.SpriteController;
 import kane.renderer.SpriteState;
 
-public class Inventory extends Body {
+public class Inventory {
+	public static final int NUM_SLOTS = 8;
 
 	private Material mInterface = new Material(1, 0);
 	private ResolutionSpecification resSpecs;
 	private ArrayList<Item> items;
+	private Shape mainShape;
+	private Shape[] slotShapes;
 
-	public Inventory(ResolutionSpecification resSpecs) {
-		super(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2);
+	public Inventory(Shape mainShape, Shape[] slotShapes, ResolutionSpecification resSpecs) {
+		this.mainShape = mainShape;
+		this.slotShapes = slotShapes;
 		this.resSpecs = resSpecs;
 		items = new ArrayList<Item>();
 
@@ -39,65 +42,31 @@ public class Inventory extends Body {
 	}
 
 	private void createInventory() {
-		addShape(new Point(0, 0, this, Color.BLUE, mInterface, 3));
-		getShape(0).setVisible(false);
-		getShape(0).setCollision(false);
-		getShape(0).addPassiveAttribute(PassiveAttributes.INVENTORY);
-		setReactToGravity(false);
+		mainShape.setVisible(false);
+		mainShape.setCollision(false);
+		mainShape.addPassiveAttribute(PassiveAttributes.INVENTORY);
+
 		File file = new File("sprites\\interface\\Inventory.png");
 		Sprite sprite = new Sprite(file, 224, 128);
 		sprite.addState(SpriteState.STATIC, new int[] { 0 });
 		SpriteController[] spriteControllers = new SpriteController[1];
 		spriteControllers[0] = new SpriteController(sprite);
 		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC);
-		spriteControllers[0].setSpritePosOffset(new Vec2f(-resSpecs.gameWidth / 4 - 24, -resSpecs.GAME_HEIGHT / 4 + 24));
-		getShape(0).setSpriteControllers(spriteControllers);
+		spriteControllers[0]
+				.setSpritePosOffset(new Vec2f(-resSpecs.gameWidth / 4 - 24, -resSpecs.GAME_HEIGHT / 4 + 24));
+		mainShape.setSpriteControllers(spriteControllers);
 
 		// Slots
-		addShape(new Box(-144, 48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
-		getShape(1).setVisible(false);
-		getShape(1).setCollision(false);
-		getShape(1).addPassiveAttribute(PassiveAttributes.INVENTORY);
-
-		addShape(new Box(-48, 48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
-		getShape(2).setVisible(false);
-		getShape(2).setCollision(false);
-		getShape(2).addPassiveAttribute(PassiveAttributes.INVENTORY);
-
-		addShape(new Box(48, 48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
-		getShape(3).setVisible(false);
-		getShape(3).setCollision(false);
-		getShape(3).addPassiveAttribute(PassiveAttributes.INVENTORY);
-
-		addShape(new Box(144, 48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
-		getShape(4).setVisible(false);
-		getShape(4).setCollision(false);
-		getShape(4).addPassiveAttribute(PassiveAttributes.INVENTORY);
-
-		addShape(new Box(-144, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
-		getShape(5).setVisible(false);
-		getShape(5).setCollision(false);
-		getShape(5).addPassiveAttribute(PassiveAttributes.INVENTORY);
-
-		addShape(new Box(-48, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
-		getShape(6).setVisible(false);
-		getShape(6).setCollision(false);
-		getShape(6).addPassiveAttribute(PassiveAttributes.INVENTORY);
-
-		addShape(new Box(48, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
-		getShape(7).setVisible(false);
-		getShape(7).setCollision(false);
-		getShape(7).addPassiveAttribute(PassiveAttributes.INVENTORY);
-
-		addShape(new Box(144, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
-		getShape(8).setVisible(false);
-		getShape(8).setCollision(false);
-		getShape(8).addPassiveAttribute(PassiveAttributes.INVENTORY);
+		for (Shape shape : slotShapes) {
+			shape.setVisible(false);
+			shape.setCollision(false);
+			shape.addPassiveAttribute(PassiveAttributes.INVENTORY);
+		}
 
 	}
 
 	public void changeResolution() {
-		pos.set(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2);
+		// At the moment nothing tbd.
 	}
 
 	public Item getItem(String name) {
@@ -108,10 +77,11 @@ public class Inventory extends Body {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * This returns the active item shown in the inventory with the specific index.
 	 * This does not return the item with the static index!
+	 * 
 	 * @param index
 	 * @return
 	 */
@@ -119,8 +89,8 @@ public class Inventory extends Body {
 		int counter = 0;
 		for (int i = 0; i < items.size(); i++) {
 			Item item = items.get(i);
-			if(item.getAmount() > 0) {
-				if(counter == index) {
+			if (item.getAmount() > 0) {
+				if (counter == index) {
 					return item;
 				}
 				counter++;
@@ -129,22 +99,41 @@ public class Inventory extends Body {
 		return null;
 	}
 
-	public void showItems() {
+	private void showItems() {
 		ArrayList<Item> activeItems = new ArrayList<Item>();
 		for (Item item : items) {
-			if(item.getAmount() > 0) {
+			if (item.getAmount() > 0) {
 				activeItems.add(item);
 			}
 		}
-		
-		for (int i = 1; i < numShapes; i++) {
+
+		for (int i = 0; i < slotShapes.length; i++) {
 			try {
-				Item item = activeItems.get(i-1);
-				getShape(i).setSpriteControllers(item.getItemSpriteControllers());
-				getShape(i).setVisible(true);
+				Item item = activeItems.get(i - 1);
+				slotShapes[i].setSpriteControllers(item.getItemSpriteControllers());
+				slotShapes[i].setVisible(true);
 			} catch (Exception e) {
-				getShape(i).setVisible(false);
+				slotShapes[i].setVisible(false);
 			}
+		}
+	}
+	
+	public Shape getSlot(int i) {
+		return slotShapes[i];
+	}
+	
+	public void setVisible(boolean visible) {
+		mainShape.setVisible(visible);
+		
+//		for (int i = 0; i < inventory.getNumShapes(); i++) {
+//			Shape shape = inventory.getShape(i);
+//			if (shape.hasPassiveAtrribute(PassiveAttributes.INVENTORY)) {
+//				shape.setVisible(showInventory);
+//			}
+//		}
+		
+		if (visible) {
+			showItems();
 		}
 	}
 }
