@@ -1,7 +1,4 @@
 /*TODO
-	HUD
-		Healthbar Pos
-		Healthbar going down
 	Hud Flickering while camera Movement
 	Visual Effects
 	Sounds
@@ -218,13 +215,14 @@ public class Kane extends Game {
 
 //		changeResolution(Resolution.SOL1176x664);
 		
-		// healtBar
+		// healthBar
 		file = new File("sprites\\interface\\HealthBar.png");
 		BufferedImage img;
 		try {
 			img = ImageIO.read(file);
 			healthBar = new HudBar(resSpecs, img, 0);
 			physics.addBody(healthBar);
+			refreshHealthBar();
 		}catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -236,6 +234,12 @@ public class Kane extends Game {
 	}
 	
 	public void refreshHealthBar() {
+		if (player.getHealth() > 0) {
+			healthBar.refreshHudBar((float) player.getHealth() / HudBar.MAX_PLAYER_HEALTH);
+		}
+		else {healthBar.refreshHudBar(0);
+			
+		}
 		
 	}
 
