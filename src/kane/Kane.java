@@ -136,6 +136,7 @@ public class Kane extends Game {
 		player.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
 		player.setJumpAcc(new Vec2f(0, 800 / DELTATIME));
 		player.setWalkSpeed(300);
+		physics.addBody(player);
 
 		// camera
 		renderer.createCamera();
@@ -161,7 +162,6 @@ public class Kane extends Game {
 		player.getShape(2).setVisible(true);
 		SpriteController[] spriteControllers = currentItem.getPlayerSpriteControllers();
 		player.getShape(0).setSpriteControllers(spriteControllers);
-		physics.addBody(player);
 
 		// Sword
 		sword = new Body(200, 130);
