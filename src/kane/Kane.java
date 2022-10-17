@@ -1,5 +1,6 @@
 /*TODO
 	Hud Flickering while camera Movement
+	Jump/Walk/Stop Mechanics
 	Visual Effects
 	Sounds
 	Object Editor
@@ -219,23 +220,17 @@ public class Kane extends Game {
 
 		// healthBar
 		file = new File("sprites\\interface\\HealthBar.png");
-		BufferedImage img;
-		try {
-			img = ImageIO.read(file);
-			healthBar = new HudBar(resSpecs, img, 0);
-			physics.addBody(healthBar);
-			refreshHealthBar();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+		healthBar = renderer.getCamera().addHudBar(file);
+		refreshHealthBar();
+		
+		
 	}
 
 	public void refreshHealthBar() {
 		if (player.getHealth() > 0) {
-			healthBar.refreshHudBar((float) player.getHealth() / HudBar.MAX_PLAYER_HEALTH);
+			healthBar.refresh((float) player.getHealth() / HudBar.MAX_PLAYER_HEALTH);
 		} else {
-			healthBar.refreshHudBar(0);
+			healthBar.refresh(0);
 
 		}
 

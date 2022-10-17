@@ -1,7 +1,12 @@
 package kane.renderer;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
 
 import kane.genericGame.ActiveAttributes;
 import kane.genericGame.Game;
@@ -200,6 +205,26 @@ public class Camera extends Body {
 		slotShapes[7] = addShape(new Box(144, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
 		inventory = new Inventory(mainShape, slotShapes, resSpecs);
 		return inventory;
+	}
+
+	public HudBar addHudBar(File file) {
+		int hudPos = hudBars.size();
+		Shape hudShape = addShape(new Point(-resSpecs.gameWidth / 2 + HudBar.HUD_HEIGHT + HudBar.HUD_WIDTH / 2,
+				-resSpecs.GAME_HEIGHT / 2 + resSpecs.GAME_HEIGHT - (int) (HudBar.HUD_HEIGHT * (hudPos + 1) * 1.5), this,
+				Color.BLUE, mInterface, 3));
+		HudBar hudBar;
+		BufferedImage img;
+		try {
+			img = ImageIO.read(file);
+			hudBar = new HudBar(img, hudShape);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		hudBars.add(hudBar);
+		return hudBar;
+
 	}
 
 }

@@ -29,7 +29,7 @@ public class Body {
 	private boolean removed;
 	
 	protected Shape[] shapes;
-	public static final int MAX_SHAPES = 16;
+	public static final int MAX_SHAPES = 20;
 	protected int numShapes;
 
 	public float getAngleVel() {

@@ -125,12 +125,12 @@ public class Inventory {
 	public void setVisible(boolean visible) {
 		mainShape.setVisible(visible);
 		
-//		for (int i = 0; i < inventory.getNumShapes(); i++) {
-//			Shape shape = inventory.getShape(i);
-//			if (shape.hasPassiveAtrribute(PassiveAttributes.INVENTORY)) {
-//				shape.setVisible(showInventory);
-//			}
-//		}
+		for (int i = 0; i < slotShapes.length; i++) {
+			Shape shape = slotShapes[i];
+			if (shape.hasPassiveAtrribute(PassiveAttributes.INVENTORY)) {
+				shape.setVisible(visible);
+			}
+		}
 		
 		if (visible) {
 			showItems();
