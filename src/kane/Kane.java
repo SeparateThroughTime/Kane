@@ -1,6 +1,4 @@
 /*TODO
-	Hud Flickering while camera Movement
-	Jump/Walk/Stop Mechanics
 	Visual Effects
 	Sounds
 	Object Editor
@@ -55,6 +53,7 @@
 	ContactPoint: BoxPolygon, PolygonPolygon -> Ghost Contacts
 	Speed-Adjuster (Jumping against dynamics increases jump heigth)
 		Its probably not the cause of friction but something else)
+	Hud Flickering while camera Movement
 
 */
 package kane;

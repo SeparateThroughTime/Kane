@@ -148,7 +148,7 @@ public class Renderer extends JPanel {
 //							int posX = (int) spriteAbsPos.getX();
 //							int posY = (int) spriteAbsPos.getY();
 							int posX = Scalar.round(spriteAbsPos.getX());
-							int posY = (int) Scalar.round(spriteAbsPos.getY());
+							int posY = Scalar.round(spriteAbsPos.getY());
 							drawImage(frame, scale, posX, posY, g2d);
 						}
 

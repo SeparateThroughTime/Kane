@@ -161,11 +161,9 @@ public class Mob extends Body {
 	}
 
 	public void walkRight() {
-		if (onGround) {
-			killWalkingEvents();
-			currentWalkingRightEvent = new WalkingRight(g, this);
-			g.addEvent(currentWalkingRightEvent);
-		}
+		killWalkingEvents();
+		currentWalkingRightEvent = new WalkingRight(g, this);
+		g.addEvent(currentWalkingRightEvent);
 	}
 
 	public void stopWalkRight() {
@@ -175,11 +173,9 @@ public class Mob extends Body {
 	}
 
 	public void walkLeft() {
-		if (onGround) {
-			killWalkingEvents();
-			currentWalkingLeftEvent = new WalkingLeft(g, this);
-			g.addEvent(currentWalkingLeftEvent);
-		}
+		killWalkingEvents();
+		currentWalkingLeftEvent = new WalkingLeft(g, this);
+		g.addEvent(currentWalkingLeftEvent);
 	}
 
 	public void stopWalkLeft() {
@@ -224,11 +220,11 @@ public class Mob extends Body {
 			} else if (activeActions.get(MobActions.FALLING)) {
 				setCurrentSpriteState(SpriteState.FALL_LEFT);
 			}
-			
+
 			if (activeActions.get(MobActions.ATTACKING)) {
 				setCurrentSpriteState(SpriteState.ATTACK_LEFT);
 			}
-			
+
 			if (activeActions.get(MobActions.HIT)) {
 				setCurrentSpriteState(SpriteState.HIT_LEFT);
 			}
@@ -243,17 +239,16 @@ public class Mob extends Body {
 			} else if (activeActions.get(MobActions.FALLING)) {
 				setCurrentSpriteState(SpriteState.FALL_RIGHT);
 			}
-			
+
 			if (activeActions.get(MobActions.ATTACKING)) {
 				setCurrentSpriteState(SpriteState.ATTACK_RIGHT);
 			}
-			
+
 			if (activeActions.get(MobActions.HIT)) {
 				setCurrentSpriteState(SpriteState.HIT_RIGHT);
 			}
 		}
 	}
-
 
 	public void setAI(AIs ai) {
 		this.ai = ai;
