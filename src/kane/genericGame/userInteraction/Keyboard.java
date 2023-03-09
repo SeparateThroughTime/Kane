@@ -14,7 +14,7 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public class Keyboard{
 
-	private final int NUM_BUTTONS = 128;
+	private final int NUM_BUTTONS = 348;
 	protected boolean[] keyState = new boolean[NUM_BUTTONS];
 	protected boolean[] click = new boolean[NUM_BUTTONS];
 	protected boolean[] clickAgain = new boolean[NUM_BUTTONS];
@@ -69,12 +69,15 @@ public class Keyboard{
 		
 		@Override
 		public void invoke(long window, int key, int scancode, int action, int mods) {
-			if (action == GLFW_PRESS) {
+			if (key == GLFW_KEY_UNKNOWN) {
+				// Unkown Key is -1. That would create a out of bound exception.
+			}
+			else if (action == GLFW_PRESS) {
 				keyState[key] = true;
 				click[key] = true;
 			}
 			
-			if (action == GLFW_RELEASE) {
+			else if (action == GLFW_RELEASE) {
 				keyState[key] = false;
 				chooseActionReleased[key].choose();
 				clickAgain[key] = true;

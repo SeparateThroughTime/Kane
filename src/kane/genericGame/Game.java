@@ -80,8 +80,9 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		contactListener = new ContactListener(this);
 		physics = new Physics(DELTATIME, contactListener);
 		renderer = new Renderer(resSpecs, physics, this);
-		mouseListener = new Mouse(resSpecs, this);
-		keyListener = new Keyboard(this, renderer.getWindow());
+		long window = renderer.getWindow();
+		mouseListener = new Mouse(resSpecs, this, window);
+		keyListener = new Keyboard(this, window);
 		
 
 		frame = new JFrame();
@@ -91,7 +92,6 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		frame.setIgnoreRepaint(true);
 		frame.addWindowListener(this);
 
-		frame.add(renderer);
 		frame.pack();
 
 		frame.setVisible(true);
@@ -173,7 +173,6 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		}
 		resSpecs.gameWidth = (int) ((float) resSpecs.GAME_HEIGHT / resSpecs.height * resSpecs.width);
 
-		renderer.setPreferredSize(new Dimension(resSpecs.width, resSpecs.height));
 		frame.pack();
 
 		renderer.changeResolution();
@@ -213,7 +212,6 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 				}
 				accumulatedTime -= DELTATIME;
 			}
-			glfwPollEvents();
 			renderer.renderGame();
 			numFrames++;
 
@@ -274,6 +272,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	 * @param DELTATIME
 	 */
 	private void userInteraction(float DELTATIME) {
+		glfwPollEvents();
 		mouseListener.update();
 		keyListener.update();
 	}

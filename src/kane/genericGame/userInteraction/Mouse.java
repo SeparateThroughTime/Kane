@@ -4,15 +4,20 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import org.lwjgl.glfw.GLFWCursorPosCallbackI;
+import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
+
 import kane.math.Scalar;
 import kane.math.Vec2i;
 import kane.renderer.Camera;
 import kane.renderer.ResolutionSpecification;
 
+import static org.lwjgl.glfw.GLFW.*;
+
 /**
  * The Mouse is managing all actions, when keys on the hw-mouse are pressed.
  */
-public class Mouse implements MouseListener, MouseMotionListener{
+public class Mouse {
 
 	private final int NUMBUTTONS = 16;
 	private boolean click[] = new boolean[NUMBUTTONS];
@@ -28,9 +33,11 @@ public class Mouse implements MouseListener, MouseMotionListener{
 	 * @param resSpecs -Used ResolutionSpecification
 	 * @param mouseInt -Specify the used MouseInterface
 	 */
-	public Mouse(ResolutionSpecification resSpecs, MouseInterface mouseInt) {
+	public Mouse(ResolutionSpecification resSpecs, MouseInterface mouseInt, long window) {
 		this.resSpecs = resSpecs;
 		this.mouseInt = mouseInt;
+		glfwSetCursorPosCallback(window, mousePositionCallback);
+		glfwSetMouseButtonCallback(window, mouseButtonCallback);
 	}
 
 	/**
@@ -47,6 +54,33 @@ public class Mouse implements MouseListener, MouseMotionListener{
 			}
 		}
 	}
+	
+	protected GLFWCursorPosCallbackI mousePositionCallback = new GLFWCursorPosCallbackI() {
+		
+		@Override
+		public void invoke(long window, double xpos, double ypos) {
+			mousePos.set((int)xpos, Scalar.getY((int)ypos, resSpecs.height));
+			if (camera != null) {
+				mousePos.add(camera.zeroPoint.toVec2i());
+			}
+		}
+	};
+	
+	protected GLFWMouseButtonCallbackI mouseButtonCallback = new GLFWMouseButtonCallbackI() {
+		
+		@Override
+		public void invoke(long window, int button, int action, int mods) {
+			if (action == GLFW_PRESS) {
+				mouseState[button] = true;
+				click[button] = true;
+			}
+			
+			else if (action == GLFW_RELEASE) {
+				chooseActionReleased[button].choose();
+				mouseState[button] = false;
+			}
+		}
+	};
 	
 	public void addCamera(Camera camera) {
 		this.camera = camera;
@@ -68,50 +102,6 @@ public class Mouse implements MouseListener, MouseMotionListener{
 		this.mouseInt = mouseInt;
 	}
 
-	// MouseMotionListener
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		mousePos.set(e.getX(), Scalar.getY(e.getY(), resSpecs.height));
-		if (camera != null) {
-			mousePos.add(camera.zeroPoint.toVec2i());
-		}
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		mousePos.set(e.getX(), Scalar.getY(e.getY(), resSpecs.height));
-		if (camera != null) {
-			mousePos.add(camera.zeroPoint.toVec2i());
-		}
-	}
-
-	// MouseListener
-	@Override
-	public void mouseClicked(MouseEvent e) {
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		mouseState[e.getButton()] = true;
-		click[e.getButton()] = true;
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		chooseActionReleased[e.getButton()].choose();
-		mouseState[e.getButton()] = false;
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-
-	}
-
 	// To choose wich method is used in for-loop
 	private interface ChooseAction {
 		/**
@@ -123,16 +113,8 @@ public class Mouse implements MouseListener, MouseMotionListener{
 
 	//@formatter:off
 	private ChooseAction[] chooseActionClick = new ChooseAction[] {
-			new ChooseAction() { public void choose() {}},
 			new ChooseAction() { public void choose() {mouseInt.leftMouseClick();}},
-			new ChooseAction() { public void choose() {}},
 			new ChooseAction() { public void choose() {mouseInt.rightMouseClick();}},
-			new ChooseAction() { public void choose() {}},
-			new ChooseAction() { public void choose() {}},
-			new ChooseAction() { public void choose() {}},
-			new ChooseAction() { public void choose() {}},
-			new ChooseAction() { public void choose() {}},
-			new ChooseAction() { public void choose() {}},
 			new ChooseAction() { public void choose() {}},
 			new ChooseAction() { public void choose() {}},
 			new ChooseAction() { public void choose() {}},
@@ -141,16 +123,8 @@ public class Mouse implements MouseListener, MouseMotionListener{
 			new ChooseAction() { public void choose() {}}
 		};
 	private ChooseAction[] chooseActionPressed = new ChooseAction[] {
-			new ChooseAction() { public void choose() {}},
 			new ChooseAction() { public void choose() {mouseInt.leftMousePressed();}},
-			new ChooseAction() { public void choose() {}},
 			new ChooseAction() { public void choose() {mouseInt.rightMousePressed();}},
-			new ChooseAction() { public void choose() {}},
-			new ChooseAction() { public void choose() {}},
-			new ChooseAction() { public void choose() {}},
-			new ChooseAction() { public void choose() {}},
-			new ChooseAction() { public void choose() {}},
-			new ChooseAction() { public void choose() {}},
 			new ChooseAction() { public void choose() {}},
 			new ChooseAction() { public void choose() {}},
 			new ChooseAction() { public void choose() {}},
@@ -159,16 +133,8 @@ public class Mouse implements MouseListener, MouseMotionListener{
 			new ChooseAction() { public void choose() {}}
 	};
 	private ChooseAction[] chooseActionReleased = new ChooseAction[] {
-			new ChooseAction() { public void choose() {}},
 			new ChooseAction() { public void choose() {mouseInt.leftMouseReleased();}},
-			new ChooseAction() { public void choose() {}},
 			new ChooseAction() { public void choose() {mouseInt.rightMouseReleased();}},
-			new ChooseAction() { public void choose() {}},
-			new ChooseAction() { public void choose() {}},
-			new ChooseAction() { public void choose() {}},
-			new ChooseAction() { public void choose() {}},
-			new ChooseAction() { public void choose() {}},
-			new ChooseAction() { public void choose() {}},
 			new ChooseAction() { public void choose() {}},
 			new ChooseAction() { public void choose() {}},
 			new ChooseAction() { public void choose() {}},
