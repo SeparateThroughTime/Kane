@@ -8,6 +8,8 @@ import java.io.File;
 
 import javax.swing.JPanel;
 
+import org.lwjgl.glfw.GLFWErrorCallback;
+
 import kane.genericGame.Game;
 import kane.genericGame.gameEvent.camera.MoveBackground;
 import kane.math.Scalar;
@@ -26,31 +28,52 @@ import kane.physics.shapes.Plane;
 import kane.physics.shapes.Point;
 import kane.physics.shapes.Polygon;
 
+import static org.lwjgl.glfw.GLFW.*;
+
 /**
  * The Renderer renders the game.
  */
-public class Renderer extends JPanel {
+public class Renderer {
 
-	private ResolutionSpecification resSpecs;
-	private float multiplicator;
-	private final Physics physics;
-	private final Game g;
-	private Shape[] renderedShapes;
-	private int numRenderedShapes;
-	private Camera camera;
-	private Background background;
+	protected ResolutionSpecification resSpecs;
+	protected float multiplicator;
+	protected final Physics physics;
+	protected final Game g;
+	protected Shape[] renderedShapes;
+	protected int numRenderedShapes;
+	protected Camera camera;
+	protected Background background;
 
 	public boolean showContacts = false;
 	public boolean showAABBs = false;
+
+	protected long window;
 
 	public Renderer(ResolutionSpecification resSpecs, Physics physics, Game g) {
 		this.resSpecs = resSpecs;
 		this.physics = physics;
 		this.g = g;
 		this.multiplicator = 1f;
-		setFocusable(true);
+
+		// Initialize GLFW
+		GLFWErrorCallback.createPrint(System.err).set();
+		if (!glfwInit()) {
+			throw new IllegalStateException("Unable to initialize GLFW");
+		}
+
+		glfwDefaultWindowHints();
+		glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+		glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+
+		window = glfwCreateWindow(resSpecs.width, resSpecs.height, "Kane", 0, 0);
+		if (window == 0) {
+			throw new RuntimeException("Failed to create GLFW window");
+		}
+
 	}
-	
+
 	public void createCamera() {
 		this.camera = new Camera(resSpecs, g);
 		this.physics.addBody(camera);
@@ -369,8 +392,12 @@ public class Renderer extends JPanel {
 	public Background getGameBackground() {
 		return background;
 	}
-	
+
 	public void moveBackground() {
 		g.addEvent(new MoveBackground(g, this));
+	}
+
+	public long getWindow() {
+		return window;
 	}
 }

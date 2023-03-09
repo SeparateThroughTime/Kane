@@ -3,11 +3,16 @@ package kane.genericGame.userInteraction;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import org.lwjgl.glfw.GLFWKeyCallbackI;
+import org.lwjgl.glfw.GLFWWindowCloseCallback;
+
+import static org.lwjgl.glfw.GLFW.*;
+
 /**
  * The Keyboard is managing all actions, when keys on the hw-keyboard are
  * pressed.
  */
-public class Keyboard implements KeyListener {
+public class Keyboard{
 
 	private final int NUM_BUTTONS = 128;
 	protected boolean[] keyState = new boolean[NUM_BUTTONS];
@@ -20,43 +25,63 @@ public class Keyboard implements KeyListener {
 	 * 
 	 * @param keyInt -Specifies the used KeyboardInterface.
 	 */
-	public Keyboard(KeyboardInterface keyInt) {
+	public Keyboard(KeyboardInterface keyInt, long window) {
 		generateChooseAction();
 		this.keyInt = keyInt;
 
 		for (int i = 0; i < NUM_BUTTONS; i++) {
 			clickAgain[i] = true;
 		}
+		
+		glfwSetKeyCallback(window, keyCallback );
 	}
 
 	//@formatter:off
 	public boolean isKeyPressed(Keys key) {
 		switch (key) {
-		case LEFT: return keyState[37];
-		case UP: return keyState[38];
-		case RIGHT: return keyState[39];
-		case DOWN: return keyState[40];
-		case F1: return keyState[112];
-		case F2: return keyState[113];
-		case F3: return keyState[114];
-		case F4: return keyState[115];
-		case F5: return keyState[116];
-		case F6: return keyState[117];
-		case F7: return keyState[118];
-		case F8: return keyState[119];
-		case F9: return keyState[120];
-		case F10: return keyState[121];
-		case F11: return keyState[122];
-		case F12: return keyState[123];
-		case SHIFT: return keyState[16];
-		case C: return keyState[67];
-		case SPACE: return keyState[32];
-		case ESC: return keyState[27];
-		case I: return keyState[73];
+		case LEFT: return keyState[GLFW_KEY_LEFT];
+		case UP: return keyState[GLFW_KEY_UP];
+		case RIGHT: return keyState[GLFW_KEY_RIGHT];
+		case DOWN: return keyState[GLFW_KEY_DOWN];
+		case F1: return keyState[GLFW_KEY_F1];
+		case F2: return keyState[GLFW_KEY_F2];
+		case F3: return keyState[GLFW_KEY_F3];
+		case F4: return keyState[GLFW_KEY_F4];
+		case F5: return keyState[GLFW_KEY_F5];
+		case F6: return keyState[GLFW_KEY_F6];
+		case F7: return keyState[GLFW_KEY_F7];
+		case F8: return keyState[GLFW_KEY_F8];
+		case F9: return keyState[GLFW_KEY_F9];
+		case F10: return keyState[GLFW_KEY_F10];
+		case F11: return keyState[GLFW_KEY_F11];
+		case F12: return keyState[GLFW_KEY_F12];
+		case SHIFT: return keyState[GLFW_KEY_LEFT_SHIFT];
+		case C: return keyState[GLFW_KEY_C];
+		case SPACE: return keyState[GLFW_KEY_SPACE];
+		case ESC: return keyState[GLFW_KEY_ESCAPE];
+		case I: return keyState[GLFW_KEY_I];
 
 		default: return false;
 		}
 	}
+	
+	protected GLFWKeyCallbackI keyCallback = new GLFWKeyCallbackI() {
+		
+		@Override
+		public void invoke(long window, int key, int scancode, int action, int mods) {
+			if (action == GLFW_PRESS) {
+				keyState[key] = true;
+				click[key] = true;
+			}
+			
+			if (action == GLFW_RELEASE) {
+				keyState[key] = false;
+				chooseActionReleased[key].choose();
+				clickAgain[key] = true;
+			}
+		}
+	};
+	
 	//@formatter:on
 
 	/**
@@ -84,27 +109,6 @@ public class Keyboard implements KeyListener {
 		this.keyInt = keyInt;
 	}
 
-	// KeyListerner
-	@Override
-	public void keyTyped(KeyEvent e) {
-
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		keyState[e.getKeyCode()] = true;
-		click[e.getKeyCode()] = true;
-
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		keyState[e.getKeyCode()] = false;
-		chooseActionReleased[e.getKeyCode()].choose();
-		clickAgain[e.getKeyCode()] = true;
-
-	}
-
 	// To choose which method is used in update
 	private interface ChooseAction {
 		/**
@@ -124,52 +128,52 @@ public class Keyboard implements KeyListener {
 				chooseActionPressed[i] = new ChooseAction() { public void choose() {}};
 				chooseActionReleased[i] = new ChooseAction() { public void choose() {}};
 			}
-			chooseActionClick[37] = new ChooseAction() { public void choose() {keyInt.leftArrowClick();}};
-			chooseActionPressed[37] = new ChooseAction() { public void choose() {keyInt.leftArrowPressed();}};
-			chooseActionReleased[37] = new ChooseAction() { public void choose() {keyInt.leftArrowReleased();}};
+			chooseActionClick[GLFW_KEY_LEFT] = new ChooseAction() { public void choose() {keyInt.leftArrowClick();}};
+			chooseActionPressed[GLFW_KEY_LEFT] = new ChooseAction() { public void choose() {keyInt.leftArrowPressed();}};
+			chooseActionReleased[GLFW_KEY_LEFT] = new ChooseAction() { public void choose() {keyInt.leftArrowReleased();}};
 			
-			chooseActionClick[38] = new ChooseAction() { public void choose() {keyInt.upArrowClick();}};
-			chooseActionPressed[38] = new ChooseAction() { public void choose() {keyInt.upArrowPressed();}};
-			chooseActionReleased[38] = new ChooseAction() { public void choose() {keyInt.upArrowReleased();}};
+			chooseActionClick[GLFW_KEY_UP] = new ChooseAction() { public void choose() {keyInt.upArrowClick();}};
+			chooseActionPressed[GLFW_KEY_UP] = new ChooseAction() { public void choose() {keyInt.upArrowPressed();}};
+			chooseActionReleased[GLFW_KEY_UP] = new ChooseAction() { public void choose() {keyInt.upArrowReleased();}};
 			
-			chooseActionClick[39] = new ChooseAction() { public void choose() {keyInt.rightArrowClick();}};
-			chooseActionPressed[39] = new ChooseAction() { public void choose() {keyInt.rightArrowPressed();}};
-			chooseActionReleased[39] = new ChooseAction() { public void choose() {keyInt.rightArrowReleased();}};
+			chooseActionClick[GLFW_KEY_RIGHT] = new ChooseAction() { public void choose() {keyInt.rightArrowClick();}};
+			chooseActionPressed[GLFW_KEY_RIGHT] = new ChooseAction() { public void choose() {keyInt.rightArrowPressed();}};
+			chooseActionReleased[GLFW_KEY_RIGHT] = new ChooseAction() { public void choose() {keyInt.rightArrowReleased();}};
 			
-			chooseActionClick[40] = new ChooseAction() { public void choose() {keyInt.downArrowClick();}};
-			chooseActionPressed[40] = new ChooseAction() { public void choose() {keyInt.downArrowPressed();}};
-			chooseActionReleased[40] = new ChooseAction() { public void choose() {keyInt.downArrowReleased();}};
+			chooseActionClick[GLFW_KEY_DOWN] = new ChooseAction() { public void choose() {keyInt.downArrowClick();}};
+			chooseActionPressed[GLFW_KEY_DOWN] = new ChooseAction() { public void choose() {keyInt.downArrowPressed();}};
+			chooseActionReleased[GLFW_KEY_DOWN] = new ChooseAction() { public void choose() {keyInt.downArrowReleased();}};
 			
-			chooseActionClick[112] = new ChooseAction() { public void choose() {keyInt.f1Click();}};
-			chooseActionClick[113] = new ChooseAction() { public void choose() {keyInt.f2Click();}};
-			chooseActionClick[114] = new ChooseAction() { public void choose() {keyInt.f3Click();}};
-			chooseActionClick[115] = new ChooseAction() { public void choose() {keyInt.f4Click();}};
-			chooseActionClick[116] = new ChooseAction() { public void choose() {keyInt.f5Click();}};
-			chooseActionClick[117] = new ChooseAction() { public void choose() {keyInt.f6Click();}};
-			chooseActionClick[118] = new ChooseAction() { public void choose() {keyInt.f7Click();}};
-			chooseActionClick[119] = new ChooseAction() { public void choose() {keyInt.f8Click();}};
-			chooseActionClick[120] = new ChooseAction() { public void choose() {keyInt.f9Click();}};
-			chooseActionClick[121] = new ChooseAction() { public void choose() {keyInt.f10Click();}};
-			chooseActionClick[122] = new ChooseAction() { public void choose() {keyInt.f11Click();}};
-			chooseActionClick[123] = new ChooseAction() { public void choose() {keyInt.f12Click();}};
+			chooseActionClick[GLFW_KEY_F1] = new ChooseAction() { public void choose() {keyInt.f1Click();}};
+			chooseActionClick[GLFW_KEY_F2] = new ChooseAction() { public void choose() {keyInt.f2Click();}};
+			chooseActionClick[GLFW_KEY_F3] = new ChooseAction() { public void choose() {keyInt.f3Click();}};
+			chooseActionClick[GLFW_KEY_F4] = new ChooseAction() { public void choose() {keyInt.f4Click();}};
+			chooseActionClick[GLFW_KEY_F5] = new ChooseAction() { public void choose() {keyInt.f5Click();}};
+			chooseActionClick[GLFW_KEY_F6] = new ChooseAction() { public void choose() {keyInt.f6Click();}};
+			chooseActionClick[GLFW_KEY_F7] = new ChooseAction() { public void choose() {keyInt.f7Click();}};
+			chooseActionClick[GLFW_KEY_F8] = new ChooseAction() { public void choose() {keyInt.f8Click();}};
+			chooseActionClick[GLFW_KEY_F9] = new ChooseAction() { public void choose() {keyInt.f9Click();}};
+			chooseActionClick[GLFW_KEY_F10] = new ChooseAction() { public void choose() {keyInt.f10Click();}};
+			chooseActionClick[GLFW_KEY_F11] = new ChooseAction() { public void choose() {keyInt.f11Click();}};
+			chooseActionClick[GLFW_KEY_F12] = new ChooseAction() { public void choose() {keyInt.f12Click();}};
 			
-			chooseActionPressed[16] = new ChooseAction() { public void choose() {keyInt.shiftPressed();}};
-			chooseActionReleased[16] = new ChooseAction() { public void choose() {keyInt.shiftReleased();}};
-			chooseActionClick[16] = new ChooseAction() { public void choose() {keyInt.shiftClick();}};
+			chooseActionPressed[GLFW_KEY_LEFT_SHIFT] = new ChooseAction() { public void choose() {keyInt.shiftPressed();}};
+			chooseActionReleased[GLFW_KEY_LEFT_SHIFT] = new ChooseAction() { public void choose() {keyInt.shiftReleased();}};
+			chooseActionClick[GLFW_KEY_LEFT_SHIFT] = new ChooseAction() { public void choose() {keyInt.shiftClick();}};
 			
-			chooseActionPressed[67] = new ChooseAction() { public void choose() {keyInt.cPressed();}};
-			chooseActionReleased[67] = new ChooseAction() { public void choose() {keyInt.cReleased();}};
-			chooseActionClick[67] = new ChooseAction() { public void choose() {keyInt.cClick();}};
+			chooseActionPressed[GLFW_KEY_C] = new ChooseAction() { public void choose() {keyInt.cPressed();}};
+			chooseActionReleased[GLFW_KEY_C] = new ChooseAction() { public void choose() {keyInt.cReleased();}};
+			chooseActionClick[GLFW_KEY_C] = new ChooseAction() { public void choose() {keyInt.cClick();}};
 			
-			chooseActionPressed[32] = new ChooseAction() { public void choose() {keyInt.spacePressed();}};
-			chooseActionReleased[32] = new ChooseAction() { public void choose() {keyInt.spaceReleased();}};
-			chooseActionClick[32] = new ChooseAction() { public void choose() {keyInt.spaceClick();}};
+			chooseActionPressed[GLFW_KEY_SPACE] = new ChooseAction() { public void choose() {keyInt.spacePressed();}};
+			chooseActionReleased[GLFW_KEY_SPACE] = new ChooseAction() { public void choose() {keyInt.spaceReleased();}};
+			chooseActionClick[GLFW_KEY_SPACE] = new ChooseAction() { public void choose() {keyInt.spaceClick();}};
 			
-			chooseActionClick[27] = new ChooseAction() { public void choose() {keyInt.escClick();}};
+			chooseActionClick[GLFW_KEY_ESCAPE] = new ChooseAction() { public void choose() {keyInt.escClick();}};
 			
-			chooseActionPressed[73] = new ChooseAction() { public void choose() {keyInt.iPressed();}};
-			chooseActionReleased[73] = new ChooseAction() { public void choose() {keyInt.iReleased();}};
-			chooseActionClick[73] = new ChooseAction() { public void choose() {keyInt.iClick();}};
+			chooseActionPressed[GLFW_KEY_I] = new ChooseAction() { public void choose() {keyInt.iPressed();}};
+			chooseActionReleased[GLFW_KEY_I] = new ChooseAction() { public void choose() {keyInt.iReleased();}};
+			chooseActionClick[GLFW_KEY_I] = new ChooseAction() { public void choose() {keyInt.iClick();}};
 		}
 		//@formatter:on
 }

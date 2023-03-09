@@ -6,6 +6,8 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 
+import static org.lwjgl.glfw.GLFW.*;
+
 import kane.genericGame.hud.HudBar;
 import kane.genericGame.hud.Inventory;
 import kane.genericGame.userInteraction.Keyboard;
@@ -79,7 +81,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		physics = new Physics(DELTATIME, contactListener);
 		renderer = new Renderer(resSpecs, physics, this);
 		mouseListener = new Mouse(resSpecs, this);
-		keyListener = new Keyboard(this);
+		keyListener = new Keyboard(this, renderer.getWindow());
 		
 
 		frame = new JFrame();
@@ -89,12 +91,6 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		frame.setIgnoreRepaint(true);
 		frame.addWindowListener(this);
 
-		renderer.setPreferredSize(new Dimension(resSpecs.width, resSpecs.height));
-		renderer.addKeyListener(keyListener);
-		renderer.addMouseListener(mouseListener);
-		renderer.addMouseMotionListener(mouseListener);
-		renderer.setIgnoreRepaint(true);
-		renderer.requestFocusInWindow();
 		frame.add(renderer);
 		frame.pack();
 
@@ -217,7 +213,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 				}
 				accumulatedTime -= DELTATIME;
 			}
-			
+			glfwPollEvents();
 			renderer.renderGame();
 			numFrames++;
 
@@ -240,6 +236,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 				}
 			}
 		}
+		glfwTerminate();
 	}
 	
 	private void coreMechanicsLoop() {

@@ -1,4 +1,5 @@
 /*TODO
+	Switch to lwjgl
 	Visual Effects
 	Sounds
 	Object Editor
