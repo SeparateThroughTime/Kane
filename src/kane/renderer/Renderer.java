@@ -9,6 +9,8 @@ import java.io.File;
 import javax.swing.JPanel;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GLUtil;
 
 import kane.genericGame.Game;
 import kane.genericGame.gameEvent.camera.MoveBackground;
@@ -29,6 +31,7 @@ import kane.physics.shapes.Point;
 import kane.physics.shapes.Polygon;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL46.*;
 
 /**
  * The Renderer renders the game.
@@ -48,8 +51,9 @@ public class Renderer {
 	public boolean showAABBs = false;
 
 	protected long window;
+	
 
-	public Renderer(ResolutionSpecification resSpecs, Physics physics, Game g) {
+	public Renderer(ResolutionSpecification resSpecs, Physics physics, Game g, String title) {
 		this.resSpecs = resSpecs;
 		this.physics = physics;
 		this.g = g;
@@ -67,10 +71,14 @@ public class Renderer {
 		glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
 
-		window = glfwCreateWindow(resSpecs.width, resSpecs.height, "Kane", 0, 0);
+		window = glfwCreateWindow(resSpecs.width, resSpecs.height, title, 0, 0);
 		if (window == 0) {
 			throw new RuntimeException("Failed to create GLFW window");
 		}
+		
+		glfwMakeContextCurrent(window);
+		glfwSwapInterval(1);
+		GL.createCapabilities();
 
 	}
 
@@ -108,21 +116,17 @@ public class Renderer {
 	 * Needs to run after Resolution is changed.
 	 */
 	public void changeResolution() {
+		glfwSetWindowSize(window, resSpecs.width, resSpecs.height);
 		camera.changeResolution();
 		multiplicator = (float) resSpecs.height / resSpecs.GAME_HEIGHT;
 	}
 
-	public void testingArea() {
-		// TODO delete
-
-	}
-
 	public void renderGame() {
-		repaint();
-
-		// TODO delete
-//		testingArea();
-
+		glClearColor(0f, 0f, 0f, 1f);
+		glClear(GL_COLOR_BUFFER_BIT);
+		// TODO RenderGame
+		
+		glfwSwapBuffers(window);
 	}
 
 	/**

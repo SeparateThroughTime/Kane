@@ -6,7 +6,10 @@ import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 
+import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
+
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.Callbacks.*;
 
 import kane.genericGame.hud.HudBar;
 import kane.genericGame.hud.Inventory;
@@ -28,7 +31,7 @@ import kane.renderer.ResolutionSpecification;
 public abstract class Game implements WindowListener, KeyboardInterface, MouseInterface, ContactManagementInterface {
 
 	public static final float BACKGROUND_SPEED = 0.5f;
-	
+
 	protected ResolutionSpecification resSpecs;
 	protected int mapLen;
 	protected int mapHeight;
@@ -50,6 +53,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	public final static float DELTATIME = 1.0f / TARGET_FPS;
 
 	public boolean pause;
+	public boolean isRunning;
 
 	protected GameEvent[] events = new GameEvent[5000];
 	protected int numEvents = 0;
@@ -79,11 +83,11 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 
 		contactListener = new ContactListener(this);
 		physics = new Physics(DELTATIME, contactListener);
-		renderer = new Renderer(resSpecs, physics, this);
+		renderer = new Renderer(resSpecs, physics, this, title);
 		long window = renderer.getWindow();
+
 		mouseListener = new Mouse(resSpecs, this, window);
 		keyListener = new Keyboard(this, window);
-		
 
 		frame = new JFrame();
 		frame.setResizable(false);
@@ -189,8 +193,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 
 		initGame();
 
-		boolean isRunning = true;
-		while (isRunning) {
+		while (!glfwWindowShouldClose(renderer.getWindow())) {
 			long frameStartTime = System.nanoTime();
 			float frameTime = Math.min((frameStartTime - lastFrameTime) / (float) NANO_SECOND, 0.25f);
 			lastFrameTime = frameStartTime;
@@ -234,11 +237,15 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 				}
 			}
 		}
+		
+		glfwFreeCallbacks(renderer.getWindow());
+		glfwDestroyWindow(renderer.getWindow());
 		glfwTerminate();
+		glfwSetErrorCallback(null).free();
 	}
-	
+
 	private void coreMechanicsLoop() {
-		//Mob Mechanics
+		// Mob Mechanics
 		for (int i = 0; i < physics.getNumBodies(); i++) {
 			Body body = physics.getBodies(i);
 			if (body instanceof Mob) {
@@ -330,11 +337,11 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		}
 		numEvents--;
 	}
-	
+
 	public ResolutionSpecification getResSpecs() {
 		return resSpecs;
 	}
-	
+
 	public int getMapLen() {
 		return mapLen;
 	}
@@ -342,6 +349,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	public void setMapLen(int mapLen) {
 		this.mapLen = mapLen;
 	}
+
 	public int getMapHeight() {
 		return mapHeight;
 	}
