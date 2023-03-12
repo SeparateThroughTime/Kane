@@ -9,6 +9,8 @@ public class ResolutionSpecification {
 	public int gameWidth;
 	public int height;
 	public int width;
+	public float halfWidth;
+	public float halfHeight;
 
 	public ResolutionSpecification(int gameHeight, int gameWidth, int height, int width) {
 		// gameWidth and gameHeight are the axis' in pseudo length unit.
@@ -16,5 +18,7 @@ public class ResolutionSpecification {
 		this.gameWidth = gameWidth;
 		this.height = height;
 		this.width = width;
+		this.halfWidth = width / 2;
+		this.halfHeight = height / 2;
 	}
 }
