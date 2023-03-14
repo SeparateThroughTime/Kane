@@ -24,7 +24,7 @@ public class Point extends Shape {
 	 * @param material
 	 */
 	public Point(int relPosX, int relPosY, Body body, Color color, Material material, int renderLayer) {
-		super(relPosX, relPosY, ShapeType.POINT, body, color, material, renderLayer);
+		super(relPosX, relPosY, ShapeType.POINT, body, color, material, renderLayer, 0, 0);
 	}
 
 	@Override

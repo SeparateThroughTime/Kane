@@ -36,7 +36,6 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	protected int mapLen;
 	protected int mapHeight;
 	private final String title;
-	private JFrame frame;
 
 	protected boolean[] keyState = new boolean[128];
 	protected boolean[] mouseState = new boolean[16];
@@ -88,17 +87,6 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 
 		mouseListener = new Mouse(resSpecs, this, window);
 		keyListener = new Keyboard(this, window);
-
-		frame = new JFrame();
-		frame.setResizable(false);
-		frame.setTitle(title);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setIgnoreRepaint(true);
-		frame.addWindowListener(this);
-
-		frame.pack();
-
-		frame.setVisible(true);
 	}
 
 	/**
@@ -177,8 +165,6 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		}
 		resSpecs.gameWidth = (int) ((float) resSpecs.GAME_HEIGHT / resSpecs.height * resSpecs.width);
 
-		frame.pack();
-
 		renderer.changeResolution();
 	}
 
@@ -220,7 +206,6 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 
 			// FPS Output
 			if (System.nanoTime() - startFpsTime >= NANO_SECOND) {
-				frame.setTitle(String.format("%s: Frames: %d, Bodie: %d", title, numFrames, physics.getNumBodies()));
 				startFpsTime = System.nanoTime();
 				numFrames = 0;
 			}

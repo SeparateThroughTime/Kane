@@ -25,7 +25,7 @@ public class Circle extends Shape {
 	 * @param material
 	 */
 	public Circle(float rad, int relPosX, int relPosY, Color color, Body body, Material material, int renderLayer) {
-		super(relPosX, relPosY, ShapeType.CIRCLE, body, color, material, renderLayer);
+		super(relPosX, relPosY, ShapeType.CIRCLE, body, color, material, renderLayer, 0, 0);
 		this.rad = rad;
 	}
 

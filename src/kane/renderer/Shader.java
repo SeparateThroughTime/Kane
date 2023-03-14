@@ -1,27 +1,13 @@
 package kane.renderer;
 
-import static org.lwjgl.opengl.GL11.GL_FALSE;
-import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
-import static org.lwjgl.opengl.GL20.GL_INFO_LOG_LENGTH;
-import static org.lwjgl.opengl.GL20.GL_LINK_STATUS;
-import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
-import static org.lwjgl.opengl.GL20.glAttachShader;
-import static org.lwjgl.opengl.GL20.glCompileShader;
-import static org.lwjgl.opengl.GL20.glCreateProgram;
-import static org.lwjgl.opengl.GL20.glCreateShader;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glGetProgramInfoLog;
-import static org.lwjgl.opengl.GL20.glGetProgrami;
-import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
-import static org.lwjgl.opengl.GL20.glGetShaderi;
-import static org.lwjgl.opengl.GL20.glLinkProgram;
-import static org.lwjgl.opengl.GL20.glShaderSource;
-import static org.lwjgl.opengl.GL20.glUseProgram;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import org.lwjgl.opengl.GL20;
 
 public class Shader {
 	private static String SHADER_PATH = "shaders/";
@@ -44,10 +30,8 @@ public class Shader {
 	
 	private void readFile() {
 		try {
-			String source = new String(Files.readAllBytes(Paths.get(filepath)));
-			String[] split = source.split("(#type )( )([a-zA-Z]+)", shaderProgramID);
-			vertexShader = split[1];
-			fragmentShader = split[2];
+			vertexShader = new String(Files.readAllBytes(Paths.get(filepath + ".vertex")));
+			fragmentShader = new String(Files.readAllBytes(Paths.get(filepath + ".fragment")));
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("Error: Could not open file for Shader: " + filepath);
@@ -56,7 +40,7 @@ public class Shader {
 	
 	public void compile() {
 		loadVertexShader();
-		loadFragmendShader();
+		loadFragmentShader();
 		linkShaders();
 	}
 	
@@ -74,8 +58,8 @@ public class Shader {
 		}
 	}
 
-	private void loadFragmendShader() {
-		fragmentID = glCreateShader(GL_VERTEX_SHADER);
+	private void loadFragmentShader() {
+		fragmentID = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(fragmentID, fragmentShader);
 		glCompileShader(fragmentID);
 

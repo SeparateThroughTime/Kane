@@ -25,7 +25,7 @@ public class Box extends Shape {
 	 * @param material
 	 */
 	public Box(int relPosX, int relPosY, Body body, Vec2f rad, Color color, Material material, int renderLayer) {
-		super(relPosX, relPosY, ShapeType.BOX, body, color, material, renderLayer);
+		super(relPosX, relPosY, ShapeType.BOX, body, color, material, renderLayer, 4, 2);
 		this.rad = rad;
 	}
 

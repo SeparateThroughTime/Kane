@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.Iterator;
 
 import javax.swing.JPanel;
 
@@ -58,13 +59,27 @@ public class Renderer {
 
 	protected long window;
 
-	protected float[] vertices;
-	protected int[] elements;
+	protected static final int POSITION_SIZE = 3;
+	protected static final int COLOR_SIZE = 4;
+	protected static final int VERTEX_SIZE_BYTE = POSITION_SIZE * Float.BYTES + COLOR_SIZE * Integer.BYTES ;
+
+	protected float[] vertices = {
+		-0.5f, -0.5f, 0f,		1f, 0f, 0f, 1f,
+		0.5f, -0.5f, 0f,		1f, 0f, 0f, 1f,
+		0.5f, 0.5f, 0f,			1f, 0f, 0f, 1f,
+		-0.5f, 0.5f, 0f,		1f, 0f, 0f, 1f
+	};
+	protected int countCurrentVertices;
+	protected int[] elements = {
+			0, 1, 2,
+			0, 2, 3
+	};
+	protected int countCurrentElements;
 
 	protected int vertexArrayObjectID;
 	protected int vertexBufferObjectID;
 	protected int elementBufferObjectID;
-	
+
 	protected Shader shader;
 
 	public Renderer(ResolutionSpecification resSpecs, Physics physics, Game g, String title) {
@@ -74,35 +89,9 @@ public class Renderer {
 		this.multiplicator = 1f;
 
 		initGLFW(title);
-		
+
 		shader = Shader.DEFAULT;
 		shader.compile();
-
-		vertexArrayObjectID = glGenVertexArrays();
-		glBindVertexArray(vertexArrayObjectID);
-
-		FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertices.length);
-		vertexBuffer.put(vertices).flip();
-
-		vertexBufferObjectID = glGenBuffers();
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjectID);
-		glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
-
-		IntBuffer elementBuffer = BufferUtils.createIntBuffer(elements.length);
-		elementBuffer.put(elements).flip();
-
-		elementBufferObjectID = glGenBuffers();
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferObjectID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementBuffer, GL_STATIC_DRAW);
-
-		int positionSize = 3;
-		int colorSize = 4;
-		int floatSizeByte = 4;
-		int vertexSizeByte = (positionSize + colorSize) * floatSizeByte;
-		glVertexAttribPointer(0, positionSize, GL_FLOAT, false, vertexSizeByte, 0);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, colorSize, GL_INT, false, vertexSizeByte, positionSize * floatSizeByte);
-		glEnableVertexAttribArray(1);
 
 	}
 
@@ -127,8 +116,6 @@ public class Renderer {
 		glfwSwapInterval(1);
 		GL.createCapabilities();
 	}
-
-	
 
 	protected Vec2f transformPosToVertex(Vec2f gamePos) {
 		Vec2f cameraAlteredPos = new Vec2f(gamePos).sub(camera.getPos().mult(multiplicator));
@@ -180,15 +167,50 @@ public class Renderer {
 	public void renderGame() {
 		clearWindow();
 		camera.update();
-		drawBackground();
+//		drawBackground();
 		chooseRenderedShapes();
-		drawBodies();
-		displayAABBs();
-		displayContacts();
+//		initVerticesAndElements();
+//		drawBodies();
+//		drawAABBs();
+//		drawContacts();
+		displayFrame();
+	}
+
+	protected void initVerticesAndElements() {
+		int numVertices = 0;
+		int numElements = 0;
+		for (int i = 0; i < numRenderedShapes; i++) {
+			Shape s = renderedShapes[i];
+			numVertices += s.getNumRenderVertices();
+			numElements += s.getNumRenderElements();
+		}
+		vertices = new float[numVertices * (POSITION_SIZE + COLOR_SIZE)];
+		elements = new int[numElements * 3];
+	}
+
+	protected void displayFrame() {
+		vertexArrayObjectID = glGenVertexArrays();
+		glBindVertexArray(vertexArrayObjectID);
+
+		FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertices.length);
+		vertexBuffer.put(vertices).flip();
+
+		vertexBufferObjectID = glGenBuffers();
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjectID);
+		glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
+
+		IntBuffer elementBuffer = BufferUtils.createIntBuffer(elements.length);
+		elementBuffer.put(elements).flip();
+
+		elementBufferObjectID = glGenBuffers();
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferObjectID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementBuffer, GL_STATIC_DRAW);
 
 		shader.use();
 		glBindVertexArray(vertexArrayObjectID);
+		glVertexAttribPointer(0, POSITION_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTE, 0);
 		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, COLOR_SIZE, GL_INT, false, VERTEX_SIZE_BYTE, POSITION_SIZE * Float.BYTES);
 		glEnableVertexAttribArray(1);
 
 		glDrawElements(GL_TRIANGLES, elements.length, GL_UNSIGNED_INT, 0);
@@ -198,8 +220,6 @@ public class Renderer {
 		glDisableVertexAttribArray(1);
 		glBindVertexArray(0);
 		shader.detach();
-
-		// TODO RenderGame
 
 		glfwSwapBuffers(window);
 	}
@@ -232,6 +252,8 @@ public class Renderer {
 	 * @param coy: Camera Offset Y
 	 */
 	private void drawBodies() {
+		countCurrentVertices = 0;
+		countCurrentElements = 0;
 		// draw bodies
 		for (int layer = 1; layer < Shape.MAX_RENDER_LAYER; layer++) {
 			for (int i = 0; i < numRenderedShapes; i++) {
@@ -324,8 +346,8 @@ public class Renderer {
 	/**
 	 * Display AABBs
 	 */
-	//TODO display AABBs
-	private void displayAABBs() {
+	// TODO display AABBs
+	private void drawAABBs() {
 		if (showAABBs) {
 			for (int i = 0; i < physics.getNumBodies(); i++) {
 				Body body = physics.getBodies(i);
@@ -344,8 +366,8 @@ public class Renderer {
 	/**
 	 * Display contacts.
 	 */
-	//TODO displayContacts
-	private void displayContacts() {
+	// TODO displayContacts
+	private void drawContacts() {
 		if (showContacts) {
 			for (int i = 0; i < physics.getNumShapePairs(); i++) {
 				ShapePair shapePair = physics.getShapePairs(i);
@@ -401,12 +423,113 @@ public class Renderer {
 	}
 
 	private void drawRect(Vec2f point1, Vec2f point2, Vec2f point3, Vec2f point4, Color color) {
-		
-		
+		int verticeStartingIndex = countCurrentVertices * (COLOR_SIZE + POSITION_SIZE);
+		countCurrentVertices += 4;
+		int elementsStartingIndex = countCurrentElements * 3;
+		countCurrentElements += 2;
+
+		int rgb = color.getRGB();
+		int red = (rgb & 0x000000FF);
+		int green = (rgb & 0x0000FF00) >> 8;
+		int blue = (rgb & 0x00FF0000) >> 16;
+
+		// Positions
+		vertices[verticeStartingIndex + 0] = point1.getX();
+		vertices[verticeStartingIndex + 1] = point1.getY();
+		vertices[verticeStartingIndex + 2] = 0f;
+
+		vertices[verticeStartingIndex + 7] = point2.getX();
+		vertices[verticeStartingIndex + 8] = point2.getY();
+		vertices[verticeStartingIndex + 9] = 0f;
+
+		vertices[verticeStartingIndex + 14] = point3.getX();
+		vertices[verticeStartingIndex + 15] = point3.getY();
+		vertices[verticeStartingIndex + 16] = 0f;
+
+		vertices[verticeStartingIndex + 21] = point4.getX();
+		vertices[verticeStartingIndex + 22] = point4.getY();
+		vertices[verticeStartingIndex + 23] = 0f;
+
+		// Colors
+		vertices[verticeStartingIndex + 3] = red;
+		vertices[verticeStartingIndex + 4] = green;
+		vertices[verticeStartingIndex + 5] = blue;
+		vertices[verticeStartingIndex + 6] = 1f;
+
+		vertices[verticeStartingIndex + 10] = red;
+		vertices[verticeStartingIndex + 11] = green;
+		vertices[verticeStartingIndex + 12] = blue;
+		vertices[verticeStartingIndex + 13] = 1f;
+
+		vertices[verticeStartingIndex + 17] = red;
+		vertices[verticeStartingIndex + 18] = green;
+		vertices[verticeStartingIndex + 19] = blue;
+		vertices[verticeStartingIndex + 20] = 1f;
+
+		vertices[verticeStartingIndex + 24] = red;
+		vertices[verticeStartingIndex + 25] = green;
+		vertices[verticeStartingIndex + 26] = blue;
+		vertices[verticeStartingIndex + 27] = 1f;
+
+		// Elements
+		elements[elementsStartingIndex + 0] = verticeStartingIndex + 0;
+		elements[elementsStartingIndex + 1] = verticeStartingIndex + 1;
+		elements[elementsStartingIndex + 2] = verticeStartingIndex + 2;
+
+		elements[elementsStartingIndex + 3] = verticeStartingIndex + 0;
+		elements[elementsStartingIndex + 4] = verticeStartingIndex + 2;
+		elements[elementsStartingIndex + 5] = verticeStartingIndex + 3;
+
 	}
 
 	private void drawPolygon(Vec2f[] points, Vec2f center, Color color) {
+		int verticeStartingIndex = countCurrentVertices * (COLOR_SIZE + POSITION_SIZE);
+		countCurrentVertices += points.length + 1;
+		int elementsStartingIndex = countCurrentElements * 3;
+		countCurrentElements += points.length;
 
+		int rgb = color.getRGB();
+		int red = (rgb & 0x000000FF);
+		int green = (rgb & 0x0000FF00) >> 8;
+		int blue = (rgb & 0x00FF0000) >> 16;
+
+		// Center
+		vertices[verticeStartingIndex + 0] = center.getX();
+		vertices[verticeStartingIndex + 1] = center.getY();
+		vertices[verticeStartingIndex + 2] = 0f;
+
+		vertices[verticeStartingIndex + 3] = red;
+		vertices[verticeStartingIndex + 4] = green;
+		vertices[verticeStartingIndex + 5] = blue;
+		vertices[verticeStartingIndex + 6] = 1f;
+
+		// Point0
+		vertices[verticeStartingIndex + 7] = points[0].getX();
+		vertices[verticeStartingIndex + 8] = points[0].getY();
+		vertices[verticeStartingIndex + 9] = 0f;
+
+		vertices[verticeStartingIndex + 10] = red;
+		vertices[verticeStartingIndex + 11] = green;
+		vertices[verticeStartingIndex + 12] = blue;
+		vertices[verticeStartingIndex + 13] = 1f;
+
+		for (int i = 1; i < points.length; i++) {
+			Vec2f point1 = points[i - 1];
+			Vec2f point2 = points[i];
+
+			vertices[verticeStartingIndex + 14 + (i - 1) * 7] = points[i].getX();
+			vertices[verticeStartingIndex + 15 + (i - 1) * 7] = points[i].getY();
+			vertices[verticeStartingIndex + 16 + (i - 1) * 7] = 0f;
+
+			vertices[verticeStartingIndex + 17 + (i - 1) * 7] = red;
+			vertices[verticeStartingIndex + 18 + (i - 1) * 7] = green;
+			vertices[verticeStartingIndex + 19 + (i - 1) * 7] = blue;
+			vertices[verticeStartingIndex + 20 + (i - 1) * 7] = 1f;
+
+			elements[elementsStartingIndex + 0 + (i - 1) * 3] = verticeStartingIndex;
+			elements[elementsStartingIndex + 1 + (i - 1) * 3] = verticeStartingIndex + i - 1;
+			elements[elementsStartingIndex + 2 + (i - 1) * 3] = verticeStartingIndex + i;
+		}
 	}
 
 	/**

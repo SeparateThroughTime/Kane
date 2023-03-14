@@ -31,7 +31,7 @@ public class Polygon extends Shape {
 	 */
 	public Polygon(int relPosX, int RelPosY, Body body, Color color, Vec2f[] points, Material material,
 			int renderLayer) {
-		super(relPosX, RelPosY, ShapeType.POLYGON, body, color, material, renderLayer);
+		super(relPosX, RelPosY, ShapeType.POLYGON, body, color, material, renderLayer, points.length + 1, points.length);
 		numPoints = points.length;
 		this.points = new Vec2f[numPoints];
 		this.pointsAlign = new Vec2f[numPoints];
@@ -55,7 +55,7 @@ public class Polygon extends Shape {
 	 */
 	public Polygon(int relPosX, int RelPosY, Body body, Color color, int numPoints, float radius, Material material,
 			int renderLayer) {
-		super(relPosX, RelPosY, ShapeType.POLYGON, body, color, material, renderLayer);
+		super(relPosX, RelPosY, ShapeType.POLYGON, body, color, material, renderLayer, numPoints + 1, numPoints);
 		this.numPoints = numPoints;
 		this.points = new Vec2f[numPoints];
 		this.pointsAlign = new Vec2f[numPoints];

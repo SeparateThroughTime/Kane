@@ -49,6 +49,9 @@ public abstract class Shape {
 	protected boolean hasSprite;
 	protected SpriteController[] spriteControllers;
 
+	protected int numRenderVertices;
+	protected int numRenderElements;
+
 	/**
 	 * Update the AABB of Shape including its next position.
 	 * 
@@ -63,15 +66,16 @@ public abstract class Shape {
 	 * @return
 	 */
 	public abstract float getVolume();
-	
+
 	public abstract boolean isPointInShape(Vec2f point);
-	
+
 	public boolean isPointInShape(Vec2i point) {
 		Vec2f pointF = new Vec2f(point.getX(), point.getY());
 		return isPointInShape(pointF);
 	}
 
-	public Shape(int relPosX, int RelPosY, ShapeType type, Body body, Color color, Material material, int renderLayer) {
+	public Shape(int relPosX, int RelPosY, ShapeType type, Body body, Color color, Material material, int renderLayer,
+			int numRenderVertices, int numRenderElements) {
 		relPos = new Vec2f(relPosX, RelPosY);
 		relPosAlign = new Vec2f(relPosX, RelPosY);
 		this.type = type;
@@ -90,6 +94,8 @@ public abstract class Shape {
 		this.centerOfMass = new Vec2f();
 		this.RENDER_LAYER = renderLayer > MAX_RENDER_LAYER ? MAX_RENDER_LAYER : renderLayer;
 		this.colidedShapes = new Shape[MAX_COLIDED_SHAPES];
+		this.numRenderVertices = numRenderVertices;
+		this.numRenderElements = numRenderElements;
 	}
 
 	/**
@@ -133,9 +139,10 @@ public abstract class Shape {
 	public boolean getCollision() {
 		return collision;
 	}
-	
+
 	/**
 	 * Set relative position of shape
+	 * 
 	 * @param x
 	 * @param y
 	 */
@@ -245,11 +252,11 @@ public abstract class Shape {
 	public void addActiveAttribute(ActiveAttributes aa) {
 		activeAttributes[numActiveAttributes++] = aa;
 	}
-	
+
 	public void remActiveAttribute(ActiveAttributes aa) {
 		ArrayList<Integer> indices = new ArrayList<Integer>();
 		for (int i = 0; i < numActiveAttributes; i++) {
-			if(activeAttributes[i] == aa) {
+			if (activeAttributes[i] == aa) {
 				indices.add(i);
 			}
 		}
@@ -319,11 +326,11 @@ public abstract class Shape {
 	 * @param index
 	 * @return
 	 */
-	
+
 	public void remPassiveAttribute(PassiveAttributes pa) {
 		ArrayList<Integer> indices = new ArrayList<Integer>();
 		for (int i = 0; i < numPassiveAttributes; i++) {
-			if(passiveAttributes[i] == pa) {
+			if (passiveAttributes[i] == pa) {
 				indices.add(i);
 			}
 		}
@@ -335,7 +342,7 @@ public abstract class Shape {
 			numPassiveAttributes--;
 		}
 	}
-	
+
 	public PassiveAttributes getPassiveAttribute(int index) {
 		return passiveAttributes[index];
 	}
@@ -389,14 +396,14 @@ public abstract class Shape {
 	public SpriteController[] getSpriteControllers() {
 		return spriteControllers;
 	}
-	
+
 	public void setCurrentSpriteState(SpriteState spriteState) {
 		for (int i = 0; i < spriteControllers.length; i++) {
 			SpriteController spriteController = spriteControllers[i];
 			spriteController.setCurrentSpriteState(spriteState);
 		}
 	}
-	
+
 	public SpriteState getCurrentSpriteState() {
 		if (hasSprite) {
 			return spriteControllers[0].getCurrentSpriteState();
@@ -411,9 +418,9 @@ public abstract class Shape {
 	}
 
 	protected abstract void mirrorX();
-	
+
 	protected abstract void mirrorY();
-	
+
 	public Shape[] getColidedShapes() {
 		return ArrayOperations.cutArray(colidedShapes, numColidedShapes);
 	}
@@ -421,11 +428,11 @@ public abstract class Shape {
 	public void addColidedShape(Shape shape) {
 		this.colidedShapes[numColidedShapes++] = shape;
 	}
-	
+
 	public void remColidedShape(Shape shape) {
 		this.numColidedShapes -= ArrayOperations.remObjectStatic(colidedShapes, shape, numColidedShapes);
 	}
-	
+
 	public Shape[] getColidedShapes(ActiveAttributes attribute) {
 		Shape[] shapes = ArrayOperations.cutArray(colidedShapes, numColidedShapes);
 		int removedShapes = 0;
@@ -436,7 +443,7 @@ public abstract class Shape {
 		}
 		return ArrayOperations.cutArray(shapes, numColidedShapes - removedShapes);
 	}
-	
+
 	public Shape[] getColidedShapes(PassiveAttributes attribute) {
 		Shape[] shapes = ArrayOperations.cutArray(colidedShapes, numColidedShapes);
 		int removedShapes = 0;
@@ -447,5 +454,13 @@ public abstract class Shape {
 			}
 		}
 		return ArrayOperations.cutArray(shapes, numColidedShapes - removedShapes);
+	}
+
+	public int getNumRenderVertices() {
+		return numRenderVertices;
+	}
+	
+	public int getNumRenderElements() {
+		return numRenderElements;
 	}
 }

@@ -27,7 +27,7 @@ public class Plane extends Shape {
 	 * @param material
 	 */
 	public Plane(Vec2f normal, float distance, float len, Body body, Color color, Material material, int renderLayer) {
-		super(0, 0, ShapeType.PLANE, body, color, material, renderLayer);
+		super(0, 0, ShapeType.PLANE, body, color, material, renderLayer, 0, 0);
 		this.normal = normal.normalize();
 		this.distance = distance;
 		this.len = len;
