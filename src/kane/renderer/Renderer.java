@@ -61,19 +61,12 @@ public class Renderer {
 
 	protected static final int POSITION_SIZE = 3;
 	protected static final int COLOR_SIZE = 4;
-	protected static final int VERTEX_SIZE_BYTE = POSITION_SIZE * Float.BYTES + COLOR_SIZE * Integer.BYTES ;
+	protected static final int VERTEX_SIZE_BYTE = (POSITION_SIZE + COLOR_SIZE) * Float.BYTES;
 
-	protected float[] vertices = {
-		-0.5f, -0.5f, 0f,		1f, 0f, 0f, 1f,
-		0.5f, -0.5f, 0f,		1f, 0f, 0f, 1f,
-		0.5f, 0.5f, 0f,			1f, 0f, 0f, 1f,
-		-0.5f, 0.5f, 0f,		1f, 0f, 0f, 1f
-	};
+	protected float[] vertices = { -0.5f, -0.5f, 0f, 1f, 0f, 0f, 1f, 0.5f, -0.5f, 0f, 1f, 0f, 0f, 1f, 0.5f, 0.5f, 0f,
+			1f, 0f, 0f, 1f, -0.5f, 0.5f, 0f, 1f, 0f, 0f, 1f };
 	protected int countCurrentVertices;
-	protected int[] elements = {
-			0, 1, 2,
-			0, 2, 3
-	};
+	protected int[] elements = { 0, 1, 2, 0, 2, 3 };
 	protected int countCurrentElements;
 
 	protected int vertexArrayObjectID;
@@ -206,12 +199,11 @@ public class Renderer {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferObjectID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementBuffer, GL_STATIC_DRAW);
 
-		shader.use();
-		glBindVertexArray(vertexArrayObjectID);
 		glVertexAttribPointer(0, POSITION_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTE, 0);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, COLOR_SIZE, GL_INT, false, VERTEX_SIZE_BYTE, POSITION_SIZE * Float.BYTES);
+		glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTE, POSITION_SIZE * Float.BYTES);
 		glEnableVertexAttribArray(1);
+		shader.use();
 
 		glDrawElements(GL_TRIANGLES, elements.length, GL_UNSIGNED_INT, 0);
 
