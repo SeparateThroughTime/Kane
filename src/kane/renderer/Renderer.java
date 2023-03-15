@@ -23,6 +23,7 @@ import kane.math.Scalar;
 import kane.math.Vec2f;
 import kane.physics.AABB;
 import kane.physics.Body;
+import kane.physics.Material;
 import kane.physics.Physics;
 import kane.physics.Shape;
 import kane.physics.ShapePair;
@@ -63,10 +64,9 @@ public class Renderer {
 	protected static final int COLOR_SIZE = 4;
 	protected static final int VERTEX_SIZE_BYTE = (POSITION_SIZE + COLOR_SIZE) * Float.BYTES;
 
-	protected float[] vertices = { -0.5f, -0.5f, 0f, 1f, 0f, 0f, 1f, 0.5f, -0.5f, 0f, 1f, 0f, 0f, 1f, 0.5f, 0.5f, 0f,
-			1f, 0f, 0f, 1f, -0.5f, 0.5f, 0f, 1f, 0f, 0f, 1f };
+	protected float[] vertices;
 	protected int countCurrentVertices;
-	protected int[] elements = { 0, 1, 2, 0, 2, 3 };
+	protected int[] elements;
 	protected int countCurrentElements;
 
 	protected int vertexArrayObjectID;
@@ -111,8 +111,7 @@ public class Renderer {
 	}
 
 	protected Vec2f transformPosToVertex(Vec2f gamePos) {
-		Vec2f cameraAlteredPos = new Vec2f(gamePos).sub(camera.getPos().mult(multiplicator));
-		;
+		Vec2f cameraAlteredPos = new Vec2f(gamePos).sub(new Vec2f(camera.zeroPoint).mult(multiplicator));
 
 		float x = cameraAlteredPos.getX();
 		x -= resSpecs.halfWidth;
@@ -162,8 +161,8 @@ public class Renderer {
 		camera.update();
 //		drawBackground();
 		chooseRenderedShapes();
-//		initVerticesAndElements();
-//		drawBodies();
+		initVerticesAndElements();
+		drawBodies();
 //		drawAABBs();
 //		drawContacts();
 		displayFrame();
@@ -322,7 +321,8 @@ public class Renderer {
 							Vec2f pointAbsPos = new Vec2f(pol.getPoint(p)).add(absPos);
 							points[p] = transformPosToVertex(pointAbsPos);
 						}
-						drawPolygon(points, absPos, pol.getColor());
+						Vec2f center = transformPosToVertex(absPos);
+						drawPolygon(points, center, pol.getColor());
 					}
 
 //					else if (ShapeType.POINT.equals(shape.getType())) {
@@ -506,11 +506,10 @@ public class Renderer {
 		vertices[verticeStartingIndex + 13] = 1f;
 
 		for (int i = 1; i < points.length; i++) {
-			Vec2f point1 = points[i - 1];
-			Vec2f point2 = points[i];
+			Vec2f point = points[i];
 
-			vertices[verticeStartingIndex + 14 + (i - 1) * 7] = points[i].getX();
-			vertices[verticeStartingIndex + 15 + (i - 1) * 7] = points[i].getY();
+			vertices[verticeStartingIndex + 14 + (i - 1) * 7] = point.getX();
+			vertices[verticeStartingIndex + 15 + (i - 1) * 7] = point.getY();
 			vertices[verticeStartingIndex + 16 + (i - 1) * 7] = 0f;
 
 			vertices[verticeStartingIndex + 17 + (i - 1) * 7] = red;
@@ -519,9 +518,14 @@ public class Renderer {
 			vertices[verticeStartingIndex + 20 + (i - 1) * 7] = 1f;
 
 			elements[elementsStartingIndex + 0 + (i - 1) * 3] = verticeStartingIndex;
-			elements[elementsStartingIndex + 1 + (i - 1) * 3] = verticeStartingIndex + i - 1;
-			elements[elementsStartingIndex + 2 + (i - 1) * 3] = verticeStartingIndex + i;
+			elements[elementsStartingIndex + 1 + (i - 1) * 3] = verticeStartingIndex + i;
+			elements[elementsStartingIndex + 2 + (i - 1) * 3] = verticeStartingIndex + i + 1;
 		}
+
+		// last element
+		elements[elementsStartingIndex + 0 + (points.length - 1) * 3] = verticeStartingIndex;
+		elements[elementsStartingIndex + 1 + (points.length - 1) * 3] = verticeStartingIndex + points.length;
+		elements[elementsStartingIndex + 2 + (points.length - 1) * 3] = verticeStartingIndex + 1;
 	}
 
 	/**
