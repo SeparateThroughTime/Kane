@@ -156,11 +156,11 @@ public class Kane extends Game {
 		player.getShape(1).setCollision(false);
 		player.getShape(1).addActiveAttribute(ActiveAttributes.MOB_FEETS);
 		player.getShape(1).addActiveAttribute(ActiveAttributes.ATTACKING_FIELD);
-		player.getShape(1).setVisible(true);
+		player.getShape(1).setVisible(false);
 		player.addShape(new Box(32, 0, player, new Vec2f(8, 32), Color.RED, mEvent, 2));
 		player.getShape(2).setCollision(false);
 		player.getShape(2).addPassiveAttribute(PassiveAttributes.ATTACKING_FIELD);
-		player.getShape(2).setVisible(true);
+		player.getShape(2).setVisible(false);
 		SpriteController[] spriteControllers = currentItem.getPlayerSpriteControllers();
 		player.getShape(0).setSpriteControllers(spriteControllers);
 
@@ -192,12 +192,15 @@ public class Kane extends Game {
 		blob.addShape(new Box(31, 0, blob, new Vec2f(1, 15), Color.YELLOW, mEvent, 2));
 		blob.getShape(1).addPassiveAttribute(PassiveAttributes.MOB_RIGHT);
 		blob.getShape(1).setCollision(false);
+		blob.getShape(1).setVisible(false);
 		blob.addShape(new Box(-31, 0, blob, new Vec2f(1, 15), Color.YELLOW, mEvent, 2));
 		blob.getShape(2).addPassiveAttribute(PassiveAttributes.MOB_LEFT);
 		blob.getShape(2).setCollision(false);
+		blob.getShape(2).setVisible(false);
 		blob.addShape(new Box(0, -2, blob, new Vec2f(32, 15), Color.YELLOW, mEvent, 2));
 		blob.getShape(3).addActiveAttribute(ActiveAttributes.ATTACKING_FIELD);
 		blob.getShape(3).setCollision(false);
+		blob.getShape(3).setVisible(false);
 		sprite = new Sprite(new File("sprites\\Mobs\\Blob\\Blob.png"), 32, 32);
 		sprite.addState(SpriteState.STATIC, new int[] { 0 });
 		spriteControllers = new SpriteController[1];
@@ -217,7 +220,7 @@ public class Kane extends Game {
 		renderer.changeBackground(file);
 
 //		changeResolution(Resolution.SOL1176x664);
-
+		
 		// healthBar
 		file = new File("sprites\\interface\\HealthBar.png");
 		healthBar = renderer.getCamera().addHudBar(file);

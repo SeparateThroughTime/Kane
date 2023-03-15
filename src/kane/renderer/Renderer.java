@@ -62,7 +62,9 @@ public class Renderer {
 
 	protected static final int POSITION_SIZE = 3;
 	protected static final int COLOR_SIZE = 4;
-	protected static final int VERTEX_SIZE_BYTE = (POSITION_SIZE + COLOR_SIZE) * Float.BYTES;
+	protected static final int VERTEX_SIZE = POSITION_SIZE + COLOR_SIZE;
+	protected static final int VERTEX_SIZE_BYTE = VERTEX_SIZE * Float.BYTES;
+	protected static final int ELEMENT_SIZE = 3;
 
 	protected float[] vertices;
 	protected int countCurrentVertices;
@@ -415,10 +417,8 @@ public class Renderer {
 	}
 
 	private void drawRect(Vec2f point1, Vec2f point2, Vec2f point3, Vec2f point4, Color color) {
-		int verticeStartingIndex = countCurrentVertices * (COLOR_SIZE + POSITION_SIZE);
-		countCurrentVertices += 4;
-		int elementsStartingIndex = countCurrentElements * 3;
-		countCurrentElements += 2;
+		int verticeStartingIndex = countCurrentVertices * VERTEX_SIZE;
+		int elementsStartingIndex = countCurrentElements * ELEMENT_SIZE;
 
 		int rgb = color.getRGB();
 		int red = (rgb & 0x000000FF);
@@ -464,21 +464,22 @@ public class Renderer {
 		vertices[verticeStartingIndex + 27] = 1f;
 
 		// Elements
-		elements[elementsStartingIndex + 0] = verticeStartingIndex + 0;
-		elements[elementsStartingIndex + 1] = verticeStartingIndex + 1;
-		elements[elementsStartingIndex + 2] = verticeStartingIndex + 2;
+		elements[elementsStartingIndex + 0] = countCurrentVertices + 0;
+		elements[elementsStartingIndex + 1] = countCurrentVertices + 1;
+		elements[elementsStartingIndex + 2] = countCurrentVertices + 2;
 
-		elements[elementsStartingIndex + 3] = verticeStartingIndex + 0;
-		elements[elementsStartingIndex + 4] = verticeStartingIndex + 2;
-		elements[elementsStartingIndex + 5] = verticeStartingIndex + 3;
+		elements[elementsStartingIndex + 3] = countCurrentVertices + 0;
+		elements[elementsStartingIndex + 4] = countCurrentVertices + 2;
+		elements[elementsStartingIndex + 5] = countCurrentVertices + 3;
 
+		
+		countCurrentVertices += 4;
+		countCurrentElements += 2;
 	}
 
 	private void drawPolygon(Vec2f[] points, Vec2f center, Color color) {
-		int verticeStartingIndex = countCurrentVertices * (COLOR_SIZE + POSITION_SIZE);
-		countCurrentVertices += points.length + 1;
-		int elementsStartingIndex = countCurrentElements * 3;
-		countCurrentElements += points.length;
+		int verticeStartingIndex = countCurrentVertices * VERTEX_SIZE;
+		int elementsStartingIndex = countCurrentElements * ELEMENT_SIZE;
 
 		int rgb = color.getRGB();
 		int red = (rgb & 0x000000FF);
@@ -508,24 +509,27 @@ public class Renderer {
 		for (int i = 1; i < points.length; i++) {
 			Vec2f point = points[i];
 
-			vertices[verticeStartingIndex + 14 + (i - 1) * 7] = point.getX();
-			vertices[verticeStartingIndex + 15 + (i - 1) * 7] = point.getY();
-			vertices[verticeStartingIndex + 16 + (i - 1) * 7] = 0f;
+			vertices[verticeStartingIndex + 14 + (i - 1) * VERTEX_SIZE] = point.getX();
+			vertices[verticeStartingIndex + 15 + (i - 1) * VERTEX_SIZE] = point.getY();
+			vertices[verticeStartingIndex + 16 + (i - 1) * VERTEX_SIZE] = 0f;
 
-			vertices[verticeStartingIndex + 17 + (i - 1) * 7] = red;
-			vertices[verticeStartingIndex + 18 + (i - 1) * 7] = green;
-			vertices[verticeStartingIndex + 19 + (i - 1) * 7] = blue;
-			vertices[verticeStartingIndex + 20 + (i - 1) * 7] = 1f;
+			vertices[verticeStartingIndex + 17 + (i - 1) * VERTEX_SIZE] = red;
+			vertices[verticeStartingIndex + 18 + (i - 1) * VERTEX_SIZE] = green;
+			vertices[verticeStartingIndex + 19 + (i - 1) * VERTEX_SIZE] = blue;
+			vertices[verticeStartingIndex + 20 + (i - 1) * VERTEX_SIZE] = 1f;
 
-			elements[elementsStartingIndex + 0 + (i - 1) * 3] = verticeStartingIndex;
-			elements[elementsStartingIndex + 1 + (i - 1) * 3] = verticeStartingIndex + i;
-			elements[elementsStartingIndex + 2 + (i - 1) * 3] = verticeStartingIndex + i + 1;
+			elements[elementsStartingIndex + 0 + (i - 1) * ELEMENT_SIZE] = countCurrentVertices;
+			elements[elementsStartingIndex + 1 + (i - 1) * ELEMENT_SIZE] = countCurrentVertices + i;
+			elements[elementsStartingIndex + 2 + (i - 1) * ELEMENT_SIZE] = countCurrentVertices + i + 1;
 		}
 
 		// last element
-		elements[elementsStartingIndex + 0 + (points.length - 1) * 3] = verticeStartingIndex;
-		elements[elementsStartingIndex + 1 + (points.length - 1) * 3] = verticeStartingIndex + points.length;
-		elements[elementsStartingIndex + 2 + (points.length - 1) * 3] = verticeStartingIndex + 1;
+		elements[elementsStartingIndex + 0 + (points.length - 1) * ELEMENT_SIZE] = countCurrentVertices;
+		elements[elementsStartingIndex + 1 + (points.length - 1) * ELEMENT_SIZE] = countCurrentVertices + points.length;
+		elements[elementsStartingIndex + 2 + (points.length - 1) * ELEMENT_SIZE] = countCurrentVertices + 1;
+
+		countCurrentVertices += points.length + 1;
+		countCurrentElements += points.length;
 	}
 
 	/**
