@@ -9,7 +9,9 @@ public class ResolutionSpecification {
 	public int gameWidth;
 	public int height;
 	public int width;
+	public float halfGameWidth;
 	public float halfWidth;
+	public float halfGameHeight;
 	public float halfHeight;
 
 	public ResolutionSpecification(int gameHeight, int gameWidth, int height, int width) {
@@ -20,5 +22,7 @@ public class ResolutionSpecification {
 		this.width = width;
 		this.halfWidth = width / 2;
 		this.halfHeight = height / 2;
+		this.halfGameHeight = gameHeight / 2;
+		this.halfGameWidth = gameWidth / 2;
 	}
 }

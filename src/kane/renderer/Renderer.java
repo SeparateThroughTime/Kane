@@ -116,12 +116,12 @@ public class Renderer {
 		Vec2f cameraAlteredPos = new Vec2f(gamePos).sub(new Vec2f(camera.zeroPoint).mult(multiplicator));
 
 		float x = cameraAlteredPos.getX();
-		x -= resSpecs.halfWidth;
-		x /= resSpecs.halfWidth;
+		x -= resSpecs.halfGameWidth;
+		x /= resSpecs.halfGameWidth;
 
 		float y = cameraAlteredPos.getY();
-		y -= resSpecs.halfHeight;
-		y /= resSpecs.halfHeight;
+		y -= resSpecs.halfGameHeight;
+		y /= resSpecs.halfGameHeight;
 
 		return new Vec2f(x, y);
 	}
@@ -162,12 +162,84 @@ public class Renderer {
 		clearWindow();
 		camera.update();
 //		drawBackground();
+//		test();
 		chooseRenderedShapes();
 		initVerticesAndElements();
 		drawBodies();
 //		drawAABBs();
 //		drawContacts();
 		displayFrame();
+	}
+
+	private void test() {
+		Body b = new Body(new Vec2f(resSpecs.halfGameWidth, resSpecs.halfGameHeight));
+		Box box = new Box(-398, -298, b, new Vec2f(796, 596), Color.RED, new Material(0, 0), 1);
+		
+		
+		Vec2f absPos = box.getAbsPos();
+		Vec2f rad = box.getRad();
+		Vec2f point1 = transformPosToVertex(new Vec2f(absPos));
+		Vec2f point2 = transformPosToVertex(new Vec2f(absPos.getX() + rad.getX(), absPos.getY()));
+		Vec2f point3 = transformPosToVertex(new Vec2f(absPos).add(rad));
+		Vec2f point4 = transformPosToVertex(new Vec2f(absPos.getX(), absPos.getY() + rad.getY()));
+		
+		vertices = new float[28];
+		elements = new int[6];
+		
+		int verticeStartingIndex = 0;
+		int elementsStartingIndex = 0;
+
+		int rgb = Color.RED.getRGB();
+		int red = (rgb & 0x000000FF);
+		int green = (rgb & 0x0000FF00) >> 8;
+		int blue = (rgb & 0x00FF0000) >> 16;
+
+		// Positions
+		vertices[verticeStartingIndex + 0] = point1.getX();
+		vertices[verticeStartingIndex + 1] = point1.getY();
+		vertices[verticeStartingIndex + 2] = 0f;
+
+		vertices[verticeStartingIndex + 7] = point2.getX();
+		vertices[verticeStartingIndex + 8] = point2.getY();
+		vertices[verticeStartingIndex + 9] = 0f;
+
+		vertices[verticeStartingIndex + 14] = point3.getX();
+		vertices[verticeStartingIndex + 15] = point3.getY();
+		vertices[verticeStartingIndex + 16] = 0f;
+
+		vertices[verticeStartingIndex + 21] = point4.getX();
+		vertices[verticeStartingIndex + 22] = point4.getY();
+		vertices[verticeStartingIndex + 23] = 0f;
+
+		// Colors
+		vertices[verticeStartingIndex + 3] = red;
+		vertices[verticeStartingIndex + 4] = green;
+		vertices[verticeStartingIndex + 5] = blue;
+		vertices[verticeStartingIndex + 6] = 1f;
+
+		vertices[verticeStartingIndex + 10] = red;
+		vertices[verticeStartingIndex + 11] = green;
+		vertices[verticeStartingIndex + 12] = blue;
+		vertices[verticeStartingIndex + 13] = 1f;
+
+		vertices[verticeStartingIndex + 17] = red;
+		vertices[verticeStartingIndex + 18] = green;
+		vertices[verticeStartingIndex + 19] = blue;
+		vertices[verticeStartingIndex + 20] = 1f;
+
+		vertices[verticeStartingIndex + 24] = red;
+		vertices[verticeStartingIndex + 25] = green;
+		vertices[verticeStartingIndex + 26] = blue;
+		vertices[verticeStartingIndex + 27] = 1f;
+
+		// Elements
+		elements[elementsStartingIndex + 0] = countCurrentVertices + 0;
+		elements[elementsStartingIndex + 1] = countCurrentVertices + 1;
+		elements[elementsStartingIndex + 2] = countCurrentVertices + 2;
+
+		elements[elementsStartingIndex + 3] = countCurrentVertices + 0;
+		elements[elementsStartingIndex + 4] = countCurrentVertices + 2;
+		elements[elementsStartingIndex + 5] = countCurrentVertices + 3;
 	}
 
 	protected void initVerticesAndElements() {
