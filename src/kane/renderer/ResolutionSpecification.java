@@ -5,6 +5,8 @@ package kane.renderer;
  * width of the window and those in pseudo length unit.
  */
 public class ResolutionSpecification {
+	public static ResolutionSpecification RES_SPECS;
+	
 	public final int GAME_HEIGHT;
 	public int gameWidth;
 	public int height;
@@ -14,7 +16,7 @@ public class ResolutionSpecification {
 	public float halfGameHeight;
 	public float halfHeight;
 
-	public ResolutionSpecification(int gameHeight, int gameWidth, int height, int width) {
+	private ResolutionSpecification(int gameHeight, int gameWidth, int height, int width) {
 		// gameWidth and gameHeight are the axis' in pseudo length unit.
 		this.GAME_HEIGHT = gameHeight;
 		this.gameWidth = gameWidth;
@@ -24,5 +26,11 @@ public class ResolutionSpecification {
 		this.halfHeight = height / 2;
 		this.halfGameHeight = gameHeight / 2;
 		this.halfGameWidth = gameWidth / 2;
+	}
+	
+	public static void initializeResSpecs(int gameHeight, int gameWidth, int height, int width) {
+		if (RES_SPECS == null) {
+			RES_SPECS = new ResolutionSpecification(gameHeight, gameWidth, height, width);
+		}
 	}
 }

@@ -1,19 +1,28 @@
 package kane.physics;
 
 import kane.math.Vec2f;
+import static kane.physics.contacts.ContactGeneratorFactory.CONTACT_GENERATOR_FACTORY;
+import static kane.physics.contacts.ContactListener.CONTACT_LISTENER;
+
 import kane.physics.contacts.ContactGeneratorFactory;
-import kane.physics.contacts.ContactListener;
 import kane.physics.contacts.ContactSolver;
+
+import static kane.physics.contacts.ContactSolver.CONTACT_SOLVER;
+
+import kane.Kane;
+import kane.genericGame.Game;;
 
 /**
  * This is the physics engine. It manages all physics stuff.
  */
 public class Physics {
 
+	public static Physics PHYSICS;
+	
 	public static final float AABB_TOLERANCE = 20;
 	public static final int MAX_BODIES = 1000;
-	private Body[] bodies;
-	private int numBodies;
+	public Body[] bodies;
+	public int numBodies;
 
 	// The boolean saves if the shapepair overlaps
 	// The int saves the index the shapepair has inside of "shapePairs"
@@ -22,21 +31,18 @@ public class Physics {
 	private boolean[][][][] aabbOverlaps;
 	private int[][][][] shapePairIds;
 
-	private final int MAX_SHAPEPAIRS = 100000;
-	private ShapePair[] shapePairs;
-	private int numShapePairs;
+	public final int MAX_SHAPEPAIRS = 100000;
+	public ShapePair[] shapePairs;
+	public int numShapePairs;
 
-	private ContactGeneratorFactory cgf;
-	private ContactSolver contactSolver;
-
-	private Vec2f gravity = new Vec2f(0, -35f);
+	public Vec2f gravity = new Vec2f(0, -35f);
 
 	/**
 	 * 
 	 * @param deltaTime       -time between each frame
 	 * @param contactListener
 	 */
-	public Physics(float deltaTime, ContactListener contactListener) {
+	public Physics() {
 		bodies = new Body[MAX_BODIES];
 		numBodies = 0;
 		aabbOverlaps = new boolean[MAX_BODIES][Body.MAX_SHAPES][MAX_BODIES][Body.MAX_SHAPES];
@@ -45,10 +51,16 @@ public class Physics {
 		shapePairs = new ShapePair[MAX_SHAPEPAIRS];
 		numShapePairs = 0;
 
-		cgf = new ContactGeneratorFactory(contactListener);
+		ContactGeneratorFactory.initializateContactGeneratorFactory();
 		// TODO: If possible with new ContactSolver -> Change to:
 		// contactSolver = new ContactSolver(deltaTime, 1, 1);
-		contactSolver = new ContactSolver(deltaTime, 4, 1);
+		ContactSolver.initializeContactSolver(4, 1);
+	}
+	
+	public static void initializatePhysics() {
+		if (PHYSICS == null) {
+			PHYSICS = new Physics();
+		}
 	}
 
 	/**
@@ -58,34 +70,34 @@ public class Physics {
 	 * @param deltaTime -time between each frame
 	 */
 
-	public void preStep(float deltaTime) {
+	public void preStep() {
 		// Gravity
 		for (int i = 0; i < numBodies; i++) {
 			Body body = bodies[i];
-			if (body.getImpulseRate() > 0 && body.isReactToGravity() && !body.isRemoved()) {
-				body.getAcc().add(new Vec2f(gravity).div(deltaTime));
+			if (body.invMass > 0 && body.reactToGravity && !body.isRemoved()) {
+				body.acc.add(new Vec2f(gravity).div(Game.DELTATIME));
 
 			}
 		}
 		
 		// Solve Friction
-		contactSolver.solveFriction(shapePairs, numShapePairs);
+		CONTACT_SOLVER.solveFriction();
 
 	}
 
-	public void step(float deltaTime) {
+	public void step() {
 
 		// Acceleration integration
 		for (int i = 0; i < numBodies; i++) {
 			Body body = bodies[i];
 			if (!body.isRemoved()) {
-				if (body.getImpulseRate() > 0) {
-					body.getVel().addMult(body.getAcc(), deltaTime);
-					Vec2f nextPos = new Vec2f(body.getPos()).addMult(body.getVel(), deltaTime);
+				if (body.invMass > 0) {
+					body.vel.addMult(body.acc, Game.DELTATIME);
+					Vec2f nextPos = new Vec2f(body.pos).addMult(body.vel, Game.DELTATIME);
 					body.updateAABB(nextPos, AABB_TOLERANCE);
-					body.getAcc().zero();
+					body.acc.zero();
 				} else {
-					body.updateAABB(body.getPos(), AABB_TOLERANCE);
+					body.updateAABB(body.pos, AABB_TOLERANCE);
 
 				}
 			}
@@ -94,14 +106,14 @@ public class Physics {
 		// Broadphase
 		for (int i = 0; i < numBodies; i++) {
 			Body bodyA = bodies[i];
-			for (int j = 0; j < bodyA.getNumShapes(); j++) {
-				Shape shapeA = bodyA.getShape(j);
+			for (int j = 0; j < bodyA.numShapes; j++) {
+				Shape shapeA = bodyA.shapes[j];
 				for (int k = i + 1; k < numBodies; k++) {
 					Body bodyB = bodies[k];
-					for (int l = 0; l < bodyB.getNumShapes(); l++) {
-						Shape shapeB = bodyB.getShape(l);
+					for (int l = 0; l < bodyB.numShapes; l++) {
+						Shape shapeB = bodyB.shapes[l];
 						if (!aabbOverlaps[i][j][k][l]) {
-							if (shapeA.getAABB().overlaps(shapeB.getAABB()) && !bodyA.isRemoved()
+							if (shapeA.aabb.overlaps(shapeB.aabb) && !bodyA.isRemoved()
 									&& !bodyB.isRemoved()) {
 								aabbOverlaps[i][j][k][l] = true;
 								shapePairIds[i][j][k][l] = numShapePairs;
@@ -116,7 +128,7 @@ public class Physics {
 								shapePairs[numShapePairs++] = new ShapePair(shapeA, shapeB);
 							}
 						} else {
-							if (!shapeA.getAABB().overlaps(shapeB.getAABB()) || bodyA.isRemoved()
+							if (!shapeA.aabb.overlaps(shapeB.aabb) || bodyA.isRemoved()
 									|| bodyB.isRemoved()) {
 								aabbOverlaps[i][j][k][l] = false;
 								shapePairs[shapePairIds[i][j][k][l]] = null;
@@ -137,10 +149,10 @@ public class Physics {
 				countGaps++;
 			} else {
 				shapePairs[m - countGaps] = shapePairs[m];
-				int i = shapePairs[m].getShapeA().getBody().ID;
-				int j = shapePairs[m].getShapeA().ID;
-				int k = shapePairs[m].getShapeB().getBody().ID;
-				int l = shapePairs[m].getShapeB().ID;
+				int i = shapePairs[m].shapeA.body.ID;
+				int j = shapePairs[m].shapeA.ID;
+				int k = shapePairs[m].shapeB.body.ID;
+				int l = shapePairs[m].shapeB.ID;
 				shapePairIds[i][j][k][l] = m - countGaps;
 				// Workaround "interchanged Body IDs"
 				shapePairIds[k][l][i][j] = m - countGaps;
@@ -150,19 +162,19 @@ public class Physics {
 		
 
 		// Contacts management
-		cgf.generate(contactSolver, shapePairs, numShapePairs);
+		CONTACT_GENERATOR_FACTORY.generate(CONTACT_SOLVER);
 
 		
 
 		// set velocity for penetrations
-		contactSolver.solveVelocity(shapePairs, numShapePairs);
+		CONTACT_SOLVER.solveVelocity();
 
 		// Velocity integration
 		for (int i = 0; i < numBodies; i++) {
 			Body body = bodies[i];
 			if (!body.isRemoved()) {
-				if (body.getImpulseRate() > 0) {
-					body.getPos().addMult(body.getVel(), deltaTime);
+				if (body.invMass > 0) {
+					body.pos.addMult(body.vel, Game.DELTATIME);
 				}
 			}
 		}
@@ -176,7 +188,7 @@ public class Physics {
 //		}
 
 		// adjust position for penetrations
-		contactSolver.solvePosition(shapePairs, numShapePairs);
+		CONTACT_SOLVER.solvePosition();
 	}
 
 	/**
@@ -185,76 +197,8 @@ public class Physics {
 	 * @param body
 	 * @return
 	 */
-	public Physics addBody(Body body) {
+	public void addBody(Body body) {
 		bodies[numBodies++] = body;
-		return this;
-	}
-
-	/**
-	 * Get maximum of number of bodies.
-	 * 
-	 * @return
-	 */
-	public int getMAX_BODIES() {
-		return MAX_BODIES;
-	}
-
-	/**
-	 * Get a body with index.
-	 * 
-	 * @param index
-	 * @return
-	 */
-	public Body getBodies(int index) {
-		return bodies[index];
-	}
-
-	/**
-	 * Get the number of bodies.
-	 * 
-	 * @return
-	 */
-	public int getNumBodies() {
-		return numBodies;
-	}
-
-	/**
-	 * get a shapePair with collision with specific index.
-	 * 
-	 * @param index
-	 * @return
-	 */
-	public ShapePair getShapePairs(int index) {
-		return shapePairs[index];
-	}
-
-	/**
-	 * Get number of ShapePairs.
-	 * 
-	 * @return
-	 */
-	public int getNumShapePairs() {
-		return numShapePairs;
-	}
-
-	/**
-	 * Set gravity
-	 * 
-	 * @param gravity
-	 * @return
-	 */
-	public Vec2f setGravity(Vec2f gravity) {
-		this.gravity = gravity;
-		return this.gravity;
-	}
-
-	/**
-	 * Get gravity.
-	 * 
-	 * @return
-	 */
-	public Vec2f getGravity() {
-		return this.gravity;
 	}
 
 	/**
@@ -267,7 +211,7 @@ public class Physics {
 		numBodies = 0;
 		Body.resetNumBodies();
 		;
-		for (int i = 0; i < getNumShapePairs(); i++) {
+		for (int i = 0; i < numShapePairs; i++) {
 			shapePairs[i] = null;
 		}
 		numShapePairs = 0;

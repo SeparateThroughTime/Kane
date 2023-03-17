@@ -17,40 +17,40 @@ import kane.renderer.SpriteState;
 public abstract class Shape {
 
 	public static final int MAX_RENDER_LAYER = 20;
+	public static int MAX_COLIDED_SHAPES = 50;
+	public static int MAX_ACTIVE_ATTRIBUTES = 5;
+	public static int MAX_PASSIVE_ATTRIBUTES = 5;
 
 	public final int ID;
 	// Layer is from 1-20. First Layer is rendered first, last Layer is rendered
 	// last.
 	public final int RENDER_LAYER;
 
-	protected final Vec2f relPos;
-	protected final Vec2f relPosAlign;
-	protected final ShapeType type;
-	protected final AABB aabb;
-	protected final Body body;
-	protected Color color;
-	protected boolean collision;
-	protected boolean visible;
-	protected final Material material;
-	protected float invMass;
-	protected final Vec2f centerOfMass;
-	protected float momentOfInertia;
-	public static int MAX_COLIDED_SHAPES = 50;
+	public final Vec2f relPos;
+	public final Vec2f relPosAlign;
+	public final ShapeType type;
+	public final AABB aabb;
+	public final Body body;
+	public Color color;
+	public boolean collision;
+	public boolean visible;
+	public final Material material;
+	public float invMass;
+	public final Vec2f centerOfMass;
+	public float momentOfInertia;
 	protected Shape[] colidedShapes;
 	protected int numColidedShapes;
 
-	protected static int MAX_ACTIVE_ATTRIBUTES = 5;
-	protected static int MAX_PASSIVE_ATTRIBUTES = 5;
-	protected ActiveAttributes[] activeAttributes;
-	protected PassiveAttributes[] passiveAttributes;
-	protected int numActiveAttributes;
-	protected int numPassiveAttributes;
+	public ActiveAttributes[] activeAttributes;
+	public PassiveAttributes[] passiveAttributes;
+	public int numActiveAttributes;
+	public int numPassiveAttributes;
 
-	protected boolean hasSprite;
+	public boolean hasSprite;
 	protected SpriteController[] spriteControllers;
 
-	protected int numRenderVertices;
-	protected int numRenderElements;
+	public final int numRenderVertices;
+	public final int numRenderElements;
 
 	/**
 	 * Update the AABB of Shape including its next position.
@@ -70,7 +70,7 @@ public abstract class Shape {
 	public abstract boolean isPointInShape(Vec2f point);
 
 	public boolean isPointInShape(Vec2i point) {
-		Vec2f pointF = new Vec2f(point.getX(), point.getY());
+		Vec2f pointF = new Vec2f(point);
 		return isPointInShape(pointF);
 	}
 
@@ -108,140 +108,6 @@ public abstract class Shape {
 
 	public void rotate(float angle, Vec2f referencePoint) {
 
-	}
-
-	public void setImpulseRatio(float invMass) {
-		this.invMass = invMass;
-	}
-
-	public float getImpulseRatio() {
-		return invMass;
-	}
-
-	public float calculateMomentOfInertia() {
-		return momentOfInertia;
-	}
-
-	/**
-	 * Set collision
-	 * 
-	 * @param collision
-	 */
-	public void setCollision(boolean collision) {
-		this.collision = collision;
-	}
-
-	/**
-	 * Get collision.
-	 * 
-	 * @return
-	 */
-	public boolean getCollision() {
-		return collision;
-	}
-
-	/**
-	 * Set relative position of shape
-	 * 
-	 * @param x
-	 * @param y
-	 */
-	public void setRelPos(float x, float y) {
-		relPos.set(x, y);
-	}
-
-	/**
-	 * Get relative position of shape.
-	 */
-	public Vec2f getRelPos() {
-		return relPos;
-	}
-
-	/**
-	 * Get original relativ position of shape. Should never be used except in the
-	 * rotate method of Body.
-	 * 
-	 * @return
-	 */
-	public Vec2f getRelPosAlign() {
-		return relPosAlign;
-	}
-
-	/**
-	 * Get Type.
-	 * 
-	 * @return
-	 */
-	public ShapeType getType() {
-		return type;
-	}
-
-	/**
-	 * Get AABB.
-	 * 
-	 * @return
-	 */
-	public AABB getAABB() {
-		return aabb;
-	}
-
-	/**
-	 * Get body.
-	 * 
-	 * @return
-	 */
-	public Body getBody() {
-		return body;
-	}
-
-	/**
-	 * Get absolute position.
-	 * 
-	 * @return
-	 */
-	public Vec2f getAbsPos() {
-		Vec2f absPos = new Vec2f(body.getPos()).add(relPos);
-		return absPos;
-	}
-
-	/**
-	 * get Color.
-	 * 
-	 * @return
-	 */
-	public Color getColor() {
-		return color;
-	}
-
-	public Vec2f getCenterOfMass() {
-		return centerOfMass;
-	}
-
-	/**
-	 * Set color.
-	 * 
-	 * @param color -0xrrggbb
-	 */
-	public void setColor(Color color) {
-		this.color = color;
-	}
-
-	/**
-	 * Get visible.
-	 * 
-	 * @return
-	 */
-	public boolean isVisible() {
-		return visible;
-	}
-
-	/**
-	 * Set visible.
-	 * 
-	 * @param visible
-	 */
-	public void setVisible(boolean visible) {
-		this.visible = visible;
 	}
 
 	/**
@@ -348,33 +214,6 @@ public abstract class Shape {
 	}
 
 	/**
-	 * Get number of active attributes.
-	 * 
-	 * @return
-	 */
-	public int getNumActiveAttributes() {
-		return numActiveAttributes;
-	}
-
-	/**
-	 * Get number of passive attributes.
-	 * 
-	 * @return
-	 */
-	public int getNumPassiveAttributes() {
-		return numPassiveAttributes;
-	}
-
-	/**
-	 * Get material.
-	 * 
-	 * @return
-	 */
-	public Material getMaterial() {
-		return material;
-	}
-
-	/**
 	 * set Sprite
 	 * 
 	 * @param sprite
@@ -382,15 +221,6 @@ public abstract class Shape {
 	public void setSpriteControllers(SpriteController[] spriteControllers) {
 		this.spriteControllers = spriteControllers;
 		hasSprite = true;
-	}
-
-	/**
-	 * check if Shape has a sprite.
-	 * 
-	 * @return
-	 */
-	public boolean hasSprite() {
-		return hasSprite;
 	}
 
 	public SpriteController[] getSpriteControllers() {
@@ -406,7 +236,7 @@ public abstract class Shape {
 
 	public SpriteState getCurrentSpriteState() {
 		if (hasSprite) {
-			return spriteControllers[0].getCurrentSpriteState();
+			return spriteControllers[0].currentSpriteState;
 		} else {
 			return null;
 		}
@@ -455,12 +285,14 @@ public abstract class Shape {
 		}
 		return ArrayOperations.cutArray(shapes, numColidedShapes - removedShapes);
 	}
-
-	public int getNumRenderVertices() {
-		return numRenderVertices;
-	}
 	
-	public int getNumRenderElements() {
-		return numRenderElements;
+	/**
+	 * Get absolute position.
+	 * 
+	 * @return
+	 */
+	public Vec2f getAbsPos() {
+		Vec2f absPos = new Vec2f(body.pos).add(relPos);
+		return absPos;
 	}
 }

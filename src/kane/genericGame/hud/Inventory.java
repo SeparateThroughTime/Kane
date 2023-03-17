@@ -1,6 +1,5 @@
 package kane.genericGame.hud;
 
-import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -9,24 +8,24 @@ import kane.genericGame.PassiveAttributes;
 import kane.genericGame.item.NONE;
 import kane.genericGame.item.SWORD;
 import kane.math.Vec2f;
-import kane.physics.Material;
 import kane.physics.Shape;
-import kane.physics.shapes.Box;
 import kane.renderer.ResolutionSpecification;
 import kane.renderer.Sprite;
 import kane.renderer.SpriteController;
 import kane.renderer.SpriteState;
 
 public class Inventory {
+
+	public static Inventory INVENTORY;
+
 	public static final int NUM_SLOTS = 8;
 
-	private Material mInterface = new Material(1, 0);
 	private ResolutionSpecification resSpecs;
 	private ArrayList<Item> items;
 	private Shape mainShape;
 	private Shape[] slotShapes;
 
-	public Inventory(Shape mainShape, Shape[] slotShapes, ResolutionSpecification resSpecs) {
+	private Inventory(Shape mainShape, Shape[] slotShapes, ResolutionSpecification resSpecs) {
 		this.mainShape = mainShape;
 		this.slotShapes = slotShapes;
 		this.resSpecs = resSpecs;
@@ -36,14 +35,20 @@ public class Inventory {
 		createItems();
 	}
 
+	public static void initializateInventory(Shape mainShape, Shape[] slotShapes, ResolutionSpecification resSpecs) {
+		if (INVENTORY == null) {
+			INVENTORY = new Inventory(mainShape, slotShapes, resSpecs);
+		}
+	}
+
 	private void createItems() {
 		items.add(new NONE());
 		items.add(new SWORD());
 	}
 
 	private void createInventory() {
-		mainShape.setVisible(false);
-		mainShape.setCollision(false);
+		mainShape.visible = false;
+		mainShape.collision = false;
 		mainShape.addPassiveAttribute(PassiveAttributes.INVENTORY);
 
 		File file = new File("sprites\\interface\\Inventory.png");
@@ -52,14 +57,13 @@ public class Inventory {
 		SpriteController[] spriteControllers = new SpriteController[1];
 		spriteControllers[0] = new SpriteController(sprite);
 		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC);
-		spriteControllers[0]
-				.setSpritePosOffset(new Vec2f(-resSpecs.gameWidth / 4 - 24, -resSpecs.GAME_HEIGHT / 4 + 24));
+		spriteControllers[0].spritePosOffset = new Vec2f(-resSpecs.gameWidth / 4 - 24, -resSpecs.GAME_HEIGHT / 4 + 24);
 		mainShape.setSpriteControllers(spriteControllers);
 
 		// Slots
 		for (Shape shape : slotShapes) {
-			shape.setVisible(false);
-			shape.setCollision(false);
+			shape.visible = false;
+			shape.collision = false;
 			shape.addPassiveAttribute(PassiveAttributes.INVENTORY);
 		}
 
@@ -111,27 +115,27 @@ public class Inventory {
 			try {
 				Item item = activeItems.get(i - 1);
 				slotShapes[i].setSpriteControllers(item.getItemSpriteControllers());
-				slotShapes[i].setVisible(true);
+				slotShapes[i].visible = true;
 			} catch (Exception e) {
-				slotShapes[i].setVisible(false);
+				slotShapes[i].visible = false;
 			}
 		}
 	}
-	
+
 	public Shape getSlot(int i) {
 		return slotShapes[i];
 	}
-	
+
 	public void setVisible(boolean visible) {
-		mainShape.setVisible(visible);
-		
+		mainShape.visible = visible;
+
 		for (int i = 0; i < slotShapes.length; i++) {
 			Shape shape = slotShapes[i];
 			if (shape.hasPassiveAtrribute(PassiveAttributes.INVENTORY)) {
-				shape.setVisible(visible);
+				shape.visible = visible;
 			}
 		}
-		
+
 		if (visible) {
 			showItems();
 		}

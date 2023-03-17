@@ -5,8 +5,8 @@ package kane.math;
  */
 public class Vec2f {
 
-	private float x;
-	private float y;
+	public float x;
+	public float y;
 
 	/**
 	 * Create a new vector with positioning 0|0
@@ -31,8 +31,8 @@ public class Vec2f {
 	 * @param v -existing vector
 	 */
 	public Vec2f(Vec2f v) {
-		x = v.getX();
-		y = v.getY();
+		x = v.x;
+		y = v.y;
 	}
 
 	/**
@@ -41,48 +41,8 @@ public class Vec2f {
 	 * @param v -existing int vector
 	 */
 	public Vec2f(Vec2i v) {
-		x = v.getX();
-		y = v.getY();
-	}
-
-	/**
-	 * Returns x
-	 * 
-	 * @return -x
-	 */
-	public float getX() {
-		return x;
-	}
-
-	/**
-	 * Set x
-	 * 
-	 * @param x
-	 * @return -Returns itself to work with new value.
-	 */
-	public Vec2f setX(float x) {
-		this.x = x;
-		return this;
-	}
-
-	/**
-	 * get y
-	 * 
-	 * @return -y
-	 */
-	public float getY() {
-		return y;
-	}
-
-	/**
-	 * set y
-	 * 
-	 * @param y
-	 * @return -Returns itself to work with new value.
-	 */
-	public Vec2f setY(float y) {
-		this.y = y;
-		return this;
+		x = v.x;
+		y = v.y;
 	}
 
 	/**
@@ -105,8 +65,8 @@ public class Vec2f {
 	 * @return -Returns itself to work with new value.
 	 */
 	public Vec2f set(Vec2f v) {
-		x = v.getX();
-		y = v.getY();
+		x = v.x;
+		y = v.y;
 		return this;
 	}
 
@@ -127,8 +87,8 @@ public class Vec2f {
 	 * @return -Returns itself to work with new value.
 	 */
 	public Vec2f add(Vec2f v) {
-		x += v.getX();
-		y += v.getY();
+		x += v.x;
+		y += v.y;
 		return this;
 	}
 
@@ -139,8 +99,8 @@ public class Vec2f {
 	 * @return -Returns itself to work with new value.
 	 */
 	public Vec2f add(Vec2i v) {
-		x += v.getX();
-		y += v.getY();
+		x += v.x;
+		y += v.y;
 		return this;
 	}
 
@@ -169,8 +129,8 @@ public class Vec2f {
 	 * @return -Returns itself to work with new value.
 	 */
 	public Vec2f sub(Vec2f v) {
-		x -= v.getX();
-		y -= v.getY();
+		x -= v.x;
+		y -= v.y;
 		return this;
 	}
 
@@ -193,8 +153,8 @@ public class Vec2f {
 	 * @return -Returns itself to work with new value.
 	 */
 	public Vec2f mult(Vec2f v) {
-		x *= v.getX();
-		y *= v.getY();
+		x *= v.x;
+		y *= v.y;
 		return this;
 	}
 
@@ -217,8 +177,8 @@ public class Vec2f {
 	 * @return -Returns itself to work with new value.
 	 */
 	public Vec2f div(Vec2f v) {
-		x /= v.getX();
-		y /= v.getY();
+		x /= v.x;
+		y /= v.y;
 		return this;
 	}
 
@@ -241,7 +201,7 @@ public class Vec2f {
 	 * @return -Returns itself to work with new value.
 	 */
 	public float dot(Vec2f v) {
-		return x * v.getX() + y * v.getY();
+		return x * v.x + y * v.y;
 	}
 
 	/**
@@ -263,7 +223,7 @@ public class Vec2f {
 	}
 
 	/**
-	 * Turn the vector counter clockwise 90°
+	 * Turn the vector counter clockwise 90ï¿½
 	 * 
 	 * @return -Returns itself to work with new value.
 	 */
@@ -297,7 +257,7 @@ public class Vec2f {
 	}
 
 	/**
-	 * Turn the vector clockwise 90°
+	 * Turn the vector clockwise 90ï¿½
 	 * 
 	 * @return -Returns itself to work with new value.
 	 */

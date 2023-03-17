@@ -20,7 +20,7 @@ public class Sprite {
 	// frame.
 	public final int FRAME_WIDTH;
 	public final int FRAME_HEIGHT;
-	private int PIXEL_PER_FRAME;
+	public int PIXEL_PER_FRAME;
 //	private int[][] spritePixels;
 	private BufferedImage[] frames;
 	protected SpriteState[] assignedSpriteStates;

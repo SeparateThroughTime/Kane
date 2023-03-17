@@ -40,30 +40,26 @@ import kane.renderer.drawer.TriangleDrawer;
  * The Renderer renders the game.
  */
 public class Renderer {
+	
+	public static Renderer RENDERER;
 
 	protected ResolutionSpecification resSpecs;
-	protected float multiplicator;
-	protected final Physics physics;
-	protected final Game g;
+	public float multiplicator;
 	protected Shape[] renderedTriangles;
 	protected int numRenderedTriangles;
 	protected Shape[] renderedLines;
 	protected int numRenderedLines;
-	public Camera camera;
-	protected Background background;
+	public Background background;
 
 	public boolean showContacts = false;
 	public boolean showAABBs = false;
 
-	protected long window;
+	public long window;
 
-	protected Shader shader;
-	protected TriangleDrawer triangleDrawer;
+	public Shader shader;
 
-	public Renderer(ResolutionSpecification resSpecs, Physics physics, Game g, String title) {
+	private Renderer(ResolutionSpecification resSpecs, String title) {
 		this.resSpecs = resSpecs;
-		this.physics = physics;
-		this.g = g;
 		this.multiplicator = 1f;
 
 		initGLFW(title);
@@ -74,11 +70,17 @@ public class Renderer {
 
 	}
 	
-	protected void initDrawer() {
+	public static void initializeRenderer(ResolutionSpecification resSpecs, String title) {
+		if (RENDERER == null) {
+			RENDERER = new Renderer(resSpecs, title);
+		}
+	}
+	
+	public void initDrawer() {
 		triangleDrawer = new TriangleDrawer(physics, this);
 	}
 
-	protected void initGLFW(String title) {
+	public void initGLFW(String title) {
 		GLFWErrorCallback.createPrint(System.err).set();
 		if (!glfwInit()) {
 			throw new IllegalStateException("Unable to initialize GLFW");
@@ -106,7 +108,7 @@ public class Renderer {
 	}
 
 	// TODO drawBackground
-	private void drawBackground() {
+	protected void drawBackground() {
 		if (background != null) {
 			int width = (int) (background.getImg().getWidth() * multiplicator);
 			int height = (int) (background.getImg().getHeight() * multiplicator);
@@ -254,28 +256,11 @@ public class Renderer {
 //				Color.WHITE, g2d);
 	}
 
-	/**
-	 * Get camera.
-	 * 
-	 * @return
-	 */
-	public Camera getCamera() {
-		return camera;
-	}
-
 	public void changeBackground(File file) {
 		background = new Background(file, resSpecs.GAME_HEIGHT);
 	}
 
-	public Background getGameBackground() {
-		return background;
-	}
-
 	public void moveBackground() {
 		g.addEvent(new MoveBackground(g, this));
-	}
-
-	public long getWindow() {
-		return window;
 	}
 }

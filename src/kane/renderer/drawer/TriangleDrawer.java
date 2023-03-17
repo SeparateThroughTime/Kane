@@ -13,10 +13,18 @@ import kane.renderer.Drawer;
 import kane.renderer.Renderer;
 
 public class TriangleDrawer extends Drawer{
+	
+	public static TriangleDrawer TRIANGLE_DRAWER;
 
-	public TriangleDrawer(Physics physics, Renderer renderer) {
-		super(3, physics, renderer);
+	public TriangleDrawer() {
+		super(3);
 		// TODO Auto-generated constructor stub
+	}
+	
+	public static void initializateTriangleDrawer() {
+		if (TRIANGLE_DRAWER == null) {
+			TRIANGLE_DRAWER = new TriangleDrawer();
+		}
 	}
 	
 	public void drawBodies() {

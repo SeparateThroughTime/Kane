@@ -31,23 +31,22 @@ import kane.physics.shapes.Point;
  * The Camera is a body which is used for the area that is displayed.
  */
 public class Camera extends Body {
+	
+	public static Camera CAMERA;
 
 	private Material mInterface = new Material(1, 0);
-	private AABB window;
-	private AABB aiRange;
-	private Vec2f windowRad;
+	public AABB window;
+	public AABB aiRange;
+	public Vec2f windowRad;
 	public Vec2f zeroPoint;
 	private ResolutionSpecification resSpecs;
-	private Game g;
-	private Vec2f movementAccX;
-	private Vec2f movementAccY;
-	private int movementSpeedY;
-	private Inventory inventory;
+	public Vec2f movementAccX;
+	public Vec2f movementAccY;
+	public int movementSpeedY;
 	private ArrayList<HudBar> hudBars = new ArrayList<HudBar>();
 
-	public Camera(ResolutionSpecification resSpecs, Game g) {
+	private Camera(ResolutionSpecification resSpecs) {
 		super(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2);
-		this.g = g;
 
 		movementAccX = new Vec2f(g.getPlayer().getWalkAcc()).mult(0.5f);
 		movementAccY = new Vec2f(movementAccX).perpLeft();
@@ -57,6 +56,12 @@ public class Camera extends Body {
 		this.zeroPoint = new Vec2f();
 		setReactToGravity(false);
 		createCamera();
+	}
+	
+	public static void initializateCamera(ResolutionSpecification resSpecs) {
+		if(CAMERA == null) {
+			CAMERA = new Camera(resSpecs);
+		}
 	}
 
 	/**
@@ -135,21 +140,8 @@ public class Camera extends Body {
 		inventory.changeResolution();
 	}
 
-	/**
-	 * Get window.
-	 * 
-	 * @return
-	 */
-	public AABB getWindow() {
-		return window;
-	}
-
 	public void bindCameraToMap() {
 		g.addEvent(new BindCameraToMap(g, this));
-	}
-
-	public Vec2f getMovementAccX() {
-		return movementAccX;
 	}
 
 	public void moveCameraLeft() {
@@ -176,23 +168,7 @@ public class Camera extends Body {
 		g.addEvent(new SlowCameraY(g, this));
 	}
 
-	public Vec2f getMovementAccY() {
-		return movementAccY;
-	}
-
-	public void setMovementAccY(Vec2f movementAccY) {
-		this.movementAccY = movementAccY;
-	}
-
-	public int getMovementSpeedY() {
-		return movementSpeedY;
-	}
-
-	public void setMovementSpeedY(int movementSpeedY) {
-		this.movementSpeedY = movementSpeedY;
-	}
-
-	public Inventory initInventory() {
+	public void initInventory() {
 		Shape mainShape = addShape(new Point(0, 0, this, Color.BLUE, mInterface, 3));
 		Shape[] slotShapes = new Shape[8];
 		slotShapes[0] = addShape(new Box(-144, 48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
@@ -204,7 +180,6 @@ public class Camera extends Body {
 		slotShapes[6] = addShape(new Box(48, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
 		slotShapes[7] = addShape(new Box(144, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
 		inventory = new Inventory(mainShape, slotShapes, resSpecs);
-		return inventory;
 	}
 
 	public HudBar addHudBar(File file) {

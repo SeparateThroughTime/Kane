@@ -21,20 +21,23 @@ import kane.physics.contacts.generators.PlanePolygonContactGenerator;
 import kane.physics.contacts.generators.PointPolygonContactGenerator;
 import kane.physics.contacts.generators.PolygonPolygonContactGenerator;
 
+import static kane.physics.Physics.PHYSICS;
+import static kane.physics.contacts.ContactListener.CONTACT_LISTENER;
+
 /**
  * The ContactGeneratorFactory manages all the different Contact Generations between the different Body Types.
  */
 public class ContactGeneratorFactory {
 
+	public static ContactGeneratorFactory CONTACT_GENERATOR_FACTORY;
+	
 	private ContactGenerator[][] generators;
-	private ContactListener contactListener;
 
 	/**
 	 * 
 	 * @param contactListener
 	 */
-	public ContactGeneratorFactory(ContactListener contactListener) {
-		this.contactListener = contactListener;
+	private ContactGeneratorFactory() {
 
 		int numShapeTypes = ShapeType.values().length;
 		generators = new ContactGenerator[numShapeTypes][numShapeTypes];
@@ -60,6 +63,12 @@ public class ContactGeneratorFactory {
 		generators[ShapeType.PLANE.id][ShapeType.POINT.id] = new PlanePointContactGenerator();
 		generators[ShapeType.POINT.id][ShapeType.POLYGON.id] = new PointPolygonContactGenerator();
 	}
+	
+	public static void initializateContactGeneratorFactory() {
+		if (CONTACT_GENERATOR_FACTORY == null) {
+			CONTACT_GENERATOR_FACTORY = new ContactGeneratorFactory();
+		}
+	}
 
 	/**
 	 * Needs to run every frame. It updates the contacts array.
@@ -67,32 +76,32 @@ public class ContactGeneratorFactory {
 	 * @param shapepairs
 	 * @param numShapePairs
 	 */
-	public void generate(ContactAcceptor acceptor, ShapePair[] shapepairs, int numShapePairs) {
-		for (int i = 0; i < numShapePairs; i++) {
-			ShapePair shapePair = shapepairs[i];
-			Shape shapeA = shapePair.getShapeA();
-			Shape shapeB = shapePair.getShapeB();
-			if (shapeA.getType().id > shapeB.getType().id) {
+	public void generate(ContactAcceptor acceptor) {
+		for (int i = 0; i < PHYSICS.numShapePairs; i++) {
+			ShapePair shapePair = PHYSICS.shapePairs[i];
+			Shape shapeA = shapePair.shapeA;
+			Shape shapeB = shapePair.shapeB;
+			if (shapeA.type.id > shapeB.type.id) {
 				shapePair.flipShapes();
 			}
-			if (shapePair.getShapeA().getAABB().overlaps(shapePair.getShapeB().getAABB())) {
-				generators[shapePair.getShapeA().getType().id][shapePair.getShapeB().getType().id].generate(shapePair,
+			if (shapePair.shapeA.aabb.overlaps(shapePair.shapeB.aabb)) {
+				generators[shapePair.shapeA.type.id][shapePair.shapeB.type.id].generate(shapePair,
 						acceptor);
 				
-				if (shapePair.getContact() != null) {
-					if (shapePair.getContact().getDistance() <= 0) {
-						contactListener.penetrated(shapePair);
-						if (!shapePair.isPenetration()) {
-							contactListener.penetration(shapePair);
+				if (shapePair.contact != null) {
+					if (shapePair.contact.distance <= 0) {
+						CONTACT_LISTENER.penetrated(shapePair);
+						if (!shapePair.penetration) {
+							CONTACT_LISTENER.penetration(shapePair);
 							shapeA.addColidedShape(shapeB);
 							shapeB.addColidedShape(shapeA);
-							shapePair.setPenetration(true);
+							shapePair.penetration = true;
 						}
-					} else if (shapePair.isPenetration()) {
-						contactListener.separation(shapePair);
+					} else if (shapePair.penetration) {
+						CONTACT_LISTENER.separation(shapePair);
 						shapeA.remColidedShape(shapeB);
 						shapeB.remColidedShape(shapeA);
-						shapePair.setPenetration(false);
+						shapePair.penetration = false;
 					}
 				}
 			}

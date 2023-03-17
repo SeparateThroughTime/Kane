@@ -11,6 +11,8 @@ import kane.math.Vec2f;
 import kane.physics.Body;
 import kane.renderer.SpriteState;
 
+import static kane.Kane.GAME;
+
 public class Mob extends Body {
 	private static final int INVULNERABILITY_TIME = 30;
 
@@ -31,16 +33,13 @@ public class Mob extends Body {
 		return activeActions;
 	}
 
-	private Game g;
-
 	private int invulnerabilityCooldown;
 
-	public Mob(Game g, int posX, int posY, int maxHealth, int damage) {
+	public Mob(int posX, int posY, int maxHealth, int damage) {
 		super(posX, posY);
 		this.setMaxHealth(maxHealth);
 		this.health = maxHealth;
 		this.setDamage(damage);
-		this.g = g;
 		onGround = true;
 		walkAcc = new Vec2f();
 
@@ -103,7 +102,7 @@ public class Mob extends Body {
 			if (ai != null) {
 				switch (ai) {
 				case GUMBA:
-					g.addEvent(new WalkAwayFromPos(g, this, attackersPos));
+					GAME.addEvent(new WalkAwayFromPos(this, attackersPos));
 				default:
 					break;
 				}
@@ -113,7 +112,7 @@ public class Mob extends Body {
 	}
 
 	private void bump(Vec2f attackersPos) {
-		float attackersRelPosX = attackersPos.getX() - pos.getX();
+		float attackersRelPosX = attackersPos.x - pos.x;
 		if (attackersRelPosX < 0) {
 			vel.set(200, 100);
 		} else {
@@ -162,8 +161,8 @@ public class Mob extends Body {
 
 	public void walkRight() {
 		killWalkingEvents();
-		currentWalkingRightEvent = new WalkingRight(g, this);
-		g.addEvent(currentWalkingRightEvent);
+		currentWalkingRightEvent = new WalkingRight(this);
+		GAME.addEvent(currentWalkingRightEvent);
 	}
 
 	public void stopWalkRight() {
@@ -174,8 +173,8 @@ public class Mob extends Body {
 
 	public void walkLeft() {
 		killWalkingEvents();
-		currentWalkingLeftEvent = new WalkingLeft(g, this);
-		g.addEvent(currentWalkingLeftEvent);
+		currentWalkingLeftEvent = new WalkingLeft(this);
+		GAME.addEvent(currentWalkingLeftEvent);
 	}
 
 	public void stopWalkLeft() {
@@ -186,7 +185,7 @@ public class Mob extends Body {
 
 	public void jump() {
 		if (onGround) {
-			g.addEvent(new Jump(g, this));
+			GAME.addEvent(new Jump(this));
 		}
 	}
 
@@ -201,7 +200,7 @@ public class Mob extends Body {
 	public void startWalkingAI() {
 		switch (ai) {
 		case GUMBA:
-			g.addEvent(new GumbaWalk(g, this));
+			GAME.addEvent(new GumbaWalk(this));
 			break;
 
 		default:

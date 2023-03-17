@@ -5,8 +5,8 @@ package kane.math;
  */
 public class Vec2i {
 
-	private int x;
-	private int y;
+	public int x;
+	public int y;
 
 	/**
 	 * Create a new vector with positioning 0|0
@@ -31,48 +31,8 @@ public class Vec2i {
 	 * @param v -existing vector
 	 */
 	public Vec2i(Vec2i v) {
-		x = v.getX();
-		y = v.getY();
-	}
-
-	/**
-	 * Returns x
-	 * 
-	 * @return -x
-	 */
-	public int getX() {
-		return x;
-	}
-
-	/**
-	 * Set x
-	 * 
-	 * @param x
-	 * @return -Returns itself to work with new value.
-	 */
-	public Vec2i setX(int x) {
-		this.x = x;
-		return this;
-	}
-
-	/**
-	 * get y
-	 * 
-	 * @return -y
-	 */
-	public int getY() {
-		return y;
-	}
-
-	/**
-	 * set y
-	 * 
-	 * @param y
-	 * @return -Returns itself to work with new value.
-	 */
-	public Vec2i setY(int y) {
-		this.y = y;
-		return this;
+		x = v.x;
+		y = v.y;
 	}
 
 	/**
@@ -95,8 +55,8 @@ public class Vec2i {
 	 * @return -Returns itself to work with new value.
 	 */
 	public Vec2i set(Vec2i v) {
-		x = v.getX();
-		y = v.getY();
+		x = v.x;
+		y = v.y;
 		return this;
 	}
 
@@ -117,8 +77,8 @@ public class Vec2i {
 	 * @return -Returns itself to work with new value.
 	 */
 	public Vec2i add(Vec2i v) {
-		x += v.getX();
-		y += v.getY();
+		x += v.x;
+		y += v.y;
 		return this;
 	}
 
@@ -141,8 +101,8 @@ public class Vec2i {
 	 * @return -Returns itself to work with new value.
 	 */
 	public Vec2i sub(Vec2i v) {
-		x -= v.getX();
-		y -= v.getY();
+		x -= v.x;
+		y -= v.y;
 		return this;
 	}
 
@@ -153,7 +113,7 @@ public class Vec2i {
 	 * @return -Returns itself to work with new value.
 	 */
 	public int dot(Vec2i v) {
-		return x * v.getX() + y * v.getY();
+		return x * v.x + y * v.y;
 	}
 
 	/**

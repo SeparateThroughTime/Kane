@@ -14,10 +14,10 @@ public abstract class Item {
 		this.playerSpriteControllers = playerSpriteControllers;
 	}
 	
-	public abstract void attack(Game g);
-	public abstract void react(Game g);
-	public abstract void jump(Game g);
-	public abstract void move(Game g);
+	public abstract void attack();
+	public abstract void react();
+	public abstract void jump();
+	public abstract void move();
 	
 	public void addAmount(int amount) {
 		this.amount += amount;

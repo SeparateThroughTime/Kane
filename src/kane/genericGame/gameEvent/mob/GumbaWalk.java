@@ -1,9 +1,7 @@
 package kane.genericGame.gameEvent.mob;
 
-import kane.genericGame.Game;
 import kane.genericGame.GameEvent;
 import kane.genericGame.Mob;
-import kane.genericGame.MobActions;
 import kane.genericGame.MobDirection;
 import kane.genericGame.PassiveAttributes;
 
@@ -12,8 +10,8 @@ public class GumbaWalk extends GameEvent {
 	private Mob walker;
 	private GameEvent currentWalkEvent;
 
-	public GumbaWalk(Game g, Mob walker) {
-		super(g, 2);
+	public GumbaWalk(Mob walker) {
+		super(2);
 		this.walker = walker;
 	}
 

@@ -33,11 +33,11 @@ public abstract class Drawer {
 	protected Shape[] renderedShapes;
 	protected int numRenderedShapes;
 	
-	protected final int POSITION_SIZE = 3;
-	protected final int COLOR_SIZE = 4;
-	protected final int VERTEX_SIZE = POSITION_SIZE + COLOR_SIZE;
-	protected final int VERTEX_SIZE_BYTE = VERTEX_SIZE * Float.BYTES;
-	protected final int ELEMENT_SIZE;
+	public final int POSITION_SIZE = 3;
+	public final int COLOR_SIZE = 4;
+	public final int VERTEX_SIZE = POSITION_SIZE + COLOR_SIZE;
+	public final int VERTEX_SIZE_BYTE = VERTEX_SIZE * Float.BYTES;
+	public final int ELEMENT_SIZE;
 	
 	protected float[] vertices;
 	protected int countCurrentVertices;
@@ -48,15 +48,10 @@ public abstract class Drawer {
 	protected int vertexBufferObjectID;
 	protected int elementBufferObjectID;
 	
-	protected Physics physics;
-	protected Renderer renderer;
-	
 	public abstract void drawBodies();
 	
-	public Drawer(int elementSize, Physics physics, Renderer renderer) {
+	public Drawer(int elementSize) {
 		ELEMENT_SIZE = elementSize;
-		this.physics = physics;
-		this.renderer = renderer;
 	}
 	
 	protected void initVerticesAndElements() {

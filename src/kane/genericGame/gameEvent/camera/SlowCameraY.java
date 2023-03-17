@@ -1,20 +1,18 @@
 package kane.genericGame.gameEvent.camera;
 
-import kane.genericGame.Game;
+import static kane.renderer.Camera.CAMERA;
+
 import kane.genericGame.GameEvent;
-import kane.renderer.Camera;
 
 public class SlowCameraY extends GameEvent{
-	private Camera camera;
 
-	public SlowCameraY(Game g, Camera camera) {
-		super(g, 1);
-		this.camera = camera;
+	public SlowCameraY() {
+		super(1);
 	}
 	
 	@Override
 	public void start() {
-		camera.getVel().setY(camera.getVel().getY() * 0.1f);
+		CAMERA.vel.y = CAMERA.vel.y * 0.1f;
 		
 	}
 

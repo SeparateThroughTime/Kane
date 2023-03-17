@@ -1,26 +1,24 @@
 package kane.genericGame.gameEvent.camera;
 
-import kane.genericGame.Game;
+import static kane.renderer.Camera.CAMERA;
+
 import kane.genericGame.GameEvent;
 import kane.genericGame.Mob;
-import kane.renderer.Camera;
 
 public class MoveCameraRight extends GameEvent {
 	
-	private Camera camera;
 	private Mob player;
 
-	public MoveCameraRight(Game g, Camera camera, Mob player) {
-		super(g, 1);
-		this.camera = camera;
+	public MoveCameraRight(Mob player) {
+		super(1);
 		this.player = player;
 	}
 
 	@Override
 	public void start() {
-		camera.getAcc().add(camera.getMovementAccX());
-		if (camera.getVel().getX() > player.getWalkSpeed()) {
-			camera.getVel().setX(player.getWalkSpeed());
+		CAMERA.acc.add(CAMERA.movementAccX);
+		if (CAMERA.vel.x > player.getWalkSpeed()) {
+			CAMERA.vel.x = player.getWalkSpeed();
 		}
 	}
 

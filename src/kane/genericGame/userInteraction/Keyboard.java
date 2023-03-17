@@ -1,23 +1,45 @@
 package kane.genericGame.userInteraction;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_C;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_F1;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_F10;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_F11;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_F12;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_F2;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_F3;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_F4;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_F5;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_F6;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_F7;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_F8;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_F9;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_I;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_LEFT_SHIFT;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_RIGHT;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_UNKNOWN;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
+import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
+import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
+import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 
 import org.lwjgl.glfw.GLFWKeyCallbackI;
-import org.lwjgl.glfw.GLFWWindowCloseCallback;
-
-import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * The Keyboard is managing all actions, when keys on the hw-keyboard are
  * pressed.
  */
-public class Keyboard{
+public class Keyboard {
 
-	private final int NUM_BUTTONS = 348;
-	protected boolean[] keyState = new boolean[NUM_BUTTONS];
-	protected boolean[] click = new boolean[NUM_BUTTONS];
-	protected boolean[] clickAgain = new boolean[NUM_BUTTONS];
+	public static Keyboard KEYBOARD;
+	
+	public final int NUM_BUTTONS = 348;
+	public boolean[] keyState = new boolean[NUM_BUTTONS];
+	public boolean[] click = new boolean[NUM_BUTTONS];
+	public boolean[] clickAgain = new boolean[NUM_BUTTONS];
 
 	private KeyboardInterface keyInt;
 
@@ -25,15 +47,21 @@ public class Keyboard{
 	 * 
 	 * @param keyInt -Specifies the used KeyboardInterface.
 	 */
-	public Keyboard(KeyboardInterface keyInt, long window) {
+	private Keyboard(KeyboardInterface keyInt, long window) {
 		generateChooseAction();
 		this.keyInt = keyInt;
 
 		for (int i = 0; i < NUM_BUTTONS; i++) {
 			clickAgain[i] = true;
 		}
-		
-		glfwSetKeyCallback(window, keyCallback );
+
+		glfwSetKeyCallback(window, keyCallback);
+	}
+	
+	public static void initializeKeyboard(KeyboardInterface keyInt, long window) {
+		if (KEYBOARD == null) {
+			KEYBOARD = new Keyboard(keyInt, window);
+		}
 	}
 
 	//@formatter:off

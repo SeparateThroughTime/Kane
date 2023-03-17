@@ -99,13 +99,13 @@ public class Scalar {
 		Vec2f l2e = new Vec2f(posL2).add(dirL2);
 		Vec2f l2s = new Vec2f(posL2).addMult(dirL2, 2);
 
-		float a1 = l1e.getY() - l1s.getY();
-		float b1 = l1s.getX() - l1e.getX();
-		float c1 = a1 * l1s.getX() + b1 * l1s.getY();
+		float a1 = l1e.y - l1s.y;
+		float b1 = l1s.x - l1e.x;
+		float c1 = a1 * l1s.x + b1 * l1s.y;
 
-		float a2 = l2e.getY() - l2s.getY();
-		float b2 = l2s.getX() - l2e.getX();
-		float c2 = a2 * l2s.getX() + b2 * l2s.getY();
+		float a2 = l2e.y - l2s.y;
+		float b2 = l2s.x - l2e.x;
+		float c2 = a2 * l2s.x + b2 * l2s.y;
 
 		float delta = a1 * b2 - a2 * b1;
 		return new Vec2f((b2 * c1 - b1 * c2) / delta, (a1 * c2 - a2 * c1) / delta);

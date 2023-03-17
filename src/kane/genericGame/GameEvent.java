@@ -10,10 +10,7 @@ public abstract class GameEvent {
 	private int frameCounter;
 	public final int EVENT_DURATION;
 
-	protected Game g;
-
-	public GameEvent(Game g, int eventDuration) {
-		this.g = g;
+	public GameEvent(int eventDuration) {
 		this.EVENT_DURATION = eventDuration;
 	}
 

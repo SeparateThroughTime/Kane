@@ -1,26 +1,26 @@
 package kane.genericGame;
 
-import java.awt.Dimension;
+import static kane.genericGame.userInteraction.Keyboard.KEYBOARD;
+import static kane.genericGame.userInteraction.Mouse.MOUSE;
+import static kane.physics.Physics.PHYSICS;
+import static kane.renderer.Renderer.RENDERER;
+import static kane.renderer.ResolutionSpecification.RES_SPECS;
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
+import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
+import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
+import static org.lwjgl.glfw.GLFW.glfwTerminate;
+import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
+
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import javax.swing.JFrame;
-
-import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
-
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.glfw.Callbacks.*;
-
 import kane.genericGame.hud.HudBar;
-import kane.genericGame.hud.Inventory;
 import kane.genericGame.userInteraction.Keyboard;
 import kane.genericGame.userInteraction.KeyboardInterface;
 import kane.genericGame.userInteraction.Mouse;
 import kane.genericGame.userInteraction.MouseInterface;
 import kane.physics.Body;
-import kane.physics.Physics;
-import kane.physics.contacts.ContactListener;
-import kane.renderer.Renderer;
 import kane.renderer.Resolution;
 import kane.renderer.ResolutionSpecification;
 
@@ -32,19 +32,12 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 
 	public static final float BACKGROUND_SPEED = 0.5f;
 
-	protected ResolutionSpecification resSpecs;
-	protected int mapLen;
-	protected int mapHeight;
-	private final String title;
+	public int mapLen;
+	public int mapHeight;
+	public final String title;
 
-	protected boolean[] keyState = new boolean[128];
-	protected boolean[] mouseState = new boolean[16];
-	protected Mouse mouseListener;
-	protected Keyboard keyListener;
-
-	public Keyboard getKeyListener() {
-		return keyListener;
-	}
+	public boolean[] keyState = new boolean[128];
+	public boolean[] mouseState = new boolean[16];
 
 	public final static long TARGET_FPS = 60;
 	public final static long NANO_SECOND = 1000000000;
@@ -57,12 +50,8 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	protected GameEvent[] events = new GameEvent[5000];
 	protected int numEvents = 0;
 
-	protected Physics physics;
-	protected Renderer renderer;
-	protected Inventory inventory;
-	protected HudBar healthBar;
-	protected Mob player;
-	protected ContactListener contactListener;
+	public HudBar healthBar;
+	public Mob player;
 
 	protected abstract void initGame();
 
@@ -74,19 +63,13 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	 * 
 	 * @param title -The title of the game
 	 */
-	public Game(String title) {
+	protected Game(String title) {
 		// init Window
 		this.title = title;
-
-		resSpecs = new ResolutionSpecification(600, 800, 600, 800);
-
-		contactListener = new ContactListener(this);
-		physics = new Physics(DELTATIME, contactListener);
-		renderer = new Renderer(resSpecs, physics, this, title);
-		long window = renderer.getWindow();
-
-		mouseListener = new Mouse(resSpecs, this, window);
-		keyListener = new Keyboard(this, window);
+		ResolutionSpecification.initializeResSpecs(600, 800, 600, 800);
+		long window = RENDERER.window;
+		Keyboard.initializeKeyboard(this, window);
+		Mouse.initializeMouse(this, window);
 	}
 
 	/**
@@ -94,78 +77,78 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	 * 
 	 * @param res -new resolution
 	 */
-	protected void changeResolution(Resolution res) {
+	public void changeResolution(Resolution res) {
 		switch (res) {
 		case SOL800x600:
-			resSpecs.width = 800;
-			resSpecs.height = 600;
+			RES_SPECS.width = 800;
+			RES_SPECS.height = 600;
 			break;
 		case SOL1024x768:
-			resSpecs.width = 1024;
-			resSpecs.height = 768;
+			RES_SPECS.width = 1024;
+			RES_SPECS.height = 768;
 			break;
 		case SOL1152x864:
-			resSpecs.width = 1152;
-			resSpecs.height = 864;
+			RES_SPECS.width = 1152;
+			RES_SPECS.height = 864;
 			break;
 		case SOL1280x960:
-			resSpecs.width = 1280;
-			resSpecs.height = 960;
+			RES_SPECS.width = 1280;
+			RES_SPECS.height = 960;
 			break;
 		case SOL1280x768:
-			resSpecs.width = 1280;
-			resSpecs.height = 768;
+			RES_SPECS.width = 1280;
+			RES_SPECS.height = 768;
 			break;
 		case SOL1280x1024:
-			resSpecs.width = 1280;
-			resSpecs.height = 1024;
+			RES_SPECS.width = 1280;
+			RES_SPECS.height = 1024;
 			break;
 		case SOL1280x800:
-			resSpecs.width = 1280;
-			resSpecs.height = 800;
+			RES_SPECS.width = 1280;
+			RES_SPECS.height = 800;
 			break;
 		case SOL1680x1050:
-			resSpecs.width = 1680;
-			resSpecs.height = 1050;
+			RES_SPECS.width = 1680;
+			RES_SPECS.height = 1050;
 			break;
 		case SOL1176x664:
-			resSpecs.width = 1176;
-			resSpecs.height = 664;
+			RES_SPECS.width = 1176;
+			RES_SPECS.height = 664;
 			break;
 		case SOL1280x720:
-			resSpecs.width = 1280;
-			resSpecs.height = 720;
+			RES_SPECS.width = 1280;
+			RES_SPECS.height = 720;
 			break;
 		case SOL1360x768:
-			resSpecs.width = 1360;
-			resSpecs.height = 768;
+			RES_SPECS.width = 1360;
+			RES_SPECS.height = 768;
 			break;
 		case SOL1366x768:
-			resSpecs.width = 1366;
-			resSpecs.height = 768;
+			RES_SPECS.width = 1366;
+			RES_SPECS.height = 768;
 			break;
 		case SOL1600x900:
-			resSpecs.width = 1600;
-			resSpecs.height = 900;
+			RES_SPECS.width = 1600;
+			RES_SPECS.height = 900;
 			break;
 		case SOL1768x992:
-			resSpecs.width = 1768;
-			resSpecs.height = 992;
+			RES_SPECS.width = 1768;
+			RES_SPECS.height = 992;
 			break;
 		case SOL1920x1080:
-			resSpecs.width = 1920;
-			resSpecs.height = 1080;
+			RES_SPECS.width = 1920;
+			RES_SPECS.height = 1080;
 			break;
 		case SOL1600x1024:
-			resSpecs.width = 1600;
-			resSpecs.height = 1024;
+			RES_SPECS.width = 1600;
+			RES_SPECS.height = 1024;
 			break;
 		default:
 			break;
 		}
-		resSpecs.gameWidth = (int) ((float) resSpecs.GAME_HEIGHT / resSpecs.height * resSpecs.width);
+		RES_SPECS.gameWidth = (int) ((float) RES_SPECS.GAME_HEIGHT / RES_SPECS.height * RES_SPECS.width);
 
-		renderer.changeResolution();
+		RENDERER.changeResolution();
 	}
 
 	/**
@@ -179,7 +162,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 
 		initGame();
 
-		while (!glfwWindowShouldClose(renderer.getWindow())) {
+		while (!glfwWindowShouldClose(RENDERER.window)) {
 			long frameStartTime = System.nanoTime();
 			float frameTime = Math.min((frameStartTime - lastFrameTime) / (float) NANO_SECOND, 0.25f);
 			lastFrameTime = frameStartTime;
@@ -188,20 +171,20 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 			accumulatedTime += frameTime;
 			while (accumulatedTime >= DELTATIME) {
 				if (!pause) {
-					physics.preStep(DELTATIME);
+					PHYSICS.preStep();
 				}
-				userInteraction(DELTATIME);
+				userInteraction();
 				if (!pause) {
 					coreMechanicsLoop();
 					mechanicsLoop();
 					eventsLoop();
-					physics.step(DELTATIME);
+					PHYSICS.step();
 					postMechanicsLoops();
 
 				}
 				accumulatedTime -= DELTATIME;
 			}
-			renderer.renderGame();
+			RENDERER.renderGame();
 			numFrames++;
 
 			// FPS Output
@@ -223,16 +206,16 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 			}
 		}
 		
-		glfwFreeCallbacks(renderer.getWindow());
-		glfwDestroyWindow(renderer.getWindow());
+		glfwFreeCallbacks(RENDERER.window);
+		glfwDestroyWindow(RENDERER.window);
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
 	}
 
-	private void coreMechanicsLoop() {
+	protected void coreMechanicsLoop() {
 		// Mob Mechanics
-		for (int i = 0; i < physics.getNumBodies(); i++) {
-			Body body = physics.getBodies(i);
+		for (int i = 0; i < PHYSICS.numBodies; i++) {
+			Body body = PHYSICS.bodies[i];
 			if (body instanceof Mob) {
 				Mob mob = (Mob) body;
 				mob.invulnerabilityCooldown();
@@ -240,7 +223,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		}
 	}
 
-	private void eventsLoop() {
+	protected void eventsLoop() {
 		for (int i = 0; i < numEvents; i++) {
 			GameEvent event = events[i];
 			if (event.getFrameCounter() == 0) {
@@ -263,10 +246,10 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	 * 
 	 * @param DELTATIME
 	 */
-	private void userInteraction(float DELTATIME) {
+	protected void userInteraction() {
 		glfwPollEvents();
-		mouseListener.update();
-		keyListener.update();
+		MOUSE.update();
+		KEYBOARD.update();
 	}
 
 //WindowListener
@@ -308,10 +291,6 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 
 	}
 
-	public Mob getPlayer() {
-		return player;
-	}
-
 	public void addEvent(GameEvent e) {
 		events[numEvents++] = e;
 	}
@@ -321,25 +300,5 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 			events[i - 1] = events[i];
 		}
 		numEvents--;
-	}
-
-	public ResolutionSpecification getResSpecs() {
-		return resSpecs;
-	}
-
-	public int getMapLen() {
-		return mapLen;
-	}
-
-	public void setMapLen(int mapLen) {
-		this.mapLen = mapLen;
-	}
-
-	public int getMapHeight() {
-		return mapHeight;
-	}
-
-	public void setMapHeight(int mapHeight) {
-		this.mapHeight = mapHeight;
 	}
 }

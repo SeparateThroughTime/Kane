@@ -7,18 +7,18 @@ import kane.physics.contacts.Contact;
  */
 public class ShapePair {
 
-	private Shape shapeA;
-	private Shape shapeB;
-	private Contact contact;
-	private boolean penetraion;
-	private boolean collideable;
+	public Shape shapeA;
+	public Shape shapeB;
+	public Contact contact;
+	public boolean penetration;
+	public boolean collideable;
 
 	public ShapePair(Shape shapeA, Shape shapeB) {
 		this.shapeA = shapeA;
 		this.shapeB = shapeB;
 		contact = null;
-		setCollideable(true);
-		penetraion = false;
+		collideable = true;
+		penetration = false;
 	}
 
 	/**
@@ -28,70 +28,6 @@ public class ShapePair {
 		Shape tmp = shapeA;
 		shapeA = shapeB;
 		shapeB = tmp;
-	}
-
-	/**
-	 * Get first Shape.
-	 * @return
-	 */
-	public Shape getShapeA() {
-		return shapeA;
-	}
-
-	/**
-	 * Get second Shape.
-	 * @return
-	 */
-	public Shape getShapeB() {
-		return shapeB;
-	}
-
-	/**
-	 * Get contact.
-	 * @return
-	 */
-	public Contact getContact() {
-		return contact;
-	}
-
-	/**
-	 * Set contact.
-	 * @param contact
-	 */
-	public void setContact(Contact contact) {
-		this.contact = contact;
-	}
-
-	/**
-	 * set penetration.
-	 * @param b
-	 */
-	public void setPenetration(boolean b) {
-		penetraion = b;
-	}
-
-	/**
-	 * Check if pairs are penetrating.
-	 * @return
-	 */
-	public boolean isPenetration() {
-		return penetraion;
-	}
-
-	/**
-	 * Check if pair is collideable.
-	 * @return
-	 */
-	public boolean isCollideable() {
-		return collideable;
-	}
-
-	/**
-	 * set collideable.
-	 * @param collideable
-	 */
-	public void setCollideable(boolean collideable) {
-		this.collideable = collideable;
 	}
 
 	@Override

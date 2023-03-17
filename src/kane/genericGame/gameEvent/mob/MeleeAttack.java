@@ -1,7 +1,6 @@
 package kane.genericGame.gameEvent.mob;
 
 import kane.genericGame.ActiveAttributes;
-import kane.genericGame.Game;
 import kane.genericGame.GameEvent;
 import kane.genericGame.Mob;
 import kane.genericGame.MobActions;
@@ -16,8 +15,8 @@ public class MeleeAttack extends GameEvent {
 	protected Shape attackShape;
 	protected SpriteState[] previousSpriteStates;
 
-	public MeleeAttack(Game g, int eventDuration, Mob attacker) {
-		super(g, eventDuration);
+	public MeleeAttack(int eventDuration, Mob attacker) {
+		super(eventDuration);
 		this.attacker = attacker;
 	}
 

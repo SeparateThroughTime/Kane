@@ -31,10 +31,10 @@ public class AABB {
 	 * @return -true if overlapping
 	 */
 	public boolean overlaps(AABB other) {
-		if (max.getX() < other.getMin().getX() || other.getMax().getX() < min.getX()) {
+		if (max.x < other.getMin().x || other.getMax().x < min.x) {
 			return false;
 		}
-		if((max.getY() < other.getMin().getY() || other.getMax().getY() < min.getY())) {
+		if((max.y < other.getMin().y || other.getMax().y < min.y)) {
 			return false;
 		}
 		return true;
@@ -73,8 +73,8 @@ public class AABB {
 	public AABB sortMinMax() {
 		Vec2f minTmp = new Vec2f(min);
 		Vec2f maxTmp = new Vec2f(max);
-		min.set(Math.min(minTmp.getX(), maxTmp.getX()), Math.min(minTmp.getY(), maxTmp.getY()));
-		max.set(Math.max(minTmp.getX(), maxTmp.getX()), Math.max(minTmp.getY(), maxTmp.getY()));
+		min.set(Math.min(minTmp.x, maxTmp.x), Math.min(minTmp.y, maxTmp.y));
+		max.set(Math.max(minTmp.x, maxTmp.x), Math.max(minTmp.y, maxTmp.y));
 		return this;
 	}
 	

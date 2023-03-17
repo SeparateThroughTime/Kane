@@ -15,34 +15,22 @@ public class Body {
 	public final int ID;
 	private static int numBodies = 0;
 
-	protected final Vec2f pos;
-	protected final Vec2f vel;
-	protected final Vec2f acc;
-	protected float angle;
-	protected float angleVel;
-	protected boolean rotateByCollision;
-	protected float rotationFactor;
-	protected float invMass;
-	protected final Vec2f centerOfMass = new Vec2f();
-	protected float momentOfInertia;
-	private boolean reactToGravity;
+	public final Vec2f pos;
+	public final Vec2f vel;
+	public final Vec2f acc;
+	public float angle;
+	public float angleVel;
+	public boolean rotateByCollision;
+	public float rotationFactor;
+	public float invMass;
+	public final Vec2f centerOfMass = new Vec2f();
+	public float momentOfInertia;
+	public boolean reactToGravity;
 	private boolean removed;
 	
-	protected Shape[] shapes;
+	public Shape[] shapes;
 	public static final int MAX_SHAPES = 20;
-	protected int numShapes;
-
-	public float getAngleVel() {
-		return angleVel;
-	}
-
-	public void setAngleVel(float angleVel) {
-		this.angleVel = angleVel;
-	}
-	
-	public void setAngle(float angle) {
-		this.angle = angle;
-	}
+	public int numShapes;
 
 	/**
 	 * 
@@ -84,10 +72,10 @@ public class Body {
 		float sumOfMass = 0;
 		for (int i = 0; i < numShapes; i++) {
 			Shape shape = shapes[i];
-			if (shape.getImpulseRatio() != 0) {
-				float mass = 1 / shape.getImpulseRatio();
-				Vec2f shapeCenterOfMass = new Vec2f(shape.getCenterOfMass());
-				shapeCenterOfMass.add(shape.getRelPos());
+			if (shape.invMass != 0) {
+				float mass = 1 / shape.invMass;
+				Vec2f shapeCenterOfMass = new Vec2f(shape.centerOfMass);
+				shapeCenterOfMass.add(shape.relPos);
 				centerOfMass.addMult(shapeCenterOfMass, mass);
 				sumOfMass += mass;
 			}
@@ -101,10 +89,10 @@ public class Body {
 		momentOfInertia = 0;
 		for (int i = 0; i < numShapes; i++) {
 			Shape shape = shapes[i];
-			if(shape.getImpulseRatio() > 0) {
-				float newShapeMoI = new Vec2f(shape.centerOfMass).add(shape.getRelPos()).sub(centerOfMass).lengthSquared();
-				newShapeMoI /= shape.getImpulseRatio();
-				newShapeMoI += shape.calculateMomentOfInertia();
+			if(shape.invMass > 0) {
+				float newShapeMoI = new Vec2f(shape.centerOfMass).add(shape.relPos).sub(centerOfMass).lengthSquared();
+				newShapeMoI /= shape.invMass;
+				newShapeMoI += shape.momentOfInertia;
 				momentOfInertia += newShapeMoI;
 			}
 		}
@@ -112,10 +100,6 @@ public class Body {
 			momentOfInertia = Float.POSITIVE_INFINITY;
 		}
 		return momentOfInertia;
-	}
-
-	public Vec2f getCenterOfMass() {
-		return centerOfMass;
 	}
 
 	/**
@@ -152,12 +136,12 @@ public class Body {
 		for (int i = 0; i < numShapes; i++) {
 			Shape shape = shapes[i];
 			float shapeVol = shape.getVolume();
-			float shapeMass = shapeVol * shape.getMaterial().getDensity();
+			float shapeMass = shapeVol * shape.material.getDensity();
 			mass += shapeMass;
 			if(shapeMass == 0) {
-				shape.setImpulseRatio(0);
+				shape.invMass = 0;
 			} else {
-				shape.setImpulseRatio(1 / shapeMass);
+				shape.invMass = 1 / shapeMass;
 			}
 		}
 		if (mass == 0) {
@@ -194,7 +178,7 @@ public class Body {
 		for (int i = 0; i < numShapes; i++) {
 //			shapes[i].rotate(angle, new Vec2f(getCenterOfMass()).add(getPos()));
 
-			shapes[i].getRelPos().set(shapes[i].getRelPosAlign()).rotate(this.angle);
+			shapes[i].relPos.set(shapes[i].relPosAlign).rotate(this.angle);
 
 			// angle is 0, so body angle is the only altered angle.
 			shapes[i].rotate(0);
@@ -207,30 +191,11 @@ public class Body {
 	public void align() {
 		this.angle = 0;
 		for (int i = 0; i < numShapes; i++) {
-			shapes[i].getRelPos().set(shapes[i].getRelPosAlign());
+			shapes[i].relPos.set(shapes[i].relPosAlign);
 
 			// angle is 0, so body angle is the only altered angle.
 			shapes[i].rotate(0);
 		}
-	}
-
-	/**
-	 * Get angle
-	 * 
-	 * @return
-	 */
-	public float getAngle() {
-		return angle;
-	}
-
-	/**
-	 * Get shape with index.
-	 * 
-	 * @param index
-	 * @return
-	 */
-	public Shape getShape(int index) {
-		return shapes[index];
 	}
 	
 	/**
@@ -265,80 +230,6 @@ public class Body {
 		return null;
 	}
 
-	/**
-	 * Get number of shapes.
-	 * 
-	 * @return
-	 */
-	public int getNumShapes() {
-		return numShapes;
-	}
-
-	/**
-	 * Get position of body.
-	 * 
-	 * @return
-	 */
-	public Vec2f getPos() {
-		return pos;
-	}
-
-	/**
-	 * Get velocity of body.
-	 * 
-	 * @return
-	 */
-	public Vec2f getVel() {
-		return vel;
-	}
-
-	/**
-	 * Get acceleration of body.
-	 * 
-	 * @return
-	 */
-	public Vec2f getAcc() {
-		return acc;
-	}
-
-	/**
-	 * Get impulse ratio (inverted Mass) of body.
-	 * 
-	 * @return
-	 */
-	public float getImpulseRate() {
-		return invMass;
-	}
-
-	public float getMomentOfInertia() {
-		return momentOfInertia;
-	}
-	
-	public void setReactToGravity(boolean b) {
-		reactToGravity = b;
-	}
-	
-	public boolean isReactToGravity() {
-		return reactToGravity;
-	}
-
-	// TODO: Use for rotation by collision?
-//	/**
-//	 * Get rotation factor of body.
-//	 * @return
-//	 */
-//	public float getRotationFactor() {
-//		return rotationFactor;
-//	}
-//
-//	/**
-//	 * set rotation factor of body.
-//	 * @param rotationFactor
-//	 */
-//	public void setRotationFactor(float rotationFactor) {
-//		this.rotationFactor = rotationFactor;
-//	}
-
 	@Override
 	public String toString() {
 		return "" + ID;
@@ -351,19 +242,11 @@ public class Body {
 		numBodies = 0;
 	}
 	
-	public void remove() {
-		removed = true;
-	}
-	
-	public boolean isRemoved() {
-		return removed;
-	}
-	
 	public void mirrorX() {
 		for (int i = 0; i < numShapes; i++) {
 			Shape shape = shapes[i];
-			Vec2f relPos = shape.getRelPos();
-			shape.setRelPos(-relPos.getX(), relPos.getY());
+			Vec2f relPos = shape.relPos;
+			shape.relPos.set(-relPos.x, relPos.y);
 			
 			shape.mirrorX();
 		}
@@ -372,8 +255,8 @@ public class Body {
 	public void mirrorY() {
 		for (int i = 0; i < numShapes; i++) {
 			Shape shape = shapes[i];
-			Vec2f relPos = shape.getRelPos();
-			shape.setRelPos(relPos.getX(), -relPos.getY());
+			Vec2f relPos = shape.relPos;
+			shape.relPos.set(relPos.x, -relPos.y);
 			
 			shape.mirrorY();
 		}
@@ -419,5 +302,13 @@ public class Body {
 		for (Shape shape : spriteShapes) {
 			shape.setCurrentSpriteState(state);
 		}
+	}
+	
+	public void remove() {
+		removed = false;
+	}
+	
+	public boolean isRemoved() {
+		return removed;
 	}
 }

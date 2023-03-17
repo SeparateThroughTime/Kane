@@ -1,12 +1,10 @@
 package kane.genericGame.gameEvent.mob;
 
-import kane.genericGame.Game;
 import kane.genericGame.GameEvent;
 import kane.genericGame.Mob;
 import kane.genericGame.MobActions;
 import kane.genericGame.MobDirection;
 import kane.genericGame.PassiveAttributes;
-import kane.genericGame.userInteraction.Keys;
 import kane.math.ArrayOperations;
 import kane.renderer.SpriteController;
 import kane.renderer.SpriteState;
@@ -15,8 +13,8 @@ public class WalkingLeft extends GameEvent {
 
 	private Mob walker;
 
-	public WalkingLeft(Game g, Mob walker) {
-		super(g, 2);
+	public WalkingLeft(Mob walker) {
+		super(2);
 		this.walker = walker;
 	}
 
@@ -29,7 +27,7 @@ public class WalkingLeft extends GameEvent {
 		}
 
 		walker.getShape(PassiveAttributes.MOB_ALL).setCurrentSpriteState(SpriteState.RUNNING_LEFT);
-		walker.setAngle(0f);
+		walker.angle = 0f;
 		walker.setDirection(MobDirection.LEFT);
 		walker.getActiveActions().put(MobActions.WALK, true);
 		walker.getActiveActions().put(MobActions.STAND, false);
@@ -37,9 +35,9 @@ public class WalkingLeft extends GameEvent {
 
 	@Override
 	public void procedure() {
-		walker.getAcc().setX(-walker.getWalkAcc().getX());
-		if (-walker.getVel().getX() > walker.getWalkSpeed()) {
-			walker.getVel().setX(-walker.getWalkSpeed());
+		walker.acc.x = -walker.getWalkAcc().x;
+		if (-walker.vel.x > walker.getWalkSpeed()) {
+			walker.vel.x = -walker.getWalkSpeed();
 		}
 
 		reduceFrameCounter();

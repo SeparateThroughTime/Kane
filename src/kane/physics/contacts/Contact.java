@@ -7,13 +7,13 @@ import kane.math.Vec2f;
  */
 public class Contact {
 	
-	private final Vec2f normal;
-	private final float distance;
-	private final Vec2f point;
-	private final Vec2f supportA;
-	private final Vec2f supportB;
+	public final Vec2f normal;
+	public final float distance;
+	public final Vec2f point;
+	public final Vec2f supportA;
+	public final Vec2f supportB;
 	
-	private float impulse;
+	public float impulse;
 	
 	/**
 	 * @param normal -direction of contact
@@ -26,55 +26,6 @@ public class Contact {
 		this.point = new Vec2f(point);
 		this.supportA = new Vec2f();
 		this.supportB = new Vec2f();
-		setImpulse(0f);
+		impulse = 0f;
 	}
-	
-	/**
-	 * Get normal
-	 * @return -normal
-	 */
-	public Vec2f getNormal() {
-		return normal;
-	}
-	
-	/**
-	 * Get distance
-	 * @return -distance
-	 */
-	public float getDistance() {
-		return distance;
-	}
-	
-	/**
-	 * Get point
-	 * @return -point
-	 */
-	public Vec2f getPoint() {
-		return point;
-	}
-
-	/**
-	 * Get Support point A
-	 * @return -supportA
-	 */
-	public Vec2f getSupportA() {
-		return supportA;
-	}
-
-	/**
-	 * Get Support point B
-	 * @return -supportB
-	 */
-	public Vec2f getSupportB() {
-		return supportB;
-	}
-
-	public float getImpulse() {
-		return impulse;
-	}
-
-	public void setImpulse(float impulse) {
-		this.impulse = impulse;
-	}
-	
 }

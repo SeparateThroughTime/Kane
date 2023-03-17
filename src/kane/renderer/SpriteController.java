@@ -11,13 +11,13 @@ public class SpriteController {
 	public static final SpriteState[] RIGHT_SPRITE_STATES = { SpriteState.ATTACK_RIGHT, SpriteState.RUNNING_RIGHT,
 			SpriteState.STANDING_RIGHT };
 
-	protected SpriteState currentSpriteState;
-	protected int currentSpriteStateFrameNo;
-	protected Vec2f spritePosOffset;
+	public SpriteState currentSpriteState;
+	public int currentSpriteStateFrameNo;
+	public Vec2f spritePosOffset;
 	private int frameCounter;
-	private float scale;
+	public float scale;
 
-	private Sprite sprite;
+	public Sprite sprite;
 
 	public SpriteController(Sprite sprite) {
 		this.spritePosOffset = new Vec2f();
@@ -42,27 +42,6 @@ public class SpriteController {
 		}
 	}
 
-	public SpriteState getCurrentSpriteState() {
-		return currentSpriteState;
-	}
-
-	/**
-	 * get the current frame state of the sprite.
-	 * 
-	 * @return
-	 */
-	public int getCurrenSpriteStateFrame() {
-		return currentSpriteStateFrameNo;
-	}
-
-	public void setSpritePosOffset(Vec2f offset) {
-		this.spritePosOffset = offset;
-	}
-
-	public Vec2f getSpritePosOffset() {
-		return spritePosOffset;
-	}
-
 	/**
 	 * Need to run every frame. This produces animation.
 	 */
@@ -79,13 +58,5 @@ public class SpriteController {
 		if (currentSpriteStateFrameNo >= sprite.getFrameCount(currentSpriteState)) {
 			currentSpriteStateFrameNo = 0;
 		}
-	}
-
-	public float getScale() {
-		return scale;
-	}
-
-	public void setScale(float scale) {
-		this.scale = scale;
 	}
 }

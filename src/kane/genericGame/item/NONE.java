@@ -2,7 +2,6 @@ package kane.genericGame.item;
 
 import java.io.File;
 
-import kane.genericGame.Game;
 import kane.genericGame.Item;
 import kane.math.Vec2f;
 import kane.renderer.Sprite;
@@ -29,8 +28,8 @@ public class NONE extends Item {
 
 		ITEM_SPRITE.addState(SpriteState.STATIC, new int[] { 0 });
 		ITEM_SPRITE_CONTROLLERS[0].setCurrentSpriteState(SpriteState.STATIC);
-		ITEM_SPRITE_CONTROLLERS[0].setSpritePosOffset(new Vec2f(-32, -32));
-		ITEM_SPRITE_CONTROLLERS[0].setScale(2f);
+		ITEM_SPRITE_CONTROLLERS[0].spritePosOffset = new Vec2f(-32, -32);
+		ITEM_SPRITE_CONTROLLERS[0].scale = 2f;
 
 		// Head
 		PLAYER_SPRITES[0].addState(SpriteState.STANDING_RIGHT, new int[] { 0 });
@@ -69,33 +68,33 @@ public class NONE extends Item {
 		PLAYER_SPRITES[2].addState(SpriteState.FALL_LEFT, new int[] { 8 });
 
 		PLAYER_SPRITE_CONTROLLERS[0].setCurrentSpriteState(SpriteState.STANDING_RIGHT);
-		PLAYER_SPRITE_CONTROLLERS[0].setSpritePosOffset(new Vec2f(-32, -32));
+		PLAYER_SPRITE_CONTROLLERS[0].spritePosOffset = new Vec2f(-32, -32);
 		PLAYER_SPRITE_CONTROLLERS[1].setCurrentSpriteState(SpriteState.STANDING_RIGHT);
-		PLAYER_SPRITE_CONTROLLERS[1].setSpritePosOffset(new Vec2f(-32, -32));
+		PLAYER_SPRITE_CONTROLLERS[1].spritePosOffset = new Vec2f(-32, -32);
 		PLAYER_SPRITE_CONTROLLERS[2].setCurrentSpriteState(SpriteState.STANDING_RIGHT);
-		PLAYER_SPRITE_CONTROLLERS[2].setSpritePosOffset(new Vec2f(-32, -32));
+		PLAYER_SPRITE_CONTROLLERS[2].spritePosOffset = new Vec2f(-32, -32);
 
 		addAmount(1);
 
 	}
 
 	@Override
-	public void attack(Game g) {
+	public void attack() {
 
 	}
 
 	@Override
-	public void react(Game g) {
+	public void react() {
 
 	}
 
 	@Override
-	public void jump(Game g) {
+	public void jump() {
 
 	}
 
 	@Override
-	public void move(Game g) {
+	public void move() {
 
 	}
 
