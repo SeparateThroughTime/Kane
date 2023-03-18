@@ -16,8 +16,8 @@ public class PlanePolygonContactGenerator implements ContactGenerator {
 
 	@Override
 	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {
-		Plane planeA = (Plane) shapePair.getShapeA();
-		Polygon poliB = (Polygon) shapePair.getShapeB();
+		Plane planeA = (Plane) shapePair.shapeA;
+		Polygon poliB = (Polygon) shapePair.shapeB;
 
 		final int NUM_POINTS_B = poliB.getNumPoints();
 		Vec2f[] points = new Vec2f[NUM_POINTS_B];
@@ -59,7 +59,7 @@ public class PlanePolygonContactGenerator implements ContactGenerator {
 
 		Contact newContact = new Contact(planeA.getNormal(), -projDistance, closestPointOnPlane);
 		if (acceptor.accept(newContact)) {
-			shapePair.setContact(newContact);
+			shapePair.contact = newContact;
 		}
 
 	}

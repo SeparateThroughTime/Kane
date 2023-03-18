@@ -15,6 +15,10 @@ import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+import static kane.physics.Physics.PHYSICS;
+import static kane.renderer.Camera.CAMERA;
+import static kane.renderer.Renderer.RENDERER;
+import static kane.renderer.ResolutionSpecification.RES_SPECS;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -59,8 +63,8 @@ public abstract class Drawer {
 		int numElements = 0;
 		for (int i = 0; i < numRenderedShapes; i++) {
 			Shape s = renderedShapes[i];
-			numVertices += s.getNumRenderVertices();
-			numElements += s.getNumRenderElements();
+			numVertices += s.numRenderVertices;
+			numElements += s.numRenderElements;
 		}
 		vertices = new float[numVertices * VERTEX_SIZE];
 		elements = new int[numElements * ELEMENT_SIZE];
@@ -104,15 +108,15 @@ public abstract class Drawer {
 	 */
 	protected void chooseRenderedShapes() {
 		numRenderedShapes = 0;
-		renderedShapes = new Shape[physics.getNumBodies() * Body.MAX_SHAPES];
-		for (int i = 0; i < physics.getNumBodies(); i++) {
-			Body body = physics.getBodies(i);
+		renderedShapes = new Shape[PHYSICS.numBodies * Body.MAX_SHAPES];
+		for (int i = 0; i < PHYSICS.numBodies; i++) {
+			Body body = PHYSICS.bodies[i];
 			if (!body.isRemoved()) {
-				for (int j = 0; j < body.getNumShapes(); j++) {
-					Shape shape = body.getShape(j);
-					if (shape.getAABB().overlaps(renderer.camera.getWindow())) {
-						if (shape.isVisible()) {
-							if (ShapeType.BOX.equals(shape.getType()) || ShapeType.POLYGON.equals(shape.getType())) {
+				for (int j = 0; j < body.numShapes; j++) {
+					Shape shape = body.shapes[j];
+					if (shape.aabb.overlaps(CAMERA.window)) {
+						if (shape.visible) {
+							if (ShapeType.BOX.equals(shape.type) || ShapeType.POLYGON.equals(shape.type)) {
 								renderedShapes[numRenderedShapes++] = shape;
 							}
 
@@ -129,14 +133,14 @@ public abstract class Drawer {
 	 */
 	
 	protected Vec2f transformPosToVertex(Vec2f gamePos) {
-		Vec2f cameraAlteredPos = new Vec2f(gamePos).sub(new Vec2f(renderer.camera.zeroPoint).mult(renderer.multiplicator));
+		Vec2f cameraAlteredPos = new Vec2f(gamePos).sub(new Vec2f(CAMERA.zeroPoint).mult(RENDERER.multiplicator));
 
-		float x = cameraAlteredPos.getX();
-		x /= renderer.resSpecs.halfGameWidth;
+		float x = cameraAlteredPos.x;
+		x /= RES_SPECS.halfGameWidth;
 		x -= 1;
 
-		float y = cameraAlteredPos.getY();
-		y /= renderer.resSpecs.halfGameHeight;
+		float y = cameraAlteredPos.y;
+		y /= RES_SPECS.halfGameHeight;
 		y -= 1;
 
 		return new Vec2f(x, y);

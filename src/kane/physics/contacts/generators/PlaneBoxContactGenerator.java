@@ -15,14 +15,14 @@ public class PlaneBoxContactGenerator implements ContactGenerator{
 
 	@Override
 	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {
-		Plane planeA = (Plane) shapePair.getShapeA();
-		Box boxB = (Box) shapePair.getShapeB();
+		Plane planeA = (Plane) shapePair.shapeA;
+		Box boxB = (Box) shapePair.shapeB;
 		
 		Vec2f[] points = new Vec2f[4];
 		points[0] = new Vec2f(boxB.getMin());
 		points[1] = new Vec2f(boxB.getMax());
-		points[2] = new Vec2f(points[0].getX(), points[1].getY());
-		points[3] = new Vec2f(points[1].getX(), points[0].getY());
+		points[2] = new Vec2f(points[0].x, points[1].y);
+		points[3] = new Vec2f(points[1].x, points[0].y);
 		Vec2f pointOnPlane = planeA.getPoint();
 		
 		//get nearest Point of Box
@@ -41,7 +41,7 @@ public class PlaneBoxContactGenerator implements ContactGenerator{
 		
 		Contact newContact = new Contact(planeA.getNormal(), -projDistance, closestPointOnPlane);
 		if (acceptor.accept(newContact)) {
-			shapePair.setContact(newContact);
+			shapePair.contact = newContact;
 		}
 		
 	}

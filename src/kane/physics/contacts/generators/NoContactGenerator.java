@@ -11,7 +11,7 @@ public class NoContactGenerator implements ContactGenerator{
 
 	@Override
 	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {
-		shapePair.setCollideable(false);
+		shapePair.collideable = false;
 	}
 
 }

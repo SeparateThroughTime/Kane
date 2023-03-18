@@ -16,15 +16,15 @@ public class CircleBoxContactGenerator implements ContactGenerator{
 
 	@Override
 	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {
-		Circle circleA = (Circle) shapePair.getShapeA();
-		Box boxB = (Box) shapePair.getShapeB();
+		Circle circleA = (Circle) shapePair.shapeA;
+		Box boxB = (Box) shapePair.shapeB;
 		
 		Vec2f boxBMin = new Vec2f(boxB.getMin());
 		Vec2f boxBMax = new Vec2f(boxB.getMax());
 
 		Vec2f relPos = new Vec2f(boxB.getAbsPos()).sub(circleA.getAbsPos());
-		float overlapX = Math.abs(relPos.getX()) - boxB.getRad().getX();
-		float overlapY = Math.abs(relPos.getY()) - boxB.getRad().getX();
+		float overlapX = Math.abs(relPos.x) - boxB.getRad().x;
+		float overlapY = Math.abs(relPos.y) - boxB.getRad().x;
 		float smallestOverlap = overlapX > overlapY ? overlapX : overlapY;
 
 		Vec2f normal = new Vec2f();
@@ -34,17 +34,17 @@ public class CircleBoxContactGenerator implements ContactGenerator{
 			// Penetration
 			closestPoint.set(boxB.getAbsPos());
 			if (overlapX > overlapY) {
-				normal.set(Scalar.sign(-relPos.getX()), 0);
+				normal.set(Scalar.sign(-relPos.x), 0);
 			} else {
-				normal.set(0, Scalar.sign(-relPos.getY()));
+				normal.set(0, Scalar.sign(-relPos.y));
 			}
 			d = smallestOverlap - circleA.getRad();
 			closestPoint.set(circleA.getAbsPos()).addMult(normal, -smallestOverlap);
 		} else {
 			// Separation
 			closestPoint.set(circleA.getAbsPos());
-			closestPoint.setX(Scalar.clamp(closestPoint.getX(), boxBMin.getX(), boxBMax.getX()));
-			closestPoint.setY(Scalar.clamp(closestPoint.getY(), boxBMin.getY(), boxBMax.getY()));
+			closestPoint.x = Scalar.clamp(closestPoint.x, boxBMin.x, boxBMax.x);
+			closestPoint.y = Scalar.clamp(closestPoint.y, boxBMin.y, boxBMax.y);
 
 			Vec2f distanceToClosest = new Vec2f(circleA.getAbsPos()).sub(closestPoint);
 			normal.set(distanceToClosest).normalize();
@@ -55,7 +55,7 @@ public class CircleBoxContactGenerator implements ContactGenerator{
 		
 		Contact newContact = new Contact(new Vec2f(normal).mult(-1), d, closestPoint.addMult(normal, d));
 		if(acceptor.accept(newContact)) {
-			shapePair.setContact(newContact);
+			shapePair.contact = newContact;
 		}
 	}
 

@@ -15,8 +15,8 @@ public class LineSegmentCircleContactGenerator implements ContactGenerator{
 
 	@Override
 	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {
-		LineSegment lineA = (LineSegment) shapePair.getShapeA();
-		Circle circleB = (Circle) shapePair.getShapeB();
+		LineSegment lineA = (LineSegment) shapePair.shapeA;
+		Circle circleB = (Circle) shapePair.shapeB;
 		
 		Vec2f lineAbsPosA = new Vec2f(lineA.getAbsPos()).add(lineA.getRelPosA());
 		Vec2f lineAbsPosB = new Vec2f(lineA.getAbsPos()).add(lineA.getRelPosB());
@@ -36,7 +36,7 @@ public class LineSegmentCircleContactGenerator implements ContactGenerator{
 		
 		Contact newContact = new Contact(normal, d, pointOnA);
 		if (acceptor.accept(newContact)) {
-			shapePair.setContact(newContact);
+			shapePair.contact = newContact;
 		}
 		
 	}

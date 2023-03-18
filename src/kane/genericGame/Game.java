@@ -21,6 +21,8 @@ import kane.genericGame.userInteraction.KeyboardInterface;
 import kane.genericGame.userInteraction.Mouse;
 import kane.genericGame.userInteraction.MouseInterface;
 import kane.physics.Body;
+import kane.physics.Physics;
+import kane.renderer.Renderer;
 import kane.renderer.Resolution;
 import kane.renderer.ResolutionSpecification;
 
@@ -67,6 +69,8 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		// init Window
 		this.title = title;
 		ResolutionSpecification.initializeResSpecs(600, 800, 600, 800);
+		Physics.initializatePhysics(this);
+		Renderer.initializeRenderer(title);
 		long window = RENDERER.window;
 		Keyboard.initializeKeyboard(this, window);
 		Mouse.initializeMouse(this, window);

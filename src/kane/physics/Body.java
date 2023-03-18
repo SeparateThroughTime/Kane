@@ -305,7 +305,7 @@ public class Body {
 	}
 	
 	public void remove() {
-		removed = false;
+		removed = true;
 	}
 	
 	public boolean isRemoved() {

@@ -17,8 +17,8 @@ public class CirclePointContactGenerator implements ContactGenerator {
 	@Override
 	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {
 		// Contact generation Circle-Circle
-		Circle circleA = (Circle) shapePair.getShapeA();
-		Point pointB = (Point) shapePair.getShapeB();
+		Circle circleA = (Circle) shapePair.shapeA;
+		Point pointB = (Point) shapePair.shapeB;
 		Vec2f distanceBetween = new Vec2f(pointB.getAbsPos()).sub(circleA.getAbsPos());
 		Vec2f normal = new Vec2f(distanceBetween).normalize();
 		float projDistance = distanceBetween.dot(normal);
@@ -28,7 +28,7 @@ public class CirclePointContactGenerator implements ContactGenerator {
 
 		Contact newContact = new Contact(normal, -d, closestPointOnA);
 		if (acceptor.accept(newContact)) {
-			shapePair.setContact(newContact);
+			shapePair.contact = newContact;
 		}
 	}
 }

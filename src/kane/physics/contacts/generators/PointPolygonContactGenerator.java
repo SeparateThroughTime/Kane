@@ -15,8 +15,8 @@ public class PointPolygonContactGenerator implements ContactGenerator {
 
 	@Override
 	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {
-		Point pointA = (Point) shapePair.getShapeA();
-		Polygon poliB = (Polygon) shapePair.getShapeB();
+		Point pointA = (Point) shapePair.shapeA;
+		Polygon poliB = (Polygon) shapePair.shapeB;
 
 		// Declarations
 		Vec2f poliBAbsPos = poliB.getAbsPos();
@@ -72,7 +72,7 @@ public class PointPolygonContactGenerator implements ContactGenerator {
 
 		Contact newContact = new Contact(bestNormal.mult(-1), bestD, bestPointOnB);
 		if (acceptor.accept(newContact)) {
-			shapePair.setContact(newContact);
+			shapePair.contact = newContact;
 		}
 	}
 }

@@ -15,8 +15,8 @@ public class CirclePolygonContactGenerator implements ContactGenerator {
 
 	@Override
 	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {
-		Circle circleA = (Circle) shapePair.getShapeA();
-		Polygon poliB = (Polygon) shapePair.getShapeB();
+		Circle circleA = (Circle) shapePair.shapeA;
+		Polygon poliB = (Polygon) shapePair.shapeB;
 
 		// Declarations
 		Vec2f poliBAbsPos = poliB.getAbsPos();
@@ -62,7 +62,7 @@ public class CirclePolygonContactGenerator implements ContactGenerator {
 		
 		Contact newContact = new Contact(bestNormal.mult(-1), bestD, bestPointOnB);
 		if (acceptor.accept(newContact)) {
-			shapePair.setContact(newContact);
+			shapePair.contact = newContact;
 		}
 
 //		Contact newContact = new Contact(normal, nearestIntervalD, contactPoint);

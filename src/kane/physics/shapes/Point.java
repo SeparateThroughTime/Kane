@@ -30,10 +30,10 @@ public class Point extends Shape {
 	@Override
 	public void updateAABB(Vec2f nextAbsPos, float tolerance) {
 		Vec2f absPos = getAbsPos();
-		aabb.getMin().set(new Vec2f(Math.min(absPos.getX(), nextAbsPos.getX()) - tolerance,
-				Math.min(absPos.getY(), nextAbsPos.getY() - tolerance)));
-		aabb.getMax().set(new Vec2f(Math.max(absPos.getX(), nextAbsPos.getX()) + tolerance,
-				Math.max(absPos.getY(), nextAbsPos.getY() + tolerance)));
+		aabb.getMin().set(new Vec2f(Math.min(absPos.x, nextAbsPos.x) - tolerance,
+				Math.min(absPos.y, nextAbsPos.y - tolerance)));
+		aabb.getMax().set(new Vec2f(Math.max(absPos.x, nextAbsPos.x) + tolerance,
+				Math.max(absPos.y, nextAbsPos.y + tolerance)));
 	}
 
 	@Override

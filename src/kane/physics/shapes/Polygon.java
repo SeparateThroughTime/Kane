@@ -90,11 +90,11 @@ public class Polygon extends Shape {
 	public void updateAABB(Vec2f nextAbsPos, float tolerance) {
 		Vec2f absPos = getAbsPos();
 		float minX, maxX, minY, maxY;
-		minX = maxX = points[0].getX();
-		minY = maxY = points[0].getY();
+		minX = maxX = points[0].x;
+		minY = maxY = points[0].y;
 		for (int i = 0; i < points.length; i++) {
-			float x = points[i].getX();
-			float y = points[i].getY();
+			float x = points[i].x;
+			float y = points[i].y;
 			if (x < minX) {
 				minX = x;
 			} else if (x > maxX) {
@@ -107,10 +107,10 @@ public class Polygon extends Shape {
 			}
 		}
 
-		aabb.getMin().set(Math.min(absPos.getX(), nextAbsPos.getX()) + minX - tolerance,
-				Math.min(absPos.getY(), nextAbsPos.getY()) + minY - tolerance);
-		aabb.getMax().set(Math.max(absPos.getX(), nextAbsPos.getX()) + maxX + tolerance,
-				Math.max(absPos.getY(), nextAbsPos.getY()) + maxY + tolerance);
+		aabb.getMin().set(Math.min(absPos.x, nextAbsPos.x) + minX - tolerance,
+				Math.min(absPos.y, nextAbsPos.y) + minY - tolerance);
+		aabb.getMax().set(Math.max(absPos.x, nextAbsPos.x) + maxX + tolerance,
+				Math.max(absPos.y, nextAbsPos.y) + maxY + tolerance);
 
 	}
 
@@ -144,7 +144,7 @@ public class Polygon extends Shape {
 	public void rotate(float angle) {
 		// The angle is between 0 and 1
 		this.angle += angle;
-		float bodyAngle = body.getAngle();
+		float bodyAngle = body.angle;
 
 		for (int i = 0; i < numPoints; i++) {
 			points[i].set(pointsAlign[i]).rotate(this.angle + bodyAngle);
@@ -162,7 +162,7 @@ public class Polygon extends Shape {
 	 * align the shape to original angle in relation to body angle.
 	 */
 	public void align() {
-		float bodyAngle = body.getAngle();
+		float bodyAngle = body.angle;
 		for (int i = 0; i < numPoints; i++) {
 			points[i].set(pointsAlign[i]);
 			points[i].rotate(bodyAngle);
@@ -252,7 +252,7 @@ public class Polygon extends Shape {
 	protected void mirrorX() {
 		for (int i = 0; i < numPoints; i++) {
 			Vec2f point = points[i];
-			point.set(-point.getX(), point.getY());
+			point.set(-point.x, point.y);
 		}
 	}
 
@@ -260,7 +260,7 @@ public class Polygon extends Shape {
 	protected void mirrorY() {
 		for (int i = 0; i < numPoints; i++) {
 			Vec2f point = points[i];
-			point.set(point.getX(), -point.getY());
+			point.set(point.x, -point.y);
 		}
 	}
 

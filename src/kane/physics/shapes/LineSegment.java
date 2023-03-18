@@ -67,7 +67,7 @@ public class LineSegment extends Shape{
 	 * @return
 	 */
 	public Vec2f getCenter() {
-		return new Vec2f(relPosA).add(relPosB).mult(0.5f).add(new Vec2f (body.getPos()));
+		return new Vec2f(relPosA).add(relPosB).mult(0.5f).add(new Vec2f (body.pos));
 	}
 
 	@Override
@@ -77,14 +77,14 @@ public class LineSegment extends Shape{
 
 	@Override
 	protected void mirrorX() {
-		relPosA.set(-relPosA.getX(), relPosA.getY());
-		relPosB.set(-relPosB.getX(), relPosB.getY());
+		relPosA.set(-relPosA.x, relPosA.y);
+		relPosB.set(-relPosB.x, relPosB.y);
 	}
 
 	@Override
 	protected void mirrorY() {
-		relPosA.set(relPosA.getX(), -relPosA.getY());
-		relPosB.set(relPosB.getX(), -relPosB.getY());
+		relPosA.set(relPosA.x, -relPosA.y);
+		relPosB.set(relPosB.x, -relPosB.y);
 	}
 
 }

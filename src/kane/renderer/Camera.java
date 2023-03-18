@@ -1,5 +1,10 @@
 package kane.renderer;
 
+import static kane.Kane.GAME;
+import static kane.genericGame.hud.Inventory.INVENTORY;
+import static kane.physics.Physics.PHYSICS;
+import static kane.renderer.ResolutionSpecification.RES_SPECS;
+
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -9,7 +14,6 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import kane.genericGame.ActiveAttributes;
-import kane.genericGame.Game;
 import kane.genericGame.gameEvent.camera.BindCameraToMap;
 import kane.genericGame.gameEvent.camera.MoveCameraDown;
 import kane.genericGame.gameEvent.camera.MoveCameraLeft;
@@ -39,28 +43,28 @@ public class Camera extends Body {
 	public AABB aiRange;
 	public Vec2f windowRad;
 	public Vec2f zeroPoint;
-	private ResolutionSpecification resSpecs;
 	public Vec2f movementAccX;
 	public Vec2f movementAccY;
 	public int movementSpeedY;
 	private ArrayList<HudBar> hudBars = new ArrayList<HudBar>();
 
-	private Camera(ResolutionSpecification resSpecs) {
-		super(resSpecs.gameWidth / 2, resSpecs.GAME_HEIGHT / 2);
+	private Camera() {
+		super((int)RES_SPECS.halfGameWidth, (int)RES_SPECS.halfGameHeight);
 
-		movementAccX = new Vec2f(g.getPlayer().getWalkAcc()).mult(0.5f);
+		movementAccX = new Vec2f(GAME.player.getWalkAcc()).mult(0.5f);
 		movementAccY = new Vec2f(movementAccX).perpLeft();
-		movementSpeedY = g.getPlayer().getWalkSpeed() * 2;
+		movementSpeedY = GAME.player.getWalkSpeed() * 2;
 
-		this.resSpecs = resSpecs;
 		this.zeroPoint = new Vec2f();
-		setReactToGravity(false);
+		reactToGravity = false;
 		createCamera();
+		
+		PHYSICS.addBody(this);
 	}
 	
-	public static void initializateCamera(ResolutionSpecification resSpecs) {
+	public static void initializateCamera() {
 		if(CAMERA == null) {
-			CAMERA = new Camera(resSpecs);
+			CAMERA = new Camera();
 		}
 	}
 
@@ -68,56 +72,56 @@ public class Camera extends Body {
 	 * create the actual camera. Only need to run in constructor.
 	 */
 	private void createCamera() {
-		this.windowRad = new Vec2f(resSpecs.gameWidth * 0.5f, resSpecs.GAME_HEIGHT * 0.5f);
+		this.windowRad = new Vec2f(RES_SPECS.gameWidth * 0.5f, RES_SPECS.GAME_HEIGHT * 0.5f);
 
 		// Create camera
 		addShape(new Point(0, 0, this, Color.BLUE, mInterface, 0));
-		getShape(0).setCollision(false);
-		getShape(0).setVisible(false);
+		shapes[0].collision = false;
+		shapes[0].visible = false;
 		// Left Box
-		addShape(new Box(-(int) (resSpecs.gameWidth * 0.3125f), 0, this,
-				new Vec2f(resSpecs.gameWidth * 0.1875f, resSpecs.GAME_HEIGHT * 0.5f), Color.GREEN, mInterface, 0));
-		getShape(1).setCollision(false);
-		getShape(1).addActiveAttribute(ActiveAttributes.CAMERA_LEFT);
-		getShape(1).setVisible(false);
+		addShape(new Box(-(int) (RES_SPECS.gameWidth * 0.3125f), 0, this,
+				new Vec2f(RES_SPECS.gameWidth * 0.1875f, RES_SPECS.GAME_HEIGHT * 0.5f), Color.GREEN, mInterface, 0));
+		shapes[1].collision = false;
+		shapes[1].addActiveAttribute(ActiveAttributes.CAMERA_LEFT);
+		shapes[1].visible = false;
 		// Right Box
-		addShape(new Box((int) (resSpecs.gameWidth * 0.3125f), 0, this,
-				new Vec2f(resSpecs.gameWidth * 0.1875f, resSpecs.GAME_HEIGHT * 0.5f), Color.GREEN, mInterface, 0));
-		getShape(2).setCollision(false);
-		getShape(2).addActiveAttribute(ActiveAttributes.CAMERA_RIGHT);
-		getShape(2).setVisible(false);
+		addShape(new Box((int) (RES_SPECS.gameWidth * 0.3125f), 0, this,
+				new Vec2f(RES_SPECS.gameWidth * 0.1875f, RES_SPECS.GAME_HEIGHT * 0.5f), Color.GREEN, mInterface, 0));
+		shapes[2].collision = false;
+		shapes[2].addActiveAttribute(ActiveAttributes.CAMERA_RIGHT);
+		shapes[2].visible = false;
 		// Lower Box
-		addShape(new Box(0, -(int) (resSpecs.GAME_HEIGHT * 0.3125f), this,
-				new Vec2f(resSpecs.gameWidth * 0.5f, resSpecs.GAME_HEIGHT * 0.1875f), Color.GREEN, mInterface, 0));
-		getShape(3).setCollision(false);
-		getShape(3).addActiveAttribute(ActiveAttributes.CAMERA_DOWN);
-		getShape(3).setVisible(false);
+		addShape(new Box(0, -(int) (RES_SPECS.GAME_HEIGHT * 0.3125f), this,
+				new Vec2f(RES_SPECS.gameWidth * 0.5f, RES_SPECS.GAME_HEIGHT * 0.1875f), Color.GREEN, mInterface, 0));
+		shapes[3].collision = false;
+		shapes[3].addActiveAttribute(ActiveAttributes.CAMERA_DOWN);
+		shapes[3].visible = false;
 		// Upper Box
-		addShape(new Box(0, (int) (resSpecs.GAME_HEIGHT * 0.3125f), this,
-				new Vec2f(resSpecs.gameWidth * 0.5f, resSpecs.GAME_HEIGHT * 0.1875f), Color.GREEN, mInterface, 0));
-		getShape(4).setCollision(false);
-		getShape(4).addActiveAttribute(ActiveAttributes.CAMERA_UP);
-		getShape(4).setVisible(false);
+		addShape(new Box(0, (int) (RES_SPECS.GAME_HEIGHT * 0.3125f), this,
+				new Vec2f(RES_SPECS.gameWidth * 0.5f, RES_SPECS.GAME_HEIGHT * 0.1875f), Color.GREEN, mInterface, 0));
+		shapes[4].collision = false;
+		shapes[4].addActiveAttribute(ActiveAttributes.CAMERA_UP);
+		shapes[4].visible = false;
 		// Mid X Box
-		addShape(new Box(0, 0, this, new Vec2f(resSpecs.gameWidth * 0.125f, resSpecs.GAME_HEIGHT * 0.5f), Color.RED,
+		addShape(new Box(0, 0, this, new Vec2f(RES_SPECS.gameWidth * 0.125f, RES_SPECS.GAME_HEIGHT * 0.5f), Color.RED,
 				mInterface, 0));
-		getShape(5).setCollision(false);
-		getShape(5).addActiveAttribute(ActiveAttributes.CAMERA_MID_X);
-		getShape(5).setVisible(false);
+		shapes[5].collision = false;
+		shapes[5].addActiveAttribute(ActiveAttributes.CAMERA_MID_X);
+		shapes[5].visible = false;
 		// Mid Y Box
-		addShape(new Box(0, 0, this, new Vec2f(resSpecs.gameWidth * 0.5f, resSpecs.GAME_HEIGHT * 0.125f), Color.RED,
+		addShape(new Box(0, 0, this, new Vec2f(RES_SPECS.gameWidth * 0.5f, RES_SPECS.GAME_HEIGHT * 0.125f), Color.RED,
 				mInterface, 0));
-		getShape(6).setCollision(false);
-		getShape(6).addActiveAttribute(ActiveAttributes.CAMERA_MID_Y);
-		getShape(6).setVisible(false);
+		shapes[6].collision = false;
+		shapes[6].addActiveAttribute(ActiveAttributes.CAMERA_MID_Y);
+		shapes[6].visible = false;
 	}
 
 	/**
 	 * update the window of the camera. Needs to run every frame.
 	 */
 	public void update() {
-		Vec2f min = new Vec2f(getPos()).sub(windowRad);
-		Vec2f max = new Vec2f(getPos()).add(windowRad);
+		Vec2f min = new Vec2f(pos).sub(windowRad);
+		Vec2f max = new Vec2f(pos).add(windowRad);
 		Vec2f aiMin = new Vec2f(min).add(100, 100);
 		Vec2f aiMax = new Vec2f(max).add(100, 100);
 		window = new AABB(min, max);
@@ -137,35 +141,35 @@ public class Camera extends Body {
 	public void changeResolution() {
 		clearBody();
 		createCamera();
-		inventory.changeResolution();
+		INVENTORY.changeResolution();
 	}
 
 	public void bindCameraToMap() {
-		g.addEvent(new BindCameraToMap(g, this));
+		GAME.addEvent(new BindCameraToMap());
 	}
 
 	public void moveCameraLeft() {
-		g.addEvent(new MoveCameraLeft(g, this, g.getPlayer()));
+		GAME.addEvent(new MoveCameraLeft());
 	}
 
 	public void moveCameraRight() {
-		g.addEvent(new MoveCameraRight(g, this, g.getPlayer()));
+		GAME.addEvent(new MoveCameraRight());
 	}
 
 	public void moveCameraUp() {
-		g.addEvent(new MoveCameraUp(g, this));
+		GAME.addEvent(new MoveCameraUp());
 	}
 
 	public void moveCameraDown() {
-		g.addEvent(new MoveCameraDown(g, this));
+		GAME.addEvent(new MoveCameraDown());
 	}
 
 	public void SlowCameraX() {
-		g.addEvent(new SlowCameraX(g, this));
+		GAME.addEvent(new SlowCameraX());
 	}
 
 	public void SlowCameraY() {
-		g.addEvent(new SlowCameraY(g, this));
+		GAME.addEvent(new SlowCameraY());
 	}
 
 	public void initInventory() {
@@ -179,13 +183,13 @@ public class Camera extends Body {
 		slotShapes[5] = addShape(new Box(-48, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
 		slotShapes[6] = addShape(new Box(48, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
 		slotShapes[7] = addShape(new Box(144, -48, this, new Vec2f(32, 32), Color.RED, mInterface, 4));
-		inventory = new Inventory(mainShape, slotShapes, resSpecs);
+		Inventory.initializateInventory(mainShape, slotShapes, RES_SPECS);
 	}
 
 	public HudBar addHudBar(File file) {
 		int hudPos = hudBars.size();
-		Shape hudShape = addShape(new Point(-resSpecs.gameWidth / 2 + HudBar.HUD_HEIGHT + HudBar.HUD_WIDTH / 2,
-				-resSpecs.GAME_HEIGHT / 2 + resSpecs.GAME_HEIGHT - (int) (HudBar.HUD_HEIGHT * (hudPos + 1) * 1.5), this,
+		Shape hudShape = addShape(new Point(-RES_SPECS.gameWidth / 2 + HudBar.HUD_HEIGHT + HudBar.HUD_WIDTH / 2,
+				-RES_SPECS.GAME_HEIGHT / 2 + RES_SPECS.GAME_HEIGHT - (int) (HudBar.HUD_HEIGHT * (hudPos + 1) * 1.5), this,
 				Color.BLUE, mInterface, 3));
 		HudBar hudBar;
 		BufferedImage img;

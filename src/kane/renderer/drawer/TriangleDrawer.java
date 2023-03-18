@@ -86,20 +86,20 @@ public class TriangleDrawer extends Drawer{
 //								(int) circle.getRad(), circle.getColor(), g2d);
 //					}
 
-					if (ShapeType.BOX.equals(shape.getType())) {
+					if (ShapeType.BOX.equals(shape.type)) {
 						Box box = (Box) shape;
 						Vec2f absPos = box.getAbsPos();
 						Vec2f rad = box.getRad();
 						Vec2f point1 = transformPosToVertex(new Vec2f(absPos).sub(rad));
 						Vec2f point2 = transformPosToVertex(
-								new Vec2f(absPos.getX() + rad.getX(), absPos.getY() - rad.getY()));
+								new Vec2f(absPos.x + rad.x, absPos.y - rad.y));
 						Vec2f point3 = transformPosToVertex(new Vec2f(absPos).add(rad));
 						Vec2f point4 = transformPosToVertex(
-								new Vec2f(absPos.getX() - rad.getX(), absPos.getY() + rad.getY()));
-						drawRect(point1, point2, point3, point4, box.getColor());
+								new Vec2f(absPos.x - rad.x, absPos.y + rad.y));
+						drawRect(point1, point2, point3, point4, box.color);
 					}
 
-					else if (ShapeType.POLYGON.equals(shape.getType())) {
+					else if (ShapeType.POLYGON.equals(shape.type)) {
 						Polygon pol = (Polygon) shape;
 						int numPoints = pol.getNumPoints();
 						Vec2f[] points = new Vec2f[numPoints];
@@ -109,7 +109,7 @@ public class TriangleDrawer extends Drawer{
 							points[p] = transformPosToVertex(pointAbsPos);
 						}
 						Vec2f center = transformPosToVertex(absPos);
-						drawPolygon(points, center, pol.getColor());
+						drawPolygon(points, center, pol.color);
 					}
 
 //					else if (ShapeType.POINT.equals(shape.getType())) {
@@ -132,20 +132,20 @@ public class TriangleDrawer extends Drawer{
 		int red = (rgb & 0x00FF0000) >> 16;
 
 		// Positions
-		vertices[verticeStartingIndex + 0] = point1.getX();
-		vertices[verticeStartingIndex + 1] = point1.getY();
+		vertices[verticeStartingIndex + 0] = point1.x;
+		vertices[verticeStartingIndex + 1] = point1.y;
 		vertices[verticeStartingIndex + 2] = 0f;
 
-		vertices[verticeStartingIndex + 7] = point2.getX();
-		vertices[verticeStartingIndex + 8] = point2.getY();
+		vertices[verticeStartingIndex + 7] = point2.x;
+		vertices[verticeStartingIndex + 8] = point2.y;
 		vertices[verticeStartingIndex + 9] = 0f;
 
-		vertices[verticeStartingIndex + 14] = point3.getX();
-		vertices[verticeStartingIndex + 15] = point3.getY();
+		vertices[verticeStartingIndex + 14] = point3.x;
+		vertices[verticeStartingIndex + 15] = point3.y;
 		vertices[verticeStartingIndex + 16] = 0f;
 
-		vertices[verticeStartingIndex + 21] = point4.getX();
-		vertices[verticeStartingIndex + 22] = point4.getY();
+		vertices[verticeStartingIndex + 21] = point4.x;
+		vertices[verticeStartingIndex + 22] = point4.y;
 		vertices[verticeStartingIndex + 23] = 0f;
 
 		// Colors
@@ -192,8 +192,8 @@ public class TriangleDrawer extends Drawer{
 		int red = (rgb & 0x00FF0000) >> 16;
 
 		// Center
-		vertices[verticeStartingIndex + 0] = center.getX();
-		vertices[verticeStartingIndex + 1] = center.getY();
+		vertices[verticeStartingIndex + 0] = center.x;
+		vertices[verticeStartingIndex + 1] = center.y;
 		vertices[verticeStartingIndex + 2] = 0f;
 
 		vertices[verticeStartingIndex + 3] = red;
@@ -202,8 +202,8 @@ public class TriangleDrawer extends Drawer{
 		vertices[verticeStartingIndex + 6] = 1f;
 
 		// Point0
-		vertices[verticeStartingIndex + 7] = points[0].getX();
-		vertices[verticeStartingIndex + 8] = points[0].getY();
+		vertices[verticeStartingIndex + 7] = points[0].x;
+		vertices[verticeStartingIndex + 8] = points[0].y;
 		vertices[verticeStartingIndex + 9] = 0f;
 
 		vertices[verticeStartingIndex + 10] = red;
@@ -214,8 +214,8 @@ public class TriangleDrawer extends Drawer{
 		for (int i = 1; i < points.length; i++) {
 			Vec2f point = points[i];
 
-			vertices[verticeStartingIndex + 14 + (i - 1) * VERTEX_SIZE] = point.getX();
-			vertices[verticeStartingIndex + 15 + (i - 1) * VERTEX_SIZE] = point.getY();
+			vertices[verticeStartingIndex + 14 + (i - 1) * VERTEX_SIZE] = point.x;
+			vertices[verticeStartingIndex + 15 + (i - 1) * VERTEX_SIZE] = point.y;
 			vertices[verticeStartingIndex + 16 + (i - 1) * VERTEX_SIZE] = 0f;
 
 			vertices[verticeStartingIndex + 17 + (i - 1) * VERTEX_SIZE] = red;

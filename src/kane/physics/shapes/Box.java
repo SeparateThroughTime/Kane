@@ -32,13 +32,13 @@ public class Box extends Shape {
 	@Override
 	public void updateAABB(Vec2f nextAbsPos, float tolerance) {
 		Vec2f r = new Vec2f(rad).add(tolerance);
-		float rx = r.getX();
-		float ry = r.getY();
+		float rx = r.x;
+		float ry = r.y;
 		Vec2f absPos = getAbsPos();
-		aabb.getMin().set(Math.min(absPos.getX(), nextAbsPos.getX()) - rx,
-				Math.min(absPos.getY(), nextAbsPos.getY() - ry));
-		aabb.getMax().set(Math.max(absPos.getX(), nextAbsPos.getX()) + rx,
-				Math.max(absPos.getY(), nextAbsPos.getY() + ry));
+		aabb.getMin().set(Math.min(absPos.x, nextAbsPos.x) - rx,
+				Math.min(absPos.y, nextAbsPos.y - ry));
+		aabb.getMax().set(Math.max(absPos.x, nextAbsPos.x) + rx,
+				Math.max(absPos.y, nextAbsPos.y + ry));
 
 	}
 
@@ -62,7 +62,7 @@ public class Box extends Shape {
 
 	@Override
 	public float getVolume() {
-		return rad.getX() * rad.getY() * 4;
+		return rad.x * rad.y * 4;
 	}
 
 	/**
@@ -82,21 +82,21 @@ public class Box extends Shape {
 
 		// Get closest Point on boxA
 		Vec2f closestPointA = new Vec2f(point);
-		closestPointA.setX(Scalar.clamp(closestPointA.getX(), min.getX(), max.getX()));
-		closestPointA.setY(Scalar.clamp(closestPointA.getY(), min.getY(), max.getY()));
+		closestPointA.x = Scalar.clamp(closestPointA.x, min.x, max.x);
+		closestPointA.y = Scalar.clamp(closestPointA.y, min.y, max.y);
 
 		// get Normal with difference of Pos of boxes
 		Vec2f relPos = new Vec2f(point).sub(getAbsPos());
-		float overlapX = Math.abs(relPos.getX()) - radius.getX();
-		float overlapY = Math.abs(relPos.getY()) - radius.getY();
+		float overlapX = Math.abs(relPos.x) - radius.x;
+		float overlapY = Math.abs(relPos.y) - radius.y;
 		float overlap = 0f;
 		Vec2f normal = new Vec2f();
 		if (overlapX > overlapY) {
 			overlap = overlapX;
-			normal.set(Scalar.sign(relPos.getX()), 0).normalize();
+			normal.set(Scalar.sign(relPos.x), 0).normalize();
 		} else {
 			overlap = overlapY;
-			normal.set(0, Scalar.sign(relPos.getY())).normalize();
+			normal.set(0, Scalar.sign(relPos.y)).normalize();
 		}
 
 		if (overlap <= 0) {

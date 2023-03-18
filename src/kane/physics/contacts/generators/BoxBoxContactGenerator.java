@@ -16,8 +16,8 @@ public class BoxBoxContactGenerator implements ContactGenerator {
 	@Override
 	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {
 
-		Box boxA = (Box) shapePair.getShapeA();
-		Box boxB = (Box) shapePair.getShapeB();
+		Box boxA = (Box) shapePair.shapeA;
+		Box boxB = (Box) shapePair.shapeB;
 
 		// Get Minkowski Box
 		Vec2f bothRadius = new Vec2f(boxA.getRad()).add(boxB.getRad());
@@ -27,21 +27,21 @@ public class BoxBoxContactGenerator implements ContactGenerator {
 
 		// Get closest Point on boxA
 		Vec2f closestPointA = new Vec2f(boxB.getAbsPos());
-		closestPointA.setX(Scalar.clamp(closestPointA.getX(), min.getX(), max.getX()));
-		closestPointA.setY(Scalar.clamp(closestPointA.getY(), min.getY(), max.getY()));
+		closestPointA.x = Scalar.clamp(closestPointA.x, min.x, max.x);
+		closestPointA.y = Scalar.clamp(closestPointA.y, min.y, max.y);
 
 		// getNormal with difference of Pos of boxes
 		Vec2f relPos = new Vec2f(boxB.getAbsPos()).sub(boxA.getAbsPos());
-		float overlapX = Math.abs(relPos.getX()) - bothRadius.getX();
-		float overlapY = Math.abs(relPos.getY()) - bothRadius.getY();
+		float overlapX = Math.abs(relPos.x) - bothRadius.x;
+		float overlapY = Math.abs(relPos.y) - bothRadius.y;
 		float overlap = 0f;
 		Vec2f normal = new Vec2f();
 		if (overlapX > overlapY) {
 			overlap = overlapX;
-			normal.set(Scalar.sign(relPos.getX()), 0).normalize();
+			normal.set(Scalar.sign(relPos.x), 0).normalize();
 		} else {
 			overlap = overlapY;
-			normal.set(0, Scalar.sign(relPos.getY())).normalize();
+			normal.set(0, Scalar.sign(relPos.y)).normalize();
 		}
 
 		Vec2f perp = new Vec2f(normal).perpRight();
@@ -51,7 +51,7 @@ public class BoxBoxContactGenerator implements ContactGenerator {
 
 		Contact newContact = new Contact(normal, overlap, closestPointB);
 		if (acceptor.accept(newContact)) {
-			shapePair.setContact(newContact);
+			shapePair.contact = newContact;
 		}
 
 	}

@@ -15,8 +15,8 @@ public class PlanePointContactGenerator implements ContactGenerator {
 
 	@Override
 	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {
-		Plane planeA = (Plane) shapePair.getShapeA();
-		Point pointB = (Point) shapePair.getShapeB();
+		Plane planeA = (Plane) shapePair.shapeA;
+		Point pointB = (Point) shapePair.shapeB;
 		Vec2f pointOnPlane = planeA.getPoint();
 		Vec2f distanceToPlane = new Vec2f(pointOnPlane).sub(pointB.getAbsPos());
 		float d = distanceToPlane.dot(planeA.getNormal());
@@ -24,7 +24,7 @@ public class PlanePointContactGenerator implements ContactGenerator {
 		
 		Contact newContact = new Contact(planeA.getNormal(), -d, closestPointOnPlane);
 		if (acceptor.accept(newContact)) {
-			shapePair.setContact(newContact);
+			shapePair.contact = newContact;
 		}
 	}
 }

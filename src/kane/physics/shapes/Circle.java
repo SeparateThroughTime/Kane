@@ -41,11 +41,11 @@ public class Circle extends Shape {
 	@Override
 	public void updateAABB(Vec2f nextAbsPos, float tolerance) {
 		float r = rad + tolerance;
-		Vec2f absPos = new Vec2f(body.getPos()).add(relPos);
-		aabb.getMin().set(Math.min(absPos.getX(), nextAbsPos.getX()) - r,
-				Math.min(absPos.getY(), nextAbsPos.getY() - r));
-		aabb.getMax().set(Math.max(absPos.getX(), nextAbsPos.getX()) + r,
-				Math.max(absPos.getY(), nextAbsPos.getY() + r));
+		Vec2f absPos = new Vec2f(body.pos).add(relPos);
+		aabb.getMin().set(Math.min(absPos.x, nextAbsPos.x) - r,
+				Math.min(absPos.y, nextAbsPos.y - r));
+		aabb.getMax().set(Math.max(absPos.x, nextAbsPos.x) + r,
+				Math.max(absPos.y, nextAbsPos.y + r));
 
 	}
 

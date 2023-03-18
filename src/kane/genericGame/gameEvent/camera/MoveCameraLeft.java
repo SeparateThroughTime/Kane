@@ -1,6 +1,7 @@
 package kane.genericGame.gameEvent.camera;
 
 import static kane.renderer.Camera.CAMERA;
+import static kane.Kane.GAME;
 
 import kane.genericGame.GameEvent;
 import kane.genericGame.Mob;
@@ -9,9 +10,9 @@ public class MoveCameraLeft extends GameEvent{
 	
 	private Mob player;
 
-	public MoveCameraLeft(Mob player) {
+	public MoveCameraLeft() {
 		super(1);
-		this.player = player;
+		player = GAME.player;
 	}
 	
 	@Override

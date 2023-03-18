@@ -16,8 +16,8 @@ public class LineSegmentBoxContactGenerator implements ContactGenerator{
 
 	@Override
 	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {
-		LineSegment lineA = (LineSegment) shapePair.getShapeA();
-		Box boxB = (Box) shapePair.getShapeB();
+		LineSegment lineA = (LineSegment) shapePair.shapeA;
+		Box boxB = (Box) shapePair.shapeB;
 		
 		//Declarations
 		Vec2f lineAAbsPos = lineA.getAbsPos();
@@ -32,9 +32,9 @@ public class LineSegmentBoxContactGenerator implements ContactGenerator{
 
 		Vec2f[] boxBPoints = new Vec2f[NUM_POINTS_B];
 		boxBPoints[0] = new Vec2f(boxBAbsPos).add(boxB.getRad());
-		boxBPoints[1] = new Vec2f(-boxB.getRad().getX(), boxB.getRad().getY()).add(boxBAbsPos);
+		boxBPoints[1] = new Vec2f(-boxB.getRad().x, boxB.getRad().y).add(boxBAbsPos);
 		boxBPoints[2] = new Vec2f(boxBAbsPos).sub(boxB.getRad());
-		boxBPoints[3] = new Vec2f(boxB.getRad().getX(), -boxB.getRad().getY()).add(boxBAbsPos);
+		boxBPoints[3] = new Vec2f(boxB.getRad().x, -boxB.getRad().y).add(boxBAbsPos);
 
 		Vec2f[] lineADirs = new Vec2f[NUM_POINTS_A];
 		Vec2f[] lineADirsPerps = new Vec2f[NUM_POINTS_A];
@@ -134,7 +134,7 @@ public class LineSegmentBoxContactGenerator implements ContactGenerator{
 		
 		Contact newContact = new Contact(normal, nearestIntervalD, contactPoint);
 		if (acceptor.accept(newContact)) {
-			shapePair.setContact(newContact);
+			shapePair.contact = newContact;
 		}
 		
 	}

@@ -1,16 +1,14 @@
 package kane.physics;
 
-import kane.math.Vec2f;
 import static kane.physics.contacts.ContactGeneratorFactory.CONTACT_GENERATOR_FACTORY;
-import static kane.physics.contacts.ContactListener.CONTACT_LISTENER;
-
-import kane.physics.contacts.ContactGeneratorFactory;
-import kane.physics.contacts.ContactSolver;
-
 import static kane.physics.contacts.ContactSolver.CONTACT_SOLVER;
 
-import kane.Kane;
-import kane.genericGame.Game;;
+import kane.genericGame.ContactManagementInterface;
+import kane.genericGame.Game;
+import kane.math.Vec2f;
+import kane.physics.contacts.ContactGeneratorFactory;
+import kane.physics.contacts.ContactListener;
+import kane.physics.contacts.ContactSolver;;
 
 /**
  * This is the physics engine. It manages all physics stuff.
@@ -42,7 +40,7 @@ public class Physics {
 	 * @param deltaTime       -time between each frame
 	 * @param contactListener
 	 */
-	public Physics() {
+	public Physics(ContactManagementInterface contactManagementInterface) {
 		bodies = new Body[MAX_BODIES];
 		numBodies = 0;
 		aabbOverlaps = new boolean[MAX_BODIES][Body.MAX_SHAPES][MAX_BODIES][Body.MAX_SHAPES];
@@ -51,15 +49,16 @@ public class Physics {
 		shapePairs = new ShapePair[MAX_SHAPEPAIRS];
 		numShapePairs = 0;
 
+		ContactListener.initializateContactListener(contactManagementInterface);
 		ContactGeneratorFactory.initializateContactGeneratorFactory();
 		// TODO: If possible with new ContactSolver -> Change to:
 		// contactSolver = new ContactSolver(deltaTime, 1, 1);
 		ContactSolver.initializeContactSolver(4, 1);
 	}
 	
-	public static void initializatePhysics() {
+	public static void initializatePhysics(ContactManagementInterface contactManagementInterface) {
 		if (PHYSICS == null) {
-			PHYSICS = new Physics();
+			PHYSICS = new Physics(contactManagementInterface);
 		}
 	}
 

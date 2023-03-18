@@ -10,15 +10,15 @@ public class ContactListener {
 	
 	public static ContactListener CONTACT_LISTENER;
 	
-	private ContactManagementInterface penetrationInterface;
+	private ContactManagementInterface contactManagementInterface;
 
-	private ContactListener(ContactManagementInterface penetrationInterface) {
-		this.penetrationInterface = penetrationInterface;
+	private ContactListener(ContactManagementInterface contactManagementInterface) {
+		this.contactManagementInterface = contactManagementInterface;
 	}
 	
-	public static void initializateContactListener(ContactManagementInterface penetrationInterface) {
+	public static void initializateContactListener(ContactManagementInterface contactManagementInterface) {
 		if (CONTACT_LISTENER == null) {
-			CONTACT_LISTENER = new ContactListener(penetrationInterface);
+			CONTACT_LISTENER = new ContactListener(contactManagementInterface);
 		}
 	}
 	
@@ -38,31 +38,31 @@ public class ContactListener {
 				for (int k = 0; k < passiveShape.numPassiveAttributes; k++) {
 					PassiveAttributes passiveA = passiveShape.getPassiveAttribute(k);
 					if (activeA == ActiveAttributes.CAMERA_RIGHT && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerTouchCameraRight(activeShape, passiveShape);
+						contactManagementInterface.playerTouchCameraRight(activeShape, passiveShape);
 						
 					} else if (activeA == ActiveAttributes.CAMERA_LEFT && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerTouchCameraLeft(activeShape, passiveShape);
+						contactManagementInterface.playerTouchCameraLeft(activeShape, passiveShape);
 						
 					} else if (activeA == ActiveAttributes.CAMERA_MID_X && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerTouchCameraMidX(activeShape, passiveShape);
+						contactManagementInterface.playerTouchCameraMidX(activeShape, passiveShape);
 						
 					}
 					if (activeA == ActiveAttributes.CAMERA_UP && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerTouchCameraUp(activeShape, passiveShape);
+						contactManagementInterface.playerTouchCameraUp(activeShape, passiveShape);
 						
 					} else if (activeA == ActiveAttributes.CAMERA_DOWN && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerTouchCameraDown(activeShape, passiveShape);
+						contactManagementInterface.playerTouchCameraDown(activeShape, passiveShape);
 						
 					} else if (activeA == ActiveAttributes.CAMERA_MID_Y && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerTouchCameraMidY(activeShape, passiveShape);
+						contactManagementInterface.playerTouchCameraMidY(activeShape, passiveShape);
 						
 					}
 					if (activeA == ActiveAttributes.SWORD && passiveA == PassiveAttributes.PLAYER_ALL) {
-						penetrationInterface.playerCollectsSword(activeShape, passiveShape);
+						contactManagementInterface.playerCollectsSword(activeShape, passiveShape);
 
 					}
 					if (activeA == ActiveAttributes.ATTACKING_FIELD && passiveA == PassiveAttributes.MOB_ALL) {
-						penetrationInterface.mobAttacksMob(activeShape, passiveShape);
+						contactManagementInterface.mobAttacksMob(activeShape, passiveShape);
 					}
 				}
 
@@ -86,10 +86,10 @@ public class ContactListener {
 				for (int k = 0; k < passiveShape.numPassiveAttributes; k++) {
 					PassiveAttributes passiveA = passiveShape.getPassiveAttribute(k);
 					if (activeA == ActiveAttributes.MOB_FEETS && passiveA == PassiveAttributes.PHYSICAL) {
-						penetrationInterface.mobStandsOnPhysical(activeShape, passiveShape);
+						contactManagementInterface.mobStandsOnPhysical(activeShape, passiveShape);
 					}
 					if (activeA == ActiveAttributes.MOB_FEETS && passiveA == PassiveAttributes.MOB_ALL) {
-						penetrationInterface.mobJumpsOnMob(activeShape, passiveShape);
+						contactManagementInterface.mobJumpsOnMob(activeShape, passiveShape);
 					}
 				}
 			}
@@ -112,7 +112,7 @@ public class ContactListener {
 				for (int k = 0; k < passiveShape.numPassiveAttributes; k++) {
 					PassiveAttributes passiveA = passiveShape.getPassiveAttribute(k);
 					if (activeA == ActiveAttributes.MOB_FEETS && passiveA == PassiveAttributes.PHYSICAL) {
-						penetrationInterface.mobFeetLeavePhysical(activeShape, passiveShape);
+						contactManagementInterface.mobFeetLeavePhysical(activeShape, passiveShape);
 					}
 				}
 			}

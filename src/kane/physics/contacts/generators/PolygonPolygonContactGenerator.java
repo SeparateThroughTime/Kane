@@ -15,8 +15,8 @@ public class PolygonPolygonContactGenerator implements ContactGenerator{
 
 	@Override
 	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {
-		Polygon poliA = (Polygon) shapePair.getShapeA();
-		Polygon poliB = (Polygon) shapePair.getShapeB();
+		Polygon poliA = (Polygon) shapePair.shapeA;
+		Polygon poliB = (Polygon) shapePair.shapeB;
 
 		// Declarations
 		Vec2f poliAAbsPos = poliA.getAbsPos();
@@ -171,7 +171,7 @@ public class PolygonPolygonContactGenerator implements ContactGenerator{
 
 		Contact newContact = new Contact(normal, nearestIntervalD, contactPoint);
 		if (acceptor.accept(newContact)) {
-			shapePair.setContact(newContact);
+			shapePair.contact = newContact;
 		}
 		
 	}

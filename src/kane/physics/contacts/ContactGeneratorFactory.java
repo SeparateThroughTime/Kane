@@ -73,8 +73,6 @@ public class ContactGeneratorFactory {
 	/**
 	 * Needs to run every frame. It updates the contacts array.
 	 * @param acceptor
-	 * @param shapepairs
-	 * @param numShapePairs
 	 */
 	public void generate(ContactAcceptor acceptor) {
 		for (int i = 0; i < PHYSICS.numShapePairs; i++) {

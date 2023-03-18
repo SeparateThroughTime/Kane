@@ -82,6 +82,7 @@ import kane.physics.Shape;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.LineSegment;
 import kane.physics.shapes.Polygon;
+import kane.renderer.Camera;
 import kane.renderer.Sprite;
 import kane.renderer.SpriteController;
 import kane.renderer.SpriteState;
@@ -151,7 +152,7 @@ public class Kane extends Game {
 		PHYSICS.addBody(player);
 
 		// camera
-		RENDERER.createCamera();
+		Camera.initializateCamera();
 		CAMERA.bindCameraToMap();
 		RENDERER.moveBackground();
 		CAMERA.initInventory();

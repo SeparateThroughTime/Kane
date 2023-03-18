@@ -16,8 +16,8 @@ public class BoxPolygonContactGenerator implements ContactGenerator {
 
 	@Override
 	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {
-		Box boxA = (Box) shapePair.getShapeA();
-		Polygon poliB = (Polygon) shapePair.getShapeB();
+		Box boxA = (Box) shapePair.shapeA;
+		Polygon poliB = (Polygon) shapePair.shapeB;
 
 		// Declarations
 		Vec2f boxAAbsPos = boxA.getAbsPos();
@@ -28,9 +28,9 @@ public class BoxPolygonContactGenerator implements ContactGenerator {
 		final int NUM_POINTS_B = poliB.getNumPoints();
 		Vec2f[] boxAPoints = new Vec2f[NUM_POINTS_A];
 		boxAPoints[0] = new Vec2f(boxAAbsPos).add(boxA.getRad());
-		boxAPoints[1] = new Vec2f(boxAAbsPos).add(new Vec2f(boxA.getRad().getX(), -boxA.getRad().getY()));
+		boxAPoints[1] = new Vec2f(boxAAbsPos).add(new Vec2f(boxA.getRad().x, -boxA.getRad().y));
 		boxAPoints[2] = new Vec2f(boxAAbsPos).sub(boxA.getRad());
-		boxAPoints[3] = new Vec2f(boxAAbsPos).add(new Vec2f(-boxA.getRad().getX(), boxA.getRad().getY()));
+		boxAPoints[3] = new Vec2f(boxAAbsPos).add(new Vec2f(-boxA.getRad().x, boxA.getRad().y));
 
 		Vec2f[] poliBPoints = new Vec2f[NUM_POINTS_B];
 		for (int i = 0; i < NUM_POINTS_B; i++) {
@@ -183,7 +183,7 @@ public class BoxPolygonContactGenerator implements ContactGenerator {
 
 		Contact newContact = new Contact(normal, nearestIntervalD, contactPoint);
 		if (acceptor.accept(newContact)) {
-			shapePair.setContact(newContact);
+			shapePair.contact = newContact;
 		}
 	}
 

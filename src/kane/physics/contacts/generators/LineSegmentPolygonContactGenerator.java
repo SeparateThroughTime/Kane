@@ -16,8 +16,8 @@ public class LineSegmentPolygonContactGenerator implements ContactGenerator{
 
 	@Override
 	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {
-		LineSegment lineA = (LineSegment) shapePair.getShapeA();
-		Polygon poliB = (Polygon) shapePair.getShapeB();
+		LineSegment lineA = (LineSegment) shapePair.shapeA;
+		Polygon poliB = (Polygon) shapePair.shapeB;
 
 		// Declarations
 		Vec2f lineAAbsPos = lineA.getAbsPos();
@@ -125,7 +125,7 @@ public class LineSegmentPolygonContactGenerator implements ContactGenerator{
 
 		Contact newContact = new Contact(normal, nearestIntervalD, contactPoint);
 		if (acceptor.accept(newContact)) {
-			shapePair.setContact(newContact);
+			shapePair.contact = newContact;
 		}
 		
 	}

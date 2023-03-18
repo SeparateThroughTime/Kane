@@ -16,36 +16,36 @@ public class BoxPointContactGenerator implements ContactGenerator {
 
 	@Override
 	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {
-		Box boxA = (Box) shapePair.getShapeA();
-		Point pointB = (Point) shapePair.getShapeB();
+		Box boxA = (Box) shapePair.shapeA;
+		Point pointB = (Point) shapePair.shapeB;
 		Vec2f radius = new Vec2f(boxA.getRad());
 		Vec2f min = new Vec2f(boxA.getMin());
 		Vec2f max = new Vec2f(boxA.getMax());
 
 		// Get closest Point on boxA
 		Vec2f closestPointA = new Vec2f(pointB.getAbsPos());
-		closestPointA.setX(Scalar.clamp(closestPointA.getX(), min.getX(), max.getX()));
-		closestPointA.setY(Scalar.clamp(closestPointA.getY(), min.getY(), max.getY()));
+		closestPointA.x = Scalar.clamp(closestPointA.x, min.x, max.x);
+		closestPointA.y = Scalar.clamp(closestPointA.y, min.y, max.y);
 
 		// get Normal with difference of Pos of boxes
 		Vec2f relPos = new Vec2f(pointB.getAbsPos()).sub(boxA.getAbsPos());
-		float overlapX = Math.abs(relPos.getX()) - radius.getX();
-		float overlapY = Math.abs(relPos.getY()) - radius.getY();
+		float overlapX = Math.abs(relPos.x) - radius.x;
+		float overlapY = Math.abs(relPos.y) - radius.y;
 		float overlap = 0f;
 		Vec2f normal = new Vec2f();
 		if (overlapX > overlapY) {
 			overlap = overlapX;
-			normal.set(Scalar.sign(relPos.getX()), 0).normalize();
+			normal.set(Scalar.sign(relPos.x), 0).normalize();
 		} else {
 			overlap = overlapY;
-			normal.set(0, Scalar.sign(relPos.getY())).normalize();
+			normal.set(0, Scalar.sign(relPos.y)).normalize();
 		}
 
 		Vec2f closestPointB = new Vec2f(pointB.getAbsPos());
 
 		Contact newContact = new Contact(normal, overlap, closestPointB);
 		if (acceptor.accept(newContact)) {
-			shapePair.setContact(newContact);
+			shapePair.contact = newContact;
 		}
 	}
 

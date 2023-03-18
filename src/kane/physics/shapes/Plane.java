@@ -71,15 +71,15 @@ public class Plane extends Shape {
 		aabb.sortMinMax();
 		aabb.getMin().sub(tolerance);
 		aabb.getMax().add(tolerance);
-		if (normal.getX() > 0) {
-			aabb.getMin().setX(aabb.getMin().getX() - depth);
+		if (normal.x > 0) {
+			aabb.getMin().x = aabb.getMin().x - depth;
 		} else {
-			aabb.getMax().setX(aabb.getMax().getX() + depth);
+			aabb.getMax().x = aabb.getMax().x + depth;
 		}
-		if (normal.getY() > 0) {
-			aabb.getMin().setY(aabb.getMin().getY() - depth);
+		if (normal.y > 0) {
+			aabb.getMin().y = aabb.getMin().y - depth;
 		} else {
-			aabb.getMax().setY(aabb.getMax().getY() + depth);
+			aabb.getMax().y = aabb.getMax().y + depth;
 		}
 
 	}
@@ -103,11 +103,11 @@ public class Plane extends Shape {
 
 	@Override
 	protected void mirrorX() {
-		normal.set(-normal.getX(), normal.getY());
+		normal.set(-normal.x, normal.y);
 	}
 
 	@Override
 	protected void mirrorY() {
-		normal.set(normal.getX(), -normal.getY());
+		normal.set(normal.x, -normal.y);
 	}
 }

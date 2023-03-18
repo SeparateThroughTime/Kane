@@ -18,6 +18,11 @@ import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
+import static kane.renderer.drawer.TriangleDrawer.TRIANGLE_DRAWER;
+import static kane.physics.Physics.PHYSICS;
+import static kane.renderer.Camera.CAMERA;
+import static kane.renderer.ResolutionSpecification.RES_SPECS;
+import static kane.Kane.GAME;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -43,7 +48,6 @@ public class Renderer {
 	
 	public static Renderer RENDERER;
 
-	protected ResolutionSpecification resSpecs;
 	public float multiplicator;
 	protected Shape[] renderedTriangles;
 	protected int numRenderedTriangles;
@@ -58,8 +62,7 @@ public class Renderer {
 
 	public Shader shader;
 
-	private Renderer(ResolutionSpecification resSpecs, String title) {
-		this.resSpecs = resSpecs;
+	private Renderer(String title) {
 		this.multiplicator = 1f;
 
 		initGLFW(title);
@@ -70,14 +73,14 @@ public class Renderer {
 
 	}
 	
-	public static void initializeRenderer(ResolutionSpecification resSpecs, String title) {
+	public static void initializeRenderer(String title) {
 		if (RENDERER == null) {
-			RENDERER = new Renderer(resSpecs, title);
+			RENDERER = new Renderer(title);
 		}
 	}
 	
 	public void initDrawer() {
-		triangleDrawer = new TriangleDrawer(physics, this);
+		TriangleDrawer.initializateTriangleDrawer();
 	}
 
 	public void initGLFW(String title) {
@@ -92,7 +95,7 @@ public class Renderer {
 		glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
 
-		window = glfwCreateWindow(resSpecs.width, resSpecs.height, title, 0, 0);
+		window = glfwCreateWindow(RES_SPECS.width, RES_SPECS.height, title, 0, 0);
 		if (window == 0) {
 			throw new RuntimeException("Failed to create GLFW window");
 		}
@@ -102,18 +105,13 @@ public class Renderer {
 		GL.createCapabilities();
 	}
 
-	public void createCamera() {
-		this.camera = new Camera(resSpecs, g);
-		this.physics.addBody(camera);
-	}
-
 	// TODO drawBackground
 	protected void drawBackground() {
 		if (background != null) {
 			int width = (int) (background.getImg().getWidth() * multiplicator);
 			int height = (int) (background.getImg().getHeight() * multiplicator);
 			int x = background.getOffsetX();
-			while (x < resSpecs.gameWidth) {
+			while (x < RES_SPECS.gameWidth) {
 //				g2d.drawImage(background.getImg(), x, 0, width, height, null);
 				x += width;
 			}
@@ -124,9 +122,9 @@ public class Renderer {
 	 * Needs to run after Resolution is changed.
 	 */
 	public void changeResolution() {
-		glfwSetWindowSize(window, resSpecs.width, resSpecs.height);
-		camera.changeResolution();
-		multiplicator = (float) resSpecs.height / resSpecs.GAME_HEIGHT;
+		glfwSetWindowSize(window, RES_SPECS.width, RES_SPECS.height);
+		CAMERA.changeResolution();
+		multiplicator = (float) RES_SPECS.height / RES_SPECS.GAME_HEIGHT;
 	}
 
 	protected void clearWindow() {
@@ -136,17 +134,17 @@ public class Renderer {
 
 	public void renderGame() {
 		clearWindow();
-		camera.update();
+		CAMERA.update();
 //		drawBackground();
-		triangleDrawer.chooseRenderedShapes();
+		TRIANGLE_DRAWER.chooseRenderedShapes();
 		
-		triangleDrawer.initVerticesAndElements();
-		triangleDrawer.drawBodies();
+		TRIANGLE_DRAWER.initVerticesAndElements();
+		TRIANGLE_DRAWER.drawBodies();
 		
 
 //		drawAABBs();
 //		drawContacts();
-		triangleDrawer.displayFrame(shader);
+		TRIANGLE_DRAWER.displayFrame(shader);
 		
 		glfwSwapBuffers(window);
 	}
@@ -177,14 +175,14 @@ public class Renderer {
 	// TODO displayContacts
 	private void drawContacts() {
 		if (showContacts) {
-			for (int i = 0; i < physics.getNumShapePairs(); i++) {
-				ShapePair shapePair = physics.getShapePairs(i);
-				Contact contact = shapePair.getContact();
-				if (contact != null && shapePair.getShapeA().isVisible() == true
-						&& shapePair.getShapeB().isVisible() == true) {
-					Vec2f normal = contact.getNormal();
-					Vec2f closestPointOnPlane = contact.getPoint();
-					Vec2f closestPointOnBox = new Vec2f(closestPointOnPlane).addMult(normal, contact.getDistance());
+			for (int i = 0; i < PHYSICS.numShapePairs; i++) {
+				ShapePair shapePair = PHYSICS.shapePairs[i];
+				Contact contact = shapePair.contact;
+				if (contact != null && shapePair.shapeA.visible == true
+						&& shapePair.shapeB.visible == true) {
+					Vec2f normal = contact.normal;
+					Vec2f closestPointOnPlane = contact.point;
+					Vec2f closestPointOnBox = new Vec2f(closestPointOnPlane).addMult(normal, contact.distance);
 //					fillCircle((int) closestPointOnPlane.getX(), (int) closestPointOnPlane.getY(), 4, Color.PINK, g2d);
 //					fillCircle((int) closestPointOnBox.getX(), (int) closestPointOnBox.getY(), 4, Color.YELLOW, g2d);
 				}
@@ -194,14 +192,14 @@ public class Renderer {
 
 	// TODO drawImage
 	private void drawImage(BufferedImage img, float scale, int posX, int posY) {
-		posX -= Scalar.round(camera.zeroPoint.getX());
-		posY -= Scalar.round(camera.zeroPoint.getY());
+		posX -= Scalar.round(CAMERA.zeroPoint.x);
+		posY -= Scalar.round(CAMERA.zeroPoint.y);
 		int width = (int) (img.getWidth() * multiplicator * Sprite.SCALE * scale);
 		int height = (int) (img.getHeight() * multiplicator * Sprite.SCALE * scale);
 		posY += img.getHeight() * Sprite.SCALE * scale;
 		posX = (int) (posX * multiplicator);
 		posY = (int) (posY * multiplicator);
-		posY = Scalar.getY(posY, resSpecs.height);
+		posY = Scalar.getY(posY, RES_SPECS.height);
 	}
 
 	private void drawLine(float x1, float y1, float x2, float y2, Color color) {
@@ -209,25 +207,25 @@ public class Renderer {
 	}
 
 	private void drawCircle(int x, int y, int rad, Color color) {
-		x -= Scalar.round(camera.zeroPoint.getX());
-		y -= Scalar.round(camera.zeroPoint.getY());
+		x -= Scalar.round(CAMERA.zeroPoint.x);
+		y -= Scalar.round(CAMERA.zeroPoint.y);
 		x -= rad;
 		y += rad;
 		x = (int) (x * multiplicator);
 		y = (int) (y * multiplicator);
 		rad = (int) (rad * multiplicator);
-		y = Scalar.getY(y, resSpecs.height);
+		y = Scalar.getY(y, RES_SPECS.height);
 	}
 
 	private void fillCircle(int x, int y, int rad, Color color) {
-		x -= Scalar.round(camera.zeroPoint.getX());
-		y -= Scalar.round(camera.zeroPoint.getY());
+		x -= Scalar.round(CAMERA.zeroPoint.x);
+		y -= Scalar.round(CAMERA.zeroPoint.y);
 		x -= rad;
 		y += rad;
 		x = (int) (x * multiplicator);
 		y = (int) (y * multiplicator);
 		rad = (int) (rad * multiplicator);
-		y = Scalar.getY(y, resSpecs.height);
+		y = Scalar.getY(y, RES_SPECS.height);
 	}
 
 	/**
@@ -257,10 +255,10 @@ public class Renderer {
 	}
 
 	public void changeBackground(File file) {
-		background = new Background(file, resSpecs.GAME_HEIGHT);
+		background = new Background(file, RES_SPECS.GAME_HEIGHT);
 	}
 
 	public void moveBackground() {
-		g.addEvent(new MoveBackground(g, this));
+		GAME.addEvent(new MoveBackground());
 	}
 }
