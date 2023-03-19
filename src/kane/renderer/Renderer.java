@@ -18,11 +18,13 @@ import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL46.*;
 import static kane.renderer.drawer.TriangleDrawer.TRIANGLE_DRAWER;
 import static kane.physics.Physics.PHYSICS;
 import static kane.renderer.Camera.CAMERA;
 import static kane.renderer.ResolutionSpecification.RES_SPECS;
 import static kane.Kane.GAME;
+import static kane.renderer.drawer.LineDrawer.LINE_DRAWER;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -39,6 +41,7 @@ import kane.physics.Physics;
 import kane.physics.Shape;
 import kane.physics.ShapePair;
 import kane.physics.contacts.Contact;
+import kane.renderer.drawer.LineDrawer;
 import kane.renderer.drawer.TriangleDrawer;
 
 /**
@@ -81,6 +84,7 @@ public class Renderer {
 	
 	public void initDrawer() {
 		TriangleDrawer.initializateTriangleDrawer();
+		LineDrawer.initializeLineDrawer();
 	}
 
 	public void initGLFW(String title) {
@@ -137,14 +141,19 @@ public class Renderer {
 		CAMERA.update();
 //		drawBackground();
 		TRIANGLE_DRAWER.chooseRenderedShapes();
-		
 		TRIANGLE_DRAWER.initVerticesAndElements();
 		TRIANGLE_DRAWER.drawBodies();
+		TRIANGLE_DRAWER.displayFrame(shader);
+		
+		LINE_DRAWER.chooseRenderedShapes();
+		LINE_DRAWER.initVerticesAndElements();
+		LINE_DRAWER.drawBodies();
+		LINE_DRAWER.displayFrame(shader);
 		
 
 //		drawAABBs();
 //		drawContacts();
-		TRIANGLE_DRAWER.displayFrame(shader);
+		
 		
 		glfwSwapBuffers(window);
 	}
@@ -202,10 +211,6 @@ public class Renderer {
 		posY = Scalar.getY(posY, RES_SPECS.height);
 	}
 
-	private void drawLine(float x1, float y1, float x2, float y2, Color color) {
-
-	}
-
 	private void drawCircle(int x, int y, int rad, Color color) {
 		x -= Scalar.round(CAMERA.zeroPoint.x);
 		y -= Scalar.round(CAMERA.zeroPoint.y);
@@ -228,37 +233,17 @@ public class Renderer {
 		y = Scalar.getY(y, RES_SPECS.height);
 	}
 
-	/**
-	 * draw a normal.
-	 * 
-	 * @param pos
-	 * @param normal
-	 */
-	// TODO drawNormal
-	private void drawNormal(Vec2f pos, Vec2f normal) {
-		pos.mult(multiplicator);
-
-		int arrowRadLen = 15;
-		int arrowRadWid = 15;
-		int nLen = 40;
-		Vec2f perp = new Vec2f(normal).perpRight();
-
-		Vec2f arrowTip = new Vec2f(pos).addMult(normal, nLen);
-		Vec2f leftArmPos = new Vec2f(arrowTip).addMult(perp, -arrowRadLen).addMult(normal, -arrowRadWid);
-		Vec2f rightArmPos = new Vec2f(arrowTip).addMult(perp, arrowRadLen).addMult(normal, -arrowRadWid);
-
-//		drawLine((int) pos.getX(), (int) pos.getY(), (int) arrowTip.getX(), (int) arrowTip.getY(), Color.WHITE, g2d);
-//		drawLine((int) arrowTip.getX(), (int) arrowTip.getY(), (int) leftArmPos.getX(), (int) leftArmPos.getY(),
-//				Color.WHITE, g2d);
-//		drawLine((int) arrowTip.getX(), (int) arrowTip.getY(), (int) rightArmPos.getX(), (int) rightArmPos.getY(),
-//				Color.WHITE, g2d);
-	}
-
 	public void changeBackground(File file) {
 		background = new Background(file, RES_SPECS.GAME_HEIGHT);
 	}
 
 	public void moveBackground() {
 		GAME.addEvent(new MoveBackground());
+	}
+	
+	public void uploadVarToShader(String varName, int val) {
+		int varLocation = glGetUniformLocation(shader.shaderProgramID, varName);
+		shader.use();
+		glUniform1i(varLocation, val);
 	}
 }

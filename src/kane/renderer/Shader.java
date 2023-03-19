@@ -14,7 +14,7 @@ public class Shader {
 	public static Shader DEFAULT = new Shader(SHADER_PATH + "default.glsl");
 	
 	
-	private int shaderProgramID;
+	protected int shaderProgramID;
 	protected int vertexID;
 	protected int fragmentID;
 	

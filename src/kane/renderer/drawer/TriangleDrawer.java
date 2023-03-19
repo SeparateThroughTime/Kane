@@ -1,32 +1,32 @@
 package kane.renderer.drawer;
 
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+
 import java.awt.Color;
 
 import kane.math.Vec2f;
-import kane.physics.Physics;
 import kane.physics.Shape;
 import kane.physics.ShapeType;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.Polygon;
-import kane.renderer.Camera;
 import kane.renderer.Drawer;
-import kane.renderer.Renderer;
 
-public class TriangleDrawer extends Drawer{
-	
+public class TriangleDrawer extends Drawer {
+
 	public static TriangleDrawer TRIANGLE_DRAWER;
+	public static ShapeType[] renderedShapeTypes = { ShapeType.BOX, ShapeType.POLYGON };
 
-	public TriangleDrawer() {
-		super(3);
+	private TriangleDrawer() {
+		super(3, GL_TRIANGLES, TriangleDrawer.renderedShapeTypes);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public static void initializateTriangleDrawer() {
 		if (TRIANGLE_DRAWER == null) {
 			TRIANGLE_DRAWER = new TriangleDrawer();
 		}
 	}
-	
+
 	public void drawBodies() {
 		countCurrentVertices = 0;
 		countCurrentElements = 0;
@@ -53,31 +53,7 @@ public class TriangleDrawer extends Drawer{
 //							drawImage(frame, scale, posX, posY, g2d);
 //						}
 
-//					if (ShapeType.PLANE.equals(shape.getType())) {
-//						Plane plane = (Plane) shape;
-//						Vec2f startPoint = transformPosToVertex(plane.getPoint());
-//						Vec2f perp = new Vec2f(plane.getNormal()).perpRight();
-//						// len won't be accurate because it's calculated as if the plane is
-//						// horizontally. Not gonna change it because it's irrelevant for later game.
-//						float len = (plane.getLen() - resSpecs.halfWidth) / resSpecs.halfWidth;
-//						Vec2f endPoint = transformPosToVertex(new Vec2f(plane.getPoint()).addMult(perp, len));
-//						drawLine(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY(),
-//								plane.getColor());
-//
-//						// draws normal of planes
-//						Vec2f center = transformPosToVertex(new Vec2f(startPoint).addMult(perp, len * 0.5f));
-//						drawNormal(center, plane.getNormal());
-//					}
-
-//					else if (ShapeType.LINESEGMENT.equals(shape.getType())) {
-//						LineSegment lineSegment = (LineSegment) shape;
-//						Vec2f startPoint = transformPosToVertex(
-//								new Vec2f(lineSegment.getAbsPos()).add(lineSegment.getRelPosA()));
-//						Vec2f endPoint = transformPosToVertex(
-//								new Vec2f(lineSegment.getAbsPos()).add(lineSegment.getRelPosB()));
-//						drawLine(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY(),
-//								lineSegment.getColor());
-//					}
+//					
 
 					// TODO drawCircle
 //					else if (ShapeType.CIRCLE.equals(shape.getType())) {
@@ -91,11 +67,9 @@ public class TriangleDrawer extends Drawer{
 						Vec2f absPos = box.getAbsPos();
 						Vec2f rad = box.getRad();
 						Vec2f point1 = transformPosToVertex(new Vec2f(absPos).sub(rad));
-						Vec2f point2 = transformPosToVertex(
-								new Vec2f(absPos.x + rad.x, absPos.y - rad.y));
+						Vec2f point2 = transformPosToVertex(new Vec2f(absPos.x + rad.x, absPos.y - rad.y));
 						Vec2f point3 = transformPosToVertex(new Vec2f(absPos).add(rad));
-						Vec2f point4 = transformPosToVertex(
-								new Vec2f(absPos.x - rad.x, absPos.y + rad.y));
+						Vec2f point4 = transformPosToVertex(new Vec2f(absPos.x - rad.x, absPos.y + rad.y));
 						drawRect(point1, point2, point3, point4, box.color);
 					}
 
@@ -111,17 +85,11 @@ public class TriangleDrawer extends Drawer{
 						Vec2f center = transformPosToVertex(absPos);
 						drawPolygon(points, center, pol.color);
 					}
-
-//					else if (ShapeType.POINT.equals(shape.getType())) {
-//						Point point = (Point) shape;
-//						Vec2f absPos = transformPosToVertex(point.getAbsPos());
-//						drawLine(absPos.getX(), absPos.getY(), absPos.getX(), absPos.getY(), point.getColor());
-//					}
 				}
 			}
 		}
 	}
-	
+
 	private void drawRect(Vec2f point1, Vec2f point2, Vec2f point3, Vec2f point4, Color color) {
 		int verticeStartingIndex = countCurrentVertices * VERTEX_SIZE;
 		int elementsStartingIndex = countCurrentElements * ELEMENT_SIZE;
