@@ -24,8 +24,6 @@ public class Sprite {
 
 	public static final float SCALE = 2f;
 
-	// FRAME_WIDTH and FRAME_HEIGHT defines how many 32x32 blocks are used for one
-	// frame.
 	public final int FRAME_WIDTH;
 	public final int FRAME_HEIGHT;
 	public int PIXEL_PER_FRAME;
@@ -109,13 +107,5 @@ public class Sprite {
 
 	public int getFrameCount(SpriteState state) {
 		return states.get(state).length;
-	}
-	
-	public void bind() {
-		glBindTexture(GL_TEXTURE_2D, TEXTURE_ID);
-	}
-	
-	public void unbind() {
-		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }

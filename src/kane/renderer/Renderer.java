@@ -25,6 +25,7 @@ import static kane.renderer.Camera.CAMERA;
 import static kane.renderer.ResolutionSpecification.RES_SPECS;
 import static kane.Kane.GAME;
 import static kane.renderer.drawer.LineDrawer.LINE_DRAWER;
+import static kane.renderer.drawer.ImageDrawer.IMAGE_DRAWER;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -41,6 +42,7 @@ import kane.physics.Physics;
 import kane.physics.Shape;
 import kane.physics.ShapePair;
 import kane.physics.contacts.Contact;
+import kane.renderer.drawer.ImageDrawer;
 import kane.renderer.drawer.LineDrawer;
 import kane.renderer.drawer.TriangleDrawer;
 
@@ -85,6 +87,7 @@ public class Renderer {
 	public void initDrawer() {
 		TriangleDrawer.initializateTriangleDrawer();
 		LineDrawer.initializeLineDrawer();
+		ImageDrawer.initializeImageDrawer();
 	}
 
 	public void initGLFW(String title) {
@@ -109,18 +112,7 @@ public class Renderer {
 		GL.createCapabilities();
 	}
 
-	// TODO drawBackground
-	protected void drawBackground() {
-		if (background != null) {
-			int width = (int) (background.getImg().getWidth() * multiplicator);
-			int height = (int) (background.getImg().getHeight() * multiplicator);
-			int x = background.getOffsetX();
-			while (x < RES_SPECS.gameWidth) {
-//				g2d.drawImage(background.getImg(), x, 0, width, height, null);
-				x += width;
-			}
-		}
-	}
+	
 
 	/**
 	 * Needs to run after Resolution is changed.
@@ -140,15 +132,18 @@ public class Renderer {
 		clearWindow();
 		CAMERA.update();
 //		drawBackground();
-		TRIANGLE_DRAWER.chooseRenderedShapes();
-		TRIANGLE_DRAWER.initVerticesAndElements();
-		TRIANGLE_DRAWER.drawBodies();
-		TRIANGLE_DRAWER.displayFrame(shader);
+//		TRIANGLE_DRAWER.chooseRenderedShapes();
+//		TRIANGLE_DRAWER.initVerticesAndElements();
+//		TRIANGLE_DRAWER.drawBodies();
+//		TRIANGLE_DRAWER.displayFrame(shader);
 		
 		LINE_DRAWER.chooseRenderedShapes();
 		LINE_DRAWER.initVerticesAndElements();
 		LINE_DRAWER.drawBodies();
 		LINE_DRAWER.displayFrame(shader);
+		
+		IMAGE_DRAWER.chooseRenderedShapes();
+		IMAGE_DRAWER.drawBodies();
 		
 
 //		drawAABBs();

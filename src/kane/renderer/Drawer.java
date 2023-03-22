@@ -76,10 +76,15 @@ public abstract class Drawer {
 	protected void initVerticesAndElements() {
 		int numVertices = 0;
 		int numElements = 0;
-		for (int i = 0; i < numRenderedShapes; i++) {
-			Shape s = renderedShapes[i];
-			numVertices += s.numRenderVertices;
-			numElements += s.numRenderElements;
+		if (UV_SIZE == 0) {
+			for (int i = 0; i < numRenderedShapes; i++) {
+				Shape s = renderedShapes[i];
+				numVertices += s.numRenderVertices;
+				numElements += s.numRenderElements;
+			}
+		} else {
+			numVertices = numRenderedShapes * 4;
+			numElements = numRenderedShapes * 2;
 		}
 		vertices = new float[numVertices * VERTEX_SIZE];
 		elements = new int[numElements * ELEMENT_SIZE];
@@ -134,9 +139,15 @@ public abstract class Drawer {
 					Shape shape = body.shapes[j];
 					if (shape.aabb.overlaps(CAMERA.window)) {
 						if (shape.visible) {
-							for (int k = 0; k < renderedShapeTypes.length; k++) {
-								ShapeType shapeType = renderedShapeTypes[k];
-								if (shapeType.equals(shape.type)) {
+							if(UV_SIZE == 0) {
+								for (int k = 0; k < renderedShapeTypes.length; k++) {
+									ShapeType shapeType = renderedShapeTypes[k];
+									if (shapeType.equals(shape.type)) {
+										renderedShapes[numRenderedShapes++] = shape;
+									}
+								}
+							} else {
+								if (shape.hasSprite) {
 									renderedShapes[numRenderedShapes++] = shape;
 								}
 							}

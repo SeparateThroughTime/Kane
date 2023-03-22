@@ -1,6 +1,6 @@
 package kane.renderer;
 
-import java.awt.image.BufferedImage;
+import java.nio.ByteBuffer;
 
 import kane.math.Vec2f;
 
@@ -30,7 +30,7 @@ public class SpriteController {
 	 * 
 	 * @return
 	 */
-	public BufferedImage getFrame() {
+	public ByteBuffer getFrame() {
 		return sprite.getFrame(currentSpriteState, currentSpriteStateFrameNo);
 	}
 
