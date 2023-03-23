@@ -28,9 +28,11 @@ import kane.renderer.SpriteController;
 public class ImageDrawer extends Drawer {
 
 	public static ImageDrawer IMAGE_DRAWER;
+	private static final int MAX_IMAGES = 1000;
 
 	private ImageDrawer() {
 		super(3, GL_TRIANGLES, 2);
+		
 		// Don't duplicate Texture if it goes over uv-borders
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -225,5 +227,11 @@ public class ImageDrawer extends Drawer {
 
 	protected float transformBackgroundYToVertexY(float y) {
 		return (y / RES_SPECS.halfGameHeight) - 1;
+	}
+
+	@Override
+	protected void initVerticesAndElements() {
+		vertices = new float[VERTEX_SIZE * MAX_IMAGES];
+		elements = new int[ELEMENT_SIZE * MAX_IMAGES];
 	}
 }

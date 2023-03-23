@@ -13,6 +13,7 @@ import kane.renderer.Drawer;
 
 public class TriangleDrawer extends Drawer {
 
+	private static final int MAX_TRIANGLES = 300;
 	public static TriangleDrawer TRIANGLE_DRAWER;
 	public static ShapeType[] renderedShapeTypes = { ShapeType.BOX, ShapeType.POLYGON };
 
@@ -203,6 +204,12 @@ public class TriangleDrawer extends Drawer {
 
 		countCurrentVertices += points.length + 1;
 		countCurrentElements += points.length;
+	}
+
+	@Override
+	protected void initVerticesAndElements() {
+		vertices = new float[VERTEX_SIZE * MAX_TRIANGLES];
+		elements = new int[ELEMENT_SIZE * MAX_TRIANGLES];
 	}
 
 }

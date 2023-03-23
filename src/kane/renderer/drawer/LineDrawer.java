@@ -15,6 +15,7 @@ import kane.renderer.Drawer;
 
 public class LineDrawer extends Drawer {
 
+	private static final int MAX_LINES = 300;
 	public static LineDrawer LINE_DRAWER;
 	public static ShapeType[] renderedShapeTypes = { ShapeType.LINESEGMENT, ShapeType.PLANE, ShapeType.POINT };
 
@@ -122,5 +123,11 @@ public class LineDrawer extends Drawer {
 		drawLine(pos, arrowTip, Color.WHITE);
 		drawLine(arrowTip, leftArmPos, Color.WHITE);
 		drawLine(arrowTip, rightArmPos, Color.WHITE);
+	}
+
+	@Override
+	protected void initVerticesAndElements() {
+		vertices = new float[VERTEX_SIZE * MAX_LINES];
+		elements = new int[ELEMENT_SIZE * MAX_LINES];		
 	}
 }
