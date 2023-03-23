@@ -36,24 +36,9 @@ public class TriangleDrawer extends Drawer {
 			for (int i = 0; i < numRenderedShapes; i++) {
 				Shape shape = renderedShapes[i];
 				if (shape.RENDER_LAYER == layer) {
-					// TODO drawSprite
-//					if (shape.hasSprite()) {
-//						SpriteController[] spriteControllers = shape.getSpriteControllers();
-//						for (SpriteController spriteController : spriteControllers) {
-//							float scale = spriteController.getScale();
-//							if (!g.pause) {
-//								spriteController.step();
-//							}
-//							BufferedImage frame = spriteController.getFrame();
-//							Vec2f pos = shape.getAbsPos();
-//							Vec2f spriteAbsPos = new Vec2f(pos).add(spriteController.getSpritePosOffset());
-////							int posX = (int) spriteAbsPos.getX();
-////							int posY = (int) spriteAbsPos.getY();
-//							int posX = Scalar.round(spriteAbsPos.getX());
-//							int posY = Scalar.round(spriteAbsPos.getY());
-//							drawImage(frame, scale, posX, posY, g2d);
-//						}
-
+					if(shape.hasSprite) {
+						// They seem to get in the renderedShapes array. dont know why.
+					}
 //					
 
 					// TODO drawCircle
@@ -63,7 +48,7 @@ public class TriangleDrawer extends Drawer {
 //								(int) circle.getRad(), circle.getColor(), g2d);
 //					}
 
-					if (ShapeType.BOX.equals(shape.type)) {
+					else if (ShapeType.BOX.equals(shape.type)) {
 						Box box = (Box) shape;
 						Vec2f absPos = box.getAbsPos();
 						Vec2f rad = box.getRad();

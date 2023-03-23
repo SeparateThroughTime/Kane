@@ -2,6 +2,7 @@
 	Switch to lwjgl
 	Visual Effects
 	Sounds
+	Resource Management
 	Object Editor
 		(Ermitteln des besten Mittelpunkts)
 	Level Ends/ Player dies -> Next level/ Restart

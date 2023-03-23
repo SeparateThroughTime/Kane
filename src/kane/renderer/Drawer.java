@@ -155,7 +155,7 @@ public abstract class Drawer {
 					Shape shape = body.shapes[j];
 					if (shape.aabb.overlaps(CAMERA.window)) {
 						if (shape.visible) {
-							if(UV_SIZE == 0) {
+							if(UV_SIZE == 0 && !shape.hasSprite) {
 								for (int k = 0; k < renderedShapeTypes.length; k++) {
 									ShapeType shapeType = renderedShapeTypes[k];
 									if (shapeType.equals(shape.type)) {
