@@ -36,9 +36,9 @@ public class TriangleDrawer extends Drawer {
 			for (int i = 0; i < numRenderedShapes; i++) {
 				Shape shape = renderedShapes[i];
 				if (shape.RENDER_LAYER == layer) {
-					if(shape.hasSprite) {
-						// They seem to get in the renderedShapes array. dont know why.
-					}
+//					if(shape.hasSprite) {
+//						// They seem to get in the renderedShapes array. dont know why.
+//					}
 //					
 
 					// TODO drawCircle
@@ -48,7 +48,7 @@ public class TriangleDrawer extends Drawer {
 //								(int) circle.getRad(), circle.getColor(), g2d);
 //					}
 
-					else if (ShapeType.BOX.equals(shape.type)) {
+					if (ShapeType.BOX.equals(shape.type)) {
 						Box box = (Box) shape;
 						Vec2f absPos = box.getAbsPos();
 						Vec2f rad = box.getRad();

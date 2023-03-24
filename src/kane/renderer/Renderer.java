@@ -132,16 +132,19 @@ public class Renderer {
 		clearWindow();
 		CAMERA.update();
 //		drawBackground();
-		TRIANGLE_DRAWER.chooseRenderedShapes();
-		TRIANGLE_DRAWER.drawBodies();
-		TRIANGLE_DRAWER.displayFrame(shader);
+
 		
 		LINE_DRAWER.chooseRenderedShapes();
 		LINE_DRAWER.drawBodies();
 		LINE_DRAWER.displayFrame(shader);
 		
-//		IMAGE_DRAWER.chooseRenderedShapes();
-//		IMAGE_DRAWER.drawBodies();
+		IMAGE_DRAWER.chooseRenderedShapes();
+		IMAGE_DRAWER.drawBodies();
+		IMAGE_DRAWER.displayFrame(shader);
+		
+		TRIANGLE_DRAWER.chooseRenderedShapes();
+		TRIANGLE_DRAWER.drawBodies();
+		TRIANGLE_DRAWER.displayFrame(shader);
 		
 
 //		drawAABBs();

@@ -77,10 +77,6 @@ public class ImageDrawer extends Drawer {
 	}
 
 	public void drawImage(Vec2f pos, ByteBuffer frame, Vec2f dimension, int textureID, Color color) {
-		// TODO: Delete and optimize
-		countCurrentVertices = 0;
-		countCurrentElements = 0;
-		initVerticesAndElements();
 
 		glBindTexture(GL_TEXTURE_2D, textureID);
 		RENDERER.uploadVarToShader("texSampler", 0);
@@ -158,9 +154,6 @@ public class ImageDrawer extends Drawer {
 
 		countCurrentVertices += 4;
 		countCurrentElements += 2;
-
-		// TODO: Delete and optimize
-		displayFrame(RENDERER.shader);
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 

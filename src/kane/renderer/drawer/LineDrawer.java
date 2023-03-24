@@ -37,11 +37,11 @@ public class LineDrawer extends Drawer {
 			for (int i = 0; i < numRenderedShapes; i++) {
 				Shape shape = renderedShapes[i];
 				if (shape.RENDER_LAYER == layer) {
-					if(shape.hasSprite) {
-						// They seem to get in the renderedShapes array. dont know why.
-					}
+//					if(shape.hasSprite) {
+//						// They seem to get in the renderedShapes array. dont know why.
+//					}
 
-					else if (ShapeType.PLANE.equals(shape.type)) {
+					if (ShapeType.PLANE.equals(shape.type)) {
 						Plane plane = (Plane) shape;
 						Vec2f startPoint = transformPosToVertex(plane.getPoint());
 						Vec2f perp = new Vec2f(plane.getNormal()).perpRight();

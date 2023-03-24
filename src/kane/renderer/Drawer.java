@@ -130,7 +130,7 @@ public abstract class Drawer {
 			glEnableVertexAttribArray(2);
 		}
 
-		glDrawElements(DRAW_TYPE, numRenderedShapes * ELEMENT_SIZE * elementsToDraw, GL_UNSIGNED_INT, 0);
+		glDrawElements(DRAW_TYPE, ELEMENT_SIZE * elementsToDraw, GL_UNSIGNED_INT, 0);
 
 		// Unbind
 		glDisableVertexAttribArray(0);
