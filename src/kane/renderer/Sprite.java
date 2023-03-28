@@ -42,7 +42,7 @@ public class Sprite {
 		this.states = new HashMap<SpriteState, int[]>();
 
 		TEXTURE_ID = glGenTextures();
-		glBindTexture(GL_TEXTURE_2D_ARRAY, TEXTURE_ID);
+		
 		init(img);
 
 	}
@@ -54,7 +54,6 @@ public class Sprite {
 		this.states = new HashMap<SpriteState, int[]>();
 		
 		TEXTURE_ID = glGenTextures();
-		glBindTexture(GL_TEXTURE_2D_ARRAY, TEXTURE_ID);
 		BufferedImage img;
 		try {
 			img = ImageIO.read(file);

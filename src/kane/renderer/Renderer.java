@@ -132,21 +132,20 @@ public class Renderer {
 		clearWindow();
 		CAMERA.update();
 //		drawBackground();
-
+		
+//		IMAGE_DRAWER.chooseRenderedShapes();
+//		IMAGE_DRAWER.addImagesToDrawer();
+//		IMAGE_DRAWER.drawBodies();
+//		IMAGE_DRAWER.displayFrame(shader);
 		
 		LINE_DRAWER.chooseRenderedShapes();
 		LINE_DRAWER.drawBodies();
 		LINE_DRAWER.displayFrame(shader);
 		
-		IMAGE_DRAWER.chooseRenderedShapes();
-		IMAGE_DRAWER.drawBodies();
-		IMAGE_DRAWER.displayFrame(shader);
-		
 		TRIANGLE_DRAWER.chooseRenderedShapes();
 		TRIANGLE_DRAWER.drawBodies();
 		TRIANGLE_DRAWER.displayFrame(shader);
 		
-
 //		drawAABBs();
 //		drawContacts();
 		
@@ -237,9 +236,15 @@ public class Renderer {
 		GAME.addEvent(new MoveBackground());
 	}
 	
-	public void uploadVarToShader(String varName, int val) {
+	public void uploadIntToShader(String varName, int val) {
 		int varLocation = glGetUniformLocation(shader.shaderProgramID, varName);
 		shader.use();
 		glUniform1i(varLocation, val);
+	}
+	
+	public void uploadIntArrayToShader(String varName, int[] val) {
+		int varLocation = glGetUniformLocation(shader.shaderProgramID, varName);
+		shader.use();
+		glUniform1iv(varLocation, val);
 	}
 }

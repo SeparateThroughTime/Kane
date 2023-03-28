@@ -2,22 +2,25 @@ package kane.renderer.drawer;
 
 import static kane.Kane.GAME;
 import static kane.renderer.Renderer.RENDERER;
+import static kane.renderer.ResolutionSpecification.RES_SPECS;
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import static org.lwjgl.opengl.GL46.*;
-import static kane.renderer.ResolutionSpecification.RES_SPECS;
+import static org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY;
 
 import java.awt.Color;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 import kane.math.Vec2f;
 import kane.physics.Shape;
@@ -29,9 +32,15 @@ public class ImageDrawer extends Drawer {
 
 	public static ImageDrawer IMAGE_DRAWER;
 	private static final int MAX_IMAGES = 1000;
+	private static final int MAX_TEXTURES = 16;
+	
+	private ByteBuffer[] textureSlots;
+	private int[] textureSlotNumbers;
+	private int countTextureSlots;
+	private HashMap<Integer, Integer> texIDByteBufferIndex;
 
 	private ImageDrawer() {
-		super(3, GL_TRIANGLES, 2);
+		super(3, GL_TRIANGLES);
 		
 		// Don't duplicate Texture if it goes over uv-borders
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -53,35 +62,62 @@ public class ImageDrawer extends Drawer {
 		countCurrentVertices = 0;
 		countCurrentElements = 0;
 		// draw bodies
-		for (int layer = 1; layer < Shape.MAX_RENDER_LAYER; layer++) {
-			for (int i = 0; i < numRenderedShapes; i++) {
-				Shape shape = renderedShapes[i];
-				SpriteController[] spriteControllers = shape.getSpriteControllers();
-				for (SpriteController spriteController : spriteControllers) {
-					Sprite sprite = spriteController.sprite;
-					float scale = spriteController.scale * Sprite.SCALE;
-					if (!GAME.pause) {
-						spriteController.step();
+		for (int i = 0; i < numRenderedShapes; i++) {
+			Shape shape = renderedShapes[i];
+			SpriteController[] spriteControllers = shape.getSpriteControllers();
+			for (SpriteController spriteController : spriteControllers) {
+				Sprite sprite = spriteController.sprite;
+				float scale = spriteController.scale * Sprite.SCALE;
+				if (!GAME.pause) {
+					spriteController.step();
+				}
+				ByteBuffer frame = spriteController.getFrame();
+				Vec2f pos = shape.getAbsPos();
+				Vec2f spriteAbsPos = new Vec2f(pos).add(spriteController.spritePosOffset);
+				int textureId = spriteController.sprite.TEXTURE_ID;
+				Vec2f dimension = new Vec2f((float) sprite.FRAME_WIDTH / RES_SPECS.halfGameWidth,
+						(float) sprite.FRAME_HEIGHT / RES_SPECS.halfGameHeight).mult(scale * RENDERER.multiplicator);
+				drawImage(transformPosToVertex(spriteAbsPos), frame, dimension, textureId, shape.color);
+			}
+		}
+	}
+	
+	public void addImagesToDrawer() {
+		initTextureSlots();
+		for (int i = 0; i < numRenderedShapes; i++) {
+			Shape shape = renderedShapes[i];
+			SpriteController[] spriteControllers = shape.getSpriteControllers();
+			for (SpriteController spriteController : spriteControllers) {
+				ByteBuffer frame = spriteController.getFrame();
+				int textureId = spriteController.sprite.TEXTURE_ID;
+				boolean textureAlreadyExists = false;
+				for(int j = 0; j < countTextureSlots; j++) {
+					if(textureSlots[j].equals(frame)) {
+						textureAlreadyExists = true;
+						break;
 					}
-					ByteBuffer frame = spriteController.getFrame();
-					Vec2f pos = shape.getAbsPos();
-					Vec2f spriteAbsPos = new Vec2f(pos).add(spriteController.spritePosOffset);
-					int textureId = spriteController.sprite.TEXTURE_ID;
-					Vec2f dimension = new Vec2f((float) sprite.FRAME_WIDTH / RES_SPECS.halfGameWidth,
-							(float) sprite.FRAME_HEIGHT / RES_SPECS.halfGameHeight)
-							.mult(scale * RENDERER.multiplicator);
-					drawImage(transformPosToVertex(spriteAbsPos), frame, dimension, textureId, shape.color);
+				}
+				if(!textureAlreadyExists) {
+					textureSlots[countTextureSlots] = frame;
+					texIDByteBufferIndex.put(textureId, countTextureSlots);
+					glActiveTexture(GL_TEXTURE0 + countTextureSlots);
+					glBindTexture(GL_TEXTURE_2D, textureId);
+					countTextureSlots++;
 				}
 			}
 		}
+		glBindTexture(GL_TEXTURE_2D, 0);
+		
+		textureSlotNumbers = new int[MAX_TEXTURES];
+		for(int i = 0; i < MAX_TEXTURES; i++) {
+			textureSlotNumbers[i] = i;
+		}
+		RENDERER.uploadIntArrayToShader("texSlots", textureSlotNumbers);
 	}
 
 	public void drawImage(Vec2f pos, ByteBuffer frame, Vec2f dimension, int textureID, Color color) {
 
-		glBindTexture(GL_TEXTURE_2D, textureID);
-		RENDERER.uploadVarToShader("texSampler", 0);
-		glActiveTexture(GL_TEXTURE0);
-//		glBindTexture(GL_TEXTURE_2D, textureID);
+		
 
 		int verticeStartingIndex = countCurrentVertices * VERTEX_SIZE;
 		int elementsStartingIndex = countCurrentElements * ELEMENT_SIZE;
@@ -103,46 +139,50 @@ public class ImageDrawer extends Drawer {
 
 		vertices[verticeStartingIndex + 7] = 0;
 		vertices[verticeStartingIndex + 8] = 1;
+		vertices[verticeStartingIndex + 9] = textureID;
 
 		// Bottom right
-		vertices[verticeStartingIndex + 9] = pos.x + dimension.x;
-		vertices[verticeStartingIndex + 10] = pos.y;
-		vertices[verticeStartingIndex + 11] = 0f;
+		vertices[verticeStartingIndex + 10] = pos.x + dimension.x;
+		vertices[verticeStartingIndex + 11] = pos.y;
+		vertices[verticeStartingIndex + 12] = 0f;
 
-		vertices[verticeStartingIndex + 12] = red;
-		vertices[verticeStartingIndex + 13] = green;
-		vertices[verticeStartingIndex + 14] = blue;
-		vertices[verticeStartingIndex + 15] = 1f;
+		vertices[verticeStartingIndex + 13] = red;
+		vertices[verticeStartingIndex + 14] = green;
+		vertices[verticeStartingIndex + 15] = blue;
+		vertices[verticeStartingIndex + 16] = 1f;
 
-		vertices[verticeStartingIndex + 16] = 1;
 		vertices[verticeStartingIndex + 17] = 1;
+		vertices[verticeStartingIndex + 18] = 1;
+		vertices[verticeStartingIndex + 19] = textureID;
 
 		// Top right
-		vertices[verticeStartingIndex + 18] = pos.x + dimension.x;
-		vertices[verticeStartingIndex + 19] = pos.y + dimension.y;
-		vertices[verticeStartingIndex + 20] = 0f;
+		vertices[verticeStartingIndex + 20] = pos.x + dimension.x;
+		vertices[verticeStartingIndex + 21] = pos.y + dimension.y;
+		vertices[verticeStartingIndex + 22] = 0f;
 
-		vertices[verticeStartingIndex + 21] = red;
-		vertices[verticeStartingIndex + 22] = green;
-		vertices[verticeStartingIndex + 23] = blue;
-		vertices[verticeStartingIndex + 24] = 1f;
+		vertices[verticeStartingIndex + 23] = red;
+		vertices[verticeStartingIndex + 24] = green;
+		vertices[verticeStartingIndex + 25] = blue;
+		vertices[verticeStartingIndex + 26] = 1f;
 
-		vertices[verticeStartingIndex + 25] = 1;
-		vertices[verticeStartingIndex + 26] = 0;
+		vertices[verticeStartingIndex + 27] = 1;
+		vertices[verticeStartingIndex + 28] = 0;
+		vertices[verticeStartingIndex + 29] = textureID;
 
 		// Top left
-		vertices[verticeStartingIndex + 27] = pos.x;
-		vertices[verticeStartingIndex + 28] = pos.y + dimension.y;
-		vertices[verticeStartingIndex + 29] = 0f;
+		vertices[verticeStartingIndex + 30] = pos.x;
+		vertices[verticeStartingIndex + 31] = pos.y + dimension.y;
+		vertices[verticeStartingIndex + 32] = 0f;
 
-		vertices[verticeStartingIndex + 30] = red;
-		vertices[verticeStartingIndex + 31] = green;
-		vertices[verticeStartingIndex + 32] = blue;
-		vertices[verticeStartingIndex + 33] = 1f;
+		vertices[verticeStartingIndex + 33] = red;
+		vertices[verticeStartingIndex + 34] = green;
+		vertices[verticeStartingIndex + 35] = blue;
+		vertices[verticeStartingIndex + 36] = 1f;
 
-		vertices[verticeStartingIndex + 34] = 0;
-		vertices[verticeStartingIndex + 35] = 0;
-
+		vertices[verticeStartingIndex + 37] = 0;
+		vertices[verticeStartingIndex + 38] = 0;
+		vertices[verticeStartingIndex + 39] = textureID;
+		
 		// Elements
 		elements[elementsStartingIndex + 0] = countCurrentVertices + 0;
 		elements[elementsStartingIndex + 1] = countCurrentVertices + 1;
@@ -155,7 +195,7 @@ public class ImageDrawer extends Drawer {
 		countCurrentVertices += 4;
 		countCurrentElements += 2;
 
-		glBindTexture(GL_TEXTURE_2D, 0);
+		
 
 	}
 
@@ -226,5 +266,11 @@ public class ImageDrawer extends Drawer {
 	protected void initVerticesAndElements() {
 		vertices = new float[VERTEX_SIZE * MAX_IMAGES];
 		elements = new int[ELEMENT_SIZE * MAX_IMAGES];
+	}
+	
+	protected void initTextureSlots() {
+		countTextureSlots = 0;
+		textureSlots = new ByteBuffer[MAX_TEXTURES];
+		texIDByteBufferIndex = new HashMap<Integer, Integer>();
 	}
 }

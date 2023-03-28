@@ -32,46 +32,42 @@ public class TriangleDrawer extends Drawer {
 		countCurrentVertices = 0;
 		countCurrentElements = 0;
 		// draw bodies
-		for (int layer = 1; layer < Shape.MAX_RENDER_LAYER; layer++) {
-			for (int i = 0; i < numRenderedShapes; i++) {
-				Shape shape = renderedShapes[i];
-				if (shape.RENDER_LAYER == layer) {
+		for (int i = 0; i < numRenderedShapes; i++) {
+			Shape shape = renderedShapes[i];
 //					if(shape.hasSprite) {
 //						// They seem to get in the renderedShapes array. dont know why.
 //					}
 //					
 
-					// TODO drawCircle
+			// TODO drawCircle
 //					else if (ShapeType.CIRCLE.equals(shape.getType())) {
 //						Circle circle = (Circle) shape;
 //						drawCircle((int) circle.getAbsPos().getX(), (int) circle.getAbsPos().getY(),
 //								(int) circle.getRad(), circle.getColor(), g2d);
 //					}
 
-					if (ShapeType.BOX.equals(shape.type)) {
-						Box box = (Box) shape;
-						Vec2f absPos = box.getAbsPos();
-						Vec2f rad = box.getRad();
-						Vec2f point1 = transformPosToVertex(new Vec2f(absPos).sub(rad));
-						Vec2f point2 = transformPosToVertex(new Vec2f(absPos.x + rad.x, absPos.y - rad.y));
-						Vec2f point3 = transformPosToVertex(new Vec2f(absPos).add(rad));
-						Vec2f point4 = transformPosToVertex(new Vec2f(absPos.x - rad.x, absPos.y + rad.y));
-						drawRect(point1, point2, point3, point4, box.color);
-					}
+			if (ShapeType.BOX.equals(shape.type)) {
+				Box box = (Box) shape;
+				Vec2f absPos = box.getAbsPos();
+				Vec2f rad = box.getRad();
+				Vec2f point1 = transformPosToVertex(new Vec2f(absPos).sub(rad));
+				Vec2f point2 = transformPosToVertex(new Vec2f(absPos.x + rad.x, absPos.y - rad.y));
+				Vec2f point3 = transformPosToVertex(new Vec2f(absPos).add(rad));
+				Vec2f point4 = transformPosToVertex(new Vec2f(absPos.x - rad.x, absPos.y + rad.y));
+				drawRect(point1, point2, point3, point4, box.color);
+			}
 
-					else if (ShapeType.POLYGON.equals(shape.type)) {
-						Polygon pol = (Polygon) shape;
-						int numPoints = pol.getNumPoints();
-						Vec2f[] points = new Vec2f[numPoints];
-						Vec2f absPos = pol.getAbsPos();
-						for (int p = 0; p < numPoints; p++) {
-							Vec2f pointAbsPos = new Vec2f(pol.getPoint(p)).add(absPos);
-							points[p] = transformPosToVertex(pointAbsPos);
-						}
-						Vec2f center = transformPosToVertex(absPos);
-						drawPolygon(points, center, pol.color);
-					}
+			else if (ShapeType.POLYGON.equals(shape.type)) {
+				Polygon pol = (Polygon) shape;
+				int numPoints = pol.getNumPoints();
+				Vec2f[] points = new Vec2f[numPoints];
+				Vec2f absPos = pol.getAbsPos();
+				for (int p = 0; p < numPoints; p++) {
+					Vec2f pointAbsPos = new Vec2f(pol.getPoint(p)).add(absPos);
+					points[p] = transformPosToVertex(pointAbsPos);
 				}
+				Vec2f center = transformPosToVertex(absPos);
+				drawPolygon(points, center, pol.color);
 			}
 		}
 	}
@@ -90,17 +86,17 @@ public class TriangleDrawer extends Drawer {
 		vertices[verticeStartingIndex + 1] = point1.y;
 		vertices[verticeStartingIndex + 2] = 0f;
 
-		vertices[verticeStartingIndex + 7] = point2.x;
-		vertices[verticeStartingIndex + 8] = point2.y;
-		vertices[verticeStartingIndex + 9] = 0f;
+		vertices[verticeStartingIndex + 10] = point2.x;
+		vertices[verticeStartingIndex + 11] = point2.y;
+		vertices[verticeStartingIndex + 12] = 0f;
 
-		vertices[verticeStartingIndex + 14] = point3.x;
-		vertices[verticeStartingIndex + 15] = point3.y;
-		vertices[verticeStartingIndex + 16] = 0f;
+		vertices[verticeStartingIndex + 20] = point3.x;
+		vertices[verticeStartingIndex + 21] = point3.y;
+		vertices[verticeStartingIndex + 22] = 0f;
 
-		vertices[verticeStartingIndex + 21] = point4.x;
-		vertices[verticeStartingIndex + 22] = point4.y;
-		vertices[verticeStartingIndex + 23] = 0f;
+		vertices[verticeStartingIndex + 30] = point4.x;
+		vertices[verticeStartingIndex + 31] = point4.y;
+		vertices[verticeStartingIndex + 32] = 0f;
 
 		// Colors
 		vertices[verticeStartingIndex + 3] = red;
@@ -108,20 +104,20 @@ public class TriangleDrawer extends Drawer {
 		vertices[verticeStartingIndex + 5] = blue;
 		vertices[verticeStartingIndex + 6] = 1f;
 
-		vertices[verticeStartingIndex + 10] = red;
-		vertices[verticeStartingIndex + 11] = green;
-		vertices[verticeStartingIndex + 12] = blue;
-		vertices[verticeStartingIndex + 13] = 1f;
+		vertices[verticeStartingIndex + 13] = red;
+		vertices[verticeStartingIndex + 14] = green;
+		vertices[verticeStartingIndex + 15] = blue;
+		vertices[verticeStartingIndex + 16] = 1f;
 
-		vertices[verticeStartingIndex + 17] = red;
-		vertices[verticeStartingIndex + 18] = green;
-		vertices[verticeStartingIndex + 19] = blue;
-		vertices[verticeStartingIndex + 20] = 1f;
+		vertices[verticeStartingIndex + 23] = red;
+		vertices[verticeStartingIndex + 24] = green;
+		vertices[verticeStartingIndex + 25] = blue;
+		vertices[verticeStartingIndex + 26] = 1f;
 
-		vertices[verticeStartingIndex + 24] = red;
-		vertices[verticeStartingIndex + 25] = green;
-		vertices[verticeStartingIndex + 26] = blue;
-		vertices[verticeStartingIndex + 27] = 1f;
+		vertices[verticeStartingIndex + 33] = red;
+		vertices[verticeStartingIndex + 34] = green;
+		vertices[verticeStartingIndex + 35] = blue;
+		vertices[verticeStartingIndex + 36] = 1f;
 
 		// Elements
 		elements[elementsStartingIndex + 0] = countCurrentVertices + 0;
@@ -156,26 +152,26 @@ public class TriangleDrawer extends Drawer {
 		vertices[verticeStartingIndex + 6] = 1f;
 
 		// Point0
-		vertices[verticeStartingIndex + 7] = points[0].x;
-		vertices[verticeStartingIndex + 8] = points[0].y;
-		vertices[verticeStartingIndex + 9] = 0f;
+		vertices[verticeStartingIndex + 10] = points[0].x;
+		vertices[verticeStartingIndex + 11] = points[0].y;
+		vertices[verticeStartingIndex + 12] = 0f;
 
-		vertices[verticeStartingIndex + 10] = red;
-		vertices[verticeStartingIndex + 11] = green;
-		vertices[verticeStartingIndex + 12] = blue;
-		vertices[verticeStartingIndex + 13] = 1f;
+		vertices[verticeStartingIndex + 13] = red;
+		vertices[verticeStartingIndex + 14] = green;
+		vertices[verticeStartingIndex + 15] = blue;
+		vertices[verticeStartingIndex + 16] = 1f;
 
 		for (int i = 1; i < points.length; i++) {
 			Vec2f point = points[i];
 
-			vertices[verticeStartingIndex + 14 + (i - 1) * VERTEX_SIZE] = point.x;
-			vertices[verticeStartingIndex + 15 + (i - 1) * VERTEX_SIZE] = point.y;
-			vertices[verticeStartingIndex + 16 + (i - 1) * VERTEX_SIZE] = 0f;
+			vertices[verticeStartingIndex + 20 + (i - 1) * VERTEX_SIZE] = point.x;
+			vertices[verticeStartingIndex + 21 + (i - 1) * VERTEX_SIZE] = point.y;
+			vertices[verticeStartingIndex + 22 + (i - 1) * VERTEX_SIZE] = 0f;
 
-			vertices[verticeStartingIndex + 17 + (i - 1) * VERTEX_SIZE] = red;
-			vertices[verticeStartingIndex + 18 + (i - 1) * VERTEX_SIZE] = green;
-			vertices[verticeStartingIndex + 19 + (i - 1) * VERTEX_SIZE] = blue;
-			vertices[verticeStartingIndex + 20 + (i - 1) * VERTEX_SIZE] = 1f;
+			vertices[verticeStartingIndex + 23 + (i - 1) * VERTEX_SIZE] = red;
+			vertices[verticeStartingIndex + 24 + (i - 1) * VERTEX_SIZE] = green;
+			vertices[verticeStartingIndex + 25 + (i - 1) * VERTEX_SIZE] = blue;
+			vertices[verticeStartingIndex + 26 + (i - 1) * VERTEX_SIZE] = 1f;
 
 			elements[elementsStartingIndex + 0 + (i - 1) * ELEMENT_SIZE] = countCurrentVertices;
 			elements[elementsStartingIndex + 1 + (i - 1) * ELEMENT_SIZE] = countCurrentVertices + i;

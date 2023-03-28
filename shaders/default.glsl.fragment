@@ -1,12 +1,19 @@
 #version 330 core
 
-uniform float time;
-uniform sampler2D texSampler;
-
 in vec4 fColor;
+in vec2 fUV;
+in float fTexID;
+
+uniform sampler2D uTextures[16];
 
 out vec4 color;
 
 void main(){
-	color = fColor;
+	if (fTexID > 0){
+		int id = int(fTexID);
+		color = fColor * texture(uTextures[id], fUV);
+		}
+	else {
+		color = fColor;
+		}
 }

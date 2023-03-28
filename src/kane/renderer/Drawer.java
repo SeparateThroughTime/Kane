@@ -35,12 +35,18 @@ public abstract class Drawer {
 	protected int numRenderedShapes;
 
 	public final int POSITION_SIZE = 3;
+	public final int POSITION_OFFSET;
 	public final int COLOR_SIZE = 4;
-	public final int UV_SIZE;
+	public final int COLOR_OFFSET;
+	public final int UV_SIZE = 2;
+	public final int UV_OFFSET;
+	public final int TEX_ID_SIZE = 1;
+	public final int TEX_ID_OFFSET;
 	public final int VERTEX_SIZE;
 	public final int VERTEX_SIZE_BYTE;
 	public final int ELEMENT_SIZE;
 	public final int DRAW_TYPE;
+	public boolean DRAW_IMAGES;
 	protected ShapeType[] renderedShapeTypes;
 
 	protected float[] vertices;
@@ -54,46 +60,54 @@ public abstract class Drawer {
 	protected int elementBufferObjectID;
 
 	public abstract void drawBodies();
+
 	protected abstract void initVerticesAndElements();
 
 	public Drawer(int elementSize, int glDrawType, ShapeType[] renderedShapeTypes) {
-		this(elementSize, glDrawType, 0);
+		this(elementSize, glDrawType);
 		this.renderedShapeTypes = renderedShapeTypes;
+		DRAW_IMAGES = false; //this overwrites the boolean from other constructor!
 	}
 
-	public Drawer(int elementSize, int glDrawType, int uvSize) {
+	public Drawer(int elementSize, int glDrawType) {
+		DRAW_IMAGES = true;
 		ELEMENT_SIZE = elementSize;
 		DRAW_TYPE = glDrawType;
-		UV_SIZE = uvSize;
-		VERTEX_SIZE = POSITION_SIZE + COLOR_SIZE + UV_SIZE;
+//		UV_SIZE = uvSize;
+//		TEX_ID_SIZE = UV_SIZE == 0 ? 0 : 1;
+		VERTEX_SIZE = POSITION_SIZE + COLOR_SIZE + UV_SIZE + TEX_ID_SIZE;
 		VERTEX_SIZE_BYTE = VERTEX_SIZE * Float.BYTES;
-		
+
+		POSITION_OFFSET = 0;
+		COLOR_OFFSET = POSITION_SIZE * Float.BYTES;
+		UV_OFFSET = (POSITION_SIZE + COLOR_SIZE) * Float.BYTES;
+		TEX_ID_OFFSET = (POSITION_SIZE + COLOR_SIZE + UV_SIZE) * Float.BYTES;
+
 		initVerticesAndElements();
 		init();
 	}
-	
+
 	protected void init() {
 		vertexArrayObjectID = glGenVertexArrays();
 		glBindVertexArray(vertexArrayObjectID);
-		
+
 		vertexBufferObjectID = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjectID);
 		glBufferData(GL_ARRAY_BUFFER, vertices.length, GL_DYNAMIC_DRAW);
-		
+
 		elementBufferObjectID = glGenBuffers();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferObjectID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.length, GL_DYNAMIC_DRAW);
-		
-		glVertexAttribPointer(0, POSITION_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTE, 0);
+
+		glVertexAttribPointer(0, POSITION_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTE, POSITION_OFFSET);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTE, POSITION_SIZE * Float.BYTES);
+		glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTE, COLOR_OFFSET);
 		glEnableVertexAttribArray(1);
 
-		if (UV_SIZE > 0) {
-			glVertexAttribPointer(2, UV_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTE,
-					(POSITION_SIZE + COLOR_SIZE) * Float.BYTES);
-			glEnableVertexAttribArray(2);
-		}
+		glVertexAttribPointer(2, UV_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTE, UV_OFFSET);
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(3, TEX_ID_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTE, TEX_ID_OFFSET);
+		glEnableVertexAttribArray(3);
 	}
 
 //	protected void initVerticesAndElements() {
@@ -115,14 +129,15 @@ public abstract class Drawer {
 
 	public void displayFrame(Shader shader) {
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjectID);
-		glBufferData(GL_ARRAY_BUFFER, vertices, GL_DYNAMIC_DRAW);
-		
+//		glBufferData(GL_ARRAY_BUFFER, vertices, GL_DYNAMIC_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
+
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferObjectID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements, GL_DYNAMIC_DRAW);
-		
-		
+//		glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements, GL_DYNAMIC_DRAW);
+		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, elements);
+
 		shader.use();
-		
+
 		glBindVertexArray(vertexArrayObjectID);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
@@ -136,6 +151,7 @@ public abstract class Drawer {
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(2);
+		glDisableVertexAttribArray(3);
 		glBindVertexArray(0);
 		shader.detach();
 	}
@@ -155,18 +171,19 @@ public abstract class Drawer {
 					Shape shape = body.shapes[j];
 					if (shape.aabb.overlaps(CAMERA.window)) {
 						if (shape.visible) {
-							if(UV_SIZE == 0 && !shape.hasSprite) {
+							if (!DRAW_IMAGES && !shape.hasSprite) {
 								for (int k = 0; k < renderedShapeTypes.length; k++) {
 									ShapeType shapeType = renderedShapeTypes[k];
 									if (shapeType.equals(shape.type)) {
 										renderedShapes[numRenderedShapes++] = shape;
 										elementsToDraw += shape.numRenderElements;
+										break;
 									}
 								}
 							} else {
 								if (shape.hasSprite) {
 									renderedShapes[numRenderedShapes++] = shape;
-									elementsToDraw += 2;
+									elementsToDraw += shape.getSpriteControllers().length * 2;
 								}
 							}
 						}

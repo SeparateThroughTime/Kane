@@ -33,44 +33,39 @@ public class LineDrawer extends Drawer {
 		countCurrentVertices = 0;
 		countCurrentElements = 0;
 
-		for (int layer = 1; layer < Shape.MAX_RENDER_LAYER; layer++) {
-			for (int i = 0; i < numRenderedShapes; i++) {
-				Shape shape = renderedShapes[i];
-				if (shape.RENDER_LAYER == layer) {
+		for (int i = 0; i < numRenderedShapes; i++) {
+			Shape shape = renderedShapes[i];
 //					if(shape.hasSprite) {
 //						// They seem to get in the renderedShapes array. dont know why.
 //					}
 
-					if (ShapeType.PLANE.equals(shape.type)) {
-						Plane plane = (Plane) shape;
-						Vec2f startPoint = transformPosToVertex(plane.getPoint());
-						Vec2f perp = new Vec2f(plane.getNormal()).perpRight();
-						// len won't be accurate because it's calculated as if the plane is
-						// horizontally. Not gonna change it because it's irrelevant for later game.
-						float len = (plane.getLen() - RES_SPECS.halfWidth) / RES_SPECS.halfWidth;
-						Vec2f endPoint = transformPosToVertex(new Vec2f(plane.getPoint()).addMult(perp, len));
-						drawLine(startPoint, endPoint, plane.color);
+			if (ShapeType.PLANE.equals(shape.type)) {
+				Plane plane = (Plane) shape;
+				Vec2f startPoint = transformPosToVertex(plane.getPoint());
+				Vec2f perp = new Vec2f(plane.getNormal()).perpRight();
+				// len won't be accurate because it's calculated as if the plane is
+				// horizontally. Not gonna change it because it's irrelevant for later game.
+				float len = (plane.getLen() - RES_SPECS.halfWidth) / RES_SPECS.halfWidth;
+				Vec2f endPoint = transformPosToVertex(new Vec2f(plane.getPoint()).addMult(perp, len));
+				drawLine(startPoint, endPoint, plane.color);
 
-						// draws normal of planes
-						Vec2f center = transformPosToVertex(new Vec2f(startPoint).addMult(perp, len * 0.5f));
-						drawNormal(center, plane.getNormal());
-					}
+				// draws normal of planes
+				Vec2f center = transformPosToVertex(new Vec2f(startPoint).addMult(perp, len * 0.5f));
+				drawNormal(center, plane.getNormal());
+			}
 
-					else if (ShapeType.LINESEGMENT.equals(shape.type)) {
-						LineSegment lineSegment = (LineSegment) shape;
-						Vec2f startPoint = transformPosToVertex(
-								new Vec2f(lineSegment.getAbsPos()).add(lineSegment.getRelPosA()));
-						Vec2f endPoint = transformPosToVertex(
-								new Vec2f(lineSegment.getAbsPos()).add(lineSegment.getRelPosB()));
-						drawLine(startPoint, endPoint, lineSegment.color);
-					}
+			else if (ShapeType.LINESEGMENT.equals(shape.type)) {
+				LineSegment lineSegment = (LineSegment) shape;
+				Vec2f startPoint = transformPosToVertex(
+						new Vec2f(lineSegment.getAbsPos()).add(lineSegment.getRelPosA()));
+				Vec2f endPoint = transformPosToVertex(new Vec2f(lineSegment.getAbsPos()).add(lineSegment.getRelPosB()));
+				drawLine(startPoint, endPoint, lineSegment.color);
+			}
 
-					else if (ShapeType.POINT.equals(shape.type)) {
-						Point point = (Point) shape;
-						Vec2f absPos = transformPosToVertex(point.getAbsPos());
-						drawLine(absPos, absPos, point.color);
-					}
-				}
+			else if (ShapeType.POINT.equals(shape.type)) {
+				Point point = (Point) shape;
+				Vec2f absPos = transformPosToVertex(point.getAbsPos());
+				drawLine(absPos, absPos, point.color);
 			}
 		}
 	}
@@ -89,9 +84,9 @@ public class LineDrawer extends Drawer {
 		vertices[verticeStartingIndex + 1] = startPoint.y;
 		vertices[verticeStartingIndex + 2] = 0f;
 
-		vertices[verticeStartingIndex + 7] = endPoint.x;
-		vertices[verticeStartingIndex + 8] = endPoint.y;
-		vertices[verticeStartingIndex + 9] = 0f;
+		vertices[verticeStartingIndex + 10] = endPoint.x;
+		vertices[verticeStartingIndex + 11] = endPoint.y;
+		vertices[verticeStartingIndex + 12] = 0f;
 
 		// Colors
 		vertices[verticeStartingIndex + 3] = red;
@@ -99,10 +94,10 @@ public class LineDrawer extends Drawer {
 		vertices[verticeStartingIndex + 5] = blue;
 		vertices[verticeStartingIndex + 6] = 1f;
 
-		vertices[verticeStartingIndex + 10] = red;
-		vertices[verticeStartingIndex + 11] = green;
-		vertices[verticeStartingIndex + 12] = blue;
-		vertices[verticeStartingIndex + 13] = 1f;
+		vertices[verticeStartingIndex + 13] = red;
+		vertices[verticeStartingIndex + 14] = green;
+		vertices[verticeStartingIndex + 15] = blue;
+		vertices[verticeStartingIndex + 16] = 1f;
 
 		// Elements
 		elements[elementsStartingIndex + 0] = countCurrentVertices + 0;
@@ -131,6 +126,6 @@ public class LineDrawer extends Drawer {
 	@Override
 	protected void initVerticesAndElements() {
 		vertices = new float[VERTEX_SIZE * MAX_LINES];
-		elements = new int[ELEMENT_SIZE * MAX_LINES];		
+		elements = new int[ELEMENT_SIZE * MAX_LINES];
 	}
 }
