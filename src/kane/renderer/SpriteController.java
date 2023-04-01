@@ -30,7 +30,7 @@ public class SpriteController {
 	 * 
 	 * @return
 	 */
-	public ByteBuffer getFrame() {
+	public Texture getFrame() {
 		return sprite.getFrame(currentSpriteState, currentSpriteStateFrameNo);
 	}
 

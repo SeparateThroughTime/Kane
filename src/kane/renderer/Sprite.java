@@ -1,10 +1,5 @@
 package kane.renderer;
 
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glGenTextures;
-import static org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY;
-import static org.lwjgl.opengl.GL46.*;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
-
-import org.lwjgl.stb.STBImage;
 
 import kane.math.ArrayOperations;
 import kane.math.ImageAlteration;
@@ -28,10 +21,8 @@ public class Sprite {
 	public final int FRAME_HEIGHT;
 	public int PIXEL_PER_FRAME;
 //	private int[][] spritePixels;
-	private ByteBuffer[] frames;
+	public Texture[] frames;
 	protected SpriteState[] assignedSpriteStates;
-
-	public final int TEXTURE_ID;
 
 	private Map<SpriteState, int[]> states;
 
@@ -41,8 +32,8 @@ public class Sprite {
 		this.FRAME_WIDTH = frameWidth;
 		this.states = new HashMap<SpriteState, int[]>();
 
-		TEXTURE_ID = glGenTextures();
 		
+
 		init(img);
 
 	}
@@ -52,8 +43,8 @@ public class Sprite {
 		this.FRAME_HEIGHT = frameHeight;
 		this.FRAME_WIDTH = frameWidth;
 		this.states = new HashMap<SpriteState, int[]>();
+
 		
-		TEXTURE_ID = glGenTextures();
 		BufferedImage img;
 		try {
 			img = ImageIO.read(file);
@@ -72,14 +63,14 @@ public class Sprite {
 //			spritePixels = new int[frameCount][pixelPerFrame];
 		int frameCountX = imgWidth / FRAME_WIDTH;
 		int frameCountY = imgHeight / FRAME_HEIGHT;
-		frames = new ByteBuffer[frameCount];
+		frames = new Texture[frameCount];
 
 		for (int x = 0; x < frameCountX; x++) {
 			for (int y = 0; y < frameCountY; y++) {
-				frames[x + y * frameCountX] = ImageAlteration.bufferedImageToByteBuffer(
+				ByteBuffer bb = ImageAlteration.bufferedImageToByteBuffer(
 						img.getSubimage(x * FRAME_WIDTH, y * FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT));
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, FRAME_WIDTH, FRAME_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-						frames[x + y * frameCountX]);
+				frames[x + y * frameCountX] = new Texture(bb, imgWidth, imgHeight);
+				
 			}
 		}
 	}
@@ -99,7 +90,7 @@ public class Sprite {
 		return ArrayOperations.contains(assignedSpriteStates, state);
 	}
 
-	public ByteBuffer getFrame(SpriteState spriteState, int spriteStateFrameNo) {
+	public Texture getFrame(SpriteState spriteState, int spriteStateFrameNo) {
 		int frameNo = states.get(spriteState)[spriteStateFrameNo];
 		return frames[frameNo];
 	}

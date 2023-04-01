@@ -160,7 +160,7 @@ public class Kane extends Game {
 
 		// Set player Item
 		currentItem = INVENTORY.getItem("None");
-		player.addShape(new Box(0, 0, player, new Vec2f(16, 32), Color.GREEN, mDynamic, 2));
+		player.addShape(new Box(0, 0, player, new Vec2f(16, 32), Color.WHITE, mDynamic, 2));
 		player.shapes[0].addPassiveAttribute(PassiveAttributes.PLAYER_ALL);
 		player.shapes[0].addPassiveAttribute(PassiveAttributes.MOB_ALL);
 		player.shapes[0].addPassiveAttribute(PassiveAttributes.PHYSICAL);

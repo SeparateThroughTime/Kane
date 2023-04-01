@@ -129,21 +129,20 @@ public abstract class Drawer {
 
 	public void displayFrame(Shader shader) {
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObjectID);
-//		glBufferData(GL_ARRAY_BUFFER, vertices, GL_DYNAMIC_DRAW);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
+		glBufferData(GL_ARRAY_BUFFER, vertices, GL_DYNAMIC_DRAW);
+//		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferObjectID);
-//		glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements, GL_DYNAMIC_DRAW);
-		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, elements);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements, GL_DYNAMIC_DRAW);
+//		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, elements);
 
 		shader.use();
 
 		glBindVertexArray(vertexArrayObjectID);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
-		if (UV_SIZE > 0) {
-			glEnableVertexAttribArray(2);
-		}
+		glEnableVertexAttribArray(2);
+		glEnableVertexAttribArray(3);
 
 		glDrawElements(DRAW_TYPE, ELEMENT_SIZE * elementsToDraw, GL_UNSIGNED_INT, 0);
 
