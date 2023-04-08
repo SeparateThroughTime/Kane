@@ -30,6 +30,7 @@ import static kane.renderer.drawer.ImageDrawer.IMAGE_DRAWER;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
@@ -51,13 +52,14 @@ import kane.renderer.drawer.TriangleDrawer;
  */
 public class Renderer {
 	
+	private final int MAX_BATCH_SIZE = 1000;
+	private ArrayList<RenderBatch> batches;
+	
 	public static Renderer RENDERER;
 
 	public float multiplicator;
-	protected Shape[] renderedTriangles;
-	protected int numRenderedTriangles;
-	protected Shape[] renderedLines;
-	protected int numRenderedLines;
+	protected Shape[] renderedTextures;
+	protected int numRenderedTextures;
 	public Background background;
 
 	public boolean showContacts = false;
@@ -71,7 +73,7 @@ public class Renderer {
 		this.multiplicator = 1f;
 
 		initGLFW(title);
-		initDrawer();
+		batches = new ArrayList<>();
 
 		shader = Shader.DEFAULT;
 		shader.compile();
@@ -82,12 +84,6 @@ public class Renderer {
 		if (RENDERER == null) {
 			RENDERER = new Renderer(title);
 		}
-	}
-	
-	public void initDrawer() {
-		TriangleDrawer.initializateTriangleDrawer();
-		LineDrawer.initializeLineDrawer();
-		ImageDrawer.initializeImageDrawer();
 	}
 
 	public void initGLFW(String title) {
@@ -111,8 +107,26 @@ public class Renderer {
 		glfwSwapInterval(1);
 		GL.createCapabilities();
 	}
-
 	
+	public void addShape(Shape shape) {
+		if(shape.hasSprite) {
+			boolean added = false;
+			for (RenderBatch batch : batches) {
+				if (batch.hasRoom) {
+					batch.addShape(shape);
+					added = true;
+					break;
+				}
+			}
+			
+			if(!added) {
+				RenderBatch newBatch = new RenderBatch(MAX_BATCH_SIZE);
+				newBatch.start();
+				batches.add(newBatch);
+				newBatch.addShape(shape);
+			}
+		}
+	}
 
 	/**
 	 * Needs to run after Resolution is changed.
@@ -132,20 +146,10 @@ public class Renderer {
 		clearWindow();
 		CAMERA.update();
 //		drawBackground();
-
 		
-		LINE_DRAWER.chooseRenderedShapes();
-		LINE_DRAWER.drawBodies();
-		LINE_DRAWER.displayFrame(shader);
-		
-		IMAGE_DRAWER.chooseRenderedShapes();
-		IMAGE_DRAWER.drawBodies();
-		IMAGE_DRAWER.displayFrame(shader);
-		
-		TRIANGLE_DRAWER.chooseRenderedShapes();
-		TRIANGLE_DRAWER.drawBodies();
-		TRIANGLE_DRAWER.displayFrame(shader);
-		
+		for (RenderBatch batch : batches) {
+			batch.render();
+		}
 
 //		drawAABBs();
 //		drawContacts();

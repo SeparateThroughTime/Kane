@@ -186,7 +186,7 @@ public class Kane extends Game {
 		sword.addShape(new Polygon(0, 0, sword, Color.YELLOW, points, mDynamic, 2));
 		sword.shapes[0].addActiveAttribute(ActiveAttributes.SWORD);
 		File file = new File("sprites\\items\\sword.png");
-		Sprite sprite = new Sprite(file, 16, 16);
+		Sprite sprite = new Sprite("sprites\\items\\sword.png", 16, 16);
 		sprite.addState(SpriteState.STATIC, new int[] { 0 });
 		spriteControllers = new SpriteController[1];
 		spriteControllers[0] = new SpriteController(sprite);
@@ -213,7 +213,7 @@ public class Kane extends Game {
 		blob.shapes[3].addActiveAttribute(ActiveAttributes.ATTACKING_FIELD);
 		blob.shapes[3].collision = false;
 		blob.shapes[3].visible = false;
-		sprite = new Sprite(new File("sprites\\Mobs\\Blob\\Blob.png"), 32, 32);
+		sprite = new Sprite("sprites\\Mobs\\Blob\\Blob.png", 32, 32);
 		sprite.addState(SpriteState.STATIC, new int[] { 0 });
 		spriteControllers = new SpriteController[1];
 		spriteControllers[0] = new SpriteController(sprite);
@@ -234,8 +234,7 @@ public class Kane extends Game {
 //		changeResolution(Resolution.SOL1176x664);
 
 		// healthBar
-		file = new File("sprites\\interface\\HealthBar.png");
-		healthBar = CAMERA.addHudBar(file);
+		healthBar = CAMERA.addHudBar("sprites\\interface\\HealthBar.png");
 		refreshHealthBar();
 
 	}

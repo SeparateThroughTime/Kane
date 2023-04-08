@@ -164,7 +164,7 @@ public abstract class Drawer {
 									}
 								}
 							} else {
-								if (shape.hasSprite) {
+								if (UV_SIZE > 0 && shape.hasSprite) {
 									renderedShapes[numRenderedShapes++] = shape;
 									elementsToDraw += 2;
 								}

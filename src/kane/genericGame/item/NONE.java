@@ -12,13 +12,13 @@ import kane.renderer.SpriteState;
 // The only generation of this is in Inventory.
 public class NONE extends Item {
 
-	private static final Sprite ITEM_SPRITE = new Sprite(new File("sprites\\items\\none.png"), 16,16);
+	private static final Sprite ITEM_SPRITE = new Sprite("sprites\\items\\none.png", 16,16);
 
 	private static final SpriteController[] ITEM_SPRITE_CONTROLLERS = { new SpriteController(ITEM_SPRITE) };
 
-	private static final Sprite[] PLAYER_SPRITES = { new Sprite(new File("sprites\\player\\playerHead.png"), 32, 32),
-			new Sprite(new File("sprites\\player\\playerUpper.png"), 32, 32),
-			new Sprite(new File("sprites\\player\\playerLower.png"), 32, 32) };
+	private static final Sprite[] PLAYER_SPRITES = { new Sprite("sprites\\player\\playerHead.png", 32, 32),
+			new Sprite("sprites\\player\\playerUpper.png", 32, 32),
+			new Sprite("sprites\\player\\playerLower.png", 32, 32) };
 
 	private static final SpriteController[] PLAYER_SPRITE_CONTROLLERS = { new SpriteController(PLAYER_SPRITES[0]),
 			new SpriteController(PLAYER_SPRITES[1]), new SpriteController(PLAYER_SPRITES[2]) };

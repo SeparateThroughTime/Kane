@@ -186,21 +186,13 @@ public class Camera extends Body {
 		Inventory.initializateInventory(mainShape, slotShapes, RES_SPECS);
 	}
 
-	public HudBar addHudBar(File file) {
+	public HudBar addHudBar(String filepath) {
 		int hudPos = hudBars.size();
 		Shape hudShape = addShape(new Point(-RES_SPECS.gameWidth / 2 + HudBar.HUD_HEIGHT + HudBar.HUD_WIDTH / 2,
 				-RES_SPECS.GAME_HEIGHT / 2 + RES_SPECS.GAME_HEIGHT - (int) (HudBar.HUD_HEIGHT * (hudPos + 1) * 1.5), this,
 				Color.BLUE, mInterface, 3));
-		HudBar hudBar;
-		BufferedImage img;
-		try {
-			img = ImageIO.read(file);
-			hudBar = new HudBar(img, hudShape);
+		HudBar hudBar = new HudBar(filepath, hudShape);
 
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
 		hudBars.add(hudBar);
 		return hudBar;
 

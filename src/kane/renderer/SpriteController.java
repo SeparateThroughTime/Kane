@@ -1,7 +1,5 @@
 package kane.renderer;
 
-import java.nio.ByteBuffer;
-
 import kane.math.Vec2f;
 
 public class SpriteController {
@@ -30,8 +28,8 @@ public class SpriteController {
 	 * 
 	 * @return
 	 */
-	public ByteBuffer getFrame() {
-		return sprite.getFrame(currentSpriteState, currentSpriteStateFrameNo);
+	public Vec2f[] getFrameTexCoords() {
+		return sprite.getTexCoords(currentSpriteState, currentSpriteStateFrameNo);
 	}
 
 	public void setCurrentSpriteState(SpriteState state) {
