@@ -1,36 +1,19 @@
 package kane.renderer;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.nio.ByteBuffer;
 
-import javax.imageio.ImageIO;
-
-import kane.math.ImageAlteration;
-
 public class Background{
-	private ByteBuffer img;
+	private Texture texture;
 	private int offsetX;
-	public int WIDTH;
-	public int HEIGHT;
 	
-	public Background(File file, int gameHeight) {
-		BufferedImage awtImg;
-		try {
-			awtImg = ImageIO.read(file);
-			awtImg = ImageAlteration.resizeWithHeight(awtImg, gameHeight);
-			img = ImageAlteration.bufferedImageToByteBuffer(awtImg);
-			WIDTH = awtImg.getWidth();
-			HEIGHT = awtImg.getHeight();
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+	public Background(String filepath) {
+		texture = new Texture(filepath);
+		
 		this.offsetX = 0;
 	}
 	
 	public void setOffsetX(int offsetX) {
-		offsetX = -(offsetX % WIDTH);
+		offsetX = -(offsetX % texture.WIDTH);
 		this.offsetX = offsetX;
 	}
 	
@@ -38,7 +21,7 @@ public class Background{
 		return offsetX;
 	}
 	
-	public ByteBuffer getImg() {
-		return img;
+	public Texture getTexture() {
+		return texture;
 	}
 }

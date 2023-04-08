@@ -10,6 +10,7 @@ import kane.math.Vec2f;
 import kane.math.Vec2i;
 import kane.renderer.SpriteController;
 import kane.renderer.SpriteState;
+import static kane.renderer.Renderer.RENDERER;
 
 /**
  * Shape is an abstract class, which is the base for all Shapes.
@@ -20,6 +21,7 @@ public abstract class Shape {
 	public static int MAX_COLIDED_SHAPES = 50;
 	public static int MAX_ACTIVE_ATTRIBUTES = 5;
 	public static int MAX_PASSIVE_ATTRIBUTES = 5;
+	public static int MAX_SPRITE_CONTROLLERS = 10;
 
 	public final int ID;
 	// Layer is from 1-20. First Layer is rendered first, last Layer is rendered
@@ -219,8 +221,12 @@ public abstract class Shape {
 	 * @param sprite
 	 */
 	public void setSpriteControllers(SpriteController[] spriteControllers) {
+		if (spriteControllers.length > MAX_SPRITE_CONTROLLERS) {
+			assert false : "To many SpriteControllers in Shape +" + ID;
+		}
 		this.spriteControllers = spriteControllers;
 		hasSprite = true;
+		RENDERER.addShape(this);
 	}
 
 	public SpriteController[] getSpriteControllers() {

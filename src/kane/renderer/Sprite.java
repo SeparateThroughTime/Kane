@@ -55,7 +55,7 @@ public class Sprite {
 			
 			Vec2f[] frameTexCoords = { new Vec2f(rightX, topY), new Vec2f(rightX, bottomY),
 					new Vec2f(leftX, bottomY), new Vec2f(leftX, topY) };
-			texCoords[frameCount] = frameTexCoords;
+			texCoords[i] = frameTexCoords;
 		}
 	}
 

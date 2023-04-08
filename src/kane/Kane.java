@@ -228,8 +228,7 @@ public class Kane extends Game {
 		PHYSICS.addBody(blob);
 
 		// Create Background
-		file = new File("sprites\\backgrounds\\background.png");
-		RENDERER.changeBackground(file);
+		RENDERER.changeBackground("sprites\\backgrounds\\background.png");
 
 //		changeResolution(Resolution.SOL1176x664);
 
