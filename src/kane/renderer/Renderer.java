@@ -23,6 +23,7 @@ import static kane.physics.Physics.PHYSICS;
 import static kane.renderer.Camera.CAMERA;
 import static kane.renderer.ResolutionSpecification.RES_SPECS;
 import static kane.Kane.GAME;
+import static kane.genericGame.ResourceManager.RESOURCE_MANAGER;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -33,6 +34,7 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 
 import kane.genericGame.Game;
+import kane.genericGame.ResourceManager;
 import kane.genericGame.gameEvent.camera.MoveBackground;
 import kane.math.Scalar;
 import kane.math.Vec2f;
@@ -69,7 +71,7 @@ public class Renderer {
 		initGLFW(title);
 		batches = new ArrayList<>();
 
-		shader = Shader.DEFAULT;
+		shader = RESOURCE_MANAGER.getShader("shaders/default.glsl");
 		shader.compile();
 
 	}

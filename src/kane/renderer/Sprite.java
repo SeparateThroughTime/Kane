@@ -29,7 +29,7 @@ public class Sprite {
 		this.FRAME_WIDTH = frameWidth;
 		this.states = new HashMap<SpriteState, int[]>();
 		
-		texture = RESOURCE_MANAGER.getTexture(filepath, frameWidth, frameHeight);
+		texture = RESOURCE_MANAGER.getTexture(filepath);
 		init();
 	}
 

@@ -10,9 +10,6 @@ import java.nio.file.Paths;
 import kane.math.Vec2f;
 
 public class Shader {
-	private static String SHADER_PATH = "shaders/";
-	public static Shader DEFAULT = new Shader(SHADER_PATH + "default.glsl");
-	
 	
 	protected int shaderProgramID;
 	protected int vertexID;
@@ -22,7 +19,7 @@ public class Shader {
 	private String fragmentSource;
 	private String filepath;
 	
-	private Shader(String filepath) {
+	public Shader(String filepath) {
 		this.filepath = filepath;
 		readFile();	
 		
