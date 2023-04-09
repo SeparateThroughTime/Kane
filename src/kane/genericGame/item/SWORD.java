@@ -40,7 +40,7 @@ public class SWORD extends Item {
 		ITEM_SPRITE.addState(SpriteState.STATIC, new int[] { 0 });
 		ITEM_SPRITE_CONTROLLERS[0].setCurrentSpriteState(SpriteState.STATIC);
 		ITEM_SPRITE_CONTROLLERS[0].spritePosOffset = new Vec2f(-32, -32);
-		ITEM_SPRITE_CONTROLLERS[0].scale = 2f;
+		ITEM_SPRITE_CONTROLLERS[0].scale = new Vec2f(2, 2);
 		
 		PLAYER_SPRITES[0].addState(SpriteState.STANDING_RIGHT, new int[] { 0 });
 		PLAYER_SPRITES[0].addState(SpriteState.RUNNING_RIGHT, new int[] { 0 });

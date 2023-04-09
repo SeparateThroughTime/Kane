@@ -31,10 +31,10 @@ public class HudBar {
 	}
 
 	public void refresh(float percentage) {
-		int newWidth = (int) (HUD_WIDTH * percentage);
 		SpriteController spriteController = hudShape.getSpriteControllers()[0];
 		Vec2f[] texCoords = spriteController.getFrameTexCoords();
-		texCoords[0].y = newWidth;
-		texCoords[1].y = newWidth;
+		texCoords[1].x = percentage;
+		texCoords[2].x = percentage;
+		spriteController.scale.x = percentage;
 	}
 }

@@ -15,7 +15,7 @@ public class SpriteController {
 	public int currentSpriteStateFrameNo;
 	public Vec2f spritePosOffset;
 	private int frameCounter;
-	public float scale;
+	public Vec2f scale;
 
 	public Sprite sprite;
 
@@ -24,7 +24,7 @@ public class SpriteController {
 	public SpriteController(Sprite sprite) {
 		this.spritePosOffset = new Vec2f();
 		this.sprite = sprite;
-		this.scale = 1;
+		this.scale = new Vec2f(1, 1);
 	}
 
 	public void startAnimation() {

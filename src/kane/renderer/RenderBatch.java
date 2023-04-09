@@ -216,11 +216,11 @@ public class RenderBatch {
 	
 	private Vec2f[] calculateVertexPositions(SpriteController spriteController, Shape shape) {
 		Sprite sprite = spriteController.sprite;
-		float scale = spriteController.scale * Sprite.SCALE;
+		Vec2f scale = new Vec2f(spriteController.scale).mult(Sprite.SCALE);
 		Vec2f shapePos = shape.getAbsPos();
 		Vec2f spritePos = transformPosToVertex(new Vec2f(shapePos).add(spriteController.spritePosOffset));
 		Vec2f dimension = new Vec2f((float) sprite.FRAME_WIDTH / RES_SPECS.halfGameWidth,
-				(float) sprite.FRAME_HEIGHT / RES_SPECS.halfGameHeight).mult(scale * RENDERER.multiplicator);
+				(float) sprite.FRAME_HEIGHT / RES_SPECS.halfGameHeight).mult(scale).mult(RENDERER.multiplicator);
 		
 		Vec2f[] vertexPositions = new Vec2f[4];
 		vertexPositions[0] = spritePos;
