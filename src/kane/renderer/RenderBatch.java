@@ -34,7 +34,7 @@ import static kane.renderer.ResolutionSpecification.RES_SPECS;
 import static kane.renderer.Camera.CAMERA;
 import static kane.renderer.Renderer.RENDERER;
 
-public class RenderBatch {
+public class RenderBatch implements Comparable<RenderBatch> {
 	private static final int POS_SIZE = 2;
 	private final static int COLOR_SIZE = 4;
 	private final static int TEX_COORDS_SIZE = 2;
@@ -59,8 +59,10 @@ public class RenderBatch {
 	private List<Texture> textures;
 	private int vaoID, vboID;
 	private int maxBatchSize;
+	
+	public final int RENDER_LAYER;
 
-	public RenderBatch(int maxBatchSize) {
+	public RenderBatch(int maxBatchSize, int renderLayer) {
 		this.maxBatchSize = maxBatchSize;
 
 		vertices = new float[(maxBatchSize + Shape.MAX_SPRITE_CONTROLLERS) * 4 * VERTEX_SIZE];
@@ -71,6 +73,7 @@ public class RenderBatch {
 		this.hasRoom = true;
 		this.textures = new ArrayList<>();
 		this.shapeIndexToDrawingIndex = new HashMap<>();
+		this.RENDER_LAYER = renderLayer;
 	}
 
 	public void start() {
@@ -172,11 +175,11 @@ public class RenderBatch {
 		
 		
 		for (int spriteCounter = 0; spriteCounter < shape.getSpriteControllers().length; spriteCounter++) {
-			loadVertexProperties(shape.getSpriteControllers()[spriteCounter], shape, offset);
+			offset += loadVertexProperties(shape.getSpriteControllers()[spriteCounter], shape, offset);
 		}
 	}
 	
-	private void loadVertexProperties(SpriteController spriteController, Shape shape, int offset) {
+	private int loadVertexProperties(SpriteController spriteController, Shape shape, int offset) {
 		Vec2f[] pos = calculateVertexPositions(spriteController, shape);
 		Vec4f color = new Vec4f(shape.color);
 		Vec2f[] texCoords = spriteController.getFrameTexCoords();
@@ -193,13 +196,14 @@ public class RenderBatch {
 		}
 		
 		for(int vertexCounter = 0; vertexCounter < 4; vertexCounter++) {
-			loadVertexProperties(pos[vertexCounter], color, texCoords[vertexCounter], texId, offset);
-			offset += VERTEX_SIZE;
+			offset += loadVertexProperties(pos[vertexCounter], color, texCoords[vertexCounter], texId, offset);
 		}
+		
+		return VERTEX_SIZE * 4;
 		
 	}
 	
-	private void loadVertexProperties(Vec2f pos, Vec4f color, Vec2f texCoords, int texId, int offset) {
+	private int loadVertexProperties(Vec2f pos, Vec4f color, Vec2f texCoords, int texId, int offset) {
 		vertices[offset + 0] = pos.x;
 		vertices[offset + 1] = pos.y;
 		
@@ -212,6 +216,7 @@ public class RenderBatch {
 		vertices[offset + 7] = texCoords.y;
 		
 		vertices[offset + 8] = texId;
+		return VERTEX_SIZE;
 	}
 	
 	private Vec2f[] calculateVertexPositions(SpriteController spriteController, Shape shape) {
@@ -279,5 +284,10 @@ public class RenderBatch {
 	
 	public boolean hasTexture(Texture tex) {
 		return this.textures.contains(tex);
+	}
+
+	@Override
+	public int compareTo(RenderBatch o) {
+		return Integer.compare(this.RENDER_LAYER, o.RENDER_LAYER);
 	}
 }

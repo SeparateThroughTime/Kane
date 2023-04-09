@@ -26,7 +26,7 @@ public abstract class Shape {
 	public final int ID;
 	// Layer is from 1-20. First Layer is rendered first, last Layer is rendered
 	// last.
-	public final int RENDER_LAYER;
+	public int renderLayer;
 
 	public final Vec2f relPos;
 	public final Vec2f relPosAlign;
@@ -94,7 +94,7 @@ public abstract class Shape {
 		this.material = material;
 		this.hasSprite = false;
 		this.centerOfMass = new Vec2f();
-		this.RENDER_LAYER = renderLayer > MAX_RENDER_LAYER ? MAX_RENDER_LAYER : renderLayer;
+		this.renderLayer = renderLayer > MAX_RENDER_LAYER ? MAX_RENDER_LAYER : renderLayer;
 		this.colidedShapes = new Shape[MAX_COLIDED_SHAPES];
 		this.numRenderVertices = numRenderVertices;
 		this.numRenderElements = numRenderElements;

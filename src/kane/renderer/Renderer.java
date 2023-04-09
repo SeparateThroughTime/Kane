@@ -29,6 +29,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
@@ -102,13 +103,16 @@ public class Renderer {
 		glfwMakeContextCurrent(window);
 		glfwSwapInterval(1);
 		GL.createCapabilities();
+		
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
 	public void addShape(Shape shape) {
 		if(shape.hasSprite) {
 			boolean added = false;
 			for (RenderBatch batch : batches) {
-				if (batch.hasRoom()) {
+				if (batch.hasRoom() && batch.RENDER_LAYER == shape.renderLayer) {
 					batch.addShape(shape);
 					added = true;
 					break;
@@ -116,10 +120,11 @@ public class Renderer {
 			}
 			
 			if(!added) {
-				RenderBatch newBatch = new RenderBatch(MAX_BATCH_SIZE);
+				RenderBatch newBatch = new RenderBatch(MAX_BATCH_SIZE, shape.renderLayer);
 				newBatch.start();
 				batches.add(newBatch);
 				newBatch.addShape(shape);
+				Collections.sort(batches);
 			}
 		}
 	}
