@@ -98,6 +98,7 @@ public abstract class Shape {
 		this.colidedShapes = new Shape[MAX_COLIDED_SHAPES];
 		this.numRenderVertices = numRenderVertices;
 		this.numRenderElements = numRenderElements;
+		this.spriteControllers = new SpriteController[0];
 	}
 
 	/**
@@ -224,9 +225,22 @@ public abstract class Shape {
 		if (spriteControllers.length > MAX_SPRITE_CONTROLLERS) {
 			assert false : "To many SpriteControllers in Shape +" + ID;
 		}
+
+		for (SpriteController spriteController : this.spriteControllers) {
+		spriteController.stopAnimation();
+	}
+
 		this.spriteControllers = spriteControllers;
-		hasSprite = true;
-		RENDERER.addShape(this);
+
+		for (SpriteController spriteController : spriteControllers) {
+		spriteController.startAnimation();
+	}
+
+		if (!hasSprite) {
+			hasSprite = true;
+			RENDERER.addShape(this);
+
+		}
 	}
 
 	public SpriteController[] getSpriteControllers() {
@@ -291,7 +305,7 @@ public abstract class Shape {
 		}
 		return ArrayOperations.cutArray(shapes, numColidedShapes - removedShapes);
 	}
-	
+
 	/**
 	 * Get absolute position.
 	 * 

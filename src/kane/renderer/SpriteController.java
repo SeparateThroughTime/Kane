@@ -1,6 +1,8 @@
 package kane.renderer;
 
+import kane.genericGame.gameEvent.animation.AnimationStep;
 import kane.math.Vec2f;
+import static kane.Kane.GAME;
 
 public class SpriteController {
 	public static final int ANIMATION_RATE = 10;
@@ -17,10 +19,21 @@ public class SpriteController {
 
 	public Sprite sprite;
 
+	private AnimationStep animation;
+
 	public SpriteController(Sprite sprite) {
 		this.spritePosOffset = new Vec2f();
 		this.sprite = sprite;
 		this.scale = 1;
+	}
+
+	public void startAnimation() {
+		animation = new AnimationStep(this);
+		GAME.addEvent(animation);
+	}
+
+	public void stopAnimation() {
+		animation.killEvent();
 	}
 
 	/**

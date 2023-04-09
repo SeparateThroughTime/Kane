@@ -53,8 +53,8 @@ public class Sprite {
 			float leftX = xPixel / (float)texWidth;
 			float bottomY = yPixel / (float)texHeight;
 			
-			Vec2f[] frameTexCoords = { new Vec2f(rightX, topY), new Vec2f(rightX, bottomY),
-					new Vec2f(leftX, bottomY), new Vec2f(leftX, topY) };
+			Vec2f[] frameTexCoords = { new Vec2f(leftX, bottomY), new Vec2f(rightX, bottomY),
+					new Vec2f(rightX, topY), new Vec2f(leftX, topY) };
 			texCoords[i] = frameTexCoords;
 		}
 	}
