@@ -127,24 +127,6 @@ public class Kane extends Game {
 		mapLen = 400 * 3;
 		mapHeight = RES_SPECS.GAME_HEIGHT;
 
-		// Create World
-		Body body = new Body(0, 0);
-		body.addShape(
-				new LineSegment(new Vec2f(30, 0), new Vec2f(30, RES_SPECS.GAME_HEIGHT), body, Color.BLUE, mStatic, 2));
-		body.shapes[0].addPassiveAttribute(PassiveAttributes.PHYSICAL);
-		PHYSICS.addBody(body);
-
-		body = new Body(0, 0);
-		body.addShape(new LineSegment(new Vec2f(0, 30), new Vec2f(mapLen, 30), body, Color.BLUE, mStatic, 2));
-		body.shapes[0].addPassiveAttribute(PassiveAttributes.PHYSICAL);
-		PHYSICS.addBody(body);
-
-		body = new Body(0, 0);
-		body.addShape(new LineSegment(new Vec2f(mapLen - 30, 0), new Vec2f(mapLen - 30, RES_SPECS.GAME_HEIGHT), body,
-				Color.BLUE, mStatic, 2));
-		body.shapes[0].addPassiveAttribute(PassiveAttributes.PHYSICAL);
-		PHYSICS.addBody(body);
-
 		// Create player
 		player = new Mob(100, 130, 3, 1);
 		player.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
@@ -157,6 +139,30 @@ public class Kane extends Game {
 		CAMERA.bindCameraToMap();
 		RENDERER.moveBackground();
 		CAMERA.initInventory();
+
+		// Create World
+		Body body = new Body(0, 0);
+		LineSegment line = new LineSegment(new Vec2f(30, 0), new Vec2f(30, RES_SPECS.GAME_HEIGHT), body, Color.BLUE,
+				mStatic, 2);
+		body.addShape(line);
+		line.addToRenderer();
+		body.shapes[0].addPassiveAttribute(PassiveAttributes.PHYSICAL);
+		PHYSICS.addBody(body);
+
+		body = new Body(0, 0);
+		line = new LineSegment(new Vec2f(0, 30), new Vec2f(mapLen, 30), body, Color.BLUE, mStatic, 2);
+		body.addShape(line);
+		line.addToRenderer();
+		body.shapes[0].addPassiveAttribute(PassiveAttributes.PHYSICAL);
+		PHYSICS.addBody(body);
+
+		body = new Body(0, 0);
+		line = new LineSegment(new Vec2f(mapLen - 30, 0), new Vec2f(mapLen - 30, RES_SPECS.GAME_HEIGHT), body,
+				Color.BLUE, mStatic, 2);
+		body.addShape(line);
+		line.addToRenderer();
+		body.shapes[0].addPassiveAttribute(PassiveAttributes.PHYSICAL);
+		PHYSICS.addBody(body);
 
 		// Set player Item
 		currentItem = INVENTORY.getItem("None");

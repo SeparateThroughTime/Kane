@@ -1,5 +1,7 @@
 package kane.physics.shapes;
 
+import static kane.renderer.Renderer.RENDERER;
+
 import java.awt.Color;
 
 import kane.math.Vec2f;
@@ -109,5 +111,9 @@ public class Plane extends Shape {
 	@Override
 	protected void mirrorY() {
 		normal.set(normal.x, -normal.y);
+	}
+	
+	public void addToRenderer() {
+		RENDERER.addLine(this);
 	}
 }

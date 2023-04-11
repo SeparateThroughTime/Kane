@@ -124,8 +124,6 @@ public class RenderBatch implements Comparable<RenderBatch> {
 			}
 		}
 
-		loadVertexProperties(numShapes - 1);
-
 		if (numDrawings >= maxBatchSize) {
 			hasRoom = false;
 		}

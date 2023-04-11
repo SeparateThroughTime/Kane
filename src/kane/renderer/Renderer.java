@@ -51,6 +51,7 @@ public class Renderer {
 	
 	private final int MAX_BATCH_SIZE = 1000;
 	private ArrayList<RenderBatch> batches;
+	private ArrayList<LineBatch> lineBatches;
 	
 	public static Renderer RENDERER;
 
@@ -71,6 +72,7 @@ public class Renderer {
 
 		initGLFW(title);
 		batches = new ArrayList<>();
+		lineBatches = new ArrayList<>();
 
 		shader = RESOURCE_MANAGER.getShader("shaders/default.glsl");
 		shader.compile();
@@ -128,6 +130,24 @@ public class Renderer {
 			}
 		}
 	}
+	
+	public void addLine(Shape shape) {
+		boolean added = false;
+		for(LineBatch batch : lineBatches) {
+			if(batch.hasRoom()) {
+				batch.addShape(shape);
+				added = true;
+				break;
+			}
+		}
+		
+		if(!added) {
+			LineBatch newBatch = new LineBatch(MAX_BATCH_SIZE);
+			newBatch.start();
+			lineBatches.add(newBatch);
+			newBatch.addShape(shape);
+		}
+	}
 
 	/**
 	 * Needs to run after Resolution is changed.
@@ -149,6 +169,10 @@ public class Renderer {
 //		drawBackground();
 		
 		for (RenderBatch batch : batches) {
+			batch.render();
+		}
+		
+		for (LineBatch batch : lineBatches) {
 			batch.render();
 		}
 		

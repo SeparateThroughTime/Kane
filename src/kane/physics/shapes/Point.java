@@ -1,5 +1,7 @@
 package kane.physics.shapes;
 
+import static kane.renderer.Renderer.RENDERER;
+
 import java.awt.Color;
 
 import kane.math.Vec2f;
@@ -55,6 +57,10 @@ public class Point extends Shape {
 
 	@Override
 	protected void mirrorY() {
+	}
+	
+	public void addToRenderer() {
+		RENDERER.addLine(this);
 	}
 
 }
