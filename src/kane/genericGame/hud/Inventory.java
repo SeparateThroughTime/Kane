@@ -139,4 +139,8 @@ public class Inventory {
 			showItems();
 		}
 	}
+	
+	public boolean isVisible() {
+		return mainShape.visible;
+	}
 }

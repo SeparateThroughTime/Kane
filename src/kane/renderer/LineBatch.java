@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import kane.genericGame.hud.Inventory;
 import kane.math.Vec2f;
 import kane.math.Vec4f;
 import kane.physics.Shape;
@@ -90,15 +91,19 @@ public class LineBatch {
 		shapes.add(shape);
 		numShapes++;
 
-
 		if (numShapes >= maxBatchSize) {
 			hasRoom = false;
 		}
 	}
 
 	public void render() {
+
 		for (int i = 0; i < numShapes; i++) {
-			loadVertexProperties(i);
+			if (shapes.get(i).visible && !shapes.get(i).body.isRemoved()) {
+				loadVertexProperties(i);
+			} else {
+				loadInvisibleProperties(i);
+			}
 		}
 
 		glBindBuffer(GL_ARRAY_BUFFER, vboID);
@@ -119,11 +124,22 @@ public class LineBatch {
 
 		RENDERER.shader.detach();
 	}
+	
+	private void loadInvisibleProperties(int shapeIndex) {
+		int offset = shapeIndex * 2 * VERTEX_SIZE;
+		
+		Vec2f pos = new Vec2f();
+		Vec4f color = new Vec4f(0, 0, 0, 0);
+		
+		for (int vertexCounter = 0; vertexCounter < 2; vertexCounter++) {
+			offset += loadVertexProperties(pos, color, offset);
+		}
+	}
 
 	private void loadVertexProperties(int shapeIndex) {
 		Shape shape = shapes.get(shapeIndex);
 		int offset = shapeIndex * 2 * VERTEX_SIZE;
-		
+
 		Vec2f[] pos = calculateVertexPositions(shape);
 		Vec4f color = new Vec4f(shape.color);
 
@@ -131,11 +147,11 @@ public class LineBatch {
 			offset += loadVertexProperties(pos[vertexCounter], color, offset);
 		}
 	}
-	
+
 	private int loadVertexProperties(Vec2f pos, Vec4f color, int offset) {
 		vertices[offset + 0] = pos.x;
 		vertices[offset + 1] = pos.y;
-		
+
 		vertices[offset + 2] = color.x;
 		vertices[offset + 3] = color.y;
 		vertices[offset + 4] = color.z;
@@ -143,24 +159,25 @@ public class LineBatch {
 
 		return VERTEX_SIZE;
 	}
-	
+
 	private Vec2f[] calculateVertexPositions(Shape shape) {
 		Vec2f shapePos = shape.getAbsPos();
 		Vec2f[] vertexPositions = new Vec2f[2];
-		
+
 		switch (shape.type) {
 		case LINESEGMENT:
 			LineSegment line = (LineSegment) shape;
 			vertexPositions[0] = transformPosToVertex(new Vec2f(shapePos).add(line.getRelPosA()));
 			vertexPositions[1] = transformPosToVertex(new Vec2f(shapePos).add(line.getRelPosB()));
 			break;
-			
+
 		case PLANE:
 			Plane plane = (Plane) shape;
 			vertexPositions[0] = transformPosToVertex(new Vec2f(shapePos).add(plane.getPoint()));
-			vertexPositions[1] = transformPosToVertex(new Vec2f(shapePos).add(plane.getPoint().addMult(plane.getNormal(), plane.getLen())));
+			vertexPositions[1] = transformPosToVertex(
+					new Vec2f(shapePos).add(plane.getPoint().addMult(plane.getNormal(), plane.getLen())));
 			break;
-		
+
 		case POINT:
 			vertexPositions[0] = transformPosToVertex(new Vec2f(shapePos));
 			vertexPositions[1] = new Vec2f(vertexPositions[0]);
@@ -173,7 +190,7 @@ public class LineBatch {
 
 		return vertexPositions;
 	}
-	
+
 	protected Vec2f transformPosToVertex(Vec2f gamePos) {
 		Vec2f cameraAlteredPos = new Vec2f(gamePos).sub(new Vec2f(CAMERA.zeroPoint).mult(RENDERER.multiplicator));
 
@@ -187,7 +204,7 @@ public class LineBatch {
 
 		return new Vec2f(x, y);
 	}
-	
+
 	private int[] generateIndices() {
 		int[] elements = new int[2 * maxBatchSize];
 		for (int i = 0; i < maxBatchSize; i++) {
@@ -196,7 +213,7 @@ public class LineBatch {
 
 		return elements;
 	}
-	
+
 	private void loadElementIndices(int[] elements, int index) {
 		int offsetArrayIndex = ELEMENT_SIZE * 2 * index;
 		int offset = 2 * index;
@@ -206,7 +223,7 @@ public class LineBatch {
 		elements[offsetArrayIndex] = offset;
 		elements[offsetArrayIndex + 1] = offset + 1;
 	}
-	
+
 	public boolean hasRoom() {
 		return this.hasRoom;
 	}

@@ -1,8 +1,13 @@
 /*TODO
 	Switch to lwjgl
+		Lines disappear when opening inventory
+		switch to sword no texture loaded
+		pos of icons in inventory
+		draw background
+		Colors for textures
+		inventory edges blue
 	Visual Effects
 	Sounds
-	Resource Management
 	Object Editor
 		(Ermitteln des besten Mittelpunkts)
 	Level Ends/ Player dies -> Next level/ Restart

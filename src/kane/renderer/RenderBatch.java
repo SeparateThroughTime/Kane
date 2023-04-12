@@ -20,6 +20,7 @@ import static org.lwjgl.opengl.GL20C.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,8 +29,7 @@ import java.util.Map;
 import kane.math.Vec2f;
 import kane.math.Vec4f;
 import kane.physics.Shape;
-import kane.renderer.Shader;
-import kane.renderer.Texture;
+import kane.physics.shapes.Point;
 import static kane.renderer.ResolutionSpecification.RES_SPECS;
 import static kane.renderer.Camera.CAMERA;
 import static kane.renderer.Renderer.RENDERER;
@@ -46,6 +46,9 @@ public class RenderBatch implements Comparable<RenderBatch> {
 	private final static int TEX_ID_OFFSET = TEX_COORDS_OFFSET + TEX_COORDS_SIZE * Float.BYTES;
 	private final static int VERTEX_SIZE = 9;
 	private final static int VERTEX_SIZE_BYTES = VERTEX_SIZE * Float.BYTES;
+	
+	private final SpriteController invisibleSpriteController;
+	private final Shape invisibleShape;
 
 	private List<Shape> shapes;
 	private int numShapes;
@@ -59,7 +62,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
 	private List<Texture> textures;
 	private int vaoID, vboID;
 	private int maxBatchSize;
-	
+
 	public final int RENDER_LAYER;
 
 	public RenderBatch(int maxBatchSize, int renderLayer) {
@@ -74,6 +77,9 @@ public class RenderBatch implements Comparable<RenderBatch> {
 		this.textures = new ArrayList<>();
 		this.shapeIndexToDrawingIndex = new HashMap<>();
 		this.RENDER_LAYER = renderLayer;
+		
+		this.invisibleSpriteController = new SpriteController(new Sprite("", 1, 1));
+		this.invisibleShape = new Point(0, 0, CAMERA, new Color(0, 0, 0, 0), 	null, 0);
 	}
 
 	public void start() {
@@ -130,8 +136,15 @@ public class RenderBatch implements Comparable<RenderBatch> {
 	}
 
 	public void render() {
+
 		for (int i = 0; i < numShapes; i++) {
-			loadVertexProperties(i);
+			if (shapes.get(i).visible && !shapes.get(i).body.isRemoved()) {
+				loadVertexProperties(i);
+			} else {
+				loadInvisibleProperties(i);
+				
+				
+			}
 		}
 
 		glBindBuffer(GL_ARRAY_BUFFER, vboID);
@@ -166,23 +179,32 @@ public class RenderBatch implements Comparable<RenderBatch> {
 		RENDERER.shader.detach();
 	}
 	
-	private void loadVertexProperties(int shapeIndex) {
+	private void loadInvisibleProperties(int shapeIndex) {
 		int drawingIndex = shapeIndexToDrawingIndex.get(shapeIndex);
 		Shape shape = shapes.get(shapeIndex);
 		int offset = drawingIndex * 4 * VERTEX_SIZE;
 		
-		
+		for (int spriteCounter = 0; spriteCounter < shape.getSpriteControllers().length; spriteCounter++) {
+			offset += loadVertexProperties(invisibleSpriteController, invisibleShape, offset);
+		}
+	}
+	
+	private void loadVertexProperties(int shapeIndex) {
+		int drawingIndex = shapeIndexToDrawingIndex.get(shapeIndex);
+		Shape shape = shapes.get(shapeIndex);
+		int offset = drawingIndex * 4 * VERTEX_SIZE;
+
 		for (int spriteCounter = 0; spriteCounter < shape.getSpriteControllers().length; spriteCounter++) {
 			offset += loadVertexProperties(shape.getSpriteControllers()[spriteCounter], shape, offset);
 		}
 	}
-	
+
 	private int loadVertexProperties(SpriteController spriteController, Shape shape, int offset) {
 		Vec2f[] pos = calculateVertexPositions(spriteController, shape);
 		Vec4f color = new Vec4f(shape.color);
 		Vec2f[] texCoords = spriteController.getFrameTexCoords();
 		Texture texture = spriteController.sprite.getTexture();
-		
+
 		int texId = 0;
 		if (texture != null) {
 			for (int texCounter = 0; texCounter < textures.size(); texCounter++) {
@@ -192,31 +214,31 @@ public class RenderBatch implements Comparable<RenderBatch> {
 				}
 			}
 		}
-		
-		for(int vertexCounter = 0; vertexCounter < 4; vertexCounter++) {
+
+		for (int vertexCounter = 0; vertexCounter < 4; vertexCounter++) {
 			offset += loadVertexProperties(pos[vertexCounter], color, texCoords[vertexCounter], texId, offset);
 		}
-		
+
 		return VERTEX_SIZE * 4;
-		
+
 	}
-	
+
 	private int loadVertexProperties(Vec2f pos, Vec4f color, Vec2f texCoords, int texId, int offset) {
 		vertices[offset + 0] = pos.x;
 		vertices[offset + 1] = pos.y;
-		
+
 		vertices[offset + 2] = color.x;
 		vertices[offset + 3] = color.y;
 		vertices[offset + 4] = color.z;
 		vertices[offset + 5] = color.w;
-	
+
 		vertices[offset + 6] = texCoords.x;
 		vertices[offset + 7] = texCoords.y;
-		
+
 		vertices[offset + 8] = texId;
 		return VERTEX_SIZE;
 	}
-	
+
 	private Vec2f[] calculateVertexPositions(SpriteController spriteController, Shape shape) {
 		Sprite sprite = spriteController.sprite;
 		Vec2f scale = new Vec2f(spriteController.scale).mult(Sprite.SCALE);
@@ -224,7 +246,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
 		Vec2f spritePos = transformPosToVertex(new Vec2f(shapePos).add(spriteController.spritePosOffset));
 		Vec2f dimension = new Vec2f((float) sprite.FRAME_WIDTH / RES_SPECS.halfGameWidth,
 				(float) sprite.FRAME_HEIGHT / RES_SPECS.halfGameHeight).mult(scale).mult(RENDERER.multiplicator);
-		
+
 		Vec2f[] vertexPositions = new Vec2f[4];
 		vertexPositions[0] = spritePos;
 		vertexPositions[1] = new Vec2f(spritePos.x + dimension.x, spritePos.y);
@@ -232,7 +254,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
 		vertexPositions[3] = new Vec2f(spritePos.x, spritePos.y + dimension.y);
 		return vertexPositions;
 	}
-	
+
 	protected Vec2f transformPosToVertex(Vec2f gamePos) {
 		Vec2f cameraAlteredPos = new Vec2f(gamePos).sub(new Vec2f(CAMERA.zeroPoint).mult(RENDERER.multiplicator));
 
@@ -246,7 +268,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
 
 		return new Vec2f(x, y);
 	}
-	
+
 	private int[] generateIndices() {
 		int[] elements = new int[6 * maxBatchSize];
 		for (int i = 0; i < maxBatchSize; i++) {
@@ -255,7 +277,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
 
 		return elements;
 	}
-	
+
 	private void loadElementIndices(int[] elements, int index) {
 		int offsetArrayIndex = 6 * index;
 		int offset = 4 * index;
@@ -271,15 +293,15 @@ public class RenderBatch implements Comparable<RenderBatch> {
 		elements[offsetArrayIndex + 4] = offset + 2;
 		elements[offsetArrayIndex + 5] = offset + 1;
 	}
-	
+
 	public boolean hasRoom() {
 		return this.hasRoom;
 	}
-	
+
 	public boolean hasTextureRoom() {
 		return this.textures.size() < 8;
 	}
-	
+
 	public boolean hasTexture(Texture tex) {
 		return this.textures.contains(tex);
 	}

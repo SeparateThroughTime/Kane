@@ -30,7 +30,9 @@ public class Sprite {
 		this.states = new HashMap<SpriteState, int[]>();
 		
 		texture = RESOURCE_MANAGER.getTexture(filepath);
-		init();
+		if (texture != null) {
+			init();
+		}
 	}
 
 	private void init() {
@@ -75,6 +77,10 @@ public class Sprite {
 	}
 
 	public Vec2f[] getTexCoords(SpriteState spriteState, int spriteStateFrameNo) {
+		if(texture == null) {
+			return new Vec2f[] { new Vec2f(0, 1), new Vec2f(0, 0), new Vec2f(1, 0), new Vec2f(1, 1)};
+		}
+		
 		int frameNo = states.get(spriteState)[spriteStateFrameNo];
 		return texCoords[frameNo];
 	}

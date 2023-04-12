@@ -22,6 +22,10 @@ public class ResourceManager {
 	private HashMap<String, BufferedImage> backgrounds;
 
 	public Texture getTexture(String filepath) {
+		if (filepath == null || filepath == "") {
+			return null;
+		}
+		
 		if (!sprites.containsKey(filepath)) {
 			Texture texture = new Texture(filepath);
 			sprites.put(filepath, texture);
