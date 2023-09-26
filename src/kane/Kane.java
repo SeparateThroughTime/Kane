@@ -67,12 +67,14 @@
 */
 package kane;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import static kane.genericGame.hud.Inventory.INVENTORY;
+import static kane.genericGame.userInteraction.Mouse.MOUSE;
+import static kane.physics.Physics.PHYSICS;
+import static kane.renderer.Camera.CAMERA;
+import static kane.renderer.Renderer.RENDERER;
+import static kane.renderer.ResolutionSpecification.RES_SPECS;
 
-import javax.imageio.ImageIO;
+import java.awt.Color;
 
 import kane.genericGame.AIs;
 import kane.genericGame.ActiveAttributes;
@@ -80,8 +82,10 @@ import kane.genericGame.Game;
 import kane.genericGame.Item;
 import kane.genericGame.Mob;
 import kane.genericGame.MobActions;
+import kane.genericGame.MobDirection;
 import kane.genericGame.PassiveAttributes;
 import kane.genericGame.hud.HudBar;
+import kane.genericGame.hud.Inventory;
 import kane.genericGame.item.SWORD;
 import kane.math.Vec2f;
 import kane.physics.Body;
@@ -94,14 +98,6 @@ import kane.renderer.Camera;
 import kane.renderer.Sprite;
 import kane.renderer.SpriteController;
 import kane.renderer.SpriteState;
-
-import static kane.physics.Physics.PHYSICS;
-import static kane.renderer.Renderer.RENDERER;
-import static kane.genericGame.userInteraction.Mouse.MOUSE;
-import static kane.genericGame.userInteraction.Keyboard.KEYBOARD;
-import static kane.renderer.Camera.CAMERA;
-import static kane.genericGame.hud.Inventory.INVENTORY;
-import static kane.renderer.ResolutionSpecification.RES_SPECS;
 
 /**
  * This is the game "Kane".
@@ -135,7 +131,7 @@ public class Kane extends Game {
 		mapHeight = RES_SPECS.GAME_HEIGHT;
 
 		// Create player
-		player = new Mob(100, 130, 3, 1);
+		player = new Mob(100, 130, 3, 1, MobDirection.RIGHT);
 		player.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
 		player.setJumpAcc(new Vec2f(0, 800 / DELTATIME));
 		player.setWalkSpeed(300);
@@ -198,7 +194,6 @@ public class Kane extends Game {
 		points[3] = new Vec2f(-16, 16);
 		sword.addShape(new Polygon(0, 0, sword, Color.YELLOW, points, mDynamic, 2));
 		sword.shapes[0].addActiveAttribute(ActiveAttributes.SWORD);
-		File file = new File("sprites\\items\\sword.png");
 		Sprite sprite = new Sprite("sprites\\items\\sword.png", 16, 16);
 		sprite.addState(SpriteState.STATIC, new int[] { 0 });
 		spriteControllers = new SpriteController[1];
@@ -209,7 +204,7 @@ public class Kane extends Game {
 		PHYSICS.addBody(sword);
 
 		// Create Blob
-		Mob blob = new Mob(300, 130, 3, 1);
+		Mob blob = new Mob(300, 130, 3, 1, MobDirection.LEFT);
 		points = new Vec2f[4];
 		blob.addShape(new Box(0, 0, blob, new Vec2f(32, 16), Color.YELLOW, mDynamic, 2));
 		blob.shapes[0].addPassiveAttribute(PassiveAttributes.MOB_ALL);
@@ -278,7 +273,7 @@ public class Kane extends Game {
 	@Override
 	public void leftMouseReleased() {
 		if (showInventory) {
-			for (int i = 0; i < INVENTORY.NUM_SLOTS; i++) {
+			for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
 				Shape slot = INVENTORY.getSlot(i);
 				if (slot.isPointInShape(MOUSE.mousePos)) {
 					Item item = INVENTORY.getItem(i);

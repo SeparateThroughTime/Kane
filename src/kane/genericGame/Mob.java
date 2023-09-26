@@ -35,11 +35,12 @@ public class Mob extends Body {
 
 	private int invulnerabilityCooldown;
 
-	public Mob(int posX, int posY, int maxHealth, int damage) {
+	public Mob(int posX, int posY, int maxHealth, int damage, MobDirection direction) {
 		super(posX, posY);
 		this.setMaxHealth(maxHealth);
 		this.health = maxHealth;
 		this.setDamage(damage);
+		this.direction = direction;
 		onGround = true;
 		walkAcc = new Vec2f();
 
@@ -50,6 +51,7 @@ public class Mob extends Body {
 		activeActions.put(MobActions.FALLING, false);
 		activeActions.put(MobActions.HIT, false);
 		activeActions.put(MobActions.GUMBA_WALK, false);
+		activeActions.put(MobActions.STAND, true);
 	}
 
 	public int getHealth() {
