@@ -1,5 +1,7 @@
 package kane.physics;
 
+import static kane.renderer.Renderer.RENDERER;
+
 import java.awt.Color;
 import java.util.ArrayList;
 
@@ -8,9 +10,9 @@ import kane.genericGame.PassiveAttributes;
 import kane.math.ArrayOperations;
 import kane.math.Vec2f;
 import kane.math.Vec2i;
+import kane.renderer.RenderBatch;
 import kane.renderer.SpriteController;
 import kane.renderer.SpriteState;
-import static kane.renderer.Renderer.RENDERER;
 
 /**
  * Shape is an abstract class, which is the base for all Shapes.
@@ -53,6 +55,7 @@ public abstract class Shape {
 
 	public final int numRenderVertices;
 	public final int numRenderElements;
+	public RenderBatch renderBatch;
 
 	/**
 	 * Update the AABB of Shape including its next position.
@@ -241,6 +244,8 @@ public abstract class Shape {
 			RENDERER.addShape(this);
 
 		}
+		
+		renderBatch.addSpriteControllers(spriteControllers);
 	}
 
 	public SpriteController[] getSpriteControllers() {

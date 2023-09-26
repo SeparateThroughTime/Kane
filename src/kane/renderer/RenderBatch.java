@@ -114,6 +114,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
 
 	public void addShape(Shape shape) {
 		shapes.add(shape);
+		shape.renderBatch = this;
 		shapeIndexToDrawingIndex.put(numShapes, numDrawings);
 
 		SpriteController[] spriteControllers = shape.getSpriteControllers();
@@ -121,6 +122,13 @@ public class RenderBatch implements Comparable<RenderBatch> {
 		numShapes++;
 		numDrawings += drawingsInShape;
 
+		if (numDrawings >= maxBatchSize) {
+			hasRoom = false;
+		}
+	}
+	
+	public void addSpriteControllers(SpriteController[] spriteControllers) {
+		
 		for (SpriteController spriteController : spriteControllers) {
 			Texture texture = spriteController.sprite.getTexture();
 			if (texture != null) {
@@ -128,10 +136,6 @@ public class RenderBatch implements Comparable<RenderBatch> {
 					textures.add(texture);
 				}
 			}
-		}
-
-		if (numDrawings >= maxBatchSize) {
-			hasRoom = false;
 		}
 	}
 

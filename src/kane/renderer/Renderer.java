@@ -48,11 +48,11 @@ import kane.physics.contacts.Contact;
  * The Renderer renders the game.
  */
 public class Renderer {
-	
+
 	private final int MAX_BATCH_SIZE = 1000;
 	private ArrayList<RenderBatch> batches;
 	private ArrayList<LineBatch> lineBatches;
-	
+
 	public static Renderer RENDERER;
 
 	public float multiplicator;
@@ -78,7 +78,7 @@ public class Renderer {
 		shader.compile();
 
 	}
-	
+
 	public static void initializeRenderer(String title) {
 		if (RENDERER == null) {
 			RENDERER = new Renderer(title);
@@ -105,43 +105,45 @@ public class Renderer {
 		glfwMakeContextCurrent(window);
 		glfwSwapInterval(1);
 		GL.createCapabilities();
-		
+
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	}
-	
+
 	public void addShape(Shape shape) {
-		if(shape.hasSprite) {
-			boolean added = false;
-			for (RenderBatch batch : batches) {
-				if (batch.hasRoom() && batch.RENDER_LAYER == shape.renderLayer) {
-					batch.addShape(shape);
-					added = true;
-					break;
-				}
-			}
-			
-			if(!added) {
-				RenderBatch newBatch = new RenderBatch(MAX_BATCH_SIZE, shape.renderLayer);
-				newBatch.start();
-				batches.add(newBatch);
-				newBatch.addShape(shape);
-				Collections.sort(batches);
-			}
+		if (!shape.hasSprite) {
+			return;
 		}
-	}
-	
-	public void addLine(Shape shape) {
+
 		boolean added = false;
-		for(LineBatch batch : lineBatches) {
-			if(batch.hasRoom()) {
+		for (RenderBatch batch : batches) {
+			if (batch.hasRoom() && batch.RENDER_LAYER == shape.renderLayer) {
 				batch.addShape(shape);
 				added = true;
 				break;
 			}
 		}
-		
-		if(!added) {
+
+		if (!added) {
+			RenderBatch newBatch = new RenderBatch(MAX_BATCH_SIZE, shape.renderLayer);
+			newBatch.start();
+			batches.add(newBatch);
+			newBatch.addShape(shape);
+			Collections.sort(batches);
+		}
+	}
+
+	public void addLine(Shape shape) {
+		boolean added = false;
+		for (LineBatch batch : lineBatches) {
+			if (batch.hasRoom()) {
+				batch.addShape(shape);
+				added = true;
+				break;
+			}
+		}
+
+		if (!added) {
 			LineBatch newBatch = new LineBatch(MAX_BATCH_SIZE);
 			newBatch.start();
 			lineBatches.add(newBatch);
@@ -167,15 +169,15 @@ public class Renderer {
 		clearWindow();
 		CAMERA.update();
 //		drawBackground();
-		
+
 		for (RenderBatch batch : batches) {
 			batch.render();
 		}
-		
+
 		for (LineBatch batch : lineBatches) {
 			batch.render();
 		}
-		
+
 		glfwSwapBuffers(window);
 	}
 

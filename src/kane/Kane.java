@@ -1,7 +1,8 @@
 /*TODO
 	Switch to lwjgl
 		Lines disappear when opening inventory
-		switch to sword no texture loaded
+			Only on my PC, not on my Laptop...
+		Body of player is in wrong direction
 		pos of icons in inventory
 		draw background
 		Colors for textures
@@ -16,6 +17,7 @@
 	Campaign Editor
 	StartMenu
 	Save
+	Camera Adjustments
 	
 	Events:
 		WalkAI
