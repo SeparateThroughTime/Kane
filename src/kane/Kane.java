@@ -1,8 +1,5 @@
 /*TODO
 	Switch to lwjgl
-		Lines disappear when opening inventory
-			Only on my PC, not on my Laptop...
-		Body of player is in wrong direction
 		pos of icons in inventory
 		draw background
 		Colors for textures
@@ -63,6 +60,8 @@
 	Speed-Adjuster (Jumping against dynamics increases jump heigth)
 		Its probably not the cause of friction but something else)
 	Hud Flickering while camera Movement
+	Lines disappear when opening inventory
+			Only on my PC, not on my Laptop... -> Seems to be a bug of lwjgl or openGL
 
 */
 package kane;
