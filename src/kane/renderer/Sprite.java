@@ -17,7 +17,7 @@ public class Sprite {
 	public final int FRAME_HEIGHT;
 	public int PIXEL_PER_FRAME;
 //	private int[][] spritePixels;
-	private Texture texture;
+	public Texture texture;
 	private Vec2f[][] texCoords;
 	protected SpriteState[] assignedSpriteStates;
 
@@ -32,6 +32,21 @@ public class Sprite {
 		texture = RESOURCE_MANAGER.getTexture(filepath);
 		if (texture != null) {
 			init();
+		}
+	}
+	
+	public Sprite(String filepath) {
+		assignedSpriteStates = new SpriteState[0];
+		this.states = new HashMap<SpriteState, int[]>();
+		
+		texture = RESOURCE_MANAGER.getTexture(filepath);
+		if (texture != null) {
+			this.FRAME_HEIGHT = texture.HEIGHT;
+			this.FRAME_WIDTH = texture.WIDTH;
+			init();
+		} else {
+			this.FRAME_HEIGHT = 0;
+			this.FRAME_WIDTH = 0;
 		}
 	}
 
@@ -87,9 +102,5 @@ public class Sprite {
 
 	public int getFrameCount(SpriteState state) {
 		return states.get(state).length;
-	}
-	
-	public Texture getTexture() {
-		return texture;
 	}
 }

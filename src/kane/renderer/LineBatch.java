@@ -35,7 +35,7 @@ import kane.physics.Shape;
 import kane.physics.shapes.LineSegment;
 import kane.physics.shapes.Plane;
 
-public class LineBatch {
+public class LineBatch extends RenderBatch<Shape> {
 	private static final int POS_SIZE = 2;
 	private final static int COLOR_SIZE = 4;
 	private final static int ELEMENT_SIZE = 1;
@@ -44,41 +44,22 @@ public class LineBatch {
 	private final static int COLOR_OFFSET = POS_OFFSET + POS_SIZE * Float.BYTES;
 	private final static int VERTEX_SIZE = 6;
 	private final static int VERTEX_SIZE_BYTES = VERTEX_SIZE * Float.BYTES;
+	
+	
 
 	private List<Shape> shapes;
 	private int numShapes;
 	private boolean hasRoom;
-	private float[] vertices;
 
-	private int vaoID, vboID;
-	private int maxBatchSize;
+	public LineBatch(int maxBatchSize, int renderLayer) {
+		super(maxBatchSize, renderLayer, 2, 6, GL_LINE);
 
-	public LineBatch(int maxBatchSize) {
-		this.maxBatchSize = maxBatchSize;
-
-		vertices = new float[maxBatchSize * 2 * VERTEX_SIZE];
 		shapes = new ArrayList<>();
 
 		this.numShapes = 0;
-		this.hasRoom = true;
 	}
 
-	public void start() {
-		// Generate and bind a Vertex Array Object
-		vaoID = glGenVertexArrays();
-		glBindVertexArray(vaoID);
-
-		// Allocate space for vertices
-		vboID = glGenBuffers();
-		glBindBuffer(GL_ARRAY_BUFFER, vboID);
-		glBufferData(GL_ARRAY_BUFFER, vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
-
-		// Create and upload indices buffer
-		int eboID = glGenBuffers();
-		int[] indices = generateIndices();
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
-
+	public void enableBufferAttributePointer() {
 		// Enable the buffer attribute pointers
 		glVertexAttribPointer(0, POS_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, POS_OFFSET);
 		glEnableVertexAttribArray(0);
@@ -87,7 +68,7 @@ public class LineBatch {
 		glEnableVertexAttribArray(1);
 	}
 
-	public void addShape(Shape shape) {
+	public void add(Shape shape) {
 		shapes.add(shape);
 		numShapes++;
 
@@ -95,9 +76,8 @@ public class LineBatch {
 			hasRoom = false;
 		}
 	}
-
-	public void render() {
-
+	
+	public void loadVertices() {
 		for (int i = 0; i < numShapes; i++) {
 			if (shapes.get(i).visible && !shapes.get(i).body.isRemoved()) {
 				loadVertexProperties(i);
@@ -105,24 +85,20 @@ public class LineBatch {
 				loadInvisibleProperties(i);
 			}
 		}
-
-		glBindBuffer(GL_ARRAY_BUFFER, vboID);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
-
-		// Use shader
-		RENDERER.shader.use();
-
-		glBindVertexArray(vaoID);
+	}
+	
+	protected void enableVertexAttribArrays() {
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
-
-		glDrawElements(GL_LINES, this.numShapes * 2, GL_UNSIGNED_INT, 0);
-
+	}
+	
+	protected void setNumElements() {
+		numElements = this.numShapes * 2;
+	}
+	
+	protected void disableVertexAttribArrays() {
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
-		glBindVertexArray(0);
-
-		RENDERER.shader.detach();
 	}
 	
 	private void loadInvisibleProperties(int shapeIndex) {
@@ -205,7 +181,7 @@ public class LineBatch {
 		return new Vec2f(x, y);
 	}
 
-	private int[] generateIndices() {
+	protected int[] generateIndices() {
 		int[] elements = new int[2 * maxBatchSize];
 		for (int i = 0; i < maxBatchSize; i++) {
 			loadElementIndices(elements, i);
@@ -226,6 +202,16 @@ public class LineBatch {
 
 	public boolean hasRoom() {
 		return this.hasRoom;
+	}
+
+	@Override
+	protected void bindTextures() {
+		// Must be empty
+	}
+
+	@Override
+	protected void unbindTextures() {
+		// Must be empty
 	}
 
 }

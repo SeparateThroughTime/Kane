@@ -10,7 +10,7 @@ import kane.genericGame.PassiveAttributes;
 import kane.math.ArrayOperations;
 import kane.math.Vec2f;
 import kane.math.Vec2i;
-import kane.renderer.RenderBatch;
+import kane.renderer.SpriteBatch;
 import kane.renderer.SpriteController;
 import kane.renderer.SpriteState;
 
@@ -55,7 +55,7 @@ public abstract class Shape {
 
 	public final int numRenderVertices;
 	public final int numRenderElements;
-	public RenderBatch renderBatch;
+	public SpriteBatch renderBatch;
 
 	/**
 	 * Update the AABB of Shape including its next position.

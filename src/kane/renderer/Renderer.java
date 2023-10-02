@@ -49,9 +49,11 @@ import kane.physics.contacts.Contact;
  */
 public class Renderer {
 
-	private final int MAX_BATCH_SIZE = 1000;
-	private ArrayList<RenderBatch> batches;
+	static final int MAX_BATCH_SIZE = 1000;
+	static final int MAX_GLTEXTURES = 16;
+	private ArrayList<SpriteBatch> batches;
 	private ArrayList<LineBatch> lineBatches;
+	private SpriteBatch backgroundBatch;
 
 	public static Renderer RENDERER;
 
@@ -116,19 +118,19 @@ public class Renderer {
 		}
 
 		boolean added = false;
-		for (RenderBatch batch : batches) {
+		for (SpriteBatch batch : batches) {
 			if (batch.hasRoom() && batch.RENDER_LAYER == shape.renderLayer) {
-				batch.addShape(shape);
+				batch.add(shape);
 				added = true;
 				break;
 			}
 		}
 
 		if (!added) {
-			RenderBatch newBatch = new RenderBatch(MAX_BATCH_SIZE, shape.renderLayer);
+			SpriteBatch newBatch = new SpriteBatch(MAX_BATCH_SIZE, shape.renderLayer);
 			newBatch.start();
 			batches.add(newBatch);
-			newBatch.addShape(shape);
+			newBatch.add(shape);
 			Collections.sort(batches);
 		}
 	}
@@ -137,17 +139,17 @@ public class Renderer {
 		boolean added = false;
 		for (LineBatch batch : lineBatches) {
 			if (batch.hasRoom()) {
-				batch.addShape(shape);
+				batch.add(shape);
 				added = true;
 				break;
 			}
 		}
 
 		if (!added) {
-			LineBatch newBatch = new LineBatch(MAX_BATCH_SIZE);
+			LineBatch newBatch = new LineBatch(MAX_BATCH_SIZE, shape.renderLayer);
 			newBatch.start();
 			lineBatches.add(newBatch);
-			newBatch.addShape(shape);
+			newBatch.add(shape);
 		}
 	}
 
@@ -170,7 +172,7 @@ public class Renderer {
 		CAMERA.update();
 //		drawBackground();
 
-		for (RenderBatch batch : batches) {
+		for (SpriteBatch batch : batches) {
 			batch.render();
 		}
 
@@ -183,6 +185,9 @@ public class Renderer {
 
 	public void changeBackground(String filepath) {
 		background = new Background(filepath);
+		int width = background.spriteController.sprite.FRAME_WIDTH;
+		
+		backgroundBatch = new SpriteBatch(numRenderedTextures, 0);
 	}
 
 	public void moveBackground() {
