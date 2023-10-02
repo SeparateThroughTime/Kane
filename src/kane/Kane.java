@@ -2,7 +2,6 @@
 	Switch to lwjgl
 		pos of icons in inventory
 		draw background
-		Colors for textures
 		inventory edges blue
 	Visual Effects
 	Sounds

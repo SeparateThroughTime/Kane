@@ -28,7 +28,7 @@ public class NONE extends Item {
 
 		ITEM_SPRITE.addState(SpriteState.STATIC, new int[] { 0 });
 		ITEM_SPRITE_CONTROLLERS[0].setCurrentSpriteState(SpriteState.STATIC);
-		ITEM_SPRITE_CONTROLLERS[0].spritePosOffset = new Vec2f(-32, -32);
+		ITEM_SPRITE_CONTROLLERS[0].spritePosOffset = new Vec2f(-128, -32);
 		ITEM_SPRITE_CONTROLLERS[0].scale = new Vec2f(2, 2);
 
 		// Head
