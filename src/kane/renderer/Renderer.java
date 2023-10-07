@@ -40,15 +40,13 @@ public class Renderer {
 
 	static final int MAX_BATCH_SIZE = 1000;
 	static final int MAX_GLTEXTURES = 16;
-	private ArrayList<SpriteBatch> SpriteBatches;
-	private ArrayList<LineBatch> lineBatches;
+	private final ArrayList<SpriteBatch> SpriteBatches;
+	private final ArrayList<LineBatch> lineBatches;
 	private BackgroundBatch backgroundBatch;
 
 	public static Renderer RENDERER;
 
 	public float multiplicator;
-	protected Shape[] renderedTextures;
-	protected int numRenderedTextures;
 	public Background background;
 
 	public boolean showContacts = false;

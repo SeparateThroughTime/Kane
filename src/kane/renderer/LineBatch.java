@@ -1,39 +1,25 @@
 package kane.renderer;
 
-import static kane.renderer.Camera.CAMERA;
-import static kane.renderer.Renderer.RENDERER;
-import static kane.renderer.ResolutionSpecification.RES_SPECS;
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
-import static org.lwjgl.opengl.GL11.glDrawElements;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
-import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
-import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
-import static org.lwjgl.opengl.GL15.glBindBuffer;
-import static org.lwjgl.opengl.GL15.glBufferData;
-import static org.lwjgl.opengl.GL15.glBufferSubData;
-import static org.lwjgl.opengl.GL15.glGenBuffers;
-import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20C.glVertexAttribPointer;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
-import static org.lwjgl.opengl.GL46.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import kane.genericGame.hud.Inventory;
 import kane.math.Vec2f;
 import kane.math.Vec4f;
 import kane.physics.Shape;
 import kane.physics.shapes.LineSegment;
 import kane.physics.shapes.Plane;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static kane.renderer.Camera.CAMERA;
+import static kane.renderer.Renderer.RENDERER;
+import static kane.renderer.ResolutionSpecification.RES_SPECS;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL20C.glVertexAttribPointer;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+import static org.lwjgl.opengl.GL46.GL_LINES;
 
 public class LineBatch {
 	private static final int POS_SIZE = 2;
@@ -45,13 +31,13 @@ public class LineBatch {
 	private final static int VERTEX_SIZE = 6;
 	private final static int VERTEX_SIZE_BYTES = VERTEX_SIZE * Float.BYTES;
 
-	private List<Shape> shapes;
+	private final List<Shape> shapes;
 	private int numShapes;
 	private boolean hasRoom;
-	private float[] vertices;
+	private final float[] vertices;
 
 	private int vaoID, vboID;
-	private int maxBatchSize;
+	private final int maxBatchSize;
 
 	public LineBatch(int maxBatchSize) {
 		this.maxBatchSize = maxBatchSize;
@@ -71,7 +57,7 @@ public class LineBatch {
 		// Allocate space for vertices
 		vboID = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, vboID);
-		glBufferData(GL_ARRAY_BUFFER, vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, (long) vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
 
 		// Create and upload indices buffer
 		int eboID = glGenBuffers();
@@ -149,7 +135,7 @@ public class LineBatch {
 	}
 
 	private int loadVertexProperties(Vec2f pos, Vec4f color, int offset) {
-		vertices[offset + 0] = pos.x;
+		vertices[offset] = pos.x;
 		vertices[offset + 1] = pos.y;
 
 		vertices[offset + 2] = color.x;

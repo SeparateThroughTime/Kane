@@ -1,33 +1,20 @@
 package kane.renderer;
 
+import kane.math.Vec2f;
+import kane.math.Vec4f;
+
 import static kane.renderer.Camera.CAMERA;
 import static kane.renderer.Renderer.RENDERER;
 import static kane.renderer.ResolutionSpecification.RES_SPECS;
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
-import static org.lwjgl.opengl.GL11.glDrawElements;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
-import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
-import static org.lwjgl.opengl.GL15.glBindBuffer;
-import static org.lwjgl.opengl.GL15.glBufferData;
-import static org.lwjgl.opengl.GL15.glBufferSubData;
-import static org.lwjgl.opengl.GL15.glGenBuffers;
+import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20C.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
-
-import org.lwjgl.opengl.GL46;
-
-import kane.math.Vec2f;
-import kane.math.Vec4f;
-import kane.physics.Shape;
 
 public class BackgroundBatch {
 	private static final int POS_SIZE = 2;
@@ -42,12 +29,12 @@ public class BackgroundBatch {
 	private final static int VERTEX_SIZE = 9;
 	private final static int VERTEX_SIZE_BYTES = VERTEX_SIZE * Float.BYTES;
 
-	private int maxBatchSize;
-	private int backgroundSize;
-	private float[] vertices;
-	private int[] texSlots = { 0, 1, 2, 3, 4, 5, 6, 7 };
+	private final int maxBatchSize;
+	private final int backgroundSize;
+	private final float[] vertices;
+	private final int[] texSlots = { 0, 1, 2, 3, 4, 5, 6, 7 };
 
-	private Background background;
+	private final Background background;
 	private int vaoID, vboID;
 
 	public BackgroundBatch(Background background) {
@@ -66,7 +53,7 @@ public class BackgroundBatch {
 		// Allocate space for vertices
 		vboID = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, vboID);
-		glBufferData(GL_ARRAY_BUFFER, vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, (long) vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
 
 		// Create and upload indices buffer
 		int eboID = glGenBuffers();
@@ -137,7 +124,7 @@ public class BackgroundBatch {
 	}
 	
 	private int loadVertexProperties(Vec2f pos, Vec4f color, Vec2f texCoords, int texId, int offset) {
-		vertices[offset + 0] = pos.x;
+		vertices[offset] = pos.x;
 		vertices[offset + 1] = pos.y;
 
 		vertices[offset + 2] = color.x;

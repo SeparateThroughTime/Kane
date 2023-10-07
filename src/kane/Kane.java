@@ -1,7 +1,5 @@
 /*TODO
 	Switch to lwjgl
-		refactor: abstract renderBatch
-			abstraction done. Lines are not drawn for some reason
 		draw background
 		inventory edges blue
 		player sprite has blue pixels when on Edge of map

@@ -50,18 +50,18 @@ public class SpriteBatch implements Comparable<SpriteBatch> {
 	private final SpriteController invisibleSpriteController;
 	private final Shape invisibleShape;
 
-	private List<Shape> shapes;
+	private final List<Shape> shapes;
 	private int numShapes;
 	// One shape can have more than one Sprite to draw in one Frame.
 	private int numDrawings;
-	private Map<Integer, Integer> shapeIndexToDrawingIndex;
+	private final Map<Integer, Integer> shapeIndexToDrawingIndex;
 	private boolean hasRoom;
-	private float[] vertices;
-	private int[] texSlots = { 0, 1, 2, 3, 4, 5, 6, 7 };
+	private final float[] vertices;
+	private final int[] texSlots = { 0, 1, 2, 3, 4, 5, 6, 7 };
 
-	private List<Texture> textures;
+	private final List<Texture> textures;
 	private int vaoID, vboID;
-	private int maxBatchSize;
+	private final int maxBatchSize;
 
 	public final int RENDER_LAYER;
 
@@ -90,7 +90,7 @@ public class SpriteBatch implements Comparable<SpriteBatch> {
 		// Allocate space for vertices
 		vboID = glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER, vboID);
-		glBufferData(GL_ARRAY_BUFFER, vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, (long) vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
 
 		// Create and upload indices buffer
 		int eboID = glGenBuffers();
@@ -228,7 +228,7 @@ public class SpriteBatch implements Comparable<SpriteBatch> {
 	}
 
 	private int loadVertexProperties(Vec2f pos, Vec4f color, Vec2f texCoords, int texId, int offset) {
-		vertices[offset + 0] = pos.x;
+		vertices[offset] = pos.x;
 		vertices[offset + 1] = pos.y;
 
 		vertices[offset + 2] = color.x;
@@ -290,24 +290,16 @@ public class SpriteBatch implements Comparable<SpriteBatch> {
 		// Triangle 1
 		elements[offsetArrayIndex] = offset + 3;
 		elements[offsetArrayIndex + 1] = offset + 2;
-		elements[offsetArrayIndex + 2] = offset + 0;
+		elements[offsetArrayIndex + 2] = offset;
 
 		// Triangle 2
-		elements[offsetArrayIndex + 3] = offset + 0;
+		elements[offsetArrayIndex + 3] = offset;
 		elements[offsetArrayIndex + 4] = offset + 2;
 		elements[offsetArrayIndex + 5] = offset + 1;
 	}
 
 	public boolean hasRoom() {
 		return this.hasRoom;
-	}
-
-	public boolean hasTextureRoom() {
-		return this.textures.size() < 8;
-	}
-
-	public boolean hasTexture(Texture tex) {
-		return this.textures.contains(tex);
 	}
 
 	@Override
