@@ -195,10 +195,8 @@ public abstract class Shape {
 	/**
 	 * Get an passive attribute with index.
 	 * 
-	 * @param index
 	 * @return
 	 */
-
 	public void remPassiveAttribute(PassiveAttributes pa) {
 		ArrayList<Integer> indices = new ArrayList<Integer>();
 		for (int i = 0; i < numPassiveAttributes; i++) {
@@ -222,7 +220,7 @@ public abstract class Shape {
 	/**
 	 * set Sprite
 	 * 
-	 * @param sprite
+	 * @param spriteControllers
 	 */
 	public void setSpriteControllers(SpriteController[] spriteControllers) {
 		if (spriteControllers.length > MAX_SPRITE_CONTROLLERS) {

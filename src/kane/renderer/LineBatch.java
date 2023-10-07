@@ -35,7 +35,7 @@ import kane.physics.Shape;
 import kane.physics.shapes.LineSegment;
 import kane.physics.shapes.Plane;
 
-public class LineBatch extends RenderBatch<Shape> {
+public class LineBatch {
 	private static final int POS_SIZE = 2;
 	private final static int COLOR_SIZE = 4;
 	private final static int ELEMENT_SIZE = 1;
@@ -44,22 +44,41 @@ public class LineBatch extends RenderBatch<Shape> {
 	private final static int COLOR_OFFSET = POS_OFFSET + POS_SIZE * Float.BYTES;
 	private final static int VERTEX_SIZE = 6;
 	private final static int VERTEX_SIZE_BYTES = VERTEX_SIZE * Float.BYTES;
-	
-	
 
 	private List<Shape> shapes;
 	private int numShapes;
 	private boolean hasRoom;
+	private float[] vertices;
 
-	public LineBatch(int maxBatchSize, int renderLayer) {
-		super(maxBatchSize, renderLayer, 2, 6, GL_LINE);
+	private int vaoID, vboID;
+	private int maxBatchSize;
 
+	public LineBatch(int maxBatchSize) {
+		this.maxBatchSize = maxBatchSize;
+
+		vertices = new float[maxBatchSize * 2 * VERTEX_SIZE];
 		shapes = new ArrayList<>();
 
 		this.numShapes = 0;
+		this.hasRoom = true;
 	}
 
-	public void enableBufferAttributePointer() {
+	public void start() {
+		// Generate and bind a Vertex Array Object
+		vaoID = glGenVertexArrays();
+		glBindVertexArray(vaoID);
+
+		// Allocate space for vertices
+		vboID = glGenBuffers();
+		glBindBuffer(GL_ARRAY_BUFFER, vboID);
+		glBufferData(GL_ARRAY_BUFFER, vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
+
+		// Create and upload indices buffer
+		int eboID = glGenBuffers();
+		int[] indices = generateIndices();
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
+
 		// Enable the buffer attribute pointers
 		glVertexAttribPointer(0, POS_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, POS_OFFSET);
 		glEnableVertexAttribArray(0);
@@ -68,7 +87,7 @@ public class LineBatch extends RenderBatch<Shape> {
 		glEnableVertexAttribArray(1);
 	}
 
-	public void add(Shape shape) {
+	public void addShape(Shape shape) {
 		shapes.add(shape);
 		numShapes++;
 
@@ -76,8 +95,9 @@ public class LineBatch extends RenderBatch<Shape> {
 			hasRoom = false;
 		}
 	}
-	
-	public void loadVertices() {
+
+	public void render() {
+
 		for (int i = 0; i < numShapes; i++) {
 			if (shapes.get(i).visible && !shapes.get(i).body.isRemoved()) {
 				loadVertexProperties(i);
@@ -85,28 +105,32 @@ public class LineBatch extends RenderBatch<Shape> {
 				loadInvisibleProperties(i);
 			}
 		}
-	}
-	
-	protected void enableVertexAttribArrays() {
+
+		glBindBuffer(GL_ARRAY_BUFFER, vboID);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
+
+		// Use shader
+		RENDERER.shader.use();
+
+		glBindVertexArray(vaoID);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
-	}
-	
-	protected void setNumElements() {
-		numElements = this.numShapes * 2;
-	}
-	
-	protected void disableVertexAttribArrays() {
+
+		glDrawElements(GL_LINES, this.numShapes * 2, GL_UNSIGNED_INT, 0);
+
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
+		glBindVertexArray(0);
+
+		RENDERER.shader.detach();
 	}
-	
+
 	private void loadInvisibleProperties(int shapeIndex) {
 		int offset = shapeIndex * 2 * VERTEX_SIZE;
-		
+
 		Vec2f pos = new Vec2f();
 		Vec4f color = new Vec4f(0, 0, 0, 0);
-		
+
 		for (int vertexCounter = 0; vertexCounter < 2; vertexCounter++) {
 			offset += loadVertexProperties(pos, color, offset);
 		}
@@ -141,27 +165,27 @@ public class LineBatch extends RenderBatch<Shape> {
 		Vec2f[] vertexPositions = new Vec2f[2];
 
 		switch (shape.type) {
-		case LINESEGMENT:
-			LineSegment line = (LineSegment) shape;
-			vertexPositions[0] = transformPosToVertex(new Vec2f(shapePos).add(line.getRelPosA()));
-			vertexPositions[1] = transformPosToVertex(new Vec2f(shapePos).add(line.getRelPosB()));
-			break;
+			case LINESEGMENT:
+				LineSegment line = (LineSegment) shape;
+				vertexPositions[0] = transformPosToVertex(new Vec2f(shapePos).add(line.getRelPosA()));
+				vertexPositions[1] = transformPosToVertex(new Vec2f(shapePos).add(line.getRelPosB()));
+				break;
 
-		case PLANE:
-			Plane plane = (Plane) shape;
-			vertexPositions[0] = transformPosToVertex(new Vec2f(shapePos).add(plane.getPoint()));
-			vertexPositions[1] = transformPosToVertex(
-					new Vec2f(shapePos).add(plane.getPoint().addMult(plane.getNormal(), plane.getLen())));
-			break;
+			case PLANE:
+				Plane plane = (Plane) shape;
+				vertexPositions[0] = transformPosToVertex(new Vec2f(shapePos).add(plane.getPoint()));
+				vertexPositions[1] = transformPosToVertex(
+						new Vec2f(shapePos).add(plane.getPoint().addMult(plane.getNormal(), plane.getLen())));
+				break;
 
-		case POINT:
-			vertexPositions[0] = transformPosToVertex(new Vec2f(shapePos));
-			vertexPositions[1] = new Vec2f(vertexPositions[0]);
+			case POINT:
+				vertexPositions[0] = transformPosToVertex(new Vec2f(shapePos));
+				vertexPositions[1] = new Vec2f(vertexPositions[0]);
 
-		default:
-			vertexPositions[0] = new Vec2f();
-			vertexPositions[1] = new Vec2f();
-			break;
+			default:
+				vertexPositions[0] = new Vec2f();
+				vertexPositions[1] = new Vec2f();
+				break;
 		}
 
 		return vertexPositions;
@@ -181,7 +205,7 @@ public class LineBatch extends RenderBatch<Shape> {
 		return new Vec2f(x, y);
 	}
 
-	protected int[] generateIndices() {
+	private int[] generateIndices() {
 		int[] elements = new int[2 * maxBatchSize];
 		for (int i = 0; i < maxBatchSize; i++) {
 			loadElementIndices(elements, i);
@@ -202,16 +226,6 @@ public class LineBatch extends RenderBatch<Shape> {
 
 	public boolean hasRoom() {
 		return this.hasRoom;
-	}
-
-	@Override
-	protected void bindTextures() {
-		// Must be empty
-	}
-
-	@Override
-	protected void unbindTextures() {
-		// Must be empty
 	}
 
 }

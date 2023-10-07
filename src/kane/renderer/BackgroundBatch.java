@@ -70,9 +70,9 @@ public class BackgroundBatch {
 
 		// Create and upload indices buffer
 		int eboID = glGenBuffers();
-		int[] indices = generateIndices();
+//		int[] indices = generateIndices();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
+//		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
 
 		// Enable the buffer attribute pointers
 		glVertexAttribPointer(0, POS_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, POS_OFFSET);

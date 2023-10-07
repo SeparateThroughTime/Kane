@@ -30,29 +30,34 @@ public class Shader {
 			String source = new String(Files.readAllBytes(Paths.get(filepath)));
 			String[] splitString = source.split("(#type)( )+([a-zA-Z]+)");
 
-			int index = source.indexOf("#type") + 6;
-			int eol = source.indexOf("\r\n", index);
-			String firstPattern = source.substring(index, eol).trim();
+			//Didnt work for some reason after switching IDE...
+			//Just assume the order of shaders: First is vertex and second is fragment.
+//			int index = source.indexOf("#type") + 6;
+//			int eol = source.indexOf("\r\n", index);
+//			String firstPattern = source.substring(index, eol).trim();
+//
+//			index = source.indexOf("#type", eol) + 6;
+//			eol = source.indexOf("\r\n", index);
+//			String secondPattern = source.substring(index, eol).trim();
+//
+//			if (firstPattern.equals("vertex")) {
+//				vertexSource = splitString[1];
+//			} else if (firstPattern.equals("fragment")) {
+//				fragmentSource = splitString[1];
+//			} else {
+//				throw new IOException("Unexpected token " + firstPattern);
+//			}
+//
+//			if (secondPattern.equals("vertex")) {
+//				vertexSource = splitString[2];
+//			} else if (secondPattern.equals("fragment")) {
+//				fragmentSource = splitString[2];
+//			} else {
+//				throw new IOException("Unexpected token " + secondPattern);
+//			}
 
-			index = source.indexOf("#type", eol) + 6;
-			eol = source.indexOf("\r\n", index);
-			String secondPattern = source.substring(index, eol).trim();
-
-			if (firstPattern.equals("vertex")) {
-				vertexSource = splitString[1];
-			} else if (firstPattern.equals("fragment")) {
-				fragmentSource = splitString[1];
-			} else {
-				throw new IOException("Unexpected token " + firstPattern);
-			}
-
-			if (secondPattern.equals("vertex")) {
-				vertexSource = splitString[2];
-			} else if (secondPattern.equals("fragment")) {
-				fragmentSource = splitString[2];
-			} else {
-				throw new IOException("Unexpected token " + secondPattern);
-			}
+			vertexSource = splitString[1];
+			fragmentSource = splitString[2];
 		} catch (IOException e) {
 			e.printStackTrace();
 			assert false : "Error: Could not ipen file for shader";
