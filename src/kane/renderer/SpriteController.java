@@ -1,8 +1,8 @@
 package kane.renderer;
 
-import java.nio.ByteBuffer;
-
+import kane.genericGame.gameEvent.animation.AnimationStep;
 import kane.math.Vec2f;
+import static kane.Kane.GAME;
 
 public class SpriteController {
 	public static final int ANIMATION_RATE = 10;
@@ -15,14 +15,25 @@ public class SpriteController {
 	public int currentSpriteStateFrameNo;
 	public Vec2f spritePosOffset;
 	private int frameCounter;
-	public float scale;
+	public Vec2f scale;
 
 	public Sprite sprite;
+
+	private AnimationStep animation;
 
 	public SpriteController(Sprite sprite) {
 		this.spritePosOffset = new Vec2f();
 		this.sprite = sprite;
-		this.scale = 1;
+		this.scale = new Vec2f(1, 1);
+	}
+
+	public void startAnimation() {
+		animation = new AnimationStep(this);
+		GAME.addEvent(animation);
+	}
+
+	public void stopAnimation() {
+		animation.killEvent();
 	}
 
 	/**
@@ -30,8 +41,8 @@ public class SpriteController {
 	 * 
 	 * @return
 	 */
-	public Texture getFrame() {
-		return sprite.getFrame(currentSpriteState, currentSpriteStateFrameNo);
+	public Vec2f[] getFrameTexCoords() {
+		return sprite.getTexCoords(currentSpriteState, currentSpriteStateFrameNo);
 	}
 
 	public void setCurrentSpriteState(SpriteState state) {

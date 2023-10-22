@@ -1,7 +1,5 @@
 package kane.math;
 
-import static kane.renderer.drawer.ImageDrawer.IMAGE_DRAWER;
-
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -35,7 +33,7 @@ public class ImageAlteration {
 		int[] pixels = new int[width * height];
 
 		img.getRGB(0, 0, width, height, pixels, 0, width);
-		ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * IMAGE_DRAWER.COLOR_SIZE);
+		ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * 4);
 
 		for (int y = 0; y < height; ++y) {
 			for (int x = 0; x < width; ++x) {

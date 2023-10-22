@@ -1,5 +1,7 @@
 package kane.physics;
 
+import static kane.renderer.Renderer.RENDERER;
+
 import java.awt.Color;
 import java.util.ArrayList;
 
@@ -8,6 +10,7 @@ import kane.genericGame.PassiveAttributes;
 import kane.math.ArrayOperations;
 import kane.math.Vec2f;
 import kane.math.Vec2i;
+import kane.renderer.SpriteBatch;
 import kane.renderer.SpriteController;
 import kane.renderer.SpriteState;
 
@@ -20,11 +23,12 @@ public abstract class Shape {
 	public static int MAX_COLIDED_SHAPES = 50;
 	public static int MAX_ACTIVE_ATTRIBUTES = 5;
 	public static int MAX_PASSIVE_ATTRIBUTES = 5;
+	public static int MAX_SPRITE_CONTROLLERS = 10;
 
 	public final int ID;
 	// Layer is from 1-20. First Layer is rendered first, last Layer is rendered
 	// last.
-	public final int RENDER_LAYER;
+	public int renderLayer;
 
 	public final Vec2f relPos;
 	public final Vec2f relPosAlign;
@@ -51,6 +55,7 @@ public abstract class Shape {
 
 	public final int numRenderVertices;
 	public final int numRenderElements;
+	public SpriteBatch renderBatch;
 
 	/**
 	 * Update the AABB of Shape including its next position.
@@ -60,11 +65,6 @@ public abstract class Shape {
 	 */
 	public abstract void updateAABB(Vec2f nextAbsPos, float tolerance);
 
-	/**
-	 * Get volume of shape.
-	 * 
-	 * @return
-	 */
 	public abstract float getVolume();
 
 	public abstract boolean isPointInShape(Vec2f point);
@@ -92,17 +92,13 @@ public abstract class Shape {
 		this.material = material;
 		this.hasSprite = false;
 		this.centerOfMass = new Vec2f();
-		this.RENDER_LAYER = renderLayer > MAX_RENDER_LAYER ? MAX_RENDER_LAYER : renderLayer;
+		this.renderLayer = Math.min(renderLayer, MAX_RENDER_LAYER);
 		this.colidedShapes = new Shape[MAX_COLIDED_SHAPES];
 		this.numRenderVertices = numRenderVertices;
 		this.numRenderElements = numRenderElements;
+		this.spriteControllers = new SpriteController[0];
 	}
 
-	/**
-	 * Dummy for the rotation of Polygons and circle, if body is rotated.
-	 * 
-	 * @param angle
-	 */
 	public void rotate(float angle) {
 	}
 
@@ -110,17 +106,12 @@ public abstract class Shape {
 
 	}
 
-	/**
-	 * add an active attribute for the Shape.
-	 * 
-	 * @param aa
-	 */
 	public void addActiveAttribute(ActiveAttributes aa) {
 		activeAttributes[numActiveAttributes++] = aa;
 	}
 
 	public void remActiveAttribute(ActiveAttributes aa) {
-		ArrayList<Integer> indices = new ArrayList<Integer>();
+		ArrayList<Integer> indices = new ArrayList<>();
 		for (int i = 0; i < numActiveAttributes; i++) {
 			if (activeAttributes[i] == aa) {
 				indices.add(i);
@@ -135,12 +126,6 @@ public abstract class Shape {
 		}
 	}
 
-	/**
-	 * Get an active attribute with index.
-	 * 
-	 * @param index
-	 * @return
-	 */
 	public ActiveAttributes getActiveAttribute(int index) {
 		return activeAttributes[index];
 	}
@@ -156,45 +141,29 @@ public abstract class Shape {
 		for (int i = 0; i < numActiveAttributes; i++) {
 			if (activeAttributes[i] == a) {
 				b = true;
+				break;
 			}
 		}
 		return b;
 	}
 
-	/**
-	 * Checks if Shape has specific active passive.
-	 * 
-	 * @param a -active passive
-	 * @return -true if passive exists in shape
-	 */
 	public boolean hasPassiveAtrribute(PassiveAttributes a) {
 		boolean b = false;
 		for (int i = 0; i < numPassiveAttributes; i++) {
 			if (passiveAttributes[i] == a) {
 				b = true;
+				break;
 			}
 		}
 		return b;
 	}
 
-	/**
-	 * add an passive attribute for the Shape.
-	 * 
-	 * @param pa
-	 */
 	public void addPassiveAttribute(PassiveAttributes pa) {
 		passiveAttributes[numPassiveAttributes++] = pa;
 	}
 
-	/**
-	 * Get an passive attribute with index.
-	 * 
-	 * @param index
-	 * @return
-	 */
-
 	public void remPassiveAttribute(PassiveAttributes pa) {
-		ArrayList<Integer> indices = new ArrayList<Integer>();
+		ArrayList<Integer> indices = new ArrayList<>();
 		for (int i = 0; i < numPassiveAttributes; i++) {
 			if (passiveAttributes[i] == pa) {
 				indices.add(i);
@@ -213,14 +182,28 @@ public abstract class Shape {
 		return passiveAttributes[index];
 	}
 
-	/**
-	 * set Sprite
-	 * 
-	 * @param sprite
-	 */
 	public void setSpriteControllers(SpriteController[] spriteControllers) {
+		if (spriteControllers.length > MAX_SPRITE_CONTROLLERS) {
+			assert false : "To many SpriteControllers in Shape +" + ID;
+		}
+
+		for (SpriteController spriteController : this.spriteControllers) {
+		spriteController.stopAnimation();
+	}
+
 		this.spriteControllers = spriteControllers;
-		hasSprite = true;
+
+		for (SpriteController spriteController : spriteControllers) {
+		spriteController.startAnimation();
+	}
+
+		if (!hasSprite) {
+			hasSprite = true;
+			RENDERER.addShape(this);
+
+		}
+		
+		renderBatch.addSpriteControllers(spriteControllers);
 	}
 
 	public SpriteController[] getSpriteControllers() {
@@ -285,14 +268,8 @@ public abstract class Shape {
 		}
 		return ArrayOperations.cutArray(shapes, numColidedShapes - removedShapes);
 	}
-	
-	/**
-	 * Get absolute position.
-	 * 
-	 * @return
-	 */
+
 	public Vec2f getAbsPos() {
-		Vec2f absPos = new Vec2f(body.pos).add(relPos);
-		return absPos;
+        return new Vec2f(body.pos).add(relPos);
 	}
 }

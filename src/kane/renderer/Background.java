@@ -1,44 +1,29 @@
 package kane.renderer;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
+import kane.math.Vec2f;
+
 import java.nio.ByteBuffer;
 
-import javax.imageio.ImageIO;
-
-import kane.math.ImageAlteration;
-
 public class Background{
-	private ByteBuffer img;
+	public SpriteController spriteController;
 	private int offsetX;
-	public int WIDTH;
-	public int HEIGHT;
 	
-	public Background(File file, int gameHeight) {
-		BufferedImage awtImg;
-		try {
-			awtImg = ImageIO.read(file);
-			awtImg = ImageAlteration.resizeWithHeight(awtImg, gameHeight);
-			img = ImageAlteration.bufferedImageToByteBuffer(awtImg);
-			WIDTH = awtImg.getWidth();
-			HEIGHT = awtImg.getHeight();
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		this.offsetX = 0;
+	public Background(String filepath) {
+		spriteController = new SpriteController(new Sprite(filepath));
+		spriteController.sprite.addState(SpriteState.STATIC, new int[]{0});
+		spriteController.setCurrentSpriteState(SpriteState.STATIC);
+		float scale = (float) ResolutionSpecification.RES_SPECS.GAME_HEIGHT / spriteController.sprite.FRAME_HEIGHT;
+		spriteController.scale = new Vec2f(scale, scale).mult(0.5f);
+
+        this.offsetX = 0;
 	}
 	
 	public void setOffsetX(int offsetX) {
-		offsetX = -(offsetX % WIDTH);
+		offsetX = -(offsetX % spriteController.sprite.FRAME_WIDTH);
 		this.offsetX = offsetX;
 	}
 	
 	public int getOffsetX() {
 		return offsetX;
-	}
-	
-	public ByteBuffer getImg() {
-		return img;
 	}
 }

@@ -19,45 +19,34 @@ import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL46.*;
-import static kane.renderer.drawer.TriangleDrawer.TRIANGLE_DRAWER;
-import static kane.physics.Physics.PHYSICS;
 import static kane.renderer.Camera.CAMERA;
 import static kane.renderer.ResolutionSpecification.RES_SPECS;
 import static kane.Kane.GAME;
-import static kane.renderer.drawer.LineDrawer.LINE_DRAWER;
-import static kane.renderer.drawer.ImageDrawer.IMAGE_DRAWER;
+import static kane.genericGame.ResourceManager.RESOURCE_MANAGER;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 
-import kane.genericGame.Game;
 import kane.genericGame.gameEvent.camera.MoveBackground;
-import kane.math.Scalar;
-import kane.math.Vec2f;
-import kane.physics.Physics;
 import kane.physics.Shape;
-import kane.physics.ShapePair;
-import kane.physics.contacts.Contact;
-import kane.renderer.drawer.ImageDrawer;
-import kane.renderer.drawer.LineDrawer;
-import kane.renderer.drawer.TriangleDrawer;
 
 /**
  * The Renderer renders the game.
  */
 public class Renderer {
-	
+
+	static final int MAX_BATCH_SIZE = 1000;
+	static final int MAX_GLTEXTURES = 16;
+	private final ArrayList<SpriteBatch> SpriteBatches;
+	private final ArrayList<LineBatch> lineBatches;
+	private BackgroundBatch backgroundBatch;
+
 	public static Renderer RENDERER;
 
 	public float multiplicator;
-	protected Shape[] renderedTriangles;
-	protected int numRenderedTriangles;
-	protected Shape[] renderedLines;
-	protected int numRenderedLines;
 	public Background background;
 
 	public boolean showContacts = false;
@@ -71,23 +60,18 @@ public class Renderer {
 		this.multiplicator = 1f;
 
 		initGLFW(title);
-		initDrawer();
+		SpriteBatches = new ArrayList<>();
+		lineBatches = new ArrayList<>();
 
-		shader = Shader.DEFAULT;
+		shader = RESOURCE_MANAGER.getShader("shaders/default.glsl");
 		shader.compile();
 
 	}
-	
+
 	public static void initializeRenderer(String title) {
 		if (RENDERER == null) {
 			RENDERER = new Renderer(title);
 		}
-	}
-	
-	public void initDrawer() {
-		TriangleDrawer.initializateTriangleDrawer();
-		LineDrawer.initializeLineDrawer();
-		ImageDrawer.initializeImageDrawer();
 	}
 
 	public void initGLFW(String title) {
@@ -110,9 +94,51 @@ public class Renderer {
 		glfwMakeContextCurrent(window);
 		glfwSwapInterval(1);
 		GL.createCapabilities();
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
-	
+	public void addShape(Shape shape) {
+		if (!shape.hasSprite) {
+			return;
+		}
+
+		boolean added = false;
+		for (SpriteBatch batch : SpriteBatches) {
+			if (batch.hasRoom() && batch.RENDER_LAYER == shape.renderLayer) {
+				batch.addShape(shape);
+				added = true;
+				break;
+			}
+		}
+
+		if (!added) {
+			SpriteBatch newBatch = new SpriteBatch(MAX_BATCH_SIZE, shape.renderLayer);
+			newBatch.start();
+			SpriteBatches.add(newBatch);
+			newBatch.addShape(shape);
+			Collections.sort(SpriteBatches);
+		}
+	}
+
+	public void addLine(Shape shape) {
+		boolean added = false;
+		for (LineBatch batch : lineBatches) {
+			if (batch.hasRoom()) {
+				batch.addShape(shape);
+				added = true;
+				break;
+			}
+		}
+
+		if (!added) {
+			LineBatch newBatch = new LineBatch(MAX_BATCH_SIZE);
+			newBatch.start();
+			lineBatches.add(newBatch);
+			newBatch.addShape(shape);
+		}
+	}
 
 	/**
 	 * Needs to run after Resolution is changed.
@@ -131,120 +157,29 @@ public class Renderer {
 	public void renderGame() {
 		clearWindow();
 		CAMERA.update();
-//		drawBackground();
-		
-//		IMAGE_DRAWER.chooseRenderedShapes();
-//		IMAGE_DRAWER.addImagesToDrawer();
-		IMAGE_DRAWER.drawBodies();
-		IMAGE_DRAWER.displayFrame(shader);
-		
-//		LINE_DRAWER.chooseRenderedShapes();
-//		LINE_DRAWER.drawBodies();
-//		LINE_DRAWER.displayFrame(shader);
-//		
-//		TRIANGLE_DRAWER.chooseRenderedShapes();
-//		TRIANGLE_DRAWER.drawBodies();
-//		TRIANGLE_DRAWER.displayFrame(shader);
-		
-//		drawAABBs();
-//		drawContacts();
-		
-		
+
+		backgroundBatch.render();
+
+		for (SpriteBatch batch : SpriteBatches) {
+			batch.render();
+		}
+
+		for (LineBatch batch : lineBatches) {
+			batch.render();
+		}
+
 		glfwSwapBuffers(window);
 	}
 
-	/**
-	 * Display AABBs
-	 */
-	// TODO display AABBs
-//	private void drawAABBs() {
-//		if (showAABBs) {
-//			for (int i = 0; i < physics.getNumBodies(); i++) {
-//				Body body = physics.getBodies(i);
-//				for (int j = 0; j < body.getNumShapes(); j++) {
-//					Shape shape = body.getShape(j);
-//					AABB aabb = shape.getAABB();
-//					Vec2f min = transformPosToVertex(aabb.getMin());
-//					Vec2f max = transformPosToVertex(aabb.getMax());
-//					Vec2f diameter = transformPosToVertex(new Vec2f(aabb.getMax()).sub(aabb.getMin()));
-////					drawRect(aabb.getMin().getX(), aabb.getMax().getY(), diameter.getX(), diameter.getY(), Color.GREEN);
-//				}
-//			}
-//		}
-//	}
-
-	/**
-	 * Display contacts.
-	 */
-	// TODO displayContacts
-	private void drawContacts() {
-		if (showContacts) {
-			for (int i = 0; i < PHYSICS.numShapePairs; i++) {
-				ShapePair shapePair = PHYSICS.shapePairs[i];
-				Contact contact = shapePair.contact;
-				if (contact != null && shapePair.shapeA.visible == true
-						&& shapePair.shapeB.visible == true) {
-					Vec2f normal = contact.normal;
-					Vec2f closestPointOnPlane = contact.point;
-					Vec2f closestPointOnBox = new Vec2f(closestPointOnPlane).addMult(normal, contact.distance);
-//					fillCircle((int) closestPointOnPlane.getX(), (int) closestPointOnPlane.getY(), 4, Color.PINK, g2d);
-//					fillCircle((int) closestPointOnBox.getX(), (int) closestPointOnBox.getY(), 4, Color.YELLOW, g2d);
-				}
-			}
-		}
-	}
-
-	// TODO drawImage
-	private void drawImage(BufferedImage img, float scale, int posX, int posY) {
-		posX -= Scalar.round(CAMERA.zeroPoint.x);
-		posY -= Scalar.round(CAMERA.zeroPoint.y);
-		int width = (int) (img.getWidth() * multiplicator * Sprite.SCALE * scale);
-		int height = (int) (img.getHeight() * multiplicator * Sprite.SCALE * scale);
-		posY += img.getHeight() * Sprite.SCALE * scale;
-		posX = (int) (posX * multiplicator);
-		posY = (int) (posY * multiplicator);
-		posY = Scalar.getY(posY, RES_SPECS.height);
-	}
-
-	private void drawCircle(int x, int y, int rad, Color color) {
-		x -= Scalar.round(CAMERA.zeroPoint.x);
-		y -= Scalar.round(CAMERA.zeroPoint.y);
-		x -= rad;
-		y += rad;
-		x = (int) (x * multiplicator);
-		y = (int) (y * multiplicator);
-		rad = (int) (rad * multiplicator);
-		y = Scalar.getY(y, RES_SPECS.height);
-	}
-
-	private void fillCircle(int x, int y, int rad, Color color) {
-		x -= Scalar.round(CAMERA.zeroPoint.x);
-		y -= Scalar.round(CAMERA.zeroPoint.y);
-		x -= rad;
-		y += rad;
-		x = (int) (x * multiplicator);
-		y = (int) (y * multiplicator);
-		rad = (int) (rad * multiplicator);
-		y = Scalar.getY(y, RES_SPECS.height);
-	}
-
-	public void changeBackground(File file) {
-		background = new Background(file, RES_SPECS.GAME_HEIGHT);
+	public void changeBackground(String filepath) {
+		background = new Background(filepath);
+		int width = background.spriteController.sprite.FRAME_WIDTH;
+		
+		backgroundBatch = new BackgroundBatch(background);
+		backgroundBatch.start();
 	}
 
 	public void moveBackground() {
 		GAME.addEvent(new MoveBackground());
-	}
-	
-	public void uploadIntToShader(String varName, int val) {
-		int varLocation = glGetUniformLocation(shader.shaderProgramID, varName);
-		shader.use();
-		glUniform1i(varLocation, val);
-	}
-	
-	public void uploadIntArrayToShader(String varName, int[] val) {
-		int varLocation = glGetUniformLocation(shader.shaderProgramID, varName);
-		shader.use();
-		glUniform1iv(varLocation, val);
 	}
 }

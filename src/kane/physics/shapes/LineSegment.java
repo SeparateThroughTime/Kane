@@ -8,6 +8,8 @@ import kane.physics.Material;
 import kane.physics.Shape;
 import kane.physics.ShapeType;
 
+import static kane.renderer.Renderer.RENDERER;
+
 /**
  * This is a Shape of the Type LineSegment
  */
@@ -85,6 +87,10 @@ public class LineSegment extends Shape{
 	protected void mirrorY() {
 		relPosA.set(relPosA.x, -relPosA.y);
 		relPosB.set(relPosB.x, -relPosB.y);
+	}
+	
+	public void addToRenderer() {
+		RENDERER.addLine(this);
 	}
 
 }

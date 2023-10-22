@@ -51,8 +51,7 @@ public class Inventory {
 		mainShape.collision = false;
 		mainShape.addPassiveAttribute(PassiveAttributes.INVENTORY);
 
-		File file = new File("sprites\\interface\\Inventory.png");
-		Sprite sprite = new Sprite(file, 224, 128);
+		Sprite sprite = new Sprite("sprites\\interface\\Inventory.png", 224, 128);
 		sprite.addState(SpriteState.STATIC, new int[] { 0 });
 		SpriteController[] spriteControllers = new SpriteController[1];
 		spriteControllers[0] = new SpriteController(sprite);
@@ -139,5 +138,9 @@ public class Inventory {
 		if (visible) {
 			showItems();
 		}
+	}
+	
+	public boolean isVisible() {
+		return mainShape.visible;
 	}
 }
