@@ -62,6 +62,7 @@ public class SpriteBatch implements Comparable<SpriteBatch> {
 	private final List<Texture> textures;
 	private int vaoID, vboID;
 	private final int maxBatchSize;
+	private final static int ELEMENTS_PER_RENDEROBJECT = 4;
 
 	public final int RENDER_LAYER;
 
@@ -186,7 +187,7 @@ public class SpriteBatch implements Comparable<SpriteBatch> {
 	private void loadInvisibleProperties(int shapeIndex) {
 		int drawingIndex = shapeIndexToDrawingIndex.get(shapeIndex);
 		Shape shape = shapes.get(shapeIndex);
-		int offset = drawingIndex * 4 * VERTEX_SIZE;
+		int offset = drawingIndex * ELEMENTS_PER_RENDEROBJECT * VERTEX_SIZE;
 
 		for (int spriteCounter = 0; spriteCounter < shape.getSpriteControllers().length; spriteCounter++) {
 			offset += loadVertexProperties(invisibleSpriteController, invisibleShape, offset);
@@ -196,7 +197,7 @@ public class SpriteBatch implements Comparable<SpriteBatch> {
 	private void loadVertexProperties(int shapeIndex) {
 		int drawingIndex = shapeIndexToDrawingIndex.get(shapeIndex);
 		Shape shape = shapes.get(shapeIndex);
-		int offset = drawingIndex * 4 * VERTEX_SIZE;
+		int offset = drawingIndex * ELEMENTS_PER_RENDEROBJECT * VERTEX_SIZE;
 
 		for (int spriteCounter = 0; spriteCounter < shape.getSpriteControllers().length; spriteCounter++) {
 			offset += loadVertexProperties(shape.getSpriteControllers()[spriteCounter], shape, offset);
@@ -219,7 +220,7 @@ public class SpriteBatch implements Comparable<SpriteBatch> {
 			}
 		}
 
-		for (int vertexCounter = 0; vertexCounter < 4; vertexCounter++) {
+		for (int vertexCounter = 0; vertexCounter < ELEMENTS_PER_RENDEROBJECT; vertexCounter++) {
 			offset += loadVertexProperties(pos[vertexCounter], color, texCoords[vertexCounter], texId, offset);
 		}
 
@@ -284,7 +285,7 @@ public class SpriteBatch implements Comparable<SpriteBatch> {
 
 	private void loadElementIndices(int[] elements, int index) {
 		int offsetArrayIndex = 6 * index;
-		int offset = 4 * index;
+		int offset = ELEMENTS_PER_RENDEROBJECT * index;
 
 		// 3, 2, 0, 0, 2, 1 7, 6, 4, 4, 6, 5
 		// Triangle 1

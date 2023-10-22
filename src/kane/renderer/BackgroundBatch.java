@@ -28,6 +28,7 @@ public class BackgroundBatch {
 	private final static int TEX_ID_OFFSET = TEX_COORDS_OFFSET + TEX_COORDS_SIZE * Float.BYTES;
 	private final static int VERTEX_SIZE = 9;
 	private final static int VERTEX_SIZE_BYTES = VERTEX_SIZE * Float.BYTES;
+	private final static int ELEMENTS_PER_RENDEROBJECT = 4;
 
 	private final int maxBatchSize;
 	private final int backgroundSize;
@@ -38,9 +39,9 @@ public class BackgroundBatch {
 	private int vaoID, vboID;
 
 	public BackgroundBatch(Background background) {
-		backgroundSize = background.spriteController.sprite.FRAME_WIDTH;
+		backgroundSize = (int) (background.spriteController.sprite.FRAME_WIDTH * background.spriteController.scale.x);
 		this.maxBatchSize = ResolutionSpecification.RES_SPECS.gameWidth / backgroundSize + 1;
-		vertices = new float[maxBatchSize * 4 * VERTEX_SIZE];
+		vertices = new float[maxBatchSize * ELEMENTS_PER_RENDEROBJECT * VERTEX_SIZE];
 
 		this.background = background;
 	}
@@ -57,9 +58,9 @@ public class BackgroundBatch {
 
 		// Create and upload indices buffer
 		int eboID = glGenBuffers();
-//		int[] indices = generateIndices();
+		int[] indices = generateIndices();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
-//		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
 
 		// Enable the buffer attribute pointers
 		glVertexAttribPointer(0, POS_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, POS_OFFSET);
@@ -109,16 +110,16 @@ public class BackgroundBatch {
 	}
 	
 	private void loadVertexProperties(int index) {
-		int offset = index * 4 * VERTEX_SIZE;
+		int offset = index * ELEMENTS_PER_RENDEROBJECT * VERTEX_SIZE;
 
 		Vec2f[] pos = calculateVertexPositions(index);
 		Vec4f color = new Vec4f(0,0,0,0);
 		Vec2f[] texCoords = background.spriteController.getFrameTexCoords();
 		Texture texture = background.spriteController.sprite.texture;
 
-		int texId = 0;
+		int texId = 1;
 
-		for (int vertexCounter = 0; vertexCounter < 4; vertexCounter++) {
+		for (int vertexCounter = 0; vertexCounter < ELEMENTS_PER_RENDEROBJECT; vertexCounter++) {
 			offset += loadVertexProperties(pos[vertexCounter], color, texCoords[vertexCounter], texId, offset);
 		}
 	}
@@ -142,12 +143,12 @@ public class BackgroundBatch {
 	private Vec2f[] calculateVertexPositions(int index) {
 		Sprite sprite = background.spriteController.sprite;
 		Vec2f scale = new Vec2f(background.spriteController.scale).mult(Sprite.SCALE);
-		Vec2f gamePos = new Vec2f(background.getOffsetX() + index * backgroundSize, 0);
+		Vec2f gamePos = new Vec2f(background.getOffsetX() + index * backgroundSize * Sprite.SCALE, 0);
 		Vec2f monitorPos = transformPosToVertex(gamePos);
 		Vec2f dimension = new Vec2f((float) sprite.FRAME_WIDTH / RES_SPECS.halfGameWidth,
 				(float) sprite.FRAME_HEIGHT / RES_SPECS.halfGameHeight).mult(scale).mult(RENDERER.multiplicator);
 
-		Vec2f[] vertexPositions = new Vec2f[4];
+		Vec2f[] vertexPositions = new Vec2f[ELEMENTS_PER_RENDEROBJECT];
 		vertexPositions[0] = monitorPos;
 		vertexPositions[1] = new Vec2f(monitorPos.x + dimension.x, monitorPos.y);
 		vertexPositions[2] = new Vec2f(monitorPos.x + dimension.x, monitorPos.y + dimension.y);
@@ -167,5 +168,30 @@ public class BackgroundBatch {
 		y -= 1;
 
 		return new Vec2f(x, y);
+	}
+
+	private int[] generateIndices() {
+		int[] elements = new int[6 * maxBatchSize];
+		for (int i = 0; i < maxBatchSize; i++) {
+			loadElementIndices(elements, i);
+		}
+
+		return elements;
+	}
+
+	private void loadElementIndices(int[] elements, int index) {
+		int offsetArrayIndex = 6 * index;
+		int offset = ELEMENTS_PER_RENDEROBJECT * index;
+
+		// 3, 2, 0, 0, 2, 1 7, 6, 4, 4, 6, 5
+		// Triangle 1
+		elements[offsetArrayIndex] = offset + 3;
+		elements[offsetArrayIndex + 1] = offset + 2;
+		elements[offsetArrayIndex + 2] = offset;
+
+		// Triangle 2
+		elements[offsetArrayIndex + 3] = offset;
+		elements[offsetArrayIndex + 4] = offset + 2;
+		elements[offsetArrayIndex + 5] = offset + 1;
 	}
 }

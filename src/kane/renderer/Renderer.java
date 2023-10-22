@@ -157,7 +157,8 @@ public class Renderer {
 	public void renderGame() {
 		clearWindow();
 		CAMERA.update();
-//		drawBackground();
+
+		backgroundBatch.render();
 
 		for (SpriteBatch batch : SpriteBatches) {
 			batch.render();
@@ -175,6 +176,7 @@ public class Renderer {
 		int width = background.spriteController.sprite.FRAME_WIDTH;
 		
 		backgroundBatch = new BackgroundBatch(background);
+		backgroundBatch.start();
 	}
 
 	public void moveBackground() {

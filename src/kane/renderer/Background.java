@@ -1,5 +1,7 @@
 package kane.renderer;
 
+import kane.math.Vec2f;
+
 import java.nio.ByteBuffer;
 
 public class Background{
@@ -8,8 +10,12 @@ public class Background{
 	
 	public Background(String filepath) {
 		spriteController = new SpriteController(new Sprite(filepath));
-		
-		this.offsetX = 0;
+		spriteController.sprite.addState(SpriteState.STATIC, new int[]{0});
+		spriteController.setCurrentSpriteState(SpriteState.STATIC);
+		float scale = (float) ResolutionSpecification.RES_SPECS.GAME_HEIGHT / spriteController.sprite.FRAME_HEIGHT;
+		spriteController.scale = new Vec2f(scale, scale).mult(0.5f);
+
+        this.offsetX = 0;
 	}
 	
 	public void setOffsetX(int offsetX) {

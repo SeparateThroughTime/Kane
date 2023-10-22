@@ -1,8 +1,4 @@
 /*TODO
-	Switch to lwjgl
-		draw background
-		inventory edges blue
-		player sprite has blue pixels when on Edge of map
 	Visual Effects
 	Sounds
 	Object Editor
@@ -60,7 +56,10 @@
 		Its probably not the cause of friction but something else)
 	Hud Flickering while camera Movement
 	Lines disappear when opening inventory
-			Only on my PC, not on my Laptop... -> Seems to be a bug of lwjgl or openGL
+		Only on my PC, not on my Laptop... -> Seems to be a bug of lwjgl or openGL
+	Switch to lwjgl
+		inventory edges blue
+		player sprite has blue pixels when on Edge of map
 
 */
 package kane;

@@ -38,11 +38,12 @@ public class LineBatch {
 
 	private int vaoID, vboID;
 	private final int maxBatchSize;
+	private final static int ELEMENTS_PER_RENDEROBJECT = 2;
 
 	public LineBatch(int maxBatchSize) {
 		this.maxBatchSize = maxBatchSize;
 
-		vertices = new float[maxBatchSize * 2 * VERTEX_SIZE];
+		vertices = new float[maxBatchSize * ELEMENTS_PER_RENDEROBJECT * VERTEX_SIZE];
 		shapes = new ArrayList<>();
 
 		this.numShapes = 0;
@@ -102,7 +103,7 @@ public class LineBatch {
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 
-		glDrawElements(GL_LINES, this.numShapes * 2, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_LINES, this.numShapes * ELEMENTS_PER_RENDEROBJECT, GL_UNSIGNED_INT, 0);
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -112,7 +113,7 @@ public class LineBatch {
 	}
 
 	private void loadInvisibleProperties(int shapeIndex) {
-		int offset = shapeIndex * 2 * VERTEX_SIZE;
+		int offset = shapeIndex * ELEMENTS_PER_RENDEROBJECT * VERTEX_SIZE;
 
 		Vec2f pos = new Vec2f();
 		Vec4f color = new Vec4f(0, 0, 0, 0);
@@ -124,12 +125,12 @@ public class LineBatch {
 
 	private void loadVertexProperties(int shapeIndex) {
 		Shape shape = shapes.get(shapeIndex);
-		int offset = shapeIndex * 2 * VERTEX_SIZE;
+		int offset = shapeIndex * ELEMENTS_PER_RENDEROBJECT * VERTEX_SIZE;
 
 		Vec2f[] pos = calculateVertexPositions(shape);
 		Vec4f color = new Vec4f(shape.color);
 
-		for (int vertexCounter = 0; vertexCounter < 2; vertexCounter++) {
+		for (int vertexCounter = 0; vertexCounter < ELEMENTS_PER_RENDEROBJECT; vertexCounter++) {
 			offset += loadVertexProperties(pos[vertexCounter], color, offset);
 		}
 	}
@@ -148,7 +149,7 @@ public class LineBatch {
 
 	private Vec2f[] calculateVertexPositions(Shape shape) {
 		Vec2f shapePos = shape.getAbsPos();
-		Vec2f[] vertexPositions = new Vec2f[2];
+		Vec2f[] vertexPositions = new Vec2f[ELEMENTS_PER_RENDEROBJECT];
 
 		switch (shape.type) {
 			case LINESEGMENT:
@@ -192,7 +193,7 @@ public class LineBatch {
 	}
 
 	private int[] generateIndices() {
-		int[] elements = new int[2 * maxBatchSize];
+		int[] elements = new int[ELEMENTS_PER_RENDEROBJECT * maxBatchSize];
 		for (int i = 0; i < maxBatchSize; i++) {
 			loadElementIndices(elements, i);
 		}
@@ -201,8 +202,8 @@ public class LineBatch {
 	}
 
 	private void loadElementIndices(int[] elements, int index) {
-		int offsetArrayIndex = ELEMENT_SIZE * 2 * index;
-		int offset = 2 * index;
+		int offsetArrayIndex = ELEMENT_SIZE * ELEMENTS_PER_RENDEROBJECT * index;
+		int offset = ELEMENTS_PER_RENDEROBJECT * index;
 
 		// 3, 2, 0, 0, 2, 1 7, 6, 4, 4, 6, 5
 		// Triangle 1
