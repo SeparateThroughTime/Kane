@@ -27,6 +27,8 @@ import static kane.genericGame.ResourceManager.RESOURCE_MANAGER;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import kane.Kane;
+import kane.math.Vec2i;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 
@@ -63,9 +65,7 @@ public class Renderer {
 		SpriteBatches = new ArrayList<>();
 		lineBatches = new ArrayList<>();
 
-		shader = RESOURCE_MANAGER.getShader("shaders/default.glsl");
-		shader.compile();
-
+		changeShader("shaders/default.vertex.glsl", "shaders/default.fragment.glsl");
 	}
 
 	public static void initializeRenderer(String title) {
@@ -147,6 +147,13 @@ public class Renderer {
 		glfwSetWindowSize(window, RES_SPECS.width, RES_SPECS.height);
 		CAMERA.changeResolution();
 		multiplicator = (float) RES_SPECS.height / RES_SPECS.GAME_HEIGHT;
+		shader.uploadVec2i("resolution", new Vec2i(RES_SPECS.height, RES_SPECS.width));
+	}
+
+	public void changeShader(String vertexFilepath, String fragmentFilepath) {
+		shader = RESOURCE_MANAGER.getShader(vertexFilepath, fragmentFilepath);
+		shader.compile();
+		shader.uploadVec2i("resolution", new Vec2i(RES_SPECS.height, RES_SPECS.width));
 	}
 
 	protected void clearWindow() {
@@ -157,6 +164,7 @@ public class Renderer {
 	public void renderGame() {
 		clearWindow();
 		CAMERA.update();
+		updateShaderUniforms();
 
 		backgroundBatch.render();
 
@@ -169,6 +177,10 @@ public class Renderer {
 		}
 
 		glfwSwapBuffers(window);
+	}
+
+	public void updateShaderUniforms() {
+		shader.uploadFloat("time", (float) GAME.time * 0.000000001f);
 	}
 
 	public void changeBackground(String filepath) {

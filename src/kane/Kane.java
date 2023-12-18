@@ -241,6 +241,9 @@ public class Kane extends Game {
 		healthBar = CAMERA.addHudBar("sprites\\interface\\HealthBar.png");
 		refreshHealthBar();
 
+		// Spooky testing
+		RENDERER.changeShader("shaders/spooky.vertex.glsl", "shaders/spooky.fragment.glsl");
+
 	}
 
 	public void refreshHealthBar() {

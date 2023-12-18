@@ -152,7 +152,8 @@ public class SpriteBatch implements Comparable<SpriteBatch> {
 			}
 		}
 
-		glBindBuffer(GL_ARRAY_BUFFER, vboID);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vboID);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
 
 		// Use shader

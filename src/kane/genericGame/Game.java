@@ -45,6 +45,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	public final static long NANO_SECOND = 1000000000;
 	public final static long NANO_SECOND_FPS = NANO_SECOND / TARGET_FPS;
 	public final static float DELTATIME = 1.0f / TARGET_FPS;
+    public static long time = 0;
 
 	public boolean pause;
 	public boolean isRunning;
@@ -169,6 +170,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		while (!glfwWindowShouldClose(RENDERER.window)) {
 			long frameStartTime = System.nanoTime();
 			float frameTime = Math.min((frameStartTime - lastFrameTime) / (float) NANO_SECOND, 0.25f);
+            time += frameStartTime - lastFrameTime;
 			lastFrameTime = frameStartTime;
 
 			// Update Game

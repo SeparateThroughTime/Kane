@@ -35,14 +35,15 @@ public class ResourceManager {
 		}
 
 	}
-	
-	public Shader getShader(String filepath) {
-		if (!shaders.containsKey(filepath)) {
-			Shader shader = new Shader(filepath);
-			shaders.put(filepath, shader);
+
+	public Shader getShader(String vertexFilepath, String fragmentFilepath) {
+		String key = vertexFilepath + fragmentFilepath;
+		if (!shaders.containsKey(key)) {
+			Shader shader = new Shader(vertexFilepath, fragmentFilepath);
+			shaders.put(key, shader);
 			return shader;
 		} else {
-			return shaders.get(filepath);
+			return shaders.get(key);
 		}
 	}
 }

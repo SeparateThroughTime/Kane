@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import kane.math.Vec2f;
+import kane.math.Vec2i;
 
 public class Shader {
 	
@@ -17,50 +18,23 @@ public class Shader {
 	
 	private String vertexSource;
 	private String fragmentSource;
-	private final String filepath;
-	
-	public Shader(String filepath) {
-		this.filepath = filepath;
+	private final String vertexFilepath;
+	private final String fragmentFilepath;
+
+	public Shader(String vertexFilepath, String fragmentFilepath) {
+		this.vertexFilepath = vertexFilepath;
+		this.fragmentFilepath = fragmentFilepath;
 		readFile();	
 		
 	}
 	
 	private void readFile() {
 		try {
-			String source = new String(Files.readAllBytes(Paths.get(filepath)));
-			String[] splitString = source.split("(#type)( )+([a-zA-Z]+)");
-
-			//Didnt work for some reason after switching IDE...
-			//Just assume the order of shaders: First is vertex and second is fragment.
-//			int index = source.indexOf("#type") + 6;
-//			int eol = source.indexOf("\r\n", index);
-//			String firstPattern = source.substring(index, eol).trim();
-//
-//			index = source.indexOf("#type", eol) + 6;
-//			eol = source.indexOf("\r\n", index);
-//			String secondPattern = source.substring(index, eol).trim();
-//
-//			if (firstPattern.equals("vertex")) {
-//				vertexSource = splitString[1];
-//			} else if (firstPattern.equals("fragment")) {
-//				fragmentSource = splitString[1];
-//			} else {
-//				throw new IOException("Unexpected token " + firstPattern);
-//			}
-//
-//			if (secondPattern.equals("vertex")) {
-//				vertexSource = splitString[2];
-//			} else if (secondPattern.equals("fragment")) {
-//				fragmentSource = splitString[2];
-//			} else {
-//				throw new IOException("Unexpected token " + secondPattern);
-//			}
-
-			vertexSource = splitString[1];
-			fragmentSource = splitString[2];
+			vertexSource = new String(Files.readAllBytes(Paths.get(vertexFilepath)));
+			fragmentSource = new String(Files.readAllBytes(Paths.get(fragmentFilepath)));
 		} catch (IOException e) {
 			e.printStackTrace();
-			assert false : "Error: Could not ipen file for shader";
+			assert false : "Error: Could not open file for shader";
 		}
 	}
 	
@@ -137,6 +111,12 @@ public class Shader {
 		int varLocation = glGetUniformLocation(shaderProgramID, varName);
 		use();
 		glUniform2f(varLocation, vec.x, vec.y);
+	}
+
+	public void uploadVec2i(String varName, Vec2i vec) {
+		int varLocation = glGetUniformLocation(shaderProgramID, varName);
+		use();
+		glUniform2i(varLocation, vec.x, vec.y);
 	}
 	
 	public void uploadFloat(String varName, Float val) {
