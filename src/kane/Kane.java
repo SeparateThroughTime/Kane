@@ -91,10 +91,7 @@ import kane.physics.Shape;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.LineSegment;
 import kane.physics.shapes.Polygon;
-import kane.renderer.Camera;
-import kane.renderer.Sprite;
-import kane.renderer.SpriteController;
-import kane.renderer.SpriteState;
+import kane.renderer.*;
 
 /**
  * This is the game "Kane".
@@ -244,6 +241,9 @@ public class Kane extends Game {
 		// Spooky testing
 		RENDERER.changeShader("shaders/spooky.vertex.glsl", "shaders/spooky.fragment.glsl");
 
+		this.setSanity(1.0f);
+
+//		GAME.changeResolution(Resolution.SOL1024x768);
 	}
 
 	public void refreshHealthBar() {

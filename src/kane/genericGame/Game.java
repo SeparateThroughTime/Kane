@@ -56,6 +56,8 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	public HudBar healthBar;
 	public Mob player;
 
+	private float sanity;
+
 	protected abstract void initGame();
 
 	protected abstract void mechanicsLoop();
@@ -306,5 +308,14 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 			events[i - 1] = events[i];
 		}
 		numEvents--;
+	}
+
+	public void setSanity(float sanity){
+		this.sanity = sanity;
+		RENDERER.updateSanity(sanity);
+	}
+
+	public float getSanity(){
+		return sanity;
 	}
 }

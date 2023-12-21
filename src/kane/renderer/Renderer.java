@@ -27,7 +27,6 @@ import static kane.genericGame.ResourceManager.RESOURCE_MANAGER;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import kane.Kane;
 import kane.math.Vec2i;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
@@ -164,7 +163,7 @@ public class Renderer {
 	public void renderGame() {
 		clearWindow();
 		CAMERA.update();
-		updateShaderUniforms();
+		updateTime();
 
 		backgroundBatch.render();
 
@@ -179,8 +178,12 @@ public class Renderer {
 		glfwSwapBuffers(window);
 	}
 
-	public void updateShaderUniforms() {
+	public void updateTime() {
 		shader.uploadFloat("time", (float) GAME.time * 0.000000001f);
+	}
+
+	public void updateSanity(float sanity){
+		shader.uploadFloat("sanity", sanity);
 	}
 
 	public void changeBackground(String filepath) {

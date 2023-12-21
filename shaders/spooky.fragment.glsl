@@ -8,6 +8,7 @@ in float fTexId;
 uniform sampler2D uTextures[8];
 uniform float time;
 uniform vec2 resolution;
+uniform float sanity;
 
 out vec4 color;
 
@@ -19,19 +20,17 @@ bool randomBool(float threshold, float invertedDuration) {
 }
 
 vec4 darkening() {
-    return vec4(vec3(min(1, abs(sin(time * 0.25) * cos(time * 0.1)) + 0.25)), 1.0);
+    return vec4(vec3(min(1, abs(sin(time * 0.25) * cos(time * 0.1)) + 1 - sanity * 0.8)), 1.0);
 }
 
 vec4 flickering() {
-    float fastTime = time * 5;
-    float fractFastTime = fract(fastTime);
-    float floorFastTime = floor(fastTime);
+    int timeMult = 5;
 
-    if (randomBool(0.95, 5)) {
+    if (randomBool(1.000001 - pow(sanity, 2) * 0.05, timeMult)) {
         return vec4(0.0);
     }
 
-    float impulse = fractFastTime * 8.0;
+    float impulse = fract(time * timeMult) * 8.0;
     return vec4(vec3(impulse * exp(1.0 - impulse)), 0.0);
 }
 
