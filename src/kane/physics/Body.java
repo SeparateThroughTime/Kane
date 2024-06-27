@@ -1,10 +1,19 @@
 package kane.physics;
 
+import static kane.physics.Physics.PHYSICS;
+import static kane.genericGame.ResourceManager.RESOURCE_MANAGER;
+
 import kane.genericGame.ActiveAttributes;
 import kane.genericGame.PassiveAttributes;
+import kane.genericGame.gameEvent.mob.Jump;
 import kane.math.ArrayOperations;
 import kane.math.Vec2f;
 import kane.renderer.SpriteState;
+import kane.sound.SoundBuffer;
+import kane.sound.SoundSource;
+import kane.sound.SoundType;
+
+import java.util.HashMap;
 
 /**
  * A Body can have many Shapes. The Body is the moving (or not moving) object in
@@ -13,7 +22,6 @@ import kane.renderer.SpriteState;
 public class Body {
 
 	public final int ID;
-	private static int numBodies = 0;
 
 	public final Vec2f pos;
 	public final Vec2f vel;
@@ -32,6 +40,8 @@ public class Body {
 	public static final int MAX_SHAPES = 20;
 	public int numShapes;
 
+    public HashMap<SoundType, SoundSource> soundSources;
+
 	/**
 	 * 
 	 * @param posX -position X
@@ -49,11 +59,12 @@ public class Body {
 		shapes = new Shape[MAX_SHAPES];
 		numShapes = 0;
 		this.rotateByCollision = false;
-		this.ID = numBodies;
-		numBodies++;
+        this.ID = PHYSICS.numBodies;
 		calculateCenterOfMass();
 		reactToGravity = true;
 		removed = false;
+        PHYSICS.addBody(this);
+        soundSources = new HashMap<>();
 	}
 
 	/**
@@ -234,13 +245,6 @@ public class Body {
 	public String toString() {
 		return "" + ID;
 	}
-
-	/**
-	 * Reset the number of bodies ONLY USE IF YOU ARE DELETING ALL BODIES!
-	 */
-	public static void resetNumBodies() {
-		numBodies = 0;
-	}
 	
 	public void mirrorX() {
 		for (int i = 0; i < numShapes; i++) {
@@ -311,4 +315,50 @@ public class Body {
 	public boolean isRemoved() {
 		return removed;
 	}
+
+    public void addSoundSource(SoundType soundType, SoundBuffer soundBuffer, boolean loop, boolean relative) {
+        if (soundSources.containsKey(soundType)) {
+            soundSources.get(soundType).cleanUp();
+        }
+
+        SoundSource soundSource = new SoundSource(loop, relative);
+        soundSource.setBuffer(soundBuffer.getBufferId());
+        soundSources.put(soundType, soundSource);
+    }
+
+    public SoundSource getSoundSource(SoundType soundType) {
+        if (!soundSources.containsKey(soundType)) {
+            return null;
+        }
+
+        return soundSources.get(soundType);
+    }
+
+    public void updateSoundSourceVel() {
+        for (SoundType soundType : SoundType.values()) {
+            if (!soundSources.containsKey(soundType)) {
+                continue;
+            }
+            soundSources.get(soundType).setVel(vel);
+        }
+    }
+
+    public void updateSoundSourcePos() {
+        for (SoundType soundType : SoundType.values()) {
+            if (!soundSources.containsKey(soundType)) {
+                continue;
+            }
+            soundSources.get(soundType).setPos(pos);
+        }
+    }
+
+    public void addSound(String soundFile, SoundType soundType) {
+        SoundBuffer soundBuffer = RESOURCE_MANAGER.getSoundBuffer(soundFile);
+        boolean loop = soundType == SoundType.WALK;
+        SoundSource soundSource = new SoundSource(loop, true);
+        soundSource.setBuffer(soundBuffer.getBufferId());
+
+        soundSources.put(soundType, soundSource);
+    }
+
 }

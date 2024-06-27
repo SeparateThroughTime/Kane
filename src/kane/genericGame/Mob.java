@@ -2,11 +2,7 @@ package kane.genericGame;
 
 import java.util.HashMap;
 
-import kane.genericGame.gameEvent.mob.WalkAwayFromPos;
-import kane.genericGame.gameEvent.mob.GumbaWalk;
-import kane.genericGame.gameEvent.mob.Jump;
-import kane.genericGame.gameEvent.mob.WalkingLeft;
-import kane.genericGame.gameEvent.mob.WalkingRight;
+import kane.genericGame.gameEvent.mob.*;
 import kane.math.Vec2f;
 import kane.physics.Body;
 import kane.renderer.SpriteState;
@@ -65,12 +61,8 @@ public class Mob extends Body {
 
 	private void checkDeath() {
 		if (health <= 0) {
-			kill();
+            GAME.addEvent(new Death(this));
 		}
-	}
-
-	public void kill() {
-		remove();
 	}
 
 	public void reduceHealth(int amount) {

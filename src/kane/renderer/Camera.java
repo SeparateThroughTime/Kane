@@ -58,8 +58,6 @@ public class Camera extends Body {
 		this.zeroPoint = new Vec2f();
 		reactToGravity = false;
 		createCamera();
-		
-		PHYSICS.addBody(this);
 	}
 	
 	public static void initializateCamera() {

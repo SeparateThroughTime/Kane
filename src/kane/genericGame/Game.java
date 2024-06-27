@@ -25,6 +25,7 @@ import kane.physics.Physics;
 import kane.renderer.Renderer;
 import kane.renderer.Resolution;
 import kane.renderer.ResolutionSpecification;
+import kane.sound.SoundEngine;
 
 /**
  * Game is an abstract class which provides the main-construct of the
@@ -77,6 +78,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		long window = RENDERER.window;
 		Keyboard.initializeKeyboard(this, window);
 		Mouse.initializeMouse(this, window);
+        SoundEngine.initializeSound();
 	}
 
 	/**
@@ -251,8 +253,6 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 	/**
 	 * This updates the states of keyboard and mouse and runs the actions, depending
 	 * on it.
-	 * 
-	 * @param DELTATIME
 	 */
 	protected void userInteraction() {
 		glfwPollEvents();

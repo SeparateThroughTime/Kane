@@ -1,11 +1,18 @@
 /*TODO
+    Animation
+        Attack then walk -> attack-Animation cancels
+	    Walking in the Air bug
 	Visual Effects
+	    Render to Texture...
 	Sounds
+	    Relational Volume
+	        Stereo-Files ignore distance to listener
+	        Attenuation need to be adjusted or something.
 	Object Editor
 		(Ermitteln des besten Mittelpunkts)
 	Level Ends/ Player dies -> Next level/ Restart
 	Level Editor
-	Event Editor
+	Event Editor?
 	Campaign Editor
 	StartMenu
 	Save
@@ -66,21 +73,16 @@ package kane;
 
 import static kane.genericGame.hud.Inventory.INVENTORY;
 import static kane.genericGame.userInteraction.Mouse.MOUSE;
-import static kane.physics.Physics.PHYSICS;
 import static kane.renderer.Camera.CAMERA;
 import static kane.renderer.Renderer.RENDERER;
 import static kane.renderer.ResolutionSpecification.RES_SPECS;
+import static kane.genericGame.ResourceManager.RESOURCE_MANAGER;
 
 import java.awt.Color;
 
-import kane.genericGame.AIs;
-import kane.genericGame.ActiveAttributes;
-import kane.genericGame.Game;
-import kane.genericGame.Item;
-import kane.genericGame.Mob;
-import kane.genericGame.MobActions;
-import kane.genericGame.MobDirection;
-import kane.genericGame.PassiveAttributes;
+import kane.genericGame.*;
+import kane.genericGame.gameEvent.mob.DamageHandler;
+import kane.genericGame.gameEvent.sound.PlaySound;
 import kane.genericGame.hud.HudBar;
 import kane.genericGame.hud.Inventory;
 import kane.genericGame.item.SWORD;
@@ -92,6 +94,7 @@ import kane.physics.shapes.Box;
 import kane.physics.shapes.LineSegment;
 import kane.physics.shapes.Polygon;
 import kane.renderer.*;
+import kane.sound.SoundType;
 
 /**
  * This is the game "Kane".
@@ -129,7 +132,6 @@ public class Kane extends Game {
 		player.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
 		player.setJumpAcc(new Vec2f(0, 800 / DELTATIME));
 		player.setWalkSpeed(300);
-		PHYSICS.addBody(player);
 
 		// camera
 		Camera.initializateCamera();
@@ -144,14 +146,12 @@ public class Kane extends Game {
 		body.addShape(line);
 		line.addToRenderer();
 		body.shapes[0].addPassiveAttribute(PassiveAttributes.PHYSICAL);
-		PHYSICS.addBody(body);
 
 		body = new Body(0, 0);
 		line = new LineSegment(new Vec2f(0, 30), new Vec2f(mapLen, 30), body, Color.BLUE, mStatic, 2);
 		body.addShape(line);
 		line.addToRenderer();
 		body.shapes[0].addPassiveAttribute(PassiveAttributes.PHYSICAL);
-		PHYSICS.addBody(body);
 
 		body = new Body(0, 0);
 		line = new LineSegment(new Vec2f(mapLen - 30, 0), new Vec2f(mapLen - 30, RES_SPECS.GAME_HEIGHT), body,
@@ -159,7 +159,6 @@ public class Kane extends Game {
 		body.addShape(line);
 		line.addToRenderer();
 		body.shapes[0].addPassiveAttribute(PassiveAttributes.PHYSICAL);
-		PHYSICS.addBody(body);
 
 		// Set player Item
 		currentItem = INVENTORY.getItem("None");
@@ -178,6 +177,11 @@ public class Kane extends Game {
 		player.shapes[2].visible = false;
 		SpriteController[] spriteControllers = currentItem.getPlayerSpriteControllers();
 		player.shapes[0].setSpriteControllers(spriteControllers);
+        player.addSound("sound//player//jump.ogg", SoundType.JUMP);
+        player.addSound("sound//player//damage.ogg", SoundType.DAMAGE);
+        player.addSound("sound//player//walk.ogg", SoundType.WALK);
+        player.addSound("sound//player//attack.ogg", SoundType.ATACK);
+
 
 		// Sword
 		sword = new Body(200, 130);
@@ -195,7 +199,6 @@ public class Kane extends Game {
 		spriteControllers[0].spritePosOffset = new Vec2f(-16, -16);
 		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC);
 		sword.shapes[0].setSpriteControllers(spriteControllers);
-		PHYSICS.addBody(sword);
 
 		// Create Blob
 		Mob blob = new Mob(300, 130, 3, 1, MobDirection.LEFT);
@@ -227,7 +230,10 @@ public class Kane extends Game {
 		blob.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
 		blob.setJumpAcc(new Vec2f(0, 200 / DELTATIME));
 		blob.setWalkSpeed(50);
-		PHYSICS.addBody(blob);
+        blob.addSound("sound//mobs//blob//death.ogg", SoundType.DEATH);
+        blob.addSound("sound//mobs//blob//damage.ogg", SoundType.DAMAGE);
+        blob.addSound("sound//mobs//blob//walk.ogg", SoundType.WALK);
+
 
 		// Create Background
 		RENDERER.changeBackground("sprites\\backgrounds\\background.png");
@@ -239,11 +245,14 @@ public class Kane extends Game {
 		refreshHealthBar();
 
 		// Spooky testing
-		RENDERER.changeShader("shaders/spooky.vertex.glsl", "shaders/spooky.fragment.glsl");
+        RENDERER.changeShader("shaders/default.vertex.glsl", "shaders/default.fragment.glsl");
 
 		this.setSanity(1.0f);
 
 //		GAME.changeResolution(Resolution.SOL1024x768);
+
+        // background music
+        addEvent(new PlaySound(RESOURCE_MANAGER.getSoundBuffer("sound//music//01//main.ogg"), true));
 	}
 
 	public void refreshHealthBar() {
@@ -553,12 +562,7 @@ public class Kane extends Game {
 	public void mobAttacksMob(Shape attackingField, Shape attackedMobAll) {
 		Mob attackedMob = (Mob) attackedMobAll.body;
 		Mob attackingMob = (Mob) attackingField.body;
-		int damage = attackingMob.getDamage();
-		attackedMob.hit(damage, attackingMob.pos);
-
-		if (attackedMob.hasShapeWithPassiveAttribute(PassiveAttributes.PLAYER_ALL)) {
-			refreshHealthBar();
-		}
+        addEvent(new DamageHandler(attackingMob, attackedMob));
 	}
 
 	@Override

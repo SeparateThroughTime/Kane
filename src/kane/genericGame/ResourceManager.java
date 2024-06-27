@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import kane.renderer.Shader;
 import kane.renderer.Texture;
+import kane.sound.SoundBuffer;
 
 public class ResourceManager {
 	
@@ -15,14 +16,16 @@ public class ResourceManager {
 		sprites = new HashMap<>();
 		shaders = new HashMap<>();
 		backgrounds = new HashMap<>();
+        soundBuffers = new HashMap<>();
 	}
 	
 	private HashMap<String, Texture> sprites;
 	private HashMap<String, Shader> shaders;
 	private HashMap<String, BufferedImage> backgrounds;
+    private HashMap<String, SoundBuffer> soundBuffers;
 
 	public Texture getTexture(String filepath) {
-		if (filepath == null || filepath == "") {
+        if (filepath == null || filepath.isEmpty()) {
 			return null;
 		}
 		
@@ -46,4 +49,18 @@ public class ResourceManager {
 			return shaders.get(key);
 		}
 	}
+
+    public SoundBuffer getSoundBuffer(String soundFilepath) {
+        if (soundFilepath == null || soundFilepath.isEmpty()) {
+            return null;
+        }
+
+        if (!soundBuffers.containsKey(soundFilepath)) {
+            SoundBuffer soundBuffer = new SoundBuffer(soundFilepath);
+            soundBuffers.put(soundFilepath, soundBuffer);
+            return soundBuffer;
+        } else {
+            return soundBuffers.get(soundFilepath);
+        }
+    }
 }

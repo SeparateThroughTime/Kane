@@ -8,10 +8,13 @@ import kane.genericGame.PassiveAttributes;
 import kane.math.ArrayOperations;
 import kane.renderer.SpriteController;
 import kane.renderer.SpriteState;
+import kane.sound.SoundSource;
+import kane.sound.SoundType;
 
 public class WalkingLeft extends GameEvent {
 
 	private Mob walker;
+    private SoundSource soundSource;
 
 	public WalkingLeft(Mob walker) {
 		super(2);
@@ -31,6 +34,11 @@ public class WalkingLeft extends GameEvent {
 		walker.setDirection(MobDirection.LEFT);
 		walker.getActiveActions().put(MobActions.WALK, true);
 		walker.getActiveActions().put(MobActions.STAND, false);
+
+        soundSource = walker.getSoundSource(SoundType.WALK);
+        if (soundSource != null) {
+            soundSource.play();
+        }
 	}
 
 	@Override
@@ -48,6 +56,10 @@ public class WalkingLeft extends GameEvent {
 		walker.getShape(PassiveAttributes.MOB_ALL).setCurrentSpriteState(SpriteState.STANDING_LEFT);
 		walker.getActiveActions().put(MobActions.WALK, false);
 		walker.getActiveActions().put(MobActions.STAND, true);
+
+        if (soundSource != null) {
+            soundSource.stop();
+        }
 	}
 
 }

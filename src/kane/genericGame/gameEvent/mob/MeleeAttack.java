@@ -8,6 +8,8 @@ import kane.genericGame.MobDirection;
 import kane.genericGame.PassiveAttributes;
 import kane.physics.Shape;
 import kane.renderer.SpriteState;
+import kane.sound.SoundSource;
+import kane.sound.SoundType;
 
 public class MeleeAttack extends GameEvent {
 
@@ -32,6 +34,11 @@ public class MeleeAttack extends GameEvent {
 
 		attackShape = attacker.getShape(PassiveAttributes.ATTACKING_FIELD);
 		attackShape.addActiveAttribute(ActiveAttributes.ATTACKING_FIELD);
+
+        SoundSource soundSource = attacker.getSoundSource(SoundType.ATACK);
+        if (soundSource != null) {
+            soundSource.play();
+        }
 	}
 
 	@Override

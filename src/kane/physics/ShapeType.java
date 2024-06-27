@@ -14,8 +14,8 @@ public enum ShapeType {
 	BOX(3),
 	POINT(4),
 	POLYGON(5);
-	
-	public int id;
+
+    public final int id;
 	
 	private ShapeType(int id) {
 		this.id = id;
