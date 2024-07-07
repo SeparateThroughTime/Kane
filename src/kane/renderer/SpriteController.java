@@ -51,9 +51,9 @@ public class SpriteController{
             return;
         }
 
-        this.currentSpriteState = state;
-        this.currentSpriteStateFrameNo = 0;
-        this.frameCounter = 0;
+        currentSpriteState = state;
+        currentSpriteStateFrameNo = 0;
+        frameCounter = 0;
     }
 
     /**

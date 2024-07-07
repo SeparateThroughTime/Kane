@@ -47,25 +47,25 @@ public class NONE extends Item {
 		PLAYER_SPRITES[1].addState(SpriteState.STANDING_RIGHT, new int[] { 5 });
 		PLAYER_SPRITES[1].addState(SpriteState.RUNNING_RIGHT, new int[] { 6, 7, 8, 9 });
 		PLAYER_SPRITES[1].addState(SpriteState.HIT_RIGHT, new int[] { 5 });
-		PLAYER_SPRITES[1].addState(SpriteState.JUMP_RIGHT, new int[] { 9 });
-		PLAYER_SPRITES[1].addState(SpriteState.FALL_RIGHT, new int[] { 8 });
+        PLAYER_SPRITES[1].addState(SpriteState.JUMP_RIGHT, new int[]{5});
+        PLAYER_SPRITES[1].addState(SpriteState.FALL_RIGHT, new int[]{5});
 		PLAYER_SPRITES[1].addState(SpriteState.STANDING_LEFT, new int[] { 0 });
 		PLAYER_SPRITES[1].addState(SpriteState.RUNNING_LEFT, new int[] { 1, 2, 3, 4 });
 		PLAYER_SPRITES[1].addState(SpriteState.HIT_LEFT, new int[] { 0 });
-		PLAYER_SPRITES[1].addState(SpriteState.JUMP_LEFT, new int[] { 4 });
-		PLAYER_SPRITES[1].addState(SpriteState.FALL_LEFT, new int[] { 3 });
+        PLAYER_SPRITES[1].addState(SpriteState.JUMP_LEFT, new int[]{0});
+        PLAYER_SPRITES[1].addState(SpriteState.FALL_LEFT, new int[]{0});
 
 		// Lower
 		PLAYER_SPRITES[2].addState(SpriteState.STANDING_RIGHT, new int[] { 5 });
 		PLAYER_SPRITES[2].addState(SpriteState.RUNNING_RIGHT, new int[] { 6, 7, 8, 9 });
 		PLAYER_SPRITES[2].addState(SpriteState.HIT_RIGHT, new int[] { 5 });
-		PLAYER_SPRITES[2].addState(SpriteState.JUMP_RIGHT, new int[] { 9 });
-		PLAYER_SPRITES[2].addState(SpriteState.FALL_RIGHT, new int[] { 8 });
+        PLAYER_SPRITES[2].addState(SpriteState.JUMP_RIGHT, new int[]{5});
+        PLAYER_SPRITES[2].addState(SpriteState.FALL_RIGHT, new int[]{5});
 		PLAYER_SPRITES[2].addState(SpriteState.STANDING_LEFT, new int[] { 0 });
 		PLAYER_SPRITES[2].addState(SpriteState.RUNNING_LEFT, new int[] { 1, 2, 3, 4 });
 		PLAYER_SPRITES[2].addState(SpriteState.HIT_LEFT, new int[] { 0 });
-		PLAYER_SPRITES[2].addState(SpriteState.JUMP_LEFT, new int[] { 4 });
-		PLAYER_SPRITES[2].addState(SpriteState.FALL_LEFT, new int[] { 3 });
+        PLAYER_SPRITES[2].addState(SpriteState.JUMP_LEFT, new int[]{0});
+        PLAYER_SPRITES[2].addState(SpriteState.FALL_LEFT, new int[]{0});
 
         //		PLAYER_SPRITE_CONTROLLERS[0].setCurrentSpriteState(SpriteState.STANDING_RIGHT);
 		PLAYER_SPRITE_CONTROLLERS[0].spritePosOffset = new Vec2f(-32, -32);

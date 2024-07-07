@@ -24,8 +24,7 @@ public class MeleeAttack extends GameEvent {
 
 	@Override
 	public void start() {
-		attacker.getActiveActions().put(MobActions.ATTACKING, true);
-        attacker.refreshSpriteStates();
+        attacker.putActiveActions(MobActions.ATTACKING, true);
 
 		attackShape = attacker.getShape(PassiveAttributes.ATTACKING_FIELD);
 		attackShape.addActiveAttribute(ActiveAttributes.ATTACKING_FIELD);
@@ -43,8 +42,7 @@ public class MeleeAttack extends GameEvent {
 
 	@Override
 	public void end() {
-		attacker.getActiveActions().put(MobActions.ATTACKING, false);
-		attacker.refreshSpriteStates();
+        attacker.putActiveActions(MobActions.ATTACKING, false);
 
 		attackShape.remActiveAttribute(ActiveAttributes.ATTACKING_FIELD);
 	}

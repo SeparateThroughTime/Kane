@@ -49,9 +49,8 @@ public class WalkingRight extends GameEvent{
     private void setMobAttributesStart(){
         walker.angle = 0f;
         walker.setDirection(MobDirection.RIGHT);
-        walker.getActiveActions().put(MobActions.WALK, true);
-        walker.getActiveActions().put(MobActions.STAND, false);
-        walker.refreshSpriteStates();
+        walker.putActiveActions(MobActions.WALK, true);
+        walker.putActiveActions(MobActions.STAND, false);
     }
 
     private void playSound(){
@@ -70,9 +69,8 @@ public class WalkingRight extends GameEvent{
     }
 
     private void setMobAttributesEnd(){
-        walker.getActiveActions().put(MobActions.WALK, false);
-        walker.getActiveActions().put(MobActions.STAND, true);
-        walker.refreshSpriteStates();
+        walker.putActiveActions(MobActions.WALK, false);
+        walker.putActiveActions(MobActions.STAND, true);
     }
 
     private void stopSound(){

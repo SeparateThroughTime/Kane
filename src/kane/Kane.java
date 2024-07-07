@@ -1,9 +1,9 @@
 /*TODO
-    Animation
-	    Walking in the Air bug
+
 	Visual Effects
 	    Render to Texture...
 	Sounds
+	    Stop Walking in Air
 	    Pause Sound when opening Inventory
 	    Relational Volume
 	        Stereo-Files ignore distance to listener
@@ -183,7 +183,7 @@ public class Kane extends Game {
         player.addSound("sound//player//damage.ogg", SoundType.DAMAGE);
         player.addSound("sound//player//walk.ogg", SoundType.WALK);
         player.addSound("sound//player//attack.ogg", SoundType.ATACK);
-        player.refreshSpriteStates();
+        player.setDirection(MobDirection.RIGHT);
 
 
 		// Sword
@@ -228,7 +228,7 @@ public class Kane extends Game {
 		spriteControllers[0].spritePosOffset = new Vec2f(-32, -16);
 		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC);
 		blob.shapes[0].setSpriteControllers(spriteControllers);
-		blob.getActiveActions().put(MobActions.GUMBA_WALK, true);
+        blob.putActiveActions(MobActions.GUMBA_WALK, true);
 		blob.setAI(AIs.GUMBA);
 		blob.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
 		blob.setJumpAcc(new Vec2f(0, 200 / DELTATIME));
