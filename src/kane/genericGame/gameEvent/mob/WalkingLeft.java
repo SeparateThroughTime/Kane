@@ -37,6 +37,7 @@ public class WalkingLeft extends GameEvent{
     @Override
     public void procedure(){
         move();
+        checkPauseSound();
         reduceFrameCounter();
     }
 
@@ -66,6 +67,18 @@ public class WalkingLeft extends GameEvent{
         walker.acc.x = -walker.getWalkAcc().x;
         if (-walker.vel.x > walker.getWalkSpeed()){
             walker.vel.x = -walker.getWalkSpeed();
+        }
+    }
+
+    private void checkPauseSound(){
+        if (soundSource.isPlaying()){
+            if (!walker.isOnGround()){
+                soundSource.stop();
+            }
+        } else{
+            if (walker.isOnGround()){
+                soundSource.play();
+            }
         }
     }
 

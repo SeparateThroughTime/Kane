@@ -31,6 +31,8 @@ public class WalkingRight extends GameEvent{
     @Override
     public void procedure(){
         move();
+        checkPauseSound();
+        reduceFrameCounter();
     }
 
     @Override
@@ -65,7 +67,18 @@ public class WalkingRight extends GameEvent{
         if (walker.vel.x > walker.getWalkSpeed()){
             walker.vel.x = walker.getWalkSpeed();
         }
-        reduceFrameCounter();
+    }
+
+    private void checkPauseSound(){
+        if (soundSource.isPlaying()){
+            if (!walker.isOnGround()){
+                soundSource.stop();
+            }
+        } else{
+            if (walker.isOnGround()){
+                soundSource.play();
+            }
+        }
     }
 
     private void setMobAttributesEnd(){
