@@ -25,12 +25,7 @@ public class MeleeAttack extends GameEvent {
 	@Override
 	public void start() {
 		attacker.getActiveActions().put(MobActions.ATTACKING, true);
-		if (attacker.getDirection().equals(MobDirection.LEFT)) {
-			attacker.setCurrentSpriteState(SpriteState.ATTACK_LEFT);
-		} else {
-			attacker.setCurrentSpriteState(SpriteState.ATTACK_RIGHT);
-
-		}
+        attacker.refreshSpriteStates();
 
 		attackShape = attacker.getShape(PassiveAttributes.ATTACKING_FIELD);
 		attackShape.addActiveAttribute(ActiveAttributes.ATTACKING_FIELD);

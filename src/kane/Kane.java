@@ -1,13 +1,15 @@
 /*TODO
     Animation
-        Attack then walk -> attack-Animation cancels
 	    Walking in the Air bug
 	Visual Effects
 	    Render to Texture...
 	Sounds
+	    Pause Sound when opening Inventory
 	    Relational Volume
 	        Stereo-Files ignore distance to listener
 	        Attenuation need to be adjusted or something.
+	Crash Prevention
+	Refactor -> More shorter methods
 	Object Editor
 		(Ermitteln des besten Mittelpunkts)
 	Level Ends/ Player dies -> Next level/ Restart
@@ -181,6 +183,7 @@ public class Kane extends Game {
         player.addSound("sound//player//damage.ogg", SoundType.DAMAGE);
         player.addSound("sound//player//walk.ogg", SoundType.WALK);
         player.addSound("sound//player//attack.ogg", SoundType.ATACK);
+        player.refreshSpriteStates();
 
 
 		// Sword
@@ -291,7 +294,7 @@ public class Kane extends Game {
 						SpriteController[] spriteControllers = item.getPlayerSpriteControllers();
 						SpriteState spriteState = player.getShape(PassiveAttributes.MOB_ALL).getCurrentSpriteState();
 						player.getShape(PassiveAttributes.MOB_ALL).setSpriteControllers(spriteControllers);
-						player.getShape(PassiveAttributes.MOB_ALL).setCurrentSpriteState(spriteState);
+                        player.refreshSpriteStates();
 					}
 				}
 			}

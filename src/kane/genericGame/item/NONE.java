@@ -67,11 +67,11 @@ public class NONE extends Item {
 		PLAYER_SPRITES[2].addState(SpriteState.JUMP_LEFT, new int[] { 4 });
 		PLAYER_SPRITES[2].addState(SpriteState.FALL_LEFT, new int[] { 3 });
 
-		PLAYER_SPRITE_CONTROLLERS[0].setCurrentSpriteState(SpriteState.STANDING_RIGHT);
+        //		PLAYER_SPRITE_CONTROLLERS[0].setCurrentSpriteState(SpriteState.STANDING_RIGHT);
 		PLAYER_SPRITE_CONTROLLERS[0].spritePosOffset = new Vec2f(-32, -32);
-		PLAYER_SPRITE_CONTROLLERS[1].setCurrentSpriteState(SpriteState.STANDING_RIGHT);
+        //		PLAYER_SPRITE_CONTROLLERS[1].setCurrentSpriteState(SpriteState.STANDING_RIGHT);
 		PLAYER_SPRITE_CONTROLLERS[1].spritePosOffset = new Vec2f(-32, -32);
-		PLAYER_SPRITE_CONTROLLERS[2].setCurrentSpriteState(SpriteState.STANDING_RIGHT);
+        //		PLAYER_SPRITE_CONTROLLERS[2].setCurrentSpriteState(SpriteState.STANDING_RIGHT);
 		PLAYER_SPRITE_CONTROLLERS[2].spritePosOffset = new Vec2f(-32, -32);
 
 		addAmount(1);
