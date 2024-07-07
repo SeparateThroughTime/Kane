@@ -1,5 +1,7 @@
 package kane.sound;
 
+import static kane.sound.SoundEngine.SOUND;
+
 import kane.math.Vec2f;
 
 import static org.lwjgl.openal.AL10.*;
@@ -8,8 +10,10 @@ public class SoundSource {
     private final int sourceId;
     private int bufferId;
     private Vec2f pos;
+    public boolean pauseOnMenu;
+    public boolean currentlyPausingOnMenu;
 
-    public SoundSource(boolean loop, boolean relative) {
+    public SoundSource(boolean loop, boolean relative, boolean pauseOnMenu){
         sourceId = alGenSources();
         if (loop) {
             alSourcei(sourceId, AL_LOOPING, AL_TRUE);
@@ -18,6 +22,10 @@ public class SoundSource {
         if (relative) {
             alSourcei(sourceId, AL_SOURCE_RELATIVE, AL_TRUE);
         }
+
+        this.pauseOnMenu = pauseOnMenu;
+        SOUND.addSoundSource(this);
+        currentlyPausingOnMenu = false;
     }
 
     public void setBuffer(int bufferId) {

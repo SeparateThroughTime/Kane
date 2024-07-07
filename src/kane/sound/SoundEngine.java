@@ -18,29 +18,36 @@ import static org.lwjgl.openal.ALC11.*;
 import static org.lwjgl.openal.EXTThreadLocalContext.alcSetThreadContext;
 import static org.lwjgl.system.MemoryUtil.*;
 
-public class SoundEngine {
+public class SoundEngine{
     public static SoundEngine SOUND;
 
     private final long DEVICE;
     private final ALCCapabilities capabilities;
     private final SoundListener soundListener;
 
-    private SoundEngine() {
+    public SoundSource[] soundSources;
+    public static final int MAX_SOUND_SOURCES = 1000;
+    public int numSoundSources;
+
+    private SoundEngine(){
         // Part of initEngine, but Java...
         DEVICE = alcOpenDevice((ByteBuffer) null);
-        if (DEVICE == NULL) {
+        if (DEVICE == NULL){
             throw new IllegalStateException("Failed to open an OpenAL device.");
         }
         capabilities = ALC.createCapabilities(DEVICE);
         initEngine();
 
         soundListener = new SoundListener();
+
+        soundSources = new SoundSource[MAX_SOUND_SOURCES];
+        numSoundSources = 0;
     }
 
-    private void initEngine() {
+    private void initEngine(){
 
 
-        if (!capabilities.OpenALC10) {
+        if (!capabilities.OpenALC10){
             throw new IllegalStateException();
         }
 
@@ -48,12 +55,12 @@ public class SoundEngine {
         System.out.println("OpenALC11  : " + capabilities.OpenALC11);
         System.out.println("ALC_EXT_EFX: " + capabilities.ALC_EXT_EFX);
 
-        if (capabilities.OpenALC11) {
+        if (capabilities.OpenALC11){
             List<String> devices = ALUtil.getStringList(NULL, ALC_ALL_DEVICES_SPECIFIER);
-            if (devices == null) {
+            if (devices == null){
                 checkALCError(NULL);
-            } else {
-                for (int i = 0; i < devices.size(); i++) {
+            } else{
+                for (int i = 0; i < devices.size(); i++){
                     System.out.println(i + ": " + devices.get(i));
                 }
             }
@@ -67,8 +74,8 @@ public class SoundEngine {
         checkALCError(DEVICE);
 
         boolean useTLC = capabilities.ALC_EXT_thread_local_context && alcSetThreadContext(context);
-        if (!useTLC) {
-            if (!alcMakeContextCurrent(context)) {
+        if (!useTLC){
+            if (!alcMakeContextCurrent(context)){
                 throw new IllegalStateException();
             }
         }
@@ -83,39 +90,63 @@ public class SoundEngine {
         System.out.println("ALC_MONO_SOURCES  : " + alcGetInteger(DEVICE, ALC_MONO_SOURCES));
         System.out.println("ALC_STEREO_SOURCES: " + alcGetInteger(DEVICE, ALC_STEREO_SOURCES));
 
-//        try {
-//            testPlayback();
-//        } finally {
-//            alcMakeContextCurrent(NULL);
-//            if (useTLC) {
-//                AL.setCurrentThread(null);
-//            } else {
-//                AL.setCurrentProcess(null);
-//            }
-//            memFree(caps.getAddressBuffer());
-//
-//            alcDestroyContext(context);
-//            alcCloseDevice(DEVICE);
-//        }
+        //        try {
+        //            testPlayback();
+        //        } finally {
+        //            alcMakeContextCurrent(NULL);
+        //            if (useTLC) {
+        //                AL.setCurrentThread(null);
+        //            } else {
+        //                AL.setCurrentProcess(null);
+        //            }
+        //            memFree(caps.getAddressBuffer());
+        //
+        //            alcDestroyContext(context);
+        //            alcCloseDevice(DEVICE);
+        //        }
     }
 
-    public static void initializeSound() {
-        if (SOUND == null) {
+    public static void initializeSound(){
+        if (SOUND == null){
             SOUND = new SoundEngine();
         }
     }
 
-    static void checkALCError(long device) {
+    static void checkALCError(long device){
         int err = alcGetError(device);
-        if (err != ALC_NO_ERROR) {
+        if (err != ALC_NO_ERROR){
             throw new RuntimeException(alcGetString(device, err));
         }
     }
 
-    static void checkALError() {
-        int err = alGetError();
-        if (err != AL_NO_ERROR) {
-            throw new RuntimeException(alGetString(err));
+    public void addSoundSource(SoundSource soundSource){
+        soundSources[numSoundSources++] = soundSource;
+    }
+
+    public void clearSoundSources(){
+        for (int i = 0; i < numSoundSources; i++){
+            soundSources[i] = null;
+        }
+        numSoundSources = 0;
+    }
+
+    public void pause(){
+        for (int i = 0; i < numSoundSources; i++){
+            SoundSource soundSource = soundSources[i];
+            if (soundSource.pauseOnMenu && soundSource.isPlaying()){
+                soundSource.pause();
+                soundSource.currentlyPausingOnMenu = true;
+            }
+        }
+    }
+
+    public void resume(){
+        for (int i = 0; i < numSoundSources; i++){
+            SoundSource soundSource = soundSources[i];
+            if (soundSource.currentlyPausingOnMenu){
+                soundSource.play();
+                soundSource.currentlyPausingOnMenu = false;
+            }
         }
     }
 }
