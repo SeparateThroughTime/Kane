@@ -32,13 +32,13 @@ public class GumbaWalk extends GameEvent {
 			walker.walkLeft();
 		}
 
-		reduceFrameCounter();
+        reduceFrameCounter();
 	}
 
 	@Override
 	public void end() {
-		currentWalkEvent.killEvent();
-
+        walker.stopWalkLeft();
+        walker.stopWalkRight();
 	}
 
 }

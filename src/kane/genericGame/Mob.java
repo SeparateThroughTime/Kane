@@ -23,6 +23,7 @@ public class Mob extends Body{
     private WalkingLeft currentWalkingLeftEvent;
     private WalkingRight currentWalkingRightEvent;
     private AIs ai;
+    private GameEvent walkingAI;
     private MobDirection direction;
 
     public void putActiveActions(MobActions action, boolean val){
@@ -195,7 +196,8 @@ public class Mob extends Body{
     public void startWalkingAI(){
         switch (ai){
             case GUMBA:
-                GAME.addEvent(new GumbaWalk(this));
+                walkingAI = new GumbaWalk(this);
+                GAME.addEvent(walkingAI);
                 break;
 
             default:
@@ -261,5 +263,12 @@ public class Mob extends Body{
     public void setDirection(MobDirection direction){
         this.direction = direction;
         refreshSpriteStates();
+    }
+
+    public void remove(){
+        super.remove();
+        if (walkingAI != null){
+            walkingAI.killEvent();
+        }
     }
 }

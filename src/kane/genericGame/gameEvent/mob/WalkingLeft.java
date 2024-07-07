@@ -71,6 +71,10 @@ public class WalkingLeft extends GameEvent{
     }
 
     private void checkPauseSound(){
+        if (soundSource == null){
+            return;
+        }
+
         if (soundSource.isPlaying()){
             if (!walker.isOnGround()){
                 soundSource.stop();
