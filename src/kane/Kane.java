@@ -3,7 +3,6 @@
 	Visual Effects
 	    Render to Texture...
 	Sounds
-	    Pause Sound when opening Inventory
 	    Relational Volume
 	        Stereo-Files ignore distance to listener
 	        Attenuation need to be adjusted or something.
@@ -182,7 +181,7 @@ public class Kane extends Game{
         player.shapes[0].setSpriteControllers(spriteControllers);
         player.addSound("sound//player//jump.ogg", SoundType.JUMP);
         player.addSound("sound//player//damage.ogg", SoundType.DAMAGE);
-        player.addSound("sound//player//walk.ogg", SoundType.WALK);
+        //        player.addSound("sound//player//walk.ogg", SoundType.WALK);
         player.addSound("sound//player//attack.ogg", SoundType.ATACK);
         player.setDirection(MobDirection.RIGHT);
 
@@ -236,7 +235,7 @@ public class Kane extends Game{
         blob.setWalkSpeed(50);
         blob.addSound("sound//mobs//blob//death.ogg", SoundType.DEATH);
         blob.addSound("sound//mobs//blob//damage.ogg", SoundType.DAMAGE);
-        blob.addSound("sound//mobs//blob//walk.ogg", SoundType.WALK);
+        blob.addSound("sound//player//walk.ogg", SoundType.WALK);
 
 
         // Create Background
@@ -249,14 +248,14 @@ public class Kane extends Game{
         refreshHealthBar();
 
         // Spooky testing
-        RENDERER.changeShader("shaders/default.vertex.glsl", "shaders/default.fragment.glsl");
+        RENDERER.changeShader("shaders/spooky.vertex.glsl", "shaders/spooky.fragment.glsl");
 
         this.setSanity(1.0f);
 
         //		GAME.changeResolution(Resolution.SOL1024x768);
 
         // background music
-        addEvent(new PlaySound(RESOURCE_MANAGER.getSoundBuffer("sound//music//01//main.ogg"), true, true));
+        //        addEvent(new PlaySound(RESOURCE_MANAGER.getSoundBuffer("sound//music//01//main.ogg"), true, true));
     }
 
     public void refreshHealthBar(){

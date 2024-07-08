@@ -336,14 +336,14 @@ public class Body{
         return soundSources.get(soundType);
     }
 
-    public void updateSoundSourceVel(){
-        for (SoundType soundType : SoundType.values()){
-            if (!soundSources.containsKey(soundType)){
-                continue;
-            }
-            soundSources.get(soundType).setVel(vel);
-        }
-    }
+    //    public void updateSoundSourceVel(){
+    //        for (SoundType soundType : SoundType.values()){
+    //            if (!soundSources.containsKey(soundType)){
+    //                continue;
+    //            }
+    //            soundSources.get(soundType).setVel(vel);
+    //        }
+    //    }
 
     public void updateSoundSourcePos(){
         for (SoundType soundType : SoundType.values()){
@@ -363,7 +363,7 @@ public class Body{
         }
 
         boolean loop = soundType == SoundType.WALK;
-        SoundSource soundSource = new SoundSource(loop, true, true);
+        SoundSource soundSource = new SoundSource(loop, false, true);
         soundSource.setBuffer(soundBuffer.getBufferId());
 
         soundSources.put(soundType, soundSource);

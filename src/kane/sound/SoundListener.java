@@ -3,6 +3,7 @@ package kane.sound;
 import kane.math.Vec2f;
 
 import static org.lwjgl.openal.AL10.*;
+import static kane.renderer.Camera.CAMERA;
 
 public class SoundListener {
     public SoundListener() {
@@ -14,11 +15,13 @@ public class SoundListener {
         alListener3f(AL_VELOCITY, 0f, 0f, 0f);
     }
 
-    public void setVel(Vec2f vel) {
-        alListener3f(AL_VELOCITY, vel.x, vel.y, 0f);
-    }
+    //    public void setVel(Vec2f vel) {
+    //        alListener3f(AL_VELOCITY, vel.x, vel.y, 0f);
+    //    }
 
-    public void setPos(Vec2f pos) {
+    public void refreshPos(){
+        Vec2f pos = CAMERA.pos;
+        System.out.println(pos);
         alListener3f(AL_POSITION, pos.x, pos.y, 0f);
     }
 

@@ -12,7 +12,7 @@ public class PlaySound extends GameEvent {
     public PlaySound(SoundBuffer soundBuffer, boolean loop, boolean pauseOnMenu){
         super(2);
         stop = false;
-        soundSource = new SoundSource(loop, false, pauseOnMenu);
+        soundSource = new SoundSource(loop, true, pauseOnMenu);
         soundSource.setBuffer(soundBuffer.getBufferId());
     }
 

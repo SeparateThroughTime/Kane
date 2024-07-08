@@ -5,6 +5,7 @@ import static kane.genericGame.userInteraction.Mouse.MOUSE;
 import static kane.physics.Physics.PHYSICS;
 import static kane.renderer.Renderer.RENDERER;
 import static kane.renderer.ResolutionSpecification.RES_SPECS;
+import static kane.sound.SoundEngine.SOUND;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
@@ -189,6 +190,7 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 					mechanicsLoop();
 					eventsLoop();
 					PHYSICS.step();
+                    SOUND.soundListener.refreshPos();
 					postMechanicsLoops();
 
 				}
@@ -220,6 +222,8 @@ public abstract class Game implements WindowListener, KeyboardInterface, MouseIn
 		glfwDestroyWindow(RENDERER.window);
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
+
+        SOUND.exit();
 	}
 
 	protected void coreMechanicsLoop() {

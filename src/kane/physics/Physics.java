@@ -75,7 +75,7 @@ public class Physics {
             if (!body.isRemoved()) {
                 if (body.invMass > 0) {
                     body.vel.addMult(body.acc, Game.DELTATIME);
-                    body.updateSoundSourceVel();
+                    //                    body.updateSoundSourceVel();
                     Vec2f nextPos = new Vec2f(body.pos).addMult(body.vel, Game.DELTATIME);
                     body.updateAABB(nextPos, AABB_TOLERANCE);
                     body.acc.zero();
