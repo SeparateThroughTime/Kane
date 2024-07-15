@@ -4,9 +4,9 @@ import kane.genericGame.GameEvent;
 import kane.sound.SoundBuffer;
 import kane.sound.SoundSource;
 
-public class PlaySound extends GameEvent {
+public class PlaySound extends GameEvent{
 
-    private SoundSource soundSource;
+    private final SoundSource soundSource;
     private boolean stop;
 
     public PlaySound(SoundBuffer soundBuffer, boolean loop, boolean pauseOnMenu){
@@ -17,23 +17,23 @@ public class PlaySound extends GameEvent {
     }
 
     @Override
-    public void start() {
+    public void start(){
         soundSource.play();
     }
 
     @Override
-    public void procedure() {
-        if (soundSource.isPlaying() && !stop) {
+    public void procedure(){
+        if (soundSource.isPlaying() && !stop){
             reduceFrameCounter();
         }
     }
 
     @Override
-    public void end() {
+    public void end(){
         soundSource.stop();
     }
 
-    public void stopSound() {
+    public void stopSound(){
         stop = true;
     }
 }

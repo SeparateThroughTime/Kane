@@ -1,6 +1,6 @@
 package kane.genericGame;
 
-public enum MobDirection {
-	LEFT,
-	RIGHT;
+public enum MobDirection{
+    LEFT,
+    RIGHT
 }

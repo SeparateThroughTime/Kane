@@ -24,88 +24,84 @@ import kane.physics.contacts.generators.PolygonPolygonContactGenerator;
 import static kane.physics.Physics.PHYSICS;
 import static kane.physics.contacts.ContactListener.CONTACT_LISTENER;
 
-/**
- * The ContactGeneratorFactory manages all the different Contact Generations between the different Body Types.
- */
-public class ContactGeneratorFactory {
+public class ContactGeneratorFactory{
 
-	public static ContactGeneratorFactory CONTACT_GENERATOR_FACTORY;
-	
-	private ContactGenerator[][] generators;
+    public static ContactGeneratorFactory CONTACT_GENERATOR_FACTORY;
 
-	/**
-	 * 
-	 * @param contactListener
-	 */
-	private ContactGeneratorFactory() {
+    private final ContactGenerator[][] generators;
 
-		int numShapeTypes = ShapeType.values().length;
-		generators = new ContactGenerator[numShapeTypes][numShapeTypes];
-		for (int i = 0; i < generators.length; i++) {
-			for (int j = 0; j < generators[0].length; j++) {
-				generators[i][j] = new NoContactGenerator();
-			}
-		}
-		generators[ShapeType.PLANE.id][ShapeType.CIRCLE.id] = new PlaneCircleContactGenerator();
-		generators[ShapeType.CIRCLE.id][ShapeType.CIRCLE.id] = new CircleCircleContactGenerator();
-		generators[ShapeType.LINESEGMENT.id][ShapeType.CIRCLE.id] = new LineSegmentCircleContactGenerator();
-		generators[ShapeType.BOX.id][ShapeType.BOX.id] = new BoxBoxContactGenerator();
-		generators[ShapeType.CIRCLE.id][ShapeType.BOX.id] = new CircleBoxContactGenerator();
-		generators[ShapeType.PLANE.id][ShapeType.BOX.id] = new PlaneBoxContactGenerator();
-		generators[ShapeType.LINESEGMENT.id][ShapeType.BOX.id] = new LineSegmentBoxContactGenerator();
-		generators[ShapeType.CIRCLE.id][ShapeType.POLYGON.id] = new CirclePolygonContactGenerator();
-		generators[ShapeType.BOX.id][ShapeType.POLYGON.id] = new BoxPolygonContactGenerator();
-		generators[ShapeType.LINESEGMENT.id][ShapeType.POLYGON.id] = new LineSegmentPolygonContactGenerator();
-		generators[ShapeType.POLYGON.id][ShapeType.POLYGON.id] = new PolygonPolygonContactGenerator();
-		generators[ShapeType.PLANE.id][ShapeType.POLYGON.id] = new PlanePolygonContactGenerator();
-		generators[ShapeType.BOX.id][ShapeType.POINT.id] = new BoxPointContactGenerator();
-		generators[ShapeType.CIRCLE.id][ShapeType.POINT.id] = new CirclePointContactGenerator();
-		generators[ShapeType.PLANE.id][ShapeType.POINT.id] = new PlanePointContactGenerator();
-		generators[ShapeType.POINT.id][ShapeType.POLYGON.id] = new PointPolygonContactGenerator();
-	}
-	
-	public static void initializateContactGeneratorFactory() {
-		if (CONTACT_GENERATOR_FACTORY == null) {
-			CONTACT_GENERATOR_FACTORY = new ContactGeneratorFactory();
-		}
-	}
+    private ContactGeneratorFactory(){
 
-	/**
-	 * Needs to run every frame. It updates the contacts array.
-	 * @param acceptor
-	 */
-	public void generate(ContactAcceptor acceptor) {
-		for (int i = 0; i < PHYSICS.numShapePairs; i++) {
-			ShapePair shapePair = PHYSICS.shapePairs[i];
-			Shape shapeA = shapePair.shapeA;
-			Shape shapeB = shapePair.shapeB;
-			if (shapeA.type.id > shapeB.type.id) {
-				shapePair.flipShapes();
-			}
-			if (shapePair.shapeA.aabb.overlaps(shapePair.shapeB.aabb)) {
-				generators[shapePair.shapeA.type.id][shapePair.shapeB.type.id].generate(shapePair,
-						acceptor);
-				
-				if (shapePair.contact != null) {
-					if (shapePair.contact.distance <= 0) {
-						CONTACT_LISTENER.penetrated(shapePair);
-						if (!shapePair.penetration) {
-							CONTACT_LISTENER.penetration(shapePair);
-							shapeA.addColidedShape(shapeB);
-							shapeB.addColidedShape(shapeA);
-							shapePair.penetration = true;
-						}
-					} else if (shapePair.penetration) {
-						CONTACT_LISTENER.separation(shapePair);
-						shapeA.remColidedShape(shapeB);
-						shapeB.remColidedShape(shapeA);
-						shapePair.penetration = false;
-					}
-				}
-			}
+        int numShapeTypes = ShapeType.values().length;
+        generators = new ContactGenerator[numShapeTypes][numShapeTypes];
+        for (int i = 0; i < generators.length; i++){
+            for (int j = 0; j < generators[0].length; j++){
+                generators[i][j] = new NoContactGenerator();
+            }
+        }
+        generators[ShapeType.PLANE.id][ShapeType.CIRCLE.id] = new PlaneCircleContactGenerator();
+        generators[ShapeType.CIRCLE.id][ShapeType.CIRCLE.id] = new CircleCircleContactGenerator();
+        generators[ShapeType.LINESEGMENT.id][ShapeType.CIRCLE.id] = new LineSegmentCircleContactGenerator();
+        generators[ShapeType.BOX.id][ShapeType.BOX.id] = new BoxBoxContactGenerator();
+        generators[ShapeType.CIRCLE.id][ShapeType.BOX.id] = new CircleBoxContactGenerator();
+        generators[ShapeType.PLANE.id][ShapeType.BOX.id] = new PlaneBoxContactGenerator();
+        generators[ShapeType.LINESEGMENT.id][ShapeType.BOX.id] = new LineSegmentBoxContactGenerator();
+        generators[ShapeType.CIRCLE.id][ShapeType.POLYGON.id] = new CirclePolygonContactGenerator();
+        generators[ShapeType.BOX.id][ShapeType.POLYGON.id] = new BoxPolygonContactGenerator();
+        generators[ShapeType.LINESEGMENT.id][ShapeType.POLYGON.id] = new LineSegmentPolygonContactGenerator();
+        generators[ShapeType.POLYGON.id][ShapeType.POLYGON.id] = new PolygonPolygonContactGenerator();
+        generators[ShapeType.PLANE.id][ShapeType.POLYGON.id] = new PlanePolygonContactGenerator();
+        generators[ShapeType.BOX.id][ShapeType.POINT.id] = new BoxPointContactGenerator();
+        generators[ShapeType.CIRCLE.id][ShapeType.POINT.id] = new CirclePointContactGenerator();
+        generators[ShapeType.PLANE.id][ShapeType.POINT.id] = new PlanePointContactGenerator();
+        generators[ShapeType.POINT.id][ShapeType.POLYGON.id] = new PointPolygonContactGenerator();
+    }
 
-		}
+    public static void initializeContactGeneratorFactory(){
+        if (CONTACT_GENERATOR_FACTORY == null){
+            CONTACT_GENERATOR_FACTORY = new ContactGeneratorFactory();
+        }
+    }
 
-	}
+    public void generate(ContactAcceptor acceptor){
+        for (int i = 0; i < PHYSICS.numShapePairs; i++){
+            ShapePair shapePair = PHYSICS.shapePairs[i];
+            if (shapePair.shapeA.type.id > shapePair.shapeB.type.id){
+                shapePair.flipShapes();
+            }
+            Shape shapeA = shapePair.shapeA;
+            Shape shapeB = shapePair.shapeB;
+
+            if (!shapeA.aabb.overlaps(shapeB.aabb)){
+                continue;
+            }
+            generators[shapeA.type.id][shapeB.type.id].generate(shapePair, acceptor);
+
+            if (shapePair.contact == null){
+                continue;
+            }
+
+            setPenetrations(shapePair, shapeA, shapeB);
+
+        }
+
+    }
+
+    private static void setPenetrations(ShapePair shapePair, Shape shapeA, Shape shapeB){
+        if (shapePair.contact.distance <= 0){
+            CONTACT_LISTENER.penetrated(shapePair);
+            if (!shapePair.penetration){
+                CONTACT_LISTENER.penetration(shapePair);
+                shapeA.addCollidedShape(shapeB);
+                shapeB.addCollidedShape(shapeA);
+                shapePair.penetration = true;
+            }
+        } else if (shapePair.penetration){
+            CONTACT_LISTENER.separation(shapePair);
+            shapeA.remCollidedShape(shapeB);
+            shapeB.remCollidedShape(shapeA);
+            shapePair.penetration = false;
+        }
+    }
 
 }

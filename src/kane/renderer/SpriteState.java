@@ -1,8 +1,5 @@
 package kane.renderer;
 
-/**
- * This is a list of the states a sprite can has.
- */
 public enum SpriteState{
     STATIC(0),
     RUNNING_LEFT(1),
@@ -20,7 +17,7 @@ public enum SpriteState{
 
     public final int id;
 
-    private SpriteState(int id){
+    SpriteState(int id){
         this.id = id;
     }
 }

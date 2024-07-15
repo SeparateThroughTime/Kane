@@ -1,19 +1,14 @@
 package kane.genericGame.gameEvent.mob;
 
-import kane.genericGame.GameEvent;
-import kane.genericGame.Mob;
-import kane.genericGame.MobActions;
-import kane.genericGame.MobDirection;
-import kane.genericGame.PassiveAttributes;
+import kane.genericGame.*;
 import kane.math.ArrayOperations;
 import kane.renderer.SpriteController;
-import kane.renderer.SpriteState;
 import kane.sound.SoundSource;
 import kane.sound.SoundType;
 
 public class WalkingRight extends GameEvent{
 
-    private Mob walker;
+    private final Mob walker;
     private SoundSource soundSource;
 
     public WalkingRight(Mob walker){

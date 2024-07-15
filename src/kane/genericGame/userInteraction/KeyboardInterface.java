@@ -3,45 +3,79 @@ package kane.genericGame.userInteraction;
 /**
  * This is an interface with all methods for keyboard interaction.
  */
-public interface KeyboardInterface {
-	
-	public void leftArrowClick();
-	public void leftArrowPressed();
-	public void leftArrowReleased();
-	public void rightArrowClick();
-	public void rightArrowPressed();
-	public void rightArrowReleased();
-	public void upArrowClick();
-	public void upArrowPressed();
-	public void upArrowReleased();
-	public void downArrowClick();
-	public void downArrowPressed();
-	public void downArrowReleased();
-	
-	public void f1Click();
-	public void f2Click();
-	public void f3Click();
-	public void f4Click();
-	public void f5Click();
-	public void f6Click();
-	public void f7Click();
-	public void f8Click();
-	public void f9Click();
-	public void f10Click();
-	public void f11Click();
-	public void f12Click();
-	
-	public void cPressed();
-	public void cReleased();
-	public void cClick();
-	public void spacePressed();
-	public void spaceReleased();
-	public void spaceClick();
-	public void shiftPressed();
-	public void shiftReleased();
-	public void shiftClick();
-	public void escClick();
-	public void iPressed();
-	public void iReleased();
-	public void iClick();
+public interface KeyboardInterface{
+
+    void leftArrowClick();
+
+    void leftArrowPressed();
+
+    void leftArrowReleased();
+
+    void rightArrowClick();
+
+    void rightArrowPressed();
+
+    void rightArrowReleased();
+
+    void upArrowClick();
+
+    void upArrowPressed();
+
+    void upArrowReleased();
+
+    void downArrowClick();
+
+    void downArrowPressed();
+
+    void downArrowReleased();
+
+    void f1Click();
+
+    void f2Click();
+
+    void f3Click();
+
+    void f4Click();
+
+    void f5Click();
+
+    void f6Click();
+
+    void f7Click();
+
+    void f8Click();
+
+    void f9Click();
+
+    void f10Click();
+
+    void f11Click();
+
+    void f12Click();
+
+    void cPressed();
+
+    void cReleased();
+
+    void cClick();
+
+    void spacePressed();
+
+    void spaceReleased();
+
+    void spaceClick();
+
+    void shiftPressed();
+
+    void shiftReleased();
+
+    void shiftClick();
+
+    void escClick();
+
+    void iPressed();
+
+    void iReleased();
+
+    void iClick();
 }

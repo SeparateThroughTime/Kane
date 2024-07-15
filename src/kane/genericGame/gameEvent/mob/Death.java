@@ -7,7 +7,7 @@ import kane.sound.SoundType;
 
 public class Death extends GameEvent {
 
-    private Mob mob;
+    private final Mob mob;
 
     public Death(Mob mob) {
         super(1);
@@ -17,7 +17,7 @@ public class Death extends GameEvent {
     @Override
     public void start() {
         SoundSource soundSource = mob.getSoundSource(SoundType.DEATH);
-        if (soundSource != null) {
+        if (soundSource != null){
             soundSource.play();
         }
 

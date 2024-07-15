@@ -8,40 +8,41 @@ import kane.genericGame.MobActions;
 import kane.sound.SoundSource;
 import kane.sound.SoundType;
 
-public class Jump extends GameEvent {
+public class Jump extends GameEvent{
 
-	Mob mob;
+    Mob mob;
 
-	public Jump(Mob mob) {
+    public Jump(Mob mob){
         super(2);
-		this.mob = mob;
-	}
+        this.mob = mob;
+    }
 
-	@Override
-	public void start() {
+    @Override
+    public void start(){
         mob.putActiveActions(MobActions.JUMPING, true);
+        mob.acc.add(mob.getJumpAcc());
+        playSound();
 
-		mob.acc.add(mob.getJumpAcc());
+    }
 
-        SoundSource soundSource = mob.getSoundSource(SoundType.JUMP);
-        if (soundSource != null) {
-            soundSource.play();
-        }
-
-
-	}
-
-	@Override
-	public void procedure() {
+    @Override
+    public void procedure(){
         if (mob.vel.y > 0){
             reduceFrameCounter();
         }
-	}
+    }
 
-	@Override
-	public void end() {
+    @Override
+    public void end(){
         mob.putActiveActions(MobActions.JUMPING, false);
         GAME.addEvent(new Fall(mob));
-	}
+    }
+
+    private void playSound(){
+        SoundSource soundSource = mob.getSoundSource(SoundType.JUMP);
+        if (soundSource != null){
+            soundSource.play();
+        }
+    }
 
 }

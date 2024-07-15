@@ -2,80 +2,41 @@ package kane.physics;
 
 import kane.math.Vec2f;
 
-/**
- * A simple AABB-Box for fast collision detection.
- */
-public class AABB {
+public class AABB{
 
-	private final Vec2f min;
-	private final Vec2f max;
-	
-	/**
-	 * 
-	 * @param min -buttom left
-	 * @param max -top right
-	 */
-	public AABB(Vec2f min, Vec2f max) {
-		this.min = min;
-		this.max = max;
-	}
-	
-	public AABB() {
-		min = new Vec2f();
-		max = new Vec2f();
-	}
-	
-	/**
-	 * Check if two AABBs are overlapping.
-	 * @param other -other AABB
-	 * @return -true if overlapping
-	 */
-	public boolean overlaps(AABB other) {
-		if (max.x < other.getMin().x || other.getMax().x < min.x) {
-			return false;
-		}
-		if((max.y < other.getMin().y || other.getMax().y < min.y)) {
-			return false;
-		}
-		return true;
-	}
-	
-	/**
-	 * transform a box with center and radius to a AABB
-	 * @param center -position of the center
-	 * @param radius -lengths of the box
-	 * @return
-	 */
-	public static AABB creatFromCrenter(Vec2f center, Vec2f radius) {
-		return new AABB(new Vec2f(center).sub(radius), new Vec2f(center).add(radius));
-	}
+    private final Vec2f min;
+    private final Vec2f max;
 
-	/**
-	 * Get bottom left
-	 * @return
-	 */
-	public Vec2f getMin() {
-		return min;
-	}
+    public AABB(Vec2f min, Vec2f max){
+        this.min = min;
+        this.max = max;
+    }
 
-	/**
-	 * Get top right
-	 * @return
-	 */
-	public Vec2f getMax() {
-		return max;
-	}
-	
-	/**
-	 * Sort min and max, so min is bottom left and max is top right.
-	 * @return
-	 */
-	public AABB sortMinMax() {
-		Vec2f minTmp = new Vec2f(min);
-		Vec2f maxTmp = new Vec2f(max);
-		min.set(Math.min(minTmp.x, maxTmp.x), Math.min(minTmp.y, maxTmp.y));
-		max.set(Math.max(minTmp.x, maxTmp.x), Math.max(minTmp.y, maxTmp.y));
-		return this;
-	}
-	
+    public AABB(){
+        min = new Vec2f();
+        max = new Vec2f();
+    }
+
+    public boolean overlaps(AABB other){
+        if (max.x < other.getMin().x || other.getMax().x < min.x){
+            return false;
+        }
+        return !(max.y < other.getMin().y) && !(other.getMax().y < min.y);
+    }
+
+    public Vec2f getMin(){
+        return min;
+    }
+
+    public Vec2f getMax(){
+        return max;
+    }
+
+    public void sortMinMax(){
+        Vec2f minTmp = new Vec2f(min);
+        Vec2f maxTmp = new Vec2f(max);
+        min.set(Math.min(minTmp.x, maxTmp.x), Math.min(minTmp.y, maxTmp.y));
+        max.set(Math.max(minTmp.x, maxTmp.x), Math.max(minTmp.y, maxTmp.y));
+    }
+
 }

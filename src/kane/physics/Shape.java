@@ -14,262 +14,243 @@ import kane.renderer.SpriteBatch;
 import kane.renderer.SpriteController;
 import kane.renderer.SpriteState;
 
-/**
- * Shape is an abstract class, which is the base for all Shapes.
- */
-public abstract class Shape {
+public abstract class Shape{
 
-	public static final int MAX_RENDER_LAYER = 20;
-	public static int MAX_COLIDED_SHAPES = 50;
-	public static int MAX_ACTIVE_ATTRIBUTES = 5;
-	public static int MAX_PASSIVE_ATTRIBUTES = 5;
-	public static int MAX_SPRITE_CONTROLLERS = 10;
+    public static final int MAX_RENDER_LAYER = 20;
+    public static int MAX_COLLIDED_SHAPES = 50;
+    public static int MAX_ACTIVE_ATTRIBUTES = 5;
+    public static int MAX_PASSIVE_ATTRIBUTES = 5;
+    public static int MAX_SPRITE_CONTROLLERS = 10;
 
-	public final int ID;
-	// Layer is from 1-20. First Layer is rendered first, last Layer is rendered
-	// last.
-	public int renderLayer;
+    public final int ID;
 
-	public final Vec2f relPos;
-	public final Vec2f relPosAlign;
-	public final ShapeType type;
-	public final AABB aabb;
-	public final Body body;
-	public Color color;
-	public boolean collision;
-	public boolean visible;
-	public final Material material;
-	public float invMass;
-	public final Vec2f centerOfMass;
-	public float momentOfInertia;
-	protected Shape[] colidedShapes;
-	protected int numColidedShapes;
+    public int renderLayer;
 
-	public ActiveAttributes[] activeAttributes;
-	public PassiveAttributes[] passiveAttributes;
-	public int numActiveAttributes;
-	public int numPassiveAttributes;
+    public final Vec2f relPos;
+    public final Vec2f relPosAlign;
+    public final ShapeType type;
+    public final AABB aabb;
+    public final Body body;
+    public Color color;
+    public boolean collision;
+    public boolean visible;
+    public final Material material;
+    public float invMass;
+    public final Vec2f centerOfMass;
+    public float momentOfInertia;
+    protected Shape[] collidedShapes;
+    protected int numCollidedShapes;
 
-	public boolean hasSprite;
-	protected SpriteController[] spriteControllers;
+    public ActiveAttributes[] activeAttributes;
+    public PassiveAttributes[] passiveAttributes;
+    public int numActiveAttributes;
+    public int numPassiveAttributes;
 
-	public final int numRenderVertices;
-	public final int numRenderElements;
-	public SpriteBatch renderBatch;
+    public boolean hasSprite;
+    protected SpriteController[] spriteControllers;
 
-	/**
-	 * Update the AABB of Shape including its next position.
-	 * 
-	 * @param nextAbsPos -next absolute position
-	 * @param tolerance  -added to each side of AABB
-	 */
-	public abstract void updateAABB(Vec2f nextAbsPos, float tolerance);
+    public final int numRenderVertices;
+    public final int numRenderElements;
+    public SpriteBatch renderBatch;
 
-	public abstract float getVolume();
+    public abstract void updateAABB(Vec2f nextAbsPos, float tolerance);
 
-	public abstract boolean isPointInShape(Vec2f point);
+    public abstract float getVolume();
 
-	public boolean isPointInShape(Vec2i point) {
-		Vec2f pointF = new Vec2f(point);
-		return isPointInShape(pointF);
-	}
+    public abstract boolean isPointInShape(Vec2f point);
 
-	public Shape(int relPosX, int RelPosY, ShapeType type, Body body, Color color, Material material, int renderLayer,
-			int numRenderVertices, int numRenderElements) {
-		relPos = new Vec2f(relPosX, RelPosY);
-		relPosAlign = new Vec2f(relPosX, RelPosY);
-		this.type = type;
-		aabb = new AABB();
-		this.body = body;
-		this.color = color;
-		this.ID = body.numShapes;
-		this.collision = true;
-		this.visible = true;
-		this.numActiveAttributes = 0;
-		this.numPassiveAttributes = 0;
-		this.activeAttributes = new ActiveAttributes[MAX_ACTIVE_ATTRIBUTES];
-		this.passiveAttributes = new PassiveAttributes[MAX_PASSIVE_ATTRIBUTES];
-		this.material = material;
-		this.hasSprite = false;
-		this.centerOfMass = new Vec2f();
-		this.renderLayer = Math.min(renderLayer, MAX_RENDER_LAYER);
-		this.colidedShapes = new Shape[MAX_COLIDED_SHAPES];
-		this.numRenderVertices = numRenderVertices;
-		this.numRenderElements = numRenderElements;
-		this.spriteControllers = new SpriteController[0];
-	}
+    public boolean isPointInShape(Vec2i point){
+        Vec2f pointF = new Vec2f(point);
+        return isPointInShape(pointF);
+    }
 
-	public void rotate(float angle) {
-	}
+    public Shape(int relPosX, int RelPosY, ShapeType type, Body body, Color color, Material material, int renderLayer,
+                 int numRenderVertices, int numRenderElements){
+        relPos = new Vec2f(relPosX, RelPosY);
+        relPosAlign = new Vec2f(relPosX, RelPosY);
+        this.type = type;
+        aabb = new AABB();
+        this.body = body;
+        this.color = color;
+        this.ID = body.numShapes;
+        this.collision = true;
+        this.visible = true;
+        this.numActiveAttributes = 0;
+        this.numPassiveAttributes = 0;
+        this.activeAttributes = new ActiveAttributes[MAX_ACTIVE_ATTRIBUTES];
+        this.passiveAttributes = new PassiveAttributes[MAX_PASSIVE_ATTRIBUTES];
+        this.material = material;
+        this.hasSprite = false;
+        this.centerOfMass = new Vec2f();
+        this.renderLayer = Math.min(renderLayer, MAX_RENDER_LAYER);
+        this.collidedShapes = new Shape[MAX_COLLIDED_SHAPES];
+        this.numRenderVertices = numRenderVertices;
+        this.numRenderElements = numRenderElements;
+        this.spriteControllers = new SpriteController[0];
+    }
 
-	public void rotate(float angle, Vec2f referencePoint) {
+    public void rotate(float angle){
+    }
 
-	}
+    public void rotate(float angle, Vec2f referencePoint){
 
-	public void addActiveAttribute(ActiveAttributes aa) {
-		activeAttributes[numActiveAttributes++] = aa;
-	}
+    }
 
-	public void remActiveAttribute(ActiveAttributes aa) {
-		ArrayList<Integer> indices = new ArrayList<>();
-		for (int i = 0; i < numActiveAttributes; i++) {
-			if (activeAttributes[i] == aa) {
-				indices.add(i);
-			}
-		}
-		for (int i = 0; i < indices.size(); i++) {
-			int index = indices.get(i);
-			for (int j = index + 1; j < numActiveAttributes; j++) {
-				activeAttributes[j - 1] = activeAttributes[j];
-			}
-			numActiveAttributes--;
-		}
-	}
+    public void addActiveAttribute(ActiveAttributes aa){
+        activeAttributes[numActiveAttributes++] = aa;
+    }
 
-	public ActiveAttributes getActiveAttribute(int index) {
-		return activeAttributes[index];
-	}
+    public void remActiveAttribute(ActiveAttributes aa){
+        ArrayList<Integer> indices = new ArrayList<>();
+        for (int i = 0; i < numActiveAttributes; i++){
+            if (activeAttributes[i] == aa){
+                indices.add(i);
+            }
+        }
+        for (int index : indices){
+            for (int j = index + 1; j < numActiveAttributes; j++){
+                activeAttributes[j - 1] = activeAttributes[j];
+            }
+            numActiveAttributes--;
+        }
+    }
 
-	/**
-	 * Checks if Shape has specific active attribute.
-	 * 
-	 * @param a -active attribute
-	 * @return -true if attribute exists in shape
-	 */
-	public boolean hasActiveAtrribute(ActiveAttributes a) {
-		boolean b = false;
-		for (int i = 0; i < numActiveAttributes; i++) {
-			if (activeAttributes[i] == a) {
-				b = true;
-				break;
-			}
-		}
-		return b;
-	}
+    public ActiveAttributes getActiveAttribute(int index){
+        return activeAttributes[index];
+    }
 
-	public boolean hasPassiveAtrribute(PassiveAttributes a) {
-		boolean b = false;
-		for (int i = 0; i < numPassiveAttributes; i++) {
-			if (passiveAttributes[i] == a) {
-				b = true;
-				break;
-			}
-		}
-		return b;
-	}
+    public boolean hasActiveAttribute(ActiveAttributes a){
+        boolean b = false;
+        for (int i = 0; i < numActiveAttributes; i++){
+            if (activeAttributes[i] == a){
+                b = true;
+                break;
+            }
+        }
+        return b;
+    }
 
-	public void addPassiveAttribute(PassiveAttributes pa) {
-		passiveAttributes[numPassiveAttributes++] = pa;
-	}
+    public boolean hasPassiveAttribute(PassiveAttributes a){
+        boolean b = false;
+        for (int i = 0; i < numPassiveAttributes; i++){
+            if (passiveAttributes[i] == a){
+                b = true;
+                break;
+            }
+        }
+        return b;
+    }
 
-	public void remPassiveAttribute(PassiveAttributes pa) {
-		ArrayList<Integer> indices = new ArrayList<>();
-		for (int i = 0; i < numPassiveAttributes; i++) {
-			if (passiveAttributes[i] == pa) {
-				indices.add(i);
-			}
-		}
-		for (int i = 0; i < indices.size(); i++) {
-			int index = indices.get(i);
-			for (int j = index + 1; j < numPassiveAttributes; j++) {
-				passiveAttributes[j - 1] = passiveAttributes[j];
-			}
-			numPassiveAttributes--;
-		}
-	}
+    public void addPassiveAttribute(PassiveAttributes pa){
+        passiveAttributes[numPassiveAttributes++] = pa;
+    }
 
-	public PassiveAttributes getPassiveAttribute(int index) {
-		return passiveAttributes[index];
-	}
+    public void remPassiveAttribute(PassiveAttributes pa){
+        ArrayList<Integer> indices = new ArrayList<>();
+        for (int i = 0; i < numPassiveAttributes; i++){
+            if (passiveAttributes[i] == pa){
+                indices.add(i);
+            }
+        }
+        for (int index : indices){
+            for (int j = index + 1; j < numPassiveAttributes; j++){
+                passiveAttributes[j - 1] = passiveAttributes[j];
+            }
+            numPassiveAttributes--;
+        }
+    }
 
-	public void setSpriteControllers(SpriteController[] spriteControllers) {
-		if (spriteControllers.length > MAX_SPRITE_CONTROLLERS) {
-			assert false : "To many SpriteControllers in Shape +" + ID;
-		}
+    public PassiveAttributes getPassiveAttribute(int index){
+        return passiveAttributes[index];
+    }
 
-		for (SpriteController spriteController : this.spriteControllers) {
-		spriteController.stopAnimation();
-	}
+    public void setSpriteControllers(SpriteController[] spriteControllers){
+        if (spriteControllers.length > MAX_SPRITE_CONTROLLERS){
+            throw new IndexOutOfBoundsException("ERROR: Shape has to many SpriteController!");
+        }
 
-		this.spriteControllers = spriteControllers;
+        for (SpriteController spriteController : this.spriteControllers){
+            spriteController.stopAnimation();
+        }
 
-		for (SpriteController spriteController : spriteControllers) {
-		spriteController.startAnimation();
-	}
+        this.spriteControllers = spriteControllers;
 
-		if (!hasSprite) {
-			hasSprite = true;
-			RENDERER.addShape(this);
+        for (SpriteController spriteController : spriteControllers){
+            spriteController.startAnimation();
+        }
 
-		}
-		
-		renderBatch.addSpriteControllers(spriteControllers);
-	}
+        if (!hasSprite){
+            hasSprite = true;
+            RENDERER.addShape(this);
 
-	public SpriteController[] getSpriteControllers() {
-		return spriteControllers;
-	}
+        }
 
-	public void setCurrentSpriteState(SpriteState spriteState) {
-		for (int i = 0; i < spriteControllers.length; i++) {
-			SpriteController spriteController = spriteControllers[i];
-			spriteController.setCurrentSpriteState(spriteState);
-		}
-	}
+        renderBatch.addSpriteControllers(spriteControllers);
+    }
 
-	public SpriteState getCurrentSpriteState() {
-		if (hasSprite) {
-			return spriteControllers[0].currentSpriteState;
-		} else {
-			return null;
-		}
-	}
+    public SpriteController[] getSpriteControllers(){
+        return spriteControllers;
+    }
 
-	@Override
-	public String toString() {
-		return "" + ID;
-	}
+    public void setCurrentSpriteState(SpriteState spriteState){
+        for (SpriteController spriteController : spriteControllers){
+            spriteController.setCurrentSpriteState(spriteState);
+        }
+    }
 
-	protected abstract void mirrorX();
+    public SpriteState getCurrentSpriteState(){
+        if (hasSprite){
+            return spriteControllers[0].currentSpriteState;
+        } else{
+            return null;
+        }
+    }
 
-	protected abstract void mirrorY();
+    @Override
+    public String toString(){
+        return "" + ID;
+    }
 
-	public Shape[] getColidedShapes() {
-		return ArrayOperations.cutArray(colidedShapes, numColidedShapes);
-	}
+    protected abstract void mirrorX();
 
-	public void addColidedShape(Shape shape) {
-		this.colidedShapes[numColidedShapes++] = shape;
-	}
+    protected abstract void mirrorY();
 
-	public void remColidedShape(Shape shape) {
-		this.numColidedShapes -= ArrayOperations.remObjectStatic(colidedShapes, shape, numColidedShapes);
-	}
+    public Shape[] getCollidedShapes(){
+        return ArrayOperations.cutArray(collidedShapes, numCollidedShapes);
+    }
 
-	public Shape[] getColidedShapes(ActiveAttributes attribute) {
-		Shape[] shapes = ArrayOperations.cutArray(colidedShapes, numColidedShapes);
-		int removedShapes = 0;
-		for (Shape shape : shapes) {
-			if (!shape.hasActiveAtrribute(attribute)) {
-				removedShapes += ArrayOperations.remObjectStatic(shapes, shape, numColidedShapes);
-			}
-		}
-		return ArrayOperations.cutArray(shapes, numColidedShapes - removedShapes);
-	}
+    public void addCollidedShape(Shape shape){
+        this.collidedShapes[numCollidedShapes++] = shape;
+    }
 
-	public Shape[] getColidedShapes(PassiveAttributes attribute) {
-		Shape[] shapes = ArrayOperations.cutArray(colidedShapes, numColidedShapes);
-		int removedShapes = 0;
-		for (int i = 0; i < numColidedShapes - removedShapes; i++) {
-			Shape shape = shapes[i];
-			if (!shape.hasPassiveAtrribute(attribute)) {
-				ArrayOperations.remSingleObjectStatic(shapes, i--, numColidedShapes - removedShapes++);
-			}
-		}
-		return ArrayOperations.cutArray(shapes, numColidedShapes - removedShapes);
-	}
+    public void remCollidedShape(Shape shape){
+        this.numCollidedShapes -= ArrayOperations.remObjectStatic(collidedShapes, shape, numCollidedShapes);
+    }
 
-	public Vec2f getAbsPos() {
+    public Shape[] getCollidedShapes(ActiveAttributes attribute){
+        Shape[] shapes = ArrayOperations.cutArray(collidedShapes, numCollidedShapes);
+        int removedShapes = 0;
+        for (Shape shape : shapes){
+            if (!shape.hasActiveAttribute(attribute)){
+                removedShapes += ArrayOperations.remObjectStatic(shapes, shape, numCollidedShapes);
+            }
+        }
+        return ArrayOperations.cutArray(shapes, numCollidedShapes - removedShapes);
+    }
+
+    public Shape[] getCollidedShapes(PassiveAttributes attribute){
+        Shape[] shapes = ArrayOperations.cutArray(collidedShapes, numCollidedShapes);
+        int removedShapes = 0;
+        for (int i = 0; i < numCollidedShapes - removedShapes; i++){
+            Shape shape = shapes[i];
+            if (!shape.hasPassiveAttribute(attribute)){
+                ArrayOperations.remSingleObjectStatic(shapes, i--, numCollidedShapes - removedShapes++);
+            }
+        }
+        return ArrayOperations.cutArray(shapes, numCollidedShapes - removedShapes);
+    }
+
+    public Vec2f getAbsPos(){
         return new Vec2f(body.pos).add(relPos);
-	}
+    }
 }

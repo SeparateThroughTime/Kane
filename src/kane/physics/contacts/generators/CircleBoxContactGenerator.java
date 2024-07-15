@@ -9,54 +9,51 @@ import kane.physics.contacts.ContactGenerator;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.Circle;
 
-/**
- * This is a generator for contacts between a circle and a box
- */
 public class CircleBoxContactGenerator implements ContactGenerator{
 
-	@Override
-	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {
-		Circle circleA = (Circle) shapePair.shapeA;
-		Box boxB = (Box) shapePair.shapeB;
-		
-		Vec2f boxBMin = new Vec2f(boxB.getMin());
-		Vec2f boxBMax = new Vec2f(boxB.getMax());
+    @Override
+    public void generate(ShapePair shapePair, ContactAcceptor acceptor){
+        Circle circleA = (Circle) shapePair.shapeA;
+        Box boxB = (Box) shapePair.shapeB;
 
-		Vec2f relPos = new Vec2f(boxB.getAbsPos()).sub(circleA.getAbsPos());
-		float overlapX = Math.abs(relPos.x) - boxB.getRad().x;
-		float overlapY = Math.abs(relPos.y) - boxB.getRad().x;
-		float smallestOverlap = overlapX > overlapY ? overlapX : overlapY;
+        Vec2f boxBMin = new Vec2f(boxB.getMin());
+        Vec2f boxBMax = new Vec2f(boxB.getMax());
 
-		Vec2f normal = new Vec2f();
-		Vec2f closestPoint = new Vec2f();
-		float d;
-		if (smallestOverlap < 0) {
-			// Penetration
-			closestPoint.set(boxB.getAbsPos());
-			if (overlapX > overlapY) {
-				normal.set(Scalar.sign(-relPos.x), 0);
-			} else {
-				normal.set(0, Scalar.sign(-relPos.y));
-			}
-			d = smallestOverlap - circleA.getRad();
-			closestPoint.set(circleA.getAbsPos()).addMult(normal, -smallestOverlap);
-		} else {
-			// Separation
-			closestPoint.set(circleA.getAbsPos());
-			closestPoint.x = Scalar.clamp(closestPoint.x, boxBMin.x, boxBMax.x);
-			closestPoint.y = Scalar.clamp(closestPoint.y, boxBMin.y, boxBMax.y);
+        Vec2f relPos = new Vec2f(boxB.getAbsPos()).sub(circleA.getAbsPos());
+        float overlapX = Math.abs(relPos.x) - boxB.getRad().x;
+        float overlapY = Math.abs(relPos.y) - boxB.getRad().x;
+        float smallestOverlap = Math.max(overlapX, overlapY);
 
-			Vec2f distanceToClosest = new Vec2f(circleA.getAbsPos()).sub(closestPoint);
-			normal.set(distanceToClosest).normalize();
+        Vec2f normal = new Vec2f();
+        Vec2f closestPoint = new Vec2f();
+        float d;
+        if (smallestOverlap < 0){
+            // Penetration
+            closestPoint.set(boxB.getAbsPos());
+            if (overlapX > overlapY){
+                normal.set(Scalar.sign(-relPos.x), 0);
+            } else{
+                normal.set(0, Scalar.sign(-relPos.y));
+            }
+            d = smallestOverlap - circleA.getRad();
+            closestPoint.set(circleA.getAbsPos()).addMult(normal, -smallestOverlap);
+        } else{
+            // Separation
+            closestPoint.set(circleA.getAbsPos());
+            closestPoint.x = Scalar.clamp(closestPoint.x, boxBMin.x, boxBMax.x);
+            closestPoint.y = Scalar.clamp(closestPoint.y, boxBMin.y, boxBMax.y);
 
-			d = distanceToClosest.dot(normal) - circleA.getRad();
+            Vec2f distanceToClosest = new Vec2f(circleA.getAbsPos()).sub(closestPoint);
+            normal.set(distanceToClosest).normalize();
 
-		}
-		
-		Contact newContact = new Contact(new Vec2f(normal).mult(-1), d, closestPoint.addMult(normal, d));
-		if(acceptor.accept(newContact)) {
-			shapePair.contact = newContact;
-		}
-	}
+            d = distanceToClosest.dot(normal) - circleA.getRad();
+
+        }
+
+        Contact newContact = new Contact(new Vec2f(normal).mult(-1), d, closestPoint.addMult(normal, d));
+        if (acceptor.accept(newContact)){
+            shapePair.contact = newContact;
+        }
+    }
 
 }

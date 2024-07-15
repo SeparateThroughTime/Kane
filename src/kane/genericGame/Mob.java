@@ -15,11 +15,11 @@ public class Mob extends Body{
     private int health;
     private int maxHealth;
     private int damage;
-    private Vec2f walkAcc;
+    private final Vec2f walkAcc;
     private int walkSpeed;
     private boolean onGround;
     private Vec2f jumpAcc;
-    private HashMap<MobActions, Boolean> activeActions;
+    private final HashMap<MobActions, Boolean> activeActions;
     private WalkingLeft currentWalkingLeftEvent;
     private WalkingRight currentWalkingRightEvent;
     private AIs ai;
@@ -42,7 +42,7 @@ public class Mob extends Body{
         onGround = true;
         walkAcc = new Vec2f();
 
-        activeActions = new HashMap<MobActions, Boolean>();
+        activeActions = new HashMap<>();
         activeActions.put(MobActions.WALK, false);
         activeActions.put(MobActions.JUMPING, false);
         activeActions.put(MobActions.ATTACKING, false);
@@ -89,7 +89,6 @@ public class Mob extends Body{
     }
 
     public void hit(int damage, Vec2f attackersPos){
-        // TODO reenable damage
         if (invulnerabilityCooldown == 0){
             reduceHealth(damage);
             invulnerabilityCooldown = INVULNERABILITY_TIME;

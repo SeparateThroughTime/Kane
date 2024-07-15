@@ -6,24 +6,24 @@ import kane.genericGame.GameEvent;
 
 public class SlowCameraY extends GameEvent{
 
-	public SlowCameraY() {
-		super(1);
-	}
-	
-	@Override
-	public void start() {
-		CAMERA.vel.y = CAMERA.vel.y * 0.1f;
-		
-	}
+    public SlowCameraY(){
+        super(1);
+    }
 
-	@Override
-	public void procedure() {
-		
-	}
+    @Override
+    public void start(){
+        CAMERA.vel.y = CAMERA.vel.y * 0.1f;
 
-	@Override
-	public void end() {
-		
-	}
+    }
+
+    @Override
+    public void procedure(){
+
+    }
+
+    @Override
+    public void end(){
+
+    }
 
 }

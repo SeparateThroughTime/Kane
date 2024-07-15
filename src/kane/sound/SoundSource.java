@@ -10,8 +10,6 @@ import static org.lwjgl.openal.AL10.*;
 
 public class SoundSource{
     private final int sourceId;
-    private int bufferId;
-    private Vec2f pos;
     public boolean pauseOnMenu;
     public boolean currentlyPausingOnMenu;
 
@@ -50,10 +48,6 @@ public class SoundSource{
     public void setPos(Vec2f pos){
         alSource3f(sourceId, AL_POSITION, pos.x, pos.y, 0f);
     }
-
-    //    public void setVel(Vec2f vel) {
-    //        alSource3f(sourceId, AL_VELOCITY, vel.x, vel.y, 0f);
-    //    }
 
     public void setGain(float gain){
         alSourcef(sourceId, AL_GAIN, gain);

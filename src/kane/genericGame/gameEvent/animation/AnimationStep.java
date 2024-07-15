@@ -5,28 +5,28 @@ import kane.renderer.SpriteController;
 
 public class AnimationStep extends GameEvent{
 
-	private SpriteController animatedSprite;
-	
-	public AnimationStep(SpriteController animatedSprite) {
-		super(2);
-		this.animatedSprite = animatedSprite;
-	}
+    private final SpriteController animatedSprite;
 
-	@Override
-	public void start() {
-		
-	}
+    public AnimationStep(SpriteController animatedSprite){
+        super(2);
+        this.animatedSprite = animatedSprite;
+    }
 
-	@Override
-	public void procedure() {
-		animatedSprite.step();
-		reduceFrameCounter();
-		
-	}
+    @Override
+    public void start(){
 
-	@Override
-	public void end() {
-		
-	}
+    }
+
+    @Override
+    public void procedure(){
+        animatedSprite.step();
+        reduceFrameCounter();
+
+    }
+
+    @Override
+    public void end(){
+
+    }
 
 }

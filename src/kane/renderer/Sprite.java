@@ -1,53 +1,50 @@
 package kane.renderer;
 
-import static kane.genericGame.ResourceManager.RESOURCE_MANAGER;
+import kane.exceptions.LoadTextureException;
+import kane.math.Vec2f;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import kane.math.ArrayOperations;
-import kane.math.Vec2f;
+import static kane.genericGame.ResourceManager.RESOURCE_MANAGER;
 
 public class Sprite{
-    // This class manages sprites.
 
     public static final float SCALE = 2f;
 
     public final int FRAME_WIDTH;
     public final int FRAME_HEIGHT;
     public int PIXEL_PER_FRAME;
-    //	private int[][] spritePixels;
     public Texture texture;
     private Vec2f[][] texCoords;
-    //	protected SpriteState[] assignedSpriteStates;
 
-    private Map<SpriteState, int[]> states;
+    private final Map<SpriteState, int[]> states;
 
     public Sprite(String filepath, int frameWidth, int frameHeight){
-        //		assignedSpriteStates = new SpriteState[0];
         this.FRAME_HEIGHT = frameHeight;
         this.FRAME_WIDTH = frameWidth;
-        this.states = new HashMap<SpriteState, int[]>();
+        this.states = new HashMap<>();
 
-        texture = RESOURCE_MANAGER.getTexture(filepath);
-        if (texture != null){
-            init();
+        try{
+            texture = RESOURCE_MANAGER.getTexture(filepath);
+        } catch (LoadTextureException e){
+            e.printStackTrace();
         }
+        init();
     }
 
     public Sprite(String filepath){
-        //		assignedSpriteStates = new SpriteState[0];
-        this.states = new HashMap<SpriteState, int[]>();
+        this.states = new HashMap<>();
 
-        texture = RESOURCE_MANAGER.getTexture(filepath);
-        if (texture != null){
-            this.FRAME_HEIGHT = texture.HEIGHT;
-            this.FRAME_WIDTH = texture.WIDTH;
-            init();
-        } else{
-            this.FRAME_HEIGHT = 0;
-            this.FRAME_WIDTH = 0;
+        try{
+            texture = RESOURCE_MANAGER.getTexture(filepath);
+        } catch (LoadTextureException e){
+            e.printStackTrace();
         }
+
+        this.FRAME_HEIGHT = texture.HEIGHT;
+        this.FRAME_WIDTH = texture.WIDTH;
+        init();
     }
 
     private void init(){
@@ -56,7 +53,6 @@ public class Sprite{
         this.PIXEL_PER_FRAME = FRAME_WIDTH * FRAME_HEIGHT;
         int frameCount = (texWidth * texHeight) / PIXEL_PER_FRAME;
         int frameCountX = texWidth / FRAME_WIDTH;
-        //		int frameCountY = texHeight / FRAME_HEIGHT;
         texCoords = new Vec2f[frameCount][4];
 
         for (int i = 0; i < frameCount; i++){
@@ -76,15 +72,8 @@ public class Sprite{
         }
     }
 
-    /**
-     * Defines which frames are used for the specific state.
-     *
-     * @param state
-     * @param frameNumbers
-     */
     public void addState(SpriteState state, int[] frameNumbers){
         states.put(state, frameNumbers);
-        //		assignedSpriteStates = ArrayOperations.add(assignedSpriteStates, state);
     }
 
     public boolean stateIsAssigned(SpriteState state){

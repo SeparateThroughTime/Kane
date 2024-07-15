@@ -3,9 +3,9 @@ package kane.physics;
 import static kane.physics.Physics.PHYSICS;
 import static kane.genericGame.ResourceManager.RESOURCE_MANAGER;
 
+import kane.exceptions.LoadSoundException;
 import kane.genericGame.ActiveAttributes;
 import kane.genericGame.PassiveAttributes;
-import kane.genericGame.gameEvent.mob.Jump;
 import kane.math.ArrayOperations;
 import kane.math.Vec2f;
 import kane.renderer.SpriteState;
@@ -15,10 +15,6 @@ import kane.sound.SoundType;
 
 import java.util.HashMap;
 
-/**
- * A Body can have many Shapes. The Body is the moving (or not moving) object in
- * the world and the Shapes are bound to him.
- */
 public class Body{
 
     public final int ID;
@@ -42,10 +38,6 @@ public class Body{
 
     public HashMap<SoundType, SoundSource> soundSources;
 
-    /**
-     * @param posX -position X
-     * @param posY -position Y
-     */
     public Body(int posX, int posY){
         this(new Vec2f(posX, posY));
     }
@@ -66,11 +58,6 @@ public class Body{
         soundSources = new HashMap<>();
     }
 
-    /**
-     * @param posX              -position X
-     * @param posY              -position Y
-     * @param rotateByCollision -boolean, if body can rotate when it collides
-     */
     public Body(int posX, int posY, boolean rotateByCollision){
         this(posX, posY);
         this.rotateByCollision = rotateByCollision;
@@ -111,12 +98,6 @@ public class Body{
         return momentOfInertia;
     }
 
-    /**
-     * Adds a new Shape to the body
-     *
-     * @param shape
-     * @return -true if successful. Otherwise false
-     */
     public Shape addShape(Shape shape){
         if (numShapes < MAX_SHAPES){
             shapes[numShapes++] = shape;
@@ -129,23 +110,17 @@ public class Body{
         }
     }
 
-    /**
-     * Delete all Shapes of the body.
-     */
     public void clearBody(){
         shapes = new Shape[MAX_SHAPES];
         numShapes = 0;
     }
 
-    /**
-     * Update Mass of the body. Needs to run when Shapes are changing.
-     */
     public void updateMass(){
         float mass = 0;
         for (int i = 0; i < numShapes; i++){
             Shape shape = shapes[i];
             float shapeVol = shape.getVolume();
-            float shapeMass = shapeVol * shape.material.getDensity();
+            float shapeMass = shapeVol * shape.material.density();
             mass += shapeMass;
             if (shapeMass == 0){
                 shape.invMass = 0;
@@ -160,12 +135,6 @@ public class Body{
         }
     }
 
-    /**
-     * update AABB of the body, including its next position.
-     *
-     * @param nextPos   -next position
-     * @param tolerance -added to every side of AABB
-     */
     public void updateAABB(Vec2f nextPos, float tolerance){
         for (int i = 0; i < numShapes; i++){
             Shape shape = shapes[i];
@@ -175,12 +144,6 @@ public class Body{
         }
     }
 
-    /**
-     * Rotate the body and all rotatable Shapes. Angle is between 0 and 1. Only
-     * Polygons and Cricles are roratable. Static shapes wont move.
-     *
-     * @param angle -angle between 0 an 1
-     */
     public void rotate(float angle){
         this.angle += angle;
 
@@ -194,9 +157,6 @@ public class Body{
         }
     }
 
-    /**
-     * Align the Body to ist original angle.
-     */
     public void align(){
         this.angle = 0;
         for (int i = 0; i < numShapes; i++){
@@ -207,34 +167,20 @@ public class Body{
         }
     }
 
-    /**
-     * Get shape with activeAttribute.
-     * If more shapes exist the first one is returned
-     *
-     * @param activeAttribute
-     * @return
-     */
     public Shape getShape(ActiveAttributes activeAttribute){
         for (int i = 0; i < numShapes; i++){
             Shape shape = shapes[i];
-            if (shape.hasActiveAtrribute(activeAttribute)){
+            if (shape.hasActiveAttribute(activeAttribute)){
                 return shape;
             }
         }
         return null;
     }
 
-    /**
-     * Get shape with passiveAttribute.
-     * If more shapes exist the first one is returned
-     *
-     * @param passiveAttribute
-     * @return
-     */
     public Shape getShape(PassiveAttributes passiveAttribute){
         for (int i = 0; i < numShapes; i++){
             Shape shape = shapes[i];
-            if (shape.hasPassiveAtrribute(passiveAttribute)){
+            if (shape.hasPassiveAttribute(passiveAttribute)){
                 return shape;
             }
         }
@@ -269,7 +215,7 @@ public class Body{
     public boolean hasShapeWithPassiveAttribute(PassiveAttributes passiveA){
         for (int i = 0; i < numShapes; i++){
             Shape shape = shapes[i];
-            if (shape.hasPassiveAtrribute(passiveA)){
+            if (shape.hasPassiveAttribute(passiveA)){
                 return true;
             }
         }
@@ -279,18 +225,13 @@ public class Body{
     public boolean hasShapeWithActiveAttribute(ActiveAttributes activeA){
         for (int i = 0; i < numShapes; i++){
             Shape shape = shapes[i];
-            if (shape.hasActiveAtrribute(activeA)){
+            if (shape.hasActiveAttribute(activeA)){
                 return true;
             }
         }
         return false;
     }
 
-    /**
-     * Returns all shapes with sprites
-     *
-     * @return
-     */
     private Shape[] getSpriteShapes(){
         Shape[] spriteShapes = new Shape[0];
         for (int i = 0; i < numShapes; i++){
@@ -317,17 +258,6 @@ public class Body{
         return removed;
     }
 
-    public void addSoundSource(SoundType soundType, SoundBuffer soundBuffer, boolean loop, boolean relative,
-                               boolean pauseOnMenu){
-        if (soundSources.containsKey(soundType)){
-            soundSources.get(soundType).cleanUp();
-        }
-
-        SoundSource soundSource = new SoundSource(loop, relative, pauseOnMenu);
-        soundSource.setBuffer(soundBuffer.getBufferId());
-        soundSources.put(soundType, soundSource);
-    }
-
     public SoundSource getSoundSource(SoundType soundType){
         if (!soundSources.containsKey(soundType)){
             return null;
@@ -335,15 +265,6 @@ public class Body{
 
         return soundSources.get(soundType);
     }
-
-    //    public void updateSoundSourceVel(){
-    //        for (SoundType soundType : SoundType.values()){
-    //            if (!soundSources.containsKey(soundType)){
-    //                continue;
-    //            }
-    //            soundSources.get(soundType).setVel(vel);
-    //        }
-    //    }
 
     public void updateSoundSourcePos(){
         for (SoundType soundType : SoundType.values()){
@@ -354,9 +275,15 @@ public class Body{
         }
     }
 
-    public void addSound(String soundFile, SoundType soundType){
+    public void addSoundSource(String soundFile, SoundType soundType){
 
-        SoundBuffer soundBuffer = RESOURCE_MANAGER.getSoundBuffer(soundFile);
+        SoundBuffer soundBuffer;
+        try{
+            soundBuffer = RESOURCE_MANAGER.getSoundBuffer(soundFile);
+        } catch (LoadSoundException e){
+            e.printStackTrace();
+            return;
+        }
 
         if (soundSources.containsKey(soundType)){
             soundSources.get(soundType).cleanUp();

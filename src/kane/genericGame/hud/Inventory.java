@@ -1,8 +1,5 @@
 package kane.genericGame.hud;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import kane.genericGame.Item;
 import kane.genericGame.PassiveAttributes;
 import kane.genericGame.item.NONE;
@@ -14,133 +11,127 @@ import kane.renderer.Sprite;
 import kane.renderer.SpriteController;
 import kane.renderer.SpriteState;
 
-public class Inventory {
+import java.util.ArrayList;
 
-	public static Inventory INVENTORY;
+public class Inventory{
 
-	public static final int NUM_SLOTS = 8;
+    public static Inventory INVENTORY;
 
-	private ResolutionSpecification resSpecs;
-	private ArrayList<Item> items;
-	private Shape mainShape;
-	private Shape[] slotShapes;
+    public static final int NUM_SLOTS = 8;
 
-	private Inventory(Shape mainShape, Shape[] slotShapes, ResolutionSpecification resSpecs) {
-		this.mainShape = mainShape;
-		this.slotShapes = slotShapes;
-		this.resSpecs = resSpecs;
-		items = new ArrayList<Item>();
+    private final ResolutionSpecification resSpecs;
+    private final ArrayList<Item> items;
+    private final Shape mainShape;
+    private final Shape[] slotShapes;
 
-		createInventory();
-		createItems();
-	}
+    private Inventory(Shape mainShape, Shape[] slotShapes, ResolutionSpecification resSpecs){
+        this.mainShape = mainShape;
+        this.slotShapes = slotShapes;
+        this.resSpecs = resSpecs;
+        items = new ArrayList<>();
 
-	public static void initializateInventory(Shape mainShape, Shape[] slotShapes, ResolutionSpecification resSpecs) {
-		if (INVENTORY == null) {
-			INVENTORY = new Inventory(mainShape, slotShapes, resSpecs);
-		}
-	}
+        createInventory();
+        createItems();
+    }
 
-	private void createItems() {
-		items.add(new NONE());
-		items.add(new SWORD());
-	}
+    public static void initializeInventory(Shape mainShape, Shape[] slotShapes, ResolutionSpecification resSpecs){
+        if (INVENTORY == null){
+            INVENTORY = new Inventory(mainShape, slotShapes, resSpecs);
+        }
+    }
 
-	private void createInventory() {
-		mainShape.visible = false;
-		mainShape.collision = false;
-		mainShape.addPassiveAttribute(PassiveAttributes.INVENTORY);
+    private void createItems(){
+        items.add(new NONE());
+        items.add(new SWORD());
+    }
 
-		Sprite sprite = new Sprite("sprites\\interface\\Inventory.png", 224, 128);
-		sprite.addState(SpriteState.STATIC, new int[] { 0 });
-		SpriteController[] spriteControllers = new SpriteController[1];
-		spriteControllers[0] = new SpriteController(sprite);
-		spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC);
-		spriteControllers[0].spritePosOffset = new Vec2f(-resSpecs.gameWidth / 4 - 24, -resSpecs.GAME_HEIGHT / 4 + 24);
-		mainShape.setSpriteControllers(spriteControllers);
+    private void createInventory(){
+        mainShape.visible = false;
+        mainShape.collision = false;
+        mainShape.addPassiveAttribute(PassiveAttributes.INVENTORY);
 
-		// Slots
-		for (Shape shape : slotShapes) {
-			shape.visible = false;
-			shape.collision = false;
-			shape.addPassiveAttribute(PassiveAttributes.INVENTORY);
-		}
+        Sprite sprite = new Sprite("sprites\\interface\\Inventory.png", 224, 128);
+        sprite.addState(SpriteState.STATIC, new int[]{0});
+        SpriteController[] spriteControllers = new SpriteController[1];
+        spriteControllers[0] = new SpriteController(sprite);
+        spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC);
+        spriteControllers[0].spritePosOffset =
+                new Vec2f((float) -resSpecs.gameWidth / 4 - 24, (float) -resSpecs.GAME_HEIGHT / 4 + 24);
+        mainShape.setSpriteControllers(spriteControllers);
 
-	}
+        // Slots
+        for (Shape shape : slotShapes){
+            shape.visible = false;
+            shape.collision = false;
+            shape.addPassiveAttribute(PassiveAttributes.INVENTORY);
+        }
 
-	public void changeResolution() {
-		// At the moment nothing tbd.
-	}
+    }
 
-	public Item getItem(String name) {
-		for (int i = 0; i < items.size(); i++) {
-			if (items.get(i).getName() == name) {
-				return items.get(i);
-			}
-		}
-		return null;
-	}
+    public void changeResolution(){
+        // At the moment nothing tbd.
+    }
 
-	/**
-	 * This returns the active item shown in the inventory with the specific index.
-	 * This does not return the item with the static index!
-	 * 
-	 * @param index
-	 * @return
-	 */
-	public Item getItem(int index) {
-		int counter = 0;
-		for (int i = 0; i < items.size(); i++) {
-			Item item = items.get(i);
-			if (item.getAmount() > 0) {
-				if (counter == index) {
-					return item;
-				}
-				counter++;
-			}
-		}
-		return null;
-	}
+    public Item getItem(String name){
+        for (Item item : items){
+            if (item.getName().equals(name)){
+                return item;
+            }
+        }
+        return null;
+    }
 
-	private void showItems() {
-		ArrayList<Item> activeItems = new ArrayList<Item>();
-		for (Item item : items) {
-			if (item.getAmount() > 0) {
-				activeItems.add(item);
-			}
-		}
+    public Item getItem(int index){
+        int counter = 0;
+        for (Item item : items){
+            if (item.getAmount() > 0){
+                if (counter == index){
+                    return item;
+                }
+                counter++;
+            }
+        }
+        return null;
+    }
 
-		for (int i = 0; i < slotShapes.length; i++) {
-			try {
-				Item item = activeItems.get(i - 1);
-				slotShapes[i].setSpriteControllers(item.getItemSpriteControllers());
-				slotShapes[i].visible = true;
-			} catch (Exception e) {
-				slotShapes[i].visible = false;
-			}
-		}
-	}
+    private void showItems(){
+        ArrayList<Item> activeItems = new ArrayList<>();
+        for (Item item : items){
+            if (item.getAmount() > 0){
+                activeItems.add(item);
+            }
+        }
 
-	public Shape getSlot(int i) {
-		return slotShapes[i];
-	}
+        for (int i = 0; i < slotShapes.length; i++){
+            try{
+                Item item = activeItems.get(i - 1);
+                slotShapes[i].setSpriteControllers(item.getItemSpriteControllers());
+                slotShapes[i].visible = true;
+            } catch (Exception e){
+                slotShapes[i].visible = false;
+            }
+        }
+    }
 
-	public void setVisible(boolean visible) {
-		mainShape.visible = visible;
+    public Shape getSlot(int i){
+        return slotShapes[i];
+    }
 
-		for (int i = 0; i < slotShapes.length; i++) {
-			Shape shape = slotShapes[i];
-			if (shape.hasPassiveAtrribute(PassiveAttributes.INVENTORY)) {
-				shape.visible = visible;
-			}
-		}
+    public void setVisible(boolean visible){
+        mainShape.visible = visible;
 
-		if (visible) {
-			showItems();
-		}
-	}
-	
-	public boolean isVisible() {
-		return mainShape.visible;
-	}
+        for (Shape shape : slotShapes){
+            if (shape.hasPassiveAttribute(PassiveAttributes.INVENTORY)){
+                shape.visible = visible;
+            }
+        }
+
+        if (visible){
+            showItems();
+        }
+    }
+
+    public boolean isVisible(){
+        return mainShape.visible;
+    }
 }

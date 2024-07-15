@@ -2,12 +2,10 @@
 
 	Visual Effects
 	    Render to Texture...
-	Sounds
-	    Relational Volume
-	        Stereo-Files ignore distance to listener
-	        Attenuation need to be adjusted or something.
+	Animation
+	    Walking animation restarts on attack (bug)
 	Crash Prevention
-	Refactor -> More shorter methods
+	Refactor -> More and shorter methods
 	Object Editor
 		(Ermitteln des besten Mittelpunkts)
 	Level Ends/ Player dies -> Next level/ Restart
@@ -60,7 +58,7 @@
 	Wait for relevance To Do:
 	Separation of shapepair is not executed when shapePair separates too fast -> Workaround is increasing aabb_tolerance in physics.
 	ContactPoint: BoxPolygon, PolygonPolygon -> Ghost Contacts
-	Speed-Adjuster (Jumping against dynamics increases jump heigth)
+	Speed-Adjuster (Jumping against dynamics increases jump height)
 		Its probably not the cause of friction but something else)
 	Hud Flickering while camera Movement
 	Lines disappear when opening inventory
@@ -77,14 +75,12 @@ import static kane.genericGame.userInteraction.Mouse.MOUSE;
 import static kane.renderer.Camera.CAMERA;
 import static kane.renderer.Renderer.RENDERER;
 import static kane.renderer.ResolutionSpecification.RES_SPECS;
-import static kane.genericGame.ResourceManager.RESOURCE_MANAGER;
 import static kane.sound.SoundEngine.SOUND;
 
 import java.awt.Color;
 
 import kane.genericGame.*;
 import kane.genericGame.gameEvent.mob.DamageHandler;
-import kane.genericGame.gameEvent.sound.PlaySound;
 import kane.genericGame.hud.HudBar;
 import kane.genericGame.hud.Inventory;
 import kane.genericGame.item.SWORD;
@@ -98,9 +94,6 @@ import kane.physics.shapes.Polygon;
 import kane.renderer.*;
 import kane.sound.SoundType;
 
-/**
- * This is the game "Kane".
- */
 public class Kane extends Game{
 
     public static Kane GAME;
@@ -119,7 +112,6 @@ public class Kane extends Game{
     Material mStatic = new Material(0, 1f);
     Material mDynamic = new Material(1, 0.9f);
     Material mEvent = new Material(0, 0);
-    Material mInterface = new Material(1, 0);
     Body sword;
     Item currentItem;
 
@@ -136,7 +128,7 @@ public class Kane extends Game{
         player.setWalkSpeed(300);
 
         // camera
-        Camera.initializateCamera();
+        Camera.initializeCamera();
         CAMERA.bindCameraToMap();
         RENDERER.moveBackground();
         CAMERA.initInventory();
@@ -179,10 +171,10 @@ public class Kane extends Game{
         player.shapes[2].visible = false;
         SpriteController[] spriteControllers = currentItem.getPlayerSpriteControllers();
         player.shapes[0].setSpriteControllers(spriteControllers);
-        player.addSound("sound//player//jump.ogg", SoundType.JUMP);
-        player.addSound("sound//player//damage.ogg", SoundType.DAMAGE);
+        player.addSoundSource("sound//player//jump.ogg", SoundType.JUMP);
+        player.addSoundSource("sound//player//damage.ogg", SoundType.DAMAGE);
         //        player.addSound("sound//player//walk.ogg", SoundType.WALK);
-        player.addSound("sound//player//attack.ogg", SoundType.ATACK);
+        player.addSoundSource("sound//player//attack.ogg", SoundType.ATTACK);
         player.setDirection(MobDirection.RIGHT);
 
 
@@ -233,9 +225,9 @@ public class Kane extends Game{
         blob.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
         blob.setJumpAcc(new Vec2f(0, 200 / DELTATIME));
         blob.setWalkSpeed(50);
-        blob.addSound("sound//mobs//blob//death.ogg", SoundType.DEATH);
-        blob.addSound("sound//mobs//blob//damage.ogg", SoundType.DAMAGE);
-        blob.addSound("sound//player//walk.ogg", SoundType.WALK);
+        blob.addSoundSource("sound//mobs//blob//death.ogg", SoundType.DEATH);
+        blob.addSoundSource("sound//mobs//blob//damage.ogg", SoundType.DAMAGE);
+        blob.addSoundSource("sound//player//walk.ogg", SoundType.WALK);
 
 
         // Create Background
@@ -284,20 +276,27 @@ public class Kane extends Game{
 
     @Override
     public void leftMouseReleased(){
+        checkInventoryClick();
+    }
+
+    private void checkInventoryClick(){
         if (showInventory){
             for (int i = 0; i < Inventory.NUM_SLOTS; i++){
                 Shape slot = INVENTORY.getSlot(i);
                 if (slot.isPointInShape(MOUSE.mousePos)){
-                    Item item = INVENTORY.getItem(i);
-                    if (item != null){
-                        currentItem = item;
-                        SpriteController[] spriteControllers = item.getPlayerSpriteControllers();
-                        SpriteState spriteState = player.getShape(PassiveAttributes.MOB_ALL).getCurrentSpriteState();
-                        player.getShape(PassiveAttributes.MOB_ALL).setSpriteControllers(spriteControllers);
-                        player.refreshSpriteStates();
-                    }
+                    inventoryClick(i);
                 }
             }
+        }
+    }
+
+    private void inventoryClick(int i){
+        Item item = INVENTORY.getItem(i);
+        if (item != null){
+            currentItem = item;
+            SpriteController[] spriteControllers = item.getPlayerSpriteControllers();
+            player.getShape(PassiveAttributes.MOB_ALL).setSpriteControllers(spriteControllers);
+            player.refreshSpriteStates();
         }
     }
 

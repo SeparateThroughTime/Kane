@@ -1,8 +1,8 @@
 package kane.sound;
 
-public enum SoundType {
+public enum SoundType{
     WALK(0),
-    ATACK(1),
+    ATTACK(1),
     JUMP(2),
     STAND(3),
     DAMAGE(4),
@@ -13,7 +13,7 @@ public enum SoundType {
 
     public final int id;
 
-    private SoundType(int id) {
+    SoundType(int id){
         this.id = id;
     }
 }

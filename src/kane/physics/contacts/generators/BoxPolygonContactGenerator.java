@@ -9,9 +9,6 @@ import kane.physics.contacts.GeneratorFunctions;
 import kane.physics.shapes.Box;
 import kane.physics.shapes.Polygon;
 
-/**
- * This is a generator for contacts between a box and a polygon
- */
 public class BoxPolygonContactGenerator implements ContactGenerator {
 
 	@Override
@@ -119,20 +116,10 @@ public class BoxPolygonContactGenerator implements ContactGenerator {
 				secondPointB = point;
 			}
 		}
-//		// Lerp either A or B contact point
-//		Vec2f anotherPoint = new Vec2f();
-//		Vec2f contactPoint = new Vec2f();
-//		if (lerpA) {
-//			anotherPoint = new Vec2f(nearestPointB).addMult(normal, -nearestIntervalD);
-//			contactPoint = anotherPoint;
-//		} else {
-//			anotherPoint = new Vec2f(nearestPointA).addMult(normal, nearestIntervalD);
-//			contactPoint = nearestPointA;
-//		}
 		
 		// Lerp either A or B contact point
-				Vec2f anotherPoint = new Vec2f();
-				Vec2f contactPoint = new Vec2f();
+        Vec2f anotherPoint;
+        Vec2f contactPoint;
 				Vec2f perp = new Vec2f(normal).perpLeft();
 
 				if (lerpA && lerpB) {

@@ -8,172 +8,168 @@ import kane.physics.contacts.ContactGenerator;
 import kane.physics.contacts.GeneratorFunctions;
 import kane.physics.shapes.Polygon;
 
-/**
- * This is a generator for contacts between two polygons
- */
 public class PolygonPolygonContactGenerator implements ContactGenerator{
 
-	@Override
-	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {
-		Polygon poliA = (Polygon) shapePair.shapeA;
-		Polygon poliB = (Polygon) shapePair.shapeB;
+    @Override
+    public void generate(ShapePair shapePair, ContactAcceptor acceptor){
+        Polygon poliA = (Polygon) shapePair.shapeA;
+        Polygon poliB = (Polygon) shapePair.shapeB;
 
-		// Declarations
-		Vec2f poliAAbsPos = poliA.getAbsPos();
-		Vec2f poliBAbsPos = poliB.getAbsPos();
-		Vec2f relPos = poliB.getAbsPos().sub(poliA.getAbsPos());
+        // Declarations
+        Vec2f poliAAbsPos = poliA.getAbsPos();
+        Vec2f poliBAbsPos = poliB.getAbsPos();
+        Vec2f relPos = poliB.getAbsPos().sub(poliA.getAbsPos());
 
-		final int NUM_POINTS_A = poliA.getNumPoints();
-		final int NUM_POINTS_B = poliB.getNumPoints();
-		Vec2f[] poliAPoints = new Vec2f[NUM_POINTS_A];
-		for (int i = 0; i < NUM_POINTS_A; i++) {
-			poliAPoints[i] = new Vec2f(poliA.getPoint(i)).add(poliAAbsPos);
-		}
+        final int NUM_POINTS_A = poliA.getNumPoints();
+        final int NUM_POINTS_B = poliB.getNumPoints();
+        Vec2f[] poliAPoints = new Vec2f[NUM_POINTS_A];
+        for (int i = 0; i < NUM_POINTS_A; i++){
+            poliAPoints[i] = new Vec2f(poliA.getPoint(i)).add(poliAAbsPos);
+        }
 
-		Vec2f[] poliBPoints = new Vec2f[NUM_POINTS_B];
-		for (int i = 0; i < NUM_POINTS_B; i++) {
-			poliBPoints[i] = new Vec2f(poliB.getPoint(i)).add(poliBAbsPos);
-		}
+        Vec2f[] poliBPoints = new Vec2f[NUM_POINTS_B];
+        for (int i = 0; i < NUM_POINTS_B; i++){
+            poliBPoints[i] = new Vec2f(poliB.getPoint(i)).add(poliBAbsPos);
+        }
 
-		Vec2f[] poliADirs = new Vec2f[NUM_POINTS_A];
-		Vec2f[] poliADirsPerps = new Vec2f[NUM_POINTS_A];
-		for (int i = 0; i < NUM_POINTS_A; i++) {
-			int j = i < NUM_POINTS_A - 1 ? i + 1 : 0;
-			poliADirs[i] = new Vec2f(poliAPoints[j]).sub(poliAPoints[i]).normalize();
-			poliADirsPerps[i] = new Vec2f(poliADirs[i]).perpRight();
-		}
+        Vec2f[] poliADirs = new Vec2f[NUM_POINTS_A];
+        Vec2f[] poliADirsPerps = new Vec2f[NUM_POINTS_A];
+        for (int i = 0; i < NUM_POINTS_A; i++){
+            int j = i < NUM_POINTS_A - 1 ? i + 1 : 0;
+            poliADirs[i] = new Vec2f(poliAPoints[j]).sub(poliAPoints[i]).normalize();
+            poliADirsPerps[i] = new Vec2f(poliADirs[i]).perpRight();
+        }
 
-		Vec2f[] poliBDirs = new Vec2f[NUM_POINTS_B];
-		Vec2f[] poliBDirsPerps = new Vec2f[NUM_POINTS_B];
-		for (int i = 0; i < NUM_POINTS_B; i++) {
-			int j = i < NUM_POINTS_B - 1 ? i + 1 : 0;
-			poliBDirs[i] = new Vec2f(poliBPoints[j]).sub(poliBPoints[i]).normalize();
-			poliBDirsPerps[i] = new Vec2f(poliBDirs[i]).perpRight();
-		}
+        Vec2f[] poliBDirs = new Vec2f[NUM_POINTS_B];
+        Vec2f[] poliBDirsPerps = new Vec2f[NUM_POINTS_B];
+        for (int i = 0; i < NUM_POINTS_B; i++){
+            int j = i < NUM_POINTS_B - 1 ? i + 1 : 0;
+            poliBDirs[i] = new Vec2f(poliBPoints[j]).sub(poliBPoints[i]).normalize();
+            poliBDirsPerps[i] = new Vec2f(poliBDirs[i]).perpRight();
+        }
 
-		float nearestIntervalD = Float.NEGATIVE_INFINITY;
-		Vec2f normal = new Vec2f();
+        float nearestIntervalD = Float.NEGATIVE_INFINITY;
+        Vec2f normal = new Vec2f();
 
-		// Check if there is a separation and get normal
-		for (int i = 0; i < NUM_POINTS_A + NUM_POINTS_B; i++) {
-			Vec2f perp;
-			if (i < NUM_POINTS_A) {
-				perp = poliADirsPerps[i];
-			} else {
-				perp = poliBDirsPerps[i - NUM_POINTS_A];
-			}
+        // Check if there is a separation and get normal
+        for (int i = 0; i < NUM_POINTS_A + NUM_POINTS_B; i++){
+            Vec2f perp;
+            if (i < NUM_POINTS_A){
+                perp = poliADirsPerps[i];
+            } else{
+                perp = poliBDirsPerps[i - NUM_POINTS_A];
+            }
 
-			float[] minMaxA = GeneratorFunctions.projectPolygon(perp, poliAPoints);
-			float[] minMaxB = GeneratorFunctions.projectPolygon(perp, poliBPoints);
-			float d = GeneratorFunctions.intervalDist(minMaxA, minMaxB);
+            float[] minMaxA = GeneratorFunctions.projectPolygon(perp, poliAPoints);
+            float[] minMaxB = GeneratorFunctions.projectPolygon(perp, poliBPoints);
+            float d = GeneratorFunctions.intervalDist(minMaxA, minMaxB);
 
-			if (d > nearestIntervalD) {
-				nearestIntervalD = d;
-				normal = perp;
-			}
+            if (d > nearestIntervalD){
+                nearestIntervalD = d;
+                normal = perp;
+            }
 
-			if (d > 0) {
-				break;
-			}
-		}
+            if (d > 0){
+                break;
+            }
+        }
 
-		// invert normal if its upside down
-		if (relPos.dot(normal) < 0) {
-			normal.mult(-1f);
-		}
+        // invert normal if its upside down
+        if (relPos.dot(normal) < 0){
+            normal.mult(-1f);
+        }
 
-		// Get contact point A
-		Vec2f secondPointA = new Vec2f();
-		Vec2f nearestPointA = new Vec2f();
-		float smallestD = Float.POSITIVE_INFINITY;
-		boolean lerpA = false;
-		boolean lerpB = false;
-		for (int i = 0; i < NUM_POINTS_A; i++) {
-			Vec2f point = poliAPoints[i];
+        // Get contact point A
+        Vec2f secondPointA = new Vec2f();
+        Vec2f nearestPointA = new Vec2f();
+        float smallestD = Float.POSITIVE_INFINITY;
+        boolean lerpA = false;
+        boolean lerpB = false;
+        for (int i = 0; i < NUM_POINTS_A; i++){
+            Vec2f point = poliAPoints[i];
 
-			float d = new Vec2f(normal).mult(-1).dot(point);
-			if (d < smallestD) {
-				smallestD = d;
-				nearestPointA = point;
-				lerpA = false;
-			} else if (d == smallestD) {
-				secondPointA = point;
-				lerpA = true;
-			}
-		}
-		// Get contact point B
-		Vec2f secondPointB = new Vec2f();
-		Vec2f nearestPointB = new Vec2f();
-		smallestD = Float.POSITIVE_INFINITY;
-		for (int i = 0; i < NUM_POINTS_B; i++) {
-			Vec2f point = poliBPoints[i];
-			
-			float d = point.dot(normal);
-			if (d < smallestD) {
-				smallestD = d;
-				nearestPointB = point;
-				lerpB = false;
-			} else if (d == smallestD) {
-				secondPointB = point;
-				lerpB = true;
-			}
-		}
-		// Lerp either A or B contact point
-		Vec2f anotherPoint = new Vec2f();
-		Vec2f contactPoint = new Vec2f();
-		Vec2f perp = new Vec2f(normal).perpLeft();
+            float d = new Vec2f(normal).mult(-1).dot(point);
+            if (d < smallestD){
+                smallestD = d;
+                nearestPointA = point;
+                lerpA = false;
+            } else if (d == smallestD){
+                secondPointA = point;
+                lerpA = true;
+            }
+        }
+        // Get contact point B
+        Vec2f secondPointB = new Vec2f();
+        Vec2f nearestPointB = new Vec2f();
+        smallestD = Float.POSITIVE_INFINITY;
+        for (int i = 0; i < NUM_POINTS_B; i++){
+            Vec2f point = poliBPoints[i];
 
-		if (lerpA && lerpB) {
-			// In this case, two edges are colliding.
-			//Find the two outer points, two get the two inner points
-			Vec2f[] points = new Vec2f[4];
-			points[0] = nearestPointA;
-			points[1] = secondPointA;
-			points[2] = nearestPointB;
-			points[3] = secondPointB;
-			float nearestD;
-			float nearestIndex = 0;
-			float mostFarD;
-			float mostFarIndex = 0;
-			nearestD = mostFarD = perp.dot(points[0]);
-			for (int i = 1; i < points.length; i++) {
-				Vec2f point = points[i];
-				float d = perp.dot(point);
-				if (d < nearestD) {
-					nearestD = d;
-					nearestIndex = i;
-				}
-				else if (d > mostFarD) {
-					mostFarD = d;
-					mostFarIndex = i;
-				}
-			}
-			//Get the two inner points
-			Vec2f[] innerPoints = new Vec2f[2];
-			int indexToFill = 0;
-			for (int i = 0; i < points.length; i++) {
-				if (i != nearestIndex && i != mostFarIndex) {
-					innerPoints[indexToFill] = points[i];
-					indexToFill++;
-				}
-			}
-			//Find the mid of the inner points
-			Vec2f distance = new Vec2f(innerPoints[0]).sub(innerPoints[1]);
-			float projDistance = distance.dot(perp);
-			contactPoint = new Vec2f(innerPoints[0]).addMult(perp, projDistance * -0.5f);
-			
-		} else if (lerpA){
-			anotherPoint = new Vec2f(nearestPointB).addMult(normal, -nearestIntervalD);
-			contactPoint = anotherPoint;
-		} else {
-			contactPoint = nearestPointA;
-		}
+            float d = point.dot(normal);
+            if (d < smallestD){
+                smallestD = d;
+                nearestPointB = point;
+                lerpB = false;
+            } else if (d == smallestD){
+                secondPointB = point;
+                lerpB = true;
+            }
+        }
+        // Lerp either A or B contact point
+        Vec2f anotherPoint;
+        Vec2f contactPoint;
+        Vec2f perp = new Vec2f(normal).perpLeft();
 
-		Contact newContact = new Contact(normal, nearestIntervalD, contactPoint);
-		if (acceptor.accept(newContact)) {
-			shapePair.contact = newContact;
-		}
-		
-	}
+        if (lerpA && lerpB){
+            // In this case, two edges are colliding.
+            //Find the two outer points, two get the two inner points
+            Vec2f[] points = new Vec2f[4];
+            points[0] = nearestPointA;
+            points[1] = secondPointA;
+            points[2] = nearestPointB;
+            points[3] = secondPointB;
+            float nearestD;
+            float nearestIndex = 0;
+            float mostFarD;
+            float mostFarIndex = 0;
+            nearestD = mostFarD = perp.dot(points[0]);
+            for (int i = 1; i < points.length; i++){
+                Vec2f point = points[i];
+                float d = perp.dot(point);
+                if (d < nearestD){
+                    nearestD = d;
+                    nearestIndex = i;
+                } else if (d > mostFarD){
+                    mostFarD = d;
+                    mostFarIndex = i;
+                }
+            }
+            //Get the two inner points
+            Vec2f[] innerPoints = new Vec2f[2];
+            int indexToFill = 0;
+            for (int i = 0; i < points.length; i++){
+                if (i != nearestIndex && i != mostFarIndex){
+                    innerPoints[indexToFill] = points[i];
+                    indexToFill++;
+                }
+            }
+            //Find the mid of the inner points
+            Vec2f distance = new Vec2f(innerPoints[0]).sub(innerPoints[1]);
+            float projDistance = distance.dot(perp);
+            contactPoint = new Vec2f(innerPoints[0]).addMult(perp, projDistance * -0.5f);
+
+        } else if (lerpA){
+            anotherPoint = new Vec2f(nearestPointB).addMult(normal, -nearestIntervalD);
+            contactPoint = anotherPoint;
+        } else{
+            contactPoint = nearestPointA;
+        }
+
+        Contact newContact = new Contact(normal, nearestIntervalD, contactPoint);
+        if (acceptor.accept(newContact)){
+            shapePair.contact = newContact;
+        }
+
+    }
 
 }

@@ -10,29 +10,30 @@ import kane.math.Vec2f;
 
 public class MoveBackground extends GameEvent{
 
-	public MoveBackground() {
-		super(2);
-	}
-	
-	@Override
-	public void start() {
-		procedure();
-		
-	}
+    public MoveBackground(){
+        super(2);
+    }
 
-	@Override
-	public void procedure() {
-		if (RENDERER.background != null) {
-			int backgroundPos = (int) ((CAMERA.pos.dot(new Vec2f(1, 0)) - RES_SPECS.gameWidth * 0.5f) * Game.BACKGROUND_SPEED);
-			RENDERER.background.setOffsetX(backgroundPos);
-		}
-		
-		reduceFrameCounter();
-	}
+    @Override
+    public void start(){
+        procedure();
 
-	@Override
-	public void end() {
-		
-	}
+    }
+
+    @Override
+    public void procedure(){
+        if (RENDERER.background != null){
+            int backgroundPos =
+                    (int) ((CAMERA.pos.dot(new Vec2f(1, 0)) - RES_SPECS.gameWidth * 0.5f) * Game.BACKGROUND_SPEED);
+            RENDERER.background.setOffsetX(backgroundPos);
+        }
+
+        reduceFrameCounter();
+    }
+
+    @Override
+    public void end(){
+
+    }
 
 }

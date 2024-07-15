@@ -1,13 +1,12 @@
 package kane.genericGame.gameEvent.mob;
 
-import kane.genericGame.ActiveAttributes;
 import kane.genericGame.GameEvent;
 import kane.genericGame.Mob;
 import kane.genericGame.MobActions;
 
 public class Fall extends GameEvent{
 
-    private Mob mob;
+    private final Mob mob;
 
     public Fall(Mob mob){
         super(2);

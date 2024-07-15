@@ -8,27 +8,22 @@ import kane.physics.contacts.ContactGenerator;
 import kane.physics.shapes.Circle;
 import kane.physics.shapes.Point;
 
-/**
- * This is a generator for contacts between a circle and a point
- */
-public class CirclePointContactGenerator implements ContactGenerator {
-//This is generates the Contacts between to Circles.
+public class CirclePointContactGenerator implements ContactGenerator{
 
-	@Override
-	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {
-		// Contact generation Circle-Circle
-		Circle circleA = (Circle) shapePair.shapeA;
-		Point pointB = (Point) shapePair.shapeB;
-		Vec2f distanceBetween = new Vec2f(pointB.getAbsPos()).sub(circleA.getAbsPos());
-		Vec2f normal = new Vec2f(distanceBetween).normalize();
-		float projDistance = distanceBetween.dot(normal);
-		float radius = circleA.getRad();
-		float d = radius - projDistance;
-		Vec2f closestPointOnA = new Vec2f(circleA.getAbsPos()).addMult(normal, circleA.getRad());
+    @Override
+    public void generate(ShapePair shapePair, ContactAcceptor acceptor){
+        Circle circleA = (Circle) shapePair.shapeA;
+        Point pointB = (Point) shapePair.shapeB;
+        Vec2f distanceBetween = new Vec2f(pointB.getAbsPos()).sub(circleA.getAbsPos());
+        Vec2f normal = new Vec2f(distanceBetween).normalize();
+        float projDistance = distanceBetween.dot(normal);
+        float radius = circleA.getRad();
+        float d = radius - projDistance;
+        Vec2f closestPointOnA = new Vec2f(circleA.getAbsPos()).addMult(normal, circleA.getRad());
 
-		Contact newContact = new Contact(normal, -d, closestPointOnA);
-		if (acceptor.accept(newContact)) {
-			shapePair.contact = newContact;
-		}
-	}
+        Contact newContact = new Contact(normal, -d, closestPointOnA);
+        if (acceptor.accept(newContact)){
+            shapePair.contact = newContact;
+        }
+    }
 }

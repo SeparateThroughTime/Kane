@@ -37,11 +37,6 @@ public class SpriteController{
         animation.killEvent();
     }
 
-    /**
-     * Returns the frame of a state with the specific frameNo.
-     *
-     * @return
-     */
     public Vec2f[] getFrameTexCoords(){
         return sprite.getTexCoords(currentSpriteState, currentSpriteStateFrameNo);
     }
@@ -56,9 +51,6 @@ public class SpriteController{
         frameCounter = 0;
     }
 
-    /**
-     * Need to run every frame. This produces animation.
-     */
     public void step(){
         if (frameCounter >= ANIMATION_RATE){
             frameCounter = 0;

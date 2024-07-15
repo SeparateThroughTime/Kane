@@ -1,20 +1,7 @@
 package kane.renderer;
 
-import static org.lwjgl.glfw.GLFW.GLFW_CLIENT_API;
-import static org.lwjgl.glfw.GLFW.GLFW_DOUBLEBUFFER;
-import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
-import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_API;
-import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
-import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
-import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
-import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
-import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
-import static org.lwjgl.glfw.GLFW.glfwInit;
-import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowSize;
-import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
-import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
-import static org.lwjgl.glfw.GLFW.glfwWindowHint;
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
@@ -27,6 +14,9 @@ import static kane.genericGame.ResourceManager.RESOURCE_MANAGER;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import kane.exceptions.CompileShaderException;
+import kane.exceptions.LinkShaderException;
+import kane.exceptions.LoadShaderException;
 import kane.math.Vec2i;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
@@ -34,167 +24,175 @@ import org.lwjgl.opengl.GL;
 import kane.genericGame.gameEvent.camera.MoveBackground;
 import kane.physics.Shape;
 
-/**
- * The Renderer renders the game.
- */
-public class Renderer {
+public class Renderer{
 
-	static final int MAX_BATCH_SIZE = 1000;
-	static final int MAX_GLTEXTURES = 16;
-	private final ArrayList<SpriteBatch> SpriteBatches;
-	private final ArrayList<LineBatch> lineBatches;
-	private BackgroundBatch backgroundBatch;
+    static final int MAX_BATCH_SIZE = 1000;
+    static final int MAX_TEXTURES = 16;
+    private final ArrayList<SpriteBatch> SpriteBatches;
+    private final ArrayList<LineBatch> lineBatches;
+    private BackgroundBatch backgroundBatch;
 
-	public static Renderer RENDERER;
+    public static Renderer RENDERER;
 
-	public float multiplicator;
-	public Background background;
+    public float multiplier;
+    public Background background;
 
-	public boolean showContacts = false;
-	public boolean showAABBs = false;
+    public boolean showContacts = false;
+    public boolean showAABBs = false;
 
-	public long window;
+    public long window;
 
-	public Shader shader;
+    public Shader shader;
 
-	private Renderer(String title) {
-		this.multiplicator = 1f;
+    private Renderer(String title){
+        this.multiplier = 1f;
 
-		initGLFW(title);
-		SpriteBatches = new ArrayList<>();
-		lineBatches = new ArrayList<>();
+        initGLFW(title);
+        SpriteBatches = new ArrayList<>();
+        lineBatches = new ArrayList<>();
 
-		changeShader("shaders/default.vertex.glsl", "shaders/default.fragment.glsl");
-	}
+        changeShader("shaders/default.vertex.glsl", "shaders/default.fragment.glsl");
+    }
 
-	public static void initializeRenderer(String title) {
-		if (RENDERER == null) {
-			RENDERER = new Renderer(title);
-		}
-	}
+    public static void initializeRenderer(String title){
+        if (RENDERER == null){
+            RENDERER = new Renderer(title);
+        }
+    }
 
-	public void initGLFW(String title) {
-		GLFWErrorCallback.createPrint(System.err).set();
-		if (!glfwInit()) {
-			throw new IllegalStateException("Unable to initialize GLFW");
-		}
+    public void initGLFW(String title){
+        GLFWErrorCallback.createPrint(System.err).set();
+        if (!glfwInit()){
+            throw new IllegalStateException("Unable to initialize GLFW");
+        }
 
-		glfwDefaultWindowHints();
-		glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
-		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-		glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
-		glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+        glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
 
-		window = glfwCreateWindow(RES_SPECS.width, RES_SPECS.height, title, 0, 0);
-		if (window == 0) {
-			throw new RuntimeException("Failed to create GLFW window");
-		}
+        window = glfwCreateWindow(RES_SPECS.width, RES_SPECS.height, title, 0, 0);
+        if (window == 0){
+            throw new RuntimeException("Failed to create GLFW window");
+        }
 
-		glfwMakeContextCurrent(window);
-		glfwSwapInterval(1);
-		GL.createCapabilities();
+        glfwMakeContextCurrent(window);
+        glfwSwapInterval(1);
+        GL.createCapabilities();
 
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-	}
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    }
 
-	public void addShape(Shape shape) {
-		if (!shape.hasSprite) {
-			return;
-		}
+    public void addShape(Shape shape){
+        if (!shape.hasSprite){
+            return;
+        }
 
-		boolean added = false;
-		for (SpriteBatch batch : SpriteBatches) {
-			if (batch.hasRoom() && batch.RENDER_LAYER == shape.renderLayer) {
-				batch.addShape(shape);
-				added = true;
-				break;
-			}
-		}
+        boolean added = false;
+        for (SpriteBatch batch : SpriteBatches){
+            if (batch.hasRoom() && batch.RENDER_LAYER == shape.renderLayer){
+                batch.addShape(shape);
+                added = true;
+                break;
+            }
+        }
 
-		if (!added) {
-			SpriteBatch newBatch = new SpriteBatch(MAX_BATCH_SIZE, shape.renderLayer);
-			newBatch.start();
-			SpriteBatches.add(newBatch);
-			newBatch.addShape(shape);
-			Collections.sort(SpriteBatches);
-		}
-	}
+        if (!added){
+            SpriteBatch newBatch = new SpriteBatch(MAX_BATCH_SIZE, shape.renderLayer);
+            newBatch.start();
+            SpriteBatches.add(newBatch);
+            newBatch.addShape(shape);
+            Collections.sort(SpriteBatches);
+        }
+    }
 
-	public void addLine(Shape shape) {
-		boolean added = false;
-		for (LineBatch batch : lineBatches) {
-			if (batch.hasRoom()) {
-				batch.addShape(shape);
-				added = true;
-				break;
-			}
-		}
+    public void addLine(Shape shape){
+        boolean added = false;
+        for (LineBatch batch : lineBatches){
+            if (batch.hasRoom()){
+                batch.addShape(shape);
+                added = true;
+                break;
+            }
+        }
 
-		if (!added) {
-			LineBatch newBatch = new LineBatch(MAX_BATCH_SIZE);
-			newBatch.start();
-			lineBatches.add(newBatch);
-			newBatch.addShape(shape);
-		}
-	}
+        if (!added){
+            LineBatch newBatch = new LineBatch(MAX_BATCH_SIZE);
+            newBatch.start();
+            lineBatches.add(newBatch);
+            newBatch.addShape(shape);
+        }
+    }
 
-	/**
-	 * Needs to run after Resolution is changed.
-	 */
-	public void changeResolution() {
-		glfwSetWindowSize(window, RES_SPECS.width, RES_SPECS.height);
-		CAMERA.changeResolution();
-		multiplicator = (float) RES_SPECS.height / RES_SPECS.GAME_HEIGHT;
-		shader.uploadVec2i("resolution", new Vec2i(RES_SPECS.height, RES_SPECS.width));
-	}
+    public void changeResolution(){
+        glfwSetWindowSize(window, RES_SPECS.width, RES_SPECS.height);
+        CAMERA.changeResolution();
+        multiplier = (float) RES_SPECS.height / RES_SPECS.GAME_HEIGHT;
+        shader.uploadVec2i("resolution", new Vec2i(RES_SPECS.width, RES_SPECS.height));
+    }
 
-	public void changeShader(String vertexFilepath, String fragmentFilepath) {
-		shader = RESOURCE_MANAGER.getShader(vertexFilepath, fragmentFilepath);
-		shader.compile();
-		shader.uploadVec2i("resolution", new Vec2i(RES_SPECS.height, RES_SPECS.width));
-	}
+    public void changeShader(String vertexFilepath, String fragmentFilepath){
+        try{
+            shader = RESOURCE_MANAGER.getShader(vertexFilepath, fragmentFilepath);
+            shader.compile();
+            shader.uploadVec2i("resolution", new Vec2i(RES_SPECS.width, RES_SPECS.height));
+        } catch (LoadShaderException | CompileShaderException | LinkShaderException e){
+            e.printStackTrace();
+        }
+    }
 
-	protected void clearWindow() {
-		glClearColor(0f, 0f, 0f, 1f);
-		glClear(GL_COLOR_BUFFER_BIT);
-	}
+    protected void clearWindow(){
+        glClearColor(0f, 0f, 0f, 1f);
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
 
-	public void renderGame() {
-		clearWindow();
-		CAMERA.update();
-		updateTime();
+    public void renderGame(){
+        clearWindow();
+        CAMERA.update();
+        updateTime();
 
-		backgroundBatch.render();
+        backgroundBatch.render();
 
-		for (SpriteBatch batch : SpriteBatches) {
-			batch.render();
-		}
+        for (SpriteBatch batch : SpriteBatches){
+            batch.render();
+        }
 
-		for (LineBatch batch : lineBatches) {
-			batch.render();
-		}
+        for (LineBatch batch : lineBatches){
+            batch.render();
+        }
 
-		glfwSwapBuffers(window);
-	}
+        glfwSwapBuffers(window);
+    }
 
-	public void updateTime() {
-		shader.uploadFloat("time", (float) GAME.time * 0.000000001f);
-	}
+    public void updateTime(){
+        shader.uploadFloat("time", (float) GAME.time * 0.000000001f);
+    }
 
-	public void updateSanity(float sanity){
-		shader.uploadFloat("sanity", sanity);
-	}
+    public void updateSanity(float sanity){
+        shader.uploadFloat("sanity", sanity);
+    }
 
-	public void changeBackground(String filepath) {
-		background = new Background(filepath);
-		int width = background.spriteController.sprite.FRAME_WIDTH;
-		
-		backgroundBatch = new BackgroundBatch(background);
-		backgroundBatch.start();
-	}
+    public void changeBackground(String filepath){
+        background = new Background(filepath);
 
-	public void moveBackground() {
-		GAME.addEvent(new MoveBackground());
-	}
+        backgroundBatch = new BackgroundBatch(background);
+        backgroundBatch.start();
+    }
+
+    public void moveBackground(){
+        GAME.addEvent(new MoveBackground());
+    }
+
+    public void setWindowTitle(String title){
+        glfwSetWindowTitle(window, title);
+    }
+
+    public void exit(){
+        glfwFreeCallbacks(window);
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        glfwSetErrorCallback(null).free();
+    }
 }
