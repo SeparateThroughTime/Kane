@@ -46,6 +46,10 @@ public class SpriteController{
             return;
         }
 
+        if (state.equals(currentSpriteState)){
+            return;
+        }
+
         currentSpriteState = state;
         currentSpriteStateFrameNo = 0;
         frameCounter = 0;

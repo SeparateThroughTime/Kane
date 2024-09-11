@@ -1,6 +1,4 @@
 /*T O D O
-	Animation
-	    Walking animation restarts on attack (bug)
 	Object Editor
 		(Ermitteln des besten Mittelpunkts)
 	Level Ends/ Player dies -> Next level/ Restart
