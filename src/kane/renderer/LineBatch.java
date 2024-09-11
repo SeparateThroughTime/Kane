@@ -51,6 +51,27 @@ public class LineBatch{
     }
 
     public void start(){
+        initBuffers();
+        initAttribPointer();
+        unbind();
+    }
+
+    private static void unbind(){
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+
+    private static void initAttribPointer(){
+        // Enable the buffer attribute pointers
+        glVertexAttribPointer(0, POS_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, POS_OFFSET);
+        glEnableVertexAttribArray(0);
+
+        glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, COLOR_OFFSET);
+        glEnableVertexAttribArray(1);
+    }
+
+    private void initBuffers(){
         // Generate and bind a Vertex Array Object
         vaoID = glGenVertexArrays();
         glBindVertexArray(vaoID);
@@ -65,13 +86,6 @@ public class LineBatch{
         int[] indices = generateIndices();
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
-
-        // Enable the buffer attribute pointers
-        glVertexAttribPointer(0, POS_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, POS_OFFSET);
-        glEnableVertexAttribArray(0);
-
-        glVertexAttribPointer(1, COLOR_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, COLOR_OFFSET);
-        glEnableVertexAttribArray(1);
     }
 
     public void addShape(Shape shape){
@@ -110,6 +124,7 @@ public class LineBatch{
         glBindVertexArray(0);
 
         RENDERER.shader.detach();
+        unbind();
     }
 
     private void loadInvisibleProperties(int shapeIndex){

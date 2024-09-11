@@ -1,11 +1,9 @@
 /*T O D O
 
 	Visual Effects
-	    Render to Texture...
+	    Shader Stuff
 	Animation
 	    Walking animation restarts on attack (bug)
-	Crash Prevention
-	Refactor -> More and shorter methods
 	Object Editor
 		(Ermitteln des besten Mittelpunkts)
 	Level Ends/ Player dies -> Next level/ Restart
@@ -180,7 +178,7 @@ public class Kane extends Game{
 
         // Sword
         sword = new Body(200, 130);
-        Vec2f points[] = new Vec2f[4];
+        Vec2f[] points = new Vec2f[4];
         points[0] = new Vec2f(-16, -16);
         points[1] = new Vec2f(16, -16);
         points[2] = new Vec2f(16, 16);

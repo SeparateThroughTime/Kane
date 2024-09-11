@@ -26,7 +26,7 @@ public class BackgroundBatch{
     private final static int COLOR_OFFSET = POS_OFFSET + POS_SIZE * Float.BYTES;
     private final static int TEX_COORDS_OFFSET = COLOR_OFFSET + COLOR_SIZE * Float.BYTES;
     private final static int TEX_ID_OFFSET = TEX_COORDS_OFFSET + TEX_COORDS_SIZE * Float.BYTES;
-    private final static int VERTEX_SIZE = 9;
+    private final static int VERTEX_SIZE = POS_SIZE + COLOR_SIZE + TEX_COORDS_SIZE + TEX_ID_SIZE;
     private final static int VERTEX_SIZE_BYTES = VERTEX_SIZE * Float.BYTES;
     private final static int ELEMENTS_PER_RENDER_OBJECT = 4;
 
@@ -47,22 +47,18 @@ public class BackgroundBatch{
     }
 
     public void start(){
-        // Generate and bind a Vertex Array Object
-        vaoID = glGenVertexArrays();
-        glBindVertexArray(vaoID);
+        initBuffers();
+        initAttribPointer();
+        unbind();
+    }
 
-        // Allocate space for vertices
-        vboID = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vboID);
-        glBufferData(GL_ARRAY_BUFFER, (long) vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
+    private static void unbind(){
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
 
-        // Create and upload indices buffer
-        int eboID = glGenBuffers();
-        int[] indices = generateIndices();
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
-
-        // Enable the buffer attribute pointers
+    private static void initAttribPointer(){
         glVertexAttribPointer(0, POS_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, POS_OFFSET);
         glEnableVertexAttribArray(0);
 
@@ -74,6 +70,23 @@ public class BackgroundBatch{
 
         glVertexAttribPointer(3, TEX_ID_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, TEX_ID_OFFSET);
         glEnableVertexAttribArray(3);
+    }
+
+    private void initBuffers(){
+        // Generate and bind a Vertex Array Object
+        vaoID = glGenVertexArrays();
+        glBindVertexArray(vaoID);
+
+        // Allocate space for vertices
+        vboID = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, vboID);
+        glBufferData(GL_ARRAY_BUFFER, (long) vertices.length * Float.BYTES, GL_STATIC_DRAW);
+
+        // Create and upload indices buffer
+        int eboID = glGenBuffers();
+        int[] indices = generateIndices();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
     }
 
     public void render(){
@@ -105,8 +118,10 @@ public class BackgroundBatch{
         glBindVertexArray(0);
 
         background.spriteController.sprite.texture.unbind();
-
         RENDERER.shader.detach();
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
     private void loadVertexProperties(int index){

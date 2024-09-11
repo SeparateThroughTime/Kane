@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import kane.exceptions.CompileShaderException;
+import kane.exceptions.InitFramebufferException;
 import kane.exceptions.LinkShaderException;
 import kane.exceptions.LoadShaderException;
 import kane.math.Vec2i;
@@ -31,6 +32,7 @@ public class Renderer{
     private final ArrayList<SpriteBatch> SpriteBatches;
     private final ArrayList<LineBatch> lineBatches;
     private BackgroundBatch backgroundBatch;
+    private PostProcessBatch postProcessBatch;
 
     public static Renderer RENDERER;
 
@@ -43,6 +45,7 @@ public class Renderer{
     public long window;
 
     public Shader shader;
+    public Shader postShader;
 
     private Renderer(String title){
         this.multiplier = 1f;
@@ -52,6 +55,16 @@ public class Renderer{
         lineBatches = new ArrayList<>();
 
         changeShader("shaders/default.vertex.glsl", "shaders/default.fragment.glsl");
+        changePostShader("shaders/post.vertex.glsl", "shaders/post.fragment.glsl");
+    }
+
+    public void initPostProcessBatch(){
+        try{
+            postProcessBatch = new PostProcessBatch();
+        } catch (InitFramebufferException e){
+            e.printStackTrace();
+            glfwDestroyWindow(RENDERER.window);
+        }
     }
 
     public static void initializeRenderer(String title){
@@ -143,12 +156,24 @@ public class Renderer{
         }
     }
 
+    public void changePostShader(String vertexFilepath, String fragmentFilepath){
+        try{
+            postShader = RESOURCE_MANAGER.getShader(vertexFilepath, fragmentFilepath);
+            postShader.compile();
+            postShader.uploadVec2i("resolution", new Vec2i(RES_SPECS.width, RES_SPECS.height));
+        } catch (LoadShaderException | CompileShaderException | LinkShaderException e){
+            e.printStackTrace();
+        }
+    }
+
     protected void clearWindow(){
-        glClearColor(0f, 0f, 0f, 1f);
-        glClear(GL_COLOR_BUFFER_BIT);
+
+        glClearColor(1f, 0f, 0f, 1f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     public void renderGame(){
+        postProcessBatch.bindFramebuffer();
         clearWindow();
         CAMERA.update();
         updateTime();
@@ -162,6 +187,9 @@ public class Renderer{
         for (LineBatch batch : lineBatches){
             batch.render();
         }
+
+        postProcessBatch.detachFramebuffer();
+        postProcessBatch.render();
 
         glfwSwapBuffers(window);
     }

@@ -24,7 +24,7 @@ import static org.lwjgl.stb.STBImage.stbi_load;
 import static org.lwjgl.stb.STBImage.stbi_set_flip_vertically_on_load;
 
 public class Texture{
-    private final int TEX_ID;
+    public final int TEX_ID;
     public final int WIDTH;
     public final int HEIGHT;
 
@@ -60,6 +60,21 @@ public class Texture{
         }
 
         stbi_image_free(image);
+    }
+
+    public Texture(int width, int height){
+        TEX_ID = glGenTextures();
+        bind();
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+
+        WIDTH = width;
+        HEIGHT = height;
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, WIDTH, HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+
     }
 
     public void bind(){

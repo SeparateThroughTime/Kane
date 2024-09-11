@@ -52,11 +52,11 @@ public abstract class Game implements KeyboardInterface, MouseInterface, Contact
     protected abstract void postMechanicsLoops();
 
     protected Game(String title){
-        // init Window
         this.title = title;
         ResolutionSpecification.initializeResSpecs(600, 800, 600, 800);
         Physics.initializePhysics(this);
         Renderer.initializeRenderer(title);
+        RENDERER.initPostProcessBatch();
         long window = RENDERER.window;
         Keyboard.initializeKeyboard(this, window);
         Mouse.initializeMouse(this, window);
