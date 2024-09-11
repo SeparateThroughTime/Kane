@@ -18,6 +18,7 @@ import kane.exceptions.CompileShaderException;
 import kane.exceptions.InitFramebufferException;
 import kane.exceptions.LinkShaderException;
 import kane.exceptions.LoadShaderException;
+import kane.genericGame.Game;
 import kane.math.Vec2i;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
@@ -143,7 +144,7 @@ public class Renderer{
         glfwSetWindowSize(window, RES_SPECS.width, RES_SPECS.height);
         CAMERA.changeResolution();
         multiplier = (float) RES_SPECS.height / RES_SPECS.GAME_HEIGHT;
-        shader.uploadVec2i("resolution", new Vec2i(RES_SPECS.width, RES_SPECS.height));
+        postShader.uploadVec2i("resolution", new Vec2i(RES_SPECS.width, RES_SPECS.height));
     }
 
     public void changeShader(String vertexFilepath, String fragmentFilepath){
@@ -195,11 +196,11 @@ public class Renderer{
     }
 
     public void updateTime(){
-        shader.uploadFloat("time", (float) GAME.time * 0.000000001f);
+        postShader.uploadFloat("time", (float) Game.time * 0.000000001f);
     }
 
     public void updateSanity(float sanity){
-        shader.uploadFloat("sanity", sanity);
+        postShader.uploadFloat("sanity", sanity);
     }
 
     public void changeBackground(String filepath){

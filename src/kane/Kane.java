@@ -1,7 +1,4 @@
 /*T O D O
-
-	Visual Effects
-	    Shader Stuff
 	Animation
 	    Walking animation restarts on attack (bug)
 	Object Editor
@@ -14,6 +11,9 @@
 	Save
 	Camera Adjustments
 	Key-Mapping
+
+	Shader
+	    Make Distortion move with camera
 	
 	Events:
 		WalkAI
@@ -169,10 +169,10 @@ public class Kane extends Game{
         player.shapes[2].visible = false;
         SpriteController[] spriteControllers = currentItem.getPlayerSpriteControllers();
         player.shapes[0].setSpriteControllers(spriteControllers);
-        player.addSoundSource("sound//player//jump.ogg", SoundType.JUMP);
-        player.addSoundSource("sound//player//damage.ogg", SoundType.DAMAGE);
+        //        player.addSoundSource("sound//player//jump.ogg", SoundType.JUMP);
+        //        player.addSoundSource("sound//player//damage.ogg", SoundType.DAMAGE);
         //        player.addSound("sound//player//walk.ogg", SoundType.WALK);
-        player.addSoundSource("sound//player//attack.ogg", SoundType.ATTACK);
+        //        player.addSoundSource("sound//player//attack.ogg", SoundType.ATTACK);
         player.setDirection(MobDirection.RIGHT);
 
 
@@ -223,9 +223,9 @@ public class Kane extends Game{
         blob.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
         blob.setJumpAcc(new Vec2f(0, 200 / DELTATIME));
         blob.setWalkSpeed(50);
-        blob.addSoundSource("sound//mobs//blob//death.ogg", SoundType.DEATH);
-        blob.addSoundSource("sound//mobs//blob//damage.ogg", SoundType.DAMAGE);
-        blob.addSoundSource("sound//player//walk.ogg", SoundType.WALK);
+        //        blob.addSoundSource("sound//mobs//blob//death.ogg", SoundType.DEATH);
+        //        blob.addSoundSource("sound//mobs//blob//damage.ogg", SoundType.DAMAGE);
+        //        blob.addSoundSource("sound//player//walk.ogg", SoundType.WALK);
 
 
         // Create Background
@@ -238,9 +238,7 @@ public class Kane extends Game{
         refreshHealthBar();
 
         // Spooky testing
-        RENDERER.changeShader("shaders/spooky.vertex.glsl", "shaders/spooky.fragment.glsl");
-
-        this.setSanity(1.0f);
+        this.setSanity(0.0f);
 
         //		GAME.changeResolution(Resolution.SOL1024x768);
 
