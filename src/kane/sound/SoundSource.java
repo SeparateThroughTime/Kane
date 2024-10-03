@@ -13,6 +13,8 @@ public class SoundSource{
     public boolean pauseOnMenu;
     public boolean currentlyPausingOnMenu;
 
+    private SoundBuffer soundBuffer;
+
     private final float ROLL_OF_FACTOR;
 
     public SoundSource(boolean loop, boolean relative, boolean pauseOnMenu){
@@ -40,9 +42,14 @@ public class SoundSource{
         AL10.alSourcef(sourceId, AL_MAX_DISTANCE, RES_SPECS.gameWidth * 5);
     }
 
-    public void setBuffer(int bufferId){
+    public void setBuffer(SoundBuffer buffer){
+        soundBuffer = buffer;
         stop();
-        alSourcei(sourceId, AL_BUFFER, bufferId);
+        alSourcei(sourceId, AL_BUFFER, buffer.getBufferId());
+    }
+
+    public SoundBuffer getBuffer(){
+        return soundBuffer;
     }
 
     public void setPos(Vec2f pos){

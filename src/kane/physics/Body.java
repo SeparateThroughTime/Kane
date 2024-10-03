@@ -23,12 +23,7 @@ public class Body{
     public final Vec2f vel;
     public final Vec2f acc;
     public float angle;
-    public float angleVel;
-    public boolean rotateByCollision;
-    public float rotationFactor;
     public float invMass;
-    public final Vec2f centerOfMass = new Vec2f();
-    public float momentOfInertia;
     public boolean reactToGravity;
     private boolean removed;
 
@@ -49,61 +44,17 @@ public class Body{
         this.pos = pos;
         shapes = new Shape[MAX_SHAPES];
         numShapes = 0;
-        this.rotateByCollision = false;
         this.ID = PHYSICS.numBodies;
-        calculateCenterOfMass();
         reactToGravity = true;
         removed = false;
         PHYSICS.addBody(this);
         soundSources = new HashMap<>();
     }
 
-    public Body(int posX, int posY, boolean rotateByCollision){
-        this(posX, posY);
-        this.rotateByCollision = rotateByCollision;
-    }
-
-    public void calculateCenterOfMass(){
-        centerOfMass.zero();
-        float sumOfMass = 0;
-        for (int i = 0; i < numShapes; i++){
-            Shape shape = shapes[i];
-            if (shape.invMass != 0){
-                float mass = 1 / shape.invMass;
-                Vec2f shapeCenterOfMass = new Vec2f(shape.centerOfMass);
-                shapeCenterOfMass.add(shape.relPos);
-                centerOfMass.addMult(shapeCenterOfMass, mass);
-                sumOfMass += mass;
-            }
-        }
-        if (sumOfMass > 0.f){
-            centerOfMass.div(sumOfMass);
-        }
-    }
-
-    public float calculateMomentOfInertia(){
-        momentOfInertia = 0;
-        for (int i = 0; i < numShapes; i++){
-            Shape shape = shapes[i];
-            if (shape.invMass > 0){
-                float newShapeMoI = new Vec2f(shape.centerOfMass).add(shape.relPos).sub(centerOfMass).lengthSquared();
-                newShapeMoI /= shape.invMass;
-                newShapeMoI += shape.momentOfInertia;
-                momentOfInertia += newShapeMoI;
-            }
-        }
-        if (momentOfInertia == 0){
-            momentOfInertia = Float.POSITIVE_INFINITY;
-        }
-        return momentOfInertia;
-    }
-
     public Shape addShape(Shape shape){
         if (numShapes < MAX_SHAPES){
             shapes[numShapes++] = shape;
             updateMass();
-            calculateCenterOfMass();
-            calculateMomentOfInertia();
             return shape;
         } else{
             return null;
@@ -141,29 +92,6 @@ public class Body{
             Vec2f posDif = new Vec2f(nextPos).sub(pos);
             Vec2f nextAbsPos = new Vec2f(shape.getAbsPos()).add(posDif);
             shape.updateAABB(nextAbsPos, tolerance);
-        }
-    }
-
-    public void rotate(float angle){
-        this.angle += angle;
-
-        for (int i = 0; i < numShapes; i++){
-            //			shapes[i].rotate(angle, new Vec2f(getCenterOfMass()).add(getPos()));
-
-            shapes[i].relPos.set(shapes[i].relPosAlign).rotate(this.angle);
-
-            // angle is 0, so body angle is the only altered angle.
-            shapes[i].rotate(0);
-        }
-    }
-
-    public void align(){
-        this.angle = 0;
-        for (int i = 0; i < numShapes; i++){
-            shapes[i].relPos.set(shapes[i].relPosAlign);
-
-            // angle is 0, so body angle is the only altered angle.
-            shapes[i].rotate(0);
         }
     }
 
@@ -291,7 +219,7 @@ public class Body{
 
         boolean loop = soundType == SoundType.WALK;
         SoundSource soundSource = new SoundSource(loop, false, true);
-        soundSource.setBuffer(soundBuffer.getBufferId());
+        soundSource.setBuffer(soundBuffer);
 
         soundSources.put(soundType, soundSource);
     }

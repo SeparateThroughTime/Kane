@@ -133,8 +133,8 @@ public class Mob extends Body{
         return walkSpeed;
     }
 
-    public void setWalkSpeed(int wlakSpeed){
-        this.walkSpeed = wlakSpeed;
+    public void setWalkSpeed(int walkSpeed){
+        this.walkSpeed = walkSpeed;
     }
 
     public Vec2f getJumpAcc(){
@@ -202,6 +202,10 @@ public class Mob extends Body{
             default:
                 break;
         }
+    }
+
+    public AIs getAi(){
+        return ai;
     }
 
     public void refreshSpriteStates(){

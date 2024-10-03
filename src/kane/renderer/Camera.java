@@ -39,21 +39,24 @@ public class Camera extends Body{
     public int movementSpeedY;
     private final ArrayList<HudBar> hudBars = new ArrayList<>();
 
-    private Camera(){
+    private Camera(boolean forGame){
         super((int) RES_SPECS.halfGameWidth, (int) RES_SPECS.halfGameHeight);
 
-        movementAccX = new Vec2f(GAME.player.getWalkAcc()).mult(0.5f);
-        movementAccY = new Vec2f(movementAccX).perpLeft();
-        movementSpeedY = GAME.player.getWalkSpeed() * 2;
+        if(forGame){
+            movementAccX = new Vec2f(GAME.player.getWalkAcc()).mult(0.5f);
+            movementAccY = new Vec2f(movementAccX).perpLeft();
+            movementSpeedY = GAME.player.getWalkSpeed() * 2;
+        }
 
         this.zeroPoint = new Vec2f();
         reactToGravity = false;
         createCamera();
     }
 
-    public static void initializeCamera(){
+
+    public static void initializeCamera(boolean forGame){
         if (CAMERA == null){
-            CAMERA = new Camera();
+            CAMERA = new Camera(forGame);
         }
     }
 

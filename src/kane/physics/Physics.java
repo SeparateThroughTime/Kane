@@ -31,6 +31,7 @@ public class Physics{
     public int numShapePairs;
 
     public Vec2f gravity = new Vec2f(0, -35f);
+    public boolean isGravityOn = true;
 
     private Physics(ContactManagementInterface contactManagementInterface){
         bodies = new Body[MAX_BODIES];
@@ -55,7 +56,9 @@ public class Physics{
     }
 
     public void preStep(){
-        gravity();
+        if(isGravityOn){
+            gravity();
+        }
         CONTACT_SOLVER.solveFriction();
 
     }

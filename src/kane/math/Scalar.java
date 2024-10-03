@@ -1,8 +1,36 @@
 package kane.math;
 
+import static kane.renderer.ResolutionSpecification.RES_SPECS;
+
 public class Scalar{
+
+
     public static float PI = (float) Math.PI;
     public static float TOLERANCE = 0.0001f;
+
+    public static float pseudoUnitToScreenPercentX(float pseudoUnit){
+        return pseudoUnit / RES_SPECS.gameWidth * 100;
+    }
+
+    public static float pseudoUnitToScreenPercentY(float pseudoUnit){
+        return pseudoUnit / RES_SPECS.GAME_HEIGHT * 100;
+    }
+
+    public static float screenPercentXToPseudoUnit(float percent){
+        return percent / 100 * RES_SPECS.gameWidth;
+    }
+
+    public static float screenPercentYToPseudoUnit(float percent){
+        return percent / 100 * RES_SPECS.GAME_HEIGHT;
+    }
+
+    public static Vec2f pseudoUnitToScreenPercent(Vec2f pseudoUnit){
+        return new Vec2f(pseudoUnit).div(new Vec2f(RES_SPECS.gameWidth, RES_SPECS.GAME_HEIGHT)).mult(100f);
+    }
+
+    public static Vec2f screenPercentToPseudoUnit(Vec2f percent){
+        return new Vec2f(percent).div(100f).mult(new Vec2f(RES_SPECS.gameWidth, RES_SPECS.GAME_HEIGHT));
+    }
 
     public static int getY(int y, int height){
         return height - 1 - y;

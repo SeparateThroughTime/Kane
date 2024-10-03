@@ -27,7 +27,6 @@ public abstract class Shape{
     public int renderLayer;
 
     public final Vec2f relPos;
-    public final Vec2f relPosAlign;
     public final ShapeType type;
     public final AABB aabb;
     public final Body body;
@@ -37,7 +36,6 @@ public abstract class Shape{
     public final Material material;
     public float invMass;
     public final Vec2f centerOfMass;
-    public float momentOfInertia;
     protected Shape[] collidedShapes;
     protected int numCollidedShapes;
 
@@ -67,7 +65,6 @@ public abstract class Shape{
     public Shape(int relPosX, int RelPosY, ShapeType type, Body body, Color color, Material material, int renderLayer,
                  int numRenderVertices, int numRenderElements){
         relPos = new Vec2f(relPosX, RelPosY);
-        relPosAlign = new Vec2f(relPosX, RelPosY);
         this.type = type;
         aabb = new AABB();
         this.body = body;

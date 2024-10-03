@@ -13,7 +13,7 @@ public class PlaySound extends GameEvent{
         super(2);
         stop = false;
         soundSource = new SoundSource(loop, true, pauseOnMenu);
-        soundSource.setBuffer(soundBuffer.getBufferId());
+        soundSource.setBuffer(soundBuffer);
     }
 
     @Override

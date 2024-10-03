@@ -10,8 +10,10 @@ import static org.lwjgl.openal.AL10.*;
 
 public class SoundBuffer{
     private final int bufferId;
+    public final String filepath;
 
     public SoundBuffer(String filepath) throws LoadSoundException{
+        this.filepath = filepath;
         this.bufferId = alGenBuffers();
         STBVorbisInfo info = STBVorbisInfo.malloc();
         try{

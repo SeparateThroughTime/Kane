@@ -48,8 +48,11 @@ public class Renderer{
     public Shader shader;
     public Shader postShader;
 
+    private boolean backgroundEnabled;
+
     private Renderer(String title){
         this.multiplier = 1f;
+        backgroundEnabled = false;
 
         initGLFW(title);
         SpriteBatches = new ArrayList<>();
@@ -169,7 +172,7 @@ public class Renderer{
 
     protected void clearWindow(){
 
-        glClearColor(1f, 0f, 0f, 1f);
+        glClearColor(0.25f, 0.25f, 0.25f, 1f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
@@ -179,7 +182,9 @@ public class Renderer{
         CAMERA.update();
         updateTime();
 
-        backgroundBatch.render();
+        if(backgroundEnabled){
+            backgroundBatch.render();
+        }
 
         for (SpriteBatch batch : SpriteBatches){
             batch.render();
@@ -204,6 +209,7 @@ public class Renderer{
     }
 
     public void changeBackground(String filepath){
+        backgroundEnabled = true;
         background = new Background(filepath);
 
         backgroundBatch = new BackgroundBatch(background);

@@ -2,6 +2,7 @@ package kane.genericGame.userInteraction;
 
 import static kane.renderer.Camera.CAMERA;
 import static kane.renderer.ResolutionSpecification.RES_SPECS;
+
 import static org.lwjgl.glfw.GLFW.*;
 
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;

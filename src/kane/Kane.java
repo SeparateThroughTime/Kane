@@ -75,6 +75,8 @@ import static kane.sound.SoundEngine.SOUND;
 
 import java.awt.Color;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import kane.genericGame.*;
 import kane.genericGame.gameEvent.mob.DamageHandler;
 import kane.genericGame.hud.HudBar;
@@ -88,6 +90,10 @@ import kane.physics.shapes.Box;
 import kane.physics.shapes.LineSegment;
 import kane.physics.shapes.Polygon;
 import kane.renderer.*;
+import kane.serialization.BodySerialization;
+import kane.serialization.ColorSerialization;
+import kane.serialization.MobSerialization;
+import kane.serialization.Vec2fSerialization;
 import kane.sound.SoundType;
 
 public class Kane extends Game{
@@ -124,7 +130,7 @@ public class Kane extends Game{
         player.setWalkSpeed(300);
 
         // camera
-        Camera.initializeCamera();
+        Camera.initializeCamera(true);
         CAMERA.bindCameraToMap();
         RENDERER.moveBackground();
         CAMERA.initInventory();
@@ -242,6 +248,15 @@ public class Kane extends Game{
 
         // background music
         //        addEvent(new PlaySound(RESOURCE_MANAGER.getSoundBuffer("sound//music//01//main.ogg"), true, true));
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Mob.class, new MobSerialization());
+        gsonBuilder.registerTypeAdapter(Body.class, new BodySerialization());
+        gsonBuilder.registerTypeAdapter(Vec2f.class, new Vec2fSerialization());
+        gsonBuilder.registerTypeAdapter(Color.class, new ColorSerialization());
+        Gson gson = gsonBuilder.setPrettyPrinting().create();
+        String json = gson.toJson(player);
+        System.out.println(json);
     }
 
     public void refreshHealthBar(){
