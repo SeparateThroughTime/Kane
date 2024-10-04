@@ -12,7 +12,7 @@ import kane.physics.ShapeType;
 public class Box extends Shape{
     private final Vec2f rad;
 
-    public Box(int relPosX, int relPosY, Body body, Vec2f rad, Color color, Material material, int renderLayer){
+    public Box(float relPosX, float relPosY, Body body, Vec2f rad, Color color, Material material, int renderLayer){
         super(relPosX, relPosY, ShapeType.BOX, body, color, material, renderLayer, 4, 2);
         this.rad = rad;
     }

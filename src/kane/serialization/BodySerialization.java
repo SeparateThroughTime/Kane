@@ -1,19 +1,24 @@
 package kane.serialization;
 
 import com.google.gson.*;
+import kane.genericGame.Mob;
+import kane.math.ArrayOperations;
 import kane.physics.Body;
 import kane.physics.Shape;
-import kane.sound.SoundSource;
 import kane.sound.SoundType;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
+import java.util.Arrays;
 
 public class BodySerialization implements JsonSerializer<Body>, JsonDeserializer<Body>{
     @Override
     public JsonElement serialize(Body src, Type typeOfSrc, JsonSerializationContext context){
         JsonObject jsonObject = new JsonObject();
-        jsonObject.add("shapes", context.serialize(src.shapes));
+        return serialize(jsonObject, src, typeOfSrc, context);
+    }
+
+    public JsonElement serialize(JsonObject jsonObject, Body src, Type typeOfSrc, JsonSerializationContext context){
+        jsonObject.add("shapes", context.serialize(ArrayOperations.remEmpty(src.shapes)));
 
         for(SoundType soundType : SoundType.values()){
             if(src.soundSources.containsKey(soundType)){
@@ -34,12 +39,24 @@ public class BodySerialization implements JsonSerializer<Body>, JsonDeserializer
     public Body deserialize(Body body, JsonElement json, Type typeOfT, JsonDeserializationContext context){
         JsonObject jsonObject = json.getAsJsonObject();
 
-        HashMap<SoundType, SoundSource> soundSources = context.deserialize(jsonObject.get("soundSources"), HashMap.class);
+
+        ShapeSerialization shapeSerializer = new ShapeSerialization();
+        JsonArray shapeArray = jsonObject.get("shapes").getAsJsonArray();
+        for (JsonElement shapeElement : shapeArray){
+            Shape shape = shapeSerializer.deserialize(body, shapeElement, Shape.class, context);
+            System.out.println(body);
+            body.addShape(shape);
+        }
+
         for(SoundType soundType : SoundType.values()){
             if(jsonObject.has(soundType.name() + "-Sound")){
                 String filepath = jsonObject.get(soundType.name() + "-Sound").getAsString();
                 body.addSoundSource(filepath, soundType);
             }
         }
+
+        return body;
     }
+
+
 }

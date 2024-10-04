@@ -62,7 +62,7 @@ public abstract class Shape{
         return isPointInShape(pointF);
     }
 
-    public Shape(int relPosX, int RelPosY, ShapeType type, Body body, Color color, Material material, int renderLayer,
+    public Shape(float relPosX, float RelPosY, ShapeType type, Body body, Color color, Material material, int renderLayer,
                  int numRenderVertices, int numRenderElements){
         relPos = new Vec2f(relPosX, RelPosY);
         this.type = type;

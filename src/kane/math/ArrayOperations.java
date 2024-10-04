@@ -52,4 +52,23 @@ public class ArrayOperations{
         }
         array[numElementsToCheck - 1] = null;
     }
+
+    public static <T> T[] remEmpty(T[] array){
+        int elementCounter = 0;
+        for (int i = 0; i < array.length; i++){
+            if (array[i] != null){
+                elementCounter++;
+            }
+        }
+
+        T[] newArray = (T[]) Array.newInstance(array.getClass().getComponentType(), elementCounter);
+        elementCounter = 0;
+        for(int i = 0; i < array.length; i++){
+            if (array[i] != null){
+                newArray[elementCounter++] = array[i];
+            }
+        }
+
+        return newArray;
+    }
 }

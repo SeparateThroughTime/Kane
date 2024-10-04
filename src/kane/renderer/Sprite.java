@@ -17,13 +17,15 @@ public class Sprite{
     public int PIXEL_PER_FRAME;
     public Texture texture;
     private Vec2f[][] texCoords;
+    public final String filepath;
 
-    private final Map<SpriteState, int[]> states;
+    public final Map<SpriteState, int[]> states;
 
     public Sprite(String filepath, int frameWidth, int frameHeight){
         this.FRAME_HEIGHT = frameHeight;
         this.FRAME_WIDTH = frameWidth;
         this.states = new HashMap<>();
+        this.filepath = filepath;
 
         try{
             texture = RESOURCE_MANAGER.getTexture(filepath);
@@ -35,6 +37,7 @@ public class Sprite{
 
     public Sprite(String filepath){
         this.states = new HashMap<>();
+        this.filepath = filepath;
 
         try{
             texture = RESOURCE_MANAGER.getTexture(filepath);

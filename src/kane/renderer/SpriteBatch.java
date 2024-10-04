@@ -28,6 +28,7 @@ import java.util.Map;
 
 import kane.math.Vec2f;
 import kane.math.Vec4f;
+import kane.physics.Body;
 import kane.physics.Shape;
 import kane.physics.shapes.Point;
 
@@ -81,7 +82,7 @@ public class SpriteBatch implements Comparable<SpriteBatch>{
         this.RENDER_LAYER = renderLayer;
 
         this.invisibleSpriteController = new SpriteController(new Sprite("sprites//core//invisible.png", 1, 1));
-        this.invisibleShape = new Point(0, 0, CAMERA, new Color(0, 0, 0, 0), null, 0);
+        this.invisibleShape = new Point(0, 0, new Body(0, 0), new Color(0, 0, 0, 0), null, 0);
     }
 
     public void start(){

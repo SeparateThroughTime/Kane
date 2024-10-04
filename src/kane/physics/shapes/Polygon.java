@@ -55,15 +55,6 @@ public class Polygon extends Shape{
         centerOfMass.div(numPoints);
     }
 
-    public float calculateMomentOfInertia(){
-        float mass = 1 / invMass;
-        momentOfInertia = mass / points.length;
-        for (int i = 0; i < numPoints; i++){
-            momentOfInertia += new Vec2f(points[i]).sub(centerOfMass).lengthSquared();
-        }
-        return momentOfInertia;
-    }
-
     @Override
     public void updateAABB(Vec2f nextAbsPos, float tolerance){
         Vec2f absPos = getAbsPos();
