@@ -15,7 +15,7 @@ public class BoxPointContactGenerator implements ContactGenerator{
     public void generate(ShapePair shapePair, ContactAcceptor acceptor){
         Box boxA = (Box) shapePair.shapeA;
         Point pointB = (Point) shapePair.shapeB;
-        Vec2f radius = new Vec2f(boxA.getRad());
+        Vec2f radius = new Vec2f(boxA.rad);
         Vec2f min = new Vec2f(boxA.getMin());
         Vec2f max = new Vec2f(boxA.getMax());
 

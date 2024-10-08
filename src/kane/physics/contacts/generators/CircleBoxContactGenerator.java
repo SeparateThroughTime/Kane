@@ -20,8 +20,8 @@ public class CircleBoxContactGenerator implements ContactGenerator{
         Vec2f boxBMax = new Vec2f(boxB.getMax());
 
         Vec2f relPos = new Vec2f(boxB.getAbsPos()).sub(circleA.getAbsPos());
-        float overlapX = Math.abs(relPos.x) - boxB.getRad().x;
-        float overlapY = Math.abs(relPos.y) - boxB.getRad().x;
+        float overlapX = Math.abs(relPos.x) - boxB.rad.x;
+        float overlapY = Math.abs(relPos.y) - boxB.rad.x;
         float smallestOverlap = Math.max(overlapX, overlapY);
 
         Vec2f normal = new Vec2f();
@@ -35,7 +35,7 @@ public class CircleBoxContactGenerator implements ContactGenerator{
             } else{
                 normal.set(0, Scalar.sign(-relPos.y));
             }
-            d = smallestOverlap - circleA.getRad();
+            d = smallestOverlap - circleA.rad;
             closestPoint.set(circleA.getAbsPos()).addMult(normal, -smallestOverlap);
         } else{
             // Separation
@@ -46,7 +46,7 @@ public class CircleBoxContactGenerator implements ContactGenerator{
             Vec2f distanceToClosest = new Vec2f(circleA.getAbsPos()).sub(closestPoint);
             normal.set(distanceToClosest).normalize();
 
-            d = distanceToClosest.dot(normal) - circleA.getRad();
+            d = distanceToClosest.dot(normal) - circleA.rad;
 
         }
 

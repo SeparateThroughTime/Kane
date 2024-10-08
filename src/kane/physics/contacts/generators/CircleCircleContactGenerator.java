@@ -17,9 +17,9 @@ public class CircleCircleContactGenerator implements ContactGenerator{
         Vec2f distanceBetween = new Vec2f(circleB.getAbsPos()).sub(circleA.getAbsPos());
         Vec2f normal = new Vec2f(distanceBetween).normalize();
         float projDistance = distanceBetween.dot(normal);
-        float bothRadius = circleA.getRad() + circleB.getRad();
+        float bothRadius = circleA.rad + circleB.rad;
         float d = bothRadius - projDistance;
-        Vec2f closestPointOnA = new Vec2f(circleA.getAbsPos()).addMult(normal, circleA.getRad());
+        Vec2f closestPointOnA = new Vec2f(circleA.getAbsPos()).addMult(normal, circleA.rad);
 
         Contact newContact = new Contact(normal, -d, closestPointOnA);
         if (acceptor.accept(newContact)){

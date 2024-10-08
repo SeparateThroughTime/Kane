@@ -15,7 +15,7 @@ public class BoxSerialization implements JsonSerializer<Box>, JsonDeserializer<B
     public JsonElement serialize(Box src, Type typeOfSrc, JsonSerializationContext context){
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("shapeType", "BOX");
-        jsonObject.add("rad", context.serialize(src.getRad()));
+        jsonObject.add("rad", context.serialize(src.rad));
 
         ShapeSerialization shapeSerializer = new ShapeSerialization();
         shapeSerializer.serialize(jsonObject, src, typeOfSrc, context);

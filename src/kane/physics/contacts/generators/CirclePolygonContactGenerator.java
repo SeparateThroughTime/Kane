@@ -48,7 +48,7 @@ public class CirclePolygonContactGenerator implements ContactGenerator{
 
             Vec2f distanceToClosest = new Vec2f(circleA.getAbsPos()).sub(pointOnB);
             Vec2f normal = new Vec2f(distanceToClosest).normalize();
-            float d = distanceToClosest.dot(normal) - circleA.getRad();
+            float d = distanceToClosest.dot(normal) - circleA.rad;
 
             if (d < bestD){
                 bestD = d;

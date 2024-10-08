@@ -10,10 +10,15 @@ import kane.physics.Shape;
 import kane.physics.ShapeType;
 
 public class Box extends Shape{
-    private final Vec2f rad;
+    public final Vec2f rad;
 
     public Box(float relPosX, float relPosY, Body body, Vec2f rad, Color color, Material material, int renderLayer){
         super(relPosX, relPosY, ShapeType.BOX, body, color, material, renderLayer, 4, 2);
+        this.rad = rad;
+    }
+
+    public Box(Vec2f pos, Body body, Vec2f rad, Color color, Material material, int renderLayer){
+        super(pos.x, pos.y, ShapeType.BOX, body, color, material, renderLayer, 4, 2);
         this.rad = rad;
     }
 
@@ -41,13 +46,10 @@ public class Box extends Shape{
         return rad.x * rad.y * 4;
     }
 
-    public Vec2f getRad(){
-        return rad;
-    }
 
     @Override
     public boolean isPointInShape(Vec2f point){
-        Vec2f radius = new Vec2f(getRad());
+        Vec2f radius = new Vec2f(rad);
         Vec2f min = new Vec2f(getMin());
         Vec2f max = new Vec2f(getMax());
 

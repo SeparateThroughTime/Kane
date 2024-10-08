@@ -28,10 +28,10 @@ public class LineSegmentBoxContactGenerator implements ContactGenerator{
         lineAPoints[1] = new Vec2f(lineAAbsPos).add(lineA.getRelPosB());
 
         Vec2f[] boxBPoints = new Vec2f[NUM_POINTS_B];
-        boxBPoints[0] = new Vec2f(boxBAbsPos).add(boxB.getRad());
-        boxBPoints[1] = new Vec2f(-boxB.getRad().x, boxB.getRad().y).add(boxBAbsPos);
-        boxBPoints[2] = new Vec2f(boxBAbsPos).sub(boxB.getRad());
-        boxBPoints[3] = new Vec2f(boxB.getRad().x, -boxB.getRad().y).add(boxBAbsPos);
+        boxBPoints[0] = new Vec2f(boxBAbsPos).add(boxB.rad);
+        boxBPoints[1] = new Vec2f(-boxB.rad.x, boxB.rad.y).add(boxBAbsPos);
+        boxBPoints[2] = new Vec2f(boxBAbsPos).sub(boxB.rad);
+        boxBPoints[3] = new Vec2f(boxB.rad.x, -boxB.rad.y).add(boxBAbsPos);
 
         Vec2f[] lineADirs = new Vec2f[NUM_POINTS_A];
         Vec2f[] lineADirsPerps = new Vec2f[NUM_POINTS_A];

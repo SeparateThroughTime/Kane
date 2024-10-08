@@ -10,16 +10,13 @@ import kane.physics.Shape;
 import kane.physics.ShapeType;
 
 public class Circle extends Shape{
-    private final float rad;
+    public final float rad;
 
     public Circle(float rad, int relPosX, int relPosY, Color color, Body body, Material material, int renderLayer){
         super(relPosX, relPosY, ShapeType.CIRCLE, body, color, material, renderLayer, 0, 0);
         this.rad = rad;
     }
 
-    public float getRad(){
-        return rad;
-    }
 
     @Override
     public void updateAABB(Vec2f nextAbsPos, float tolerance){
@@ -41,7 +38,7 @@ public class Circle extends Shape{
         Vec2f distanceBetween = new Vec2f(point).sub(getAbsPos());
         Vec2f normal = new Vec2f(distanceBetween).normalize();
         float projDistance = distanceBetween.dot(normal);
-        float radius = getRad();
+        float radius = rad;
         float d = radius - projDistance;
 
         return -d <= 0;

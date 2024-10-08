@@ -29,7 +29,7 @@ public class LineSegmentCircleContactGenerator implements ContactGenerator{
 
         Vec2f distanceToClosest = new Vec2f(circleB.getAbsPos()).sub(pointOnA);
         Vec2f normal = new Vec2f(distanceToClosest).normalize();
-        float d = distanceToClosest.dot(normal) - circleB.getRad();
+        float d = distanceToClosest.dot(normal) - circleB.rad;
 
         Contact newContact = new Contact(normal, d, pointOnA);
         if (acceptor.accept(newContact)){

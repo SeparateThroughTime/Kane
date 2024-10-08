@@ -17,7 +17,7 @@ public class PlaneCircleContactGenerator implements ContactGenerator{
         Vec2f pointOnPlane = planeA.getPoint();
         Vec2f distanceToPlane = new Vec2f(pointOnPlane).sub(circleB.getAbsPos());
         float projDistance = distanceToPlane.dot(planeA.getNormal());
-        float projRadius = -circleB.getRad();
+        float projRadius = -circleB.rad;
         float d = projRadius - projDistance;
         Vec2f closestPointOnPlane = new Vec2f(circleB.getAbsPos()).addMult(planeA.getNormal(), projDistance);
 

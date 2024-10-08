@@ -11,7 +11,9 @@ import kane.physics.shapes.Polygon;
 
 public class BoxPolygonContactGenerator implements ContactGenerator {
 
-	@Override
+    private int numPointsA;
+
+    @Override
 	public void generate(ShapePair shapePair, ContactAcceptor acceptor) {
 		Box boxA = (Box) shapePair.shapeA;
 		Polygon poliB = (Polygon) shapePair.shapeB;
@@ -21,23 +23,23 @@ public class BoxPolygonContactGenerator implements ContactGenerator {
 		Vec2f poliBAbsPos = poliB.getAbsPos();
 		Vec2f relPos = poliB.getAbsPos().sub(boxA.getAbsPos());
 
-		final int NUM_POINTS_A = 4;
+		final int numPointsA = 4;
 		final int NUM_POINTS_B = poliB.getNumPoints();
-		Vec2f[] boxAPoints = new Vec2f[NUM_POINTS_A];
-		boxAPoints[0] = new Vec2f(boxAAbsPos).add(boxA.getRad());
-		boxAPoints[1] = new Vec2f(boxAAbsPos).add(new Vec2f(boxA.getRad().x, -boxA.getRad().y));
-		boxAPoints[2] = new Vec2f(boxAAbsPos).sub(boxA.getRad());
-		boxAPoints[3] = new Vec2f(boxAAbsPos).add(new Vec2f(-boxA.getRad().x, boxA.getRad().y));
+		Vec2f[] boxAPoints = new Vec2f[numPointsA];
+		boxAPoints[0] = new Vec2f(boxAAbsPos).add(boxA.rad);
+		boxAPoints[1] = new Vec2f(boxAAbsPos).add(new Vec2f(boxA.rad.x, -boxA.rad.y));
+		boxAPoints[2] = new Vec2f(boxAAbsPos).sub(boxA.rad);
+		boxAPoints[3] = new Vec2f(boxAAbsPos).add(new Vec2f(-boxA.rad.x, boxA.rad.y));
 
 		Vec2f[] poliBPoints = new Vec2f[NUM_POINTS_B];
 		for (int i = 0; i < NUM_POINTS_B; i++) {
 			poliBPoints[i] = new Vec2f(poliB.getPoint(i)).add(poliBAbsPos);
 		}
 
-		Vec2f[] boxADirs = new Vec2f[NUM_POINTS_A];
-		Vec2f[] boxADirsPerps = new Vec2f[NUM_POINTS_A];
-		for (int i = 0; i < NUM_POINTS_A; i++) {
-			int j = i < NUM_POINTS_A - 1 ? i + 1 : 0;
+		Vec2f[] boxADirs = new Vec2f[numPointsA];
+		Vec2f[] boxADirsPerps = new Vec2f[numPointsA];
+		for (int i = 0; i < numPointsA; i++) {
+			int j = i < numPointsA - 1 ? i + 1 : 0;
 			boxADirs[i] = new Vec2f(boxAPoints[j]).sub(boxAPoints[i]).normalize();
 			boxADirsPerps[i] = new Vec2f(boxADirs[i]).perpRight();
 		}
@@ -54,12 +56,12 @@ public class BoxPolygonContactGenerator implements ContactGenerator {
 		Vec2f normal = new Vec2f();
 
 		// Check if there is a separation and get normal
-		for (int i = 0; i < NUM_POINTS_A + NUM_POINTS_B; i++) {
+		for (int i = 0; i < numPointsA + NUM_POINTS_B; i++) {
 			Vec2f perp;
-			if (i < NUM_POINTS_A) {
+			if (i < numPointsA) {
 				perp = boxADirsPerps[i];
 			} else {
-				perp = poliBDirsPerps[i - NUM_POINTS_A];
+				perp = poliBDirsPerps[i - numPointsA];
 			}
 
 			float[] minMaxA = GeneratorFunctions.projectPolygon(perp, boxAPoints);
@@ -87,7 +89,7 @@ public class BoxPolygonContactGenerator implements ContactGenerator {
 		float smallestD = Float.POSITIVE_INFINITY;
 		boolean lerpA = false;
 		boolean lerpB = false;
-		for (int i = 0; i < NUM_POINTS_A; i++) {
+		for (int i = 0; i < numPointsA; i++) {
 			Vec2f point = boxAPoints[i];
 
 			float d = new Vec2f(normal).mult(-1).dot(point);

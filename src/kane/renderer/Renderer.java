@@ -145,7 +145,6 @@ public class Renderer{
 
     public void changeResolution(){
         glfwSetWindowSize(window, RES_SPECS.width, RES_SPECS.height);
-        CAMERA.changeResolution();
         multiplier = (float) RES_SPECS.height / RES_SPECS.GAME_HEIGHT;
         postShader.uploadVec2i("resolution", new Vec2i(RES_SPECS.width, RES_SPECS.height));
     }

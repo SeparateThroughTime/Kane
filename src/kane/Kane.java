@@ -72,17 +72,11 @@ import static kane.renderer.Camera.CAMERA;
 import static kane.renderer.Renderer.RENDERER;
 import static kane.renderer.ResolutionSpecification.RES_SPECS;
 import static kane.sound.SoundEngine.SOUND;
+import static kane.genericGame.JsonManager.JSON_MANAGER;
 
 import java.awt.Color;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Arrays;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonReader;
+import kane.exceptions.LoadJsonException;
 import kane.genericGame.*;
 import kane.genericGame.gameEvent.mob.DamageHandler;
 import kane.genericGame.hud.HudBar;
@@ -94,9 +88,6 @@ import kane.physics.Material;
 import kane.physics.Shape;
 import kane.physics.shapes.*;
 import kane.renderer.*;
-import kane.serialization.*;
-import kane.sound.SoundSource;
-import kane.sound.SoundType;
 
 public class Kane extends Game{
 
@@ -113,9 +104,7 @@ public class Kane extends Game{
 
     }
 
-    Material mStatic = new Material(0, 1f);
-    Material mDynamic = new Material(1, 0.9f);
-    Material mEvent = new Material(0, 0);
+
     Body sword;
     Item currentItem;
 
@@ -125,88 +114,41 @@ public class Kane extends Game{
         mapLen = 400 * 3;
         mapHeight = RES_SPECS.GAME_HEIGHT;
 
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(Body.class, new BodySerialization());
-        gsonBuilder.registerTypeAdapter(Box.class, new BoxSerialization());
-        gsonBuilder.registerTypeAdapter(Circle.class, new CircleSerialization());
-        gsonBuilder.registerTypeAdapter(Color.class, new ColorSerialization());
-        gsonBuilder.registerTypeAdapter(LineSegment.class, new LineSegmentSerialization());
-        gsonBuilder.registerTypeAdapter(Mob.class, new MobSerialization());
-        gsonBuilder.registerTypeAdapter(Plane.class, new PlaneSerialization());
-        gsonBuilder.registerTypeAdapter(Point.class, new PointSerialization());
-        gsonBuilder.registerTypeAdapter(Polygon.class, new PolygonSerialization());
-        gsonBuilder.registerTypeAdapter(Shape.class, new ShapeSerialization());
-        gsonBuilder.registerTypeAdapter(SoundSource.class, new SoundSourceSerialization());
-        gsonBuilder.registerTypeAdapter(SpriteController.class, new SpriteControllerSerialization());
-        gsonBuilder.registerTypeAdapter(Sprite.class, new SpriteSerialization());
-        gsonBuilder.registerTypeAdapter(Vec2f.class, new Vec2fSerialization());
-        Gson gson = gsonBuilder.setPrettyPrinting().create();
-
-        JsonReader reader;
         try{
-            reader = new JsonReader(new FileReader("jsonFile.json"));
-        } catch (FileNotFoundException e){
-            throw new RuntimeException(e);
+            player = JSON_MANAGER.loadMob("json/player/player.json");
+            player.pos.set(100, 130);
+        } catch (LoadJsonException e){
+            e.printStackTrace();
         }
 
-        // Create player
-        player = gson.fromJson(reader, Mob.class);
-        player.pos.set(100, 130);
-//        player = new Mob(100, 130, 3, 1, MobDirection.RIGHT);
-//        player.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
-//        player.setJumpAcc(new Vec2f(0, 800 / DELTATIME));
-//        player.setWalkSpeed(300);
-
-        // camera
         Camera.initializeCamera(true);
         CAMERA.bindCameraToMap();
         RENDERER.moveBackground();
-        CAMERA.initInventory();
+        Inventory.initializeInventory();
 
         // Create World
         Body body = new Body(0, 0);
         LineSegment line =
-                new LineSegment(new Vec2f(30, 0), new Vec2f(30, RES_SPECS.GAME_HEIGHT), body, Color.BLUE, mStatic, 2);
+                new LineSegment(new Vec2f(30, 0), new Vec2f(30, RES_SPECS.GAME_HEIGHT), body, Color.BLUE, Material.STATIC, 2);
         body.addShape(line);
         line.addToRenderer();
         body.shapes[0].addPassiveAttribute(PassiveAttributes.PHYSICAL);
 
         body = new Body(0, 0);
-        line = new LineSegment(new Vec2f(0, 30), new Vec2f(mapLen, 30), body, Color.BLUE, mStatic, 2);
+        line = new LineSegment(new Vec2f(0, 30), new Vec2f(mapLen, 30), body, Color.BLUE, Material.STATIC, 2);
         body.addShape(line);
         line.addToRenderer();
         body.shapes[0].addPassiveAttribute(PassiveAttributes.PHYSICAL);
 
         body = new Body(0, 0);
         line = new LineSegment(new Vec2f(mapLen - 30, 0), new Vec2f(mapLen - 30, RES_SPECS.GAME_HEIGHT), body,
-                Color.BLUE, mStatic, 2);
+                Color.BLUE, Material.STATIC, 2);
         body.addShape(line);
         line.addToRenderer();
         body.shapes[0].addPassiveAttribute(PassiveAttributes.PHYSICAL);
 
         // Set player Item
         currentItem = INVENTORY.getItem("None");
-//        player.addShape(new Box(0, 0, player, new Vec2f(16, 32), Color.WHITE, mDynamic, 2));
-//        player.shapes[0].addPassiveAttribute(PassiveAttributes.PLAYER_ALL);
-//        player.shapes[0].addPassiveAttribute(PassiveAttributes.MOB_ALL);
-//        player.shapes[0].addPassiveAttribute(PassiveAttributes.PHYSICAL);
-//        player.addShape(new Box(0, -22, player, new Vec2f(15, 10), Color.WHITE, mEvent, 2));
-//        player.shapes[1].collision = false;
-//        player.shapes[1].addActiveAttribute(ActiveAttributes.MOB_FEETS);
-//        player.shapes[1].addActiveAttribute(ActiveAttributes.ATTACKING_FIELD);
-//        player.shapes[1].visible = false;
-//        player.addShape(new Box(32, 0, player, new Vec2f(8, 32), Color.RED, mEvent, 2));
-//        player.shapes[2].collision = false;
-//        player.shapes[2].addPassiveAttribute(PassiveAttributes.ATTACKING_FIELD);
-//        player.shapes[2].visible = false;
-//        SpriteController[] spriteControllers = currentItem.getPlayerSpriteControllers();
-//        player.shapes[0].setSpriteControllers(spriteControllers);
-//        player.addSoundSource("sound//player//jump.ogg", SoundType.JUMP);
-//        player.addSoundSource("sound//player//damage.ogg", SoundType.DAMAGE);
-//        player.addSoundSource("sound//player//walk.ogg", SoundType.WALK);
-//        player.addSoundSource("sound//player//attack.ogg", SoundType.ATTACK);
-//        player.setDirection(MobDirection.RIGHT);
-
 
         // Sword
         sword = new Body(200, 130);
@@ -215,7 +157,7 @@ public class Kane extends Game{
         points[1] = new Vec2f(16, -16);
         points[2] = new Vec2f(16, 16);
         points[3] = new Vec2f(-16, 16);
-        sword.addShape(new Polygon(0, 0, sword, Color.YELLOW, points, mDynamic, 2));
+        sword.addShape(new Polygon(0, 0, sword, Color.YELLOW, points, Material.DYNAMIC, 2));
         sword.shapes[0].addActiveAttribute(ActiveAttributes.SWORD);
         Sprite sprite = new Sprite("sprites\\items\\sword.png", 16, 16);
         sprite.addState(SpriteState.STATIC, new int[]{0});
@@ -228,18 +170,18 @@ public class Kane extends Game{
         // Create Blob
         Mob blob = new Mob(300, 130, 3, 1, MobDirection.LEFT);
         points = new Vec2f[4];
-        blob.addShape(new Box(0, 0, blob, new Vec2f(32, 16), Color.YELLOW, mDynamic, 2));
+        blob.addShape(new Box(0, 0, blob, new Vec2f(32, 16), Color.YELLOW, Material.DYNAMIC, 2));
         blob.shapes[0].addPassiveAttribute(PassiveAttributes.MOB_ALL);
         blob.shapes[0].addPassiveAttribute(PassiveAttributes.PHYSICAL);
-        blob.addShape(new Box(31, 0, blob, new Vec2f(1, 15), Color.YELLOW, mEvent, 2));
+        blob.addShape(new Box(31, 0, blob, new Vec2f(1, 15), Color.YELLOW, Material.EVENT, 2));
         blob.shapes[1].addPassiveAttribute(PassiveAttributes.MOB_RIGHT);
         blob.shapes[1].collision = false;
         blob.shapes[1].visible = false;
-        blob.addShape(new Box(-31, 0, blob, new Vec2f(1, 15), Color.YELLOW, mEvent, 2));
+        blob.addShape(new Box(-31, 0, blob, new Vec2f(1, 15), Color.YELLOW, Material.EVENT, 2));
         blob.shapes[2].addPassiveAttribute(PassiveAttributes.MOB_LEFT);
         blob.shapes[2].collision = false;
         blob.shapes[2].visible = false;
-        blob.addShape(new Box(0, -2, blob, new Vec2f(32, 15), Color.YELLOW, mEvent, 2));
+        blob.addShape(new Box(0, -2, blob, new Vec2f(32, 15), Color.YELLOW, Material.EVENT, 2));
         blob.shapes[3].addActiveAttribute(ActiveAttributes.ATTACKING_FIELD);
         blob.shapes[3].collision = false;
         blob.shapes[3].visible = false;
@@ -266,7 +208,7 @@ public class Kane extends Game{
         //		changeResolution(Resolution.SOL1176x664);
 
         // healthBar
-        healthBar = CAMERA.addHudBar("sprites\\interface\\HealthBar.png");
+        healthBar = new HudBar("sprites\\interface\\HealthBar.png");
         refreshHealthBar();
 
         // Spooky testing
@@ -277,19 +219,6 @@ public class Kane extends Game{
         // background music
         //        addEvent(new PlaySound(RESOURCE_MANAGER.getSoundBuffer("sound//music//01//main.ogg"), true, true));
 
-
-
-//        try{
-//            FileWriter writer = new FileWriter("jsonFile.json");
-//            gson.toJson(player, writer);
-//            writer.flush();
-//            writer.close();
-//        } catch (IOException e){
-//            throw new RuntimeException(e);
-//        }
-//
-//        String json = gson.toJson(player);
-//        System.out.println(json);
     }
 
     public void refreshHealthBar(){
@@ -326,6 +255,7 @@ public class Kane extends Game{
             for (int i = 0; i < Inventory.NUM_SLOTS; i++){
                 Shape slot = INVENTORY.getSlot(i);
                 if (slot.isPointInShape(MOUSE.mousePos)){
+
                     inventoryClick(i);
                 }
             }

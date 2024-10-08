@@ -1,17 +1,20 @@
 package kane.genericGame.hud;
 
+import kane.genericGame.GuiElement;
 import kane.genericGame.Item;
 import kane.genericGame.PassiveAttributes;
 import kane.genericGame.item.NONE;
 import kane.genericGame.item.SWORD;
 import kane.math.Vec2f;
 import kane.physics.Shape;
-import kane.renderer.ResolutionSpecification;
 import kane.renderer.Sprite;
 import kane.renderer.SpriteController;
 import kane.renderer.SpriteState;
 
 import java.util.ArrayList;
+
+import static kane.renderer.ResolutionSpecification.RES_SPECS;
+import static kane.Kane.GAME;
 
 public class Inventory{
 
@@ -19,24 +22,37 @@ public class Inventory{
 
     public static final int NUM_SLOTS = 8;
 
-    private final ResolutionSpecification resSpecs;
     private final ArrayList<Item> items;
-    private final Shape mainShape;
-    private final Shape[] slotShapes;
+    private final GuiElement mainShape;
+    private final GuiElement[] slotShapes;
 
-    private Inventory(Shape mainShape, Shape[] slotShapes, ResolutionSpecification resSpecs){
-        this.mainShape = mainShape;
-        this.slotShapes = slotShapes;
-        this.resSpecs = resSpecs;
+    private Inventory(){
+
+        mainShape = new GuiElement(new Vec2f(0, 0), new Vec2f(0, 0), 3, false);
+        GAME.addGuiElement(mainShape);
+
+        slotShapes = new GuiElement[8];
+        slotShapes[0] = new GuiElement(new Vec2f(-24, 8), new Vec2f(5.33333f, 5.33333f), 4, false);
+        slotShapes[1] = new GuiElement(new Vec2f(-8, 8), new Vec2f(5.33333f, 5.33333f), 4, false);
+        slotShapes[2] = new GuiElement(new Vec2f(8, 8), new Vec2f(5.33333f, 5.33333f), 4, false);
+        slotShapes[3] = new GuiElement(new Vec2f(24, 8), new Vec2f(5.33333f, 5.33333f), 4, false);
+        slotShapes[4] = new GuiElement(new Vec2f(-24, -8), new Vec2f(5.33333f, 5.33333f), 4, false);
+        slotShapes[5] = new GuiElement(new Vec2f(-8, -8), new Vec2f(5.33333f, 5.33333f), 4, false);
+        slotShapes[6] = new GuiElement(new Vec2f(8, -8), new Vec2f(5.33333f, 5.33333f), 4, false);
+        slotShapes[7] = new GuiElement(new Vec2f(24, -8), new Vec2f(5.33333f, 5.33333f), 4, false);
+        for (GuiElement slotShape : slotShapes){
+            GAME.addGuiElement(slotShape);
+        }
+
         items = new ArrayList<>();
 
         createInventory();
         createItems();
     }
 
-    public static void initializeInventory(Shape mainShape, Shape[] slotShapes, ResolutionSpecification resSpecs){
+    public static void initializeInventory(){
         if (INVENTORY == null){
-            INVENTORY = new Inventory(mainShape, slotShapes, resSpecs);
+            INVENTORY = new Inventory();
         }
     }
 
@@ -56,7 +72,7 @@ public class Inventory{
         spriteControllers[0] = new SpriteController(sprite);
         spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC);
         spriteControllers[0].spritePosOffset =
-                new Vec2f((float) -resSpecs.gameWidth / 4 - 24, (float) -resSpecs.GAME_HEIGHT / 4 + 24);
+                new Vec2f((float) -RES_SPECS.gameWidth / 4 - 24, (float) -RES_SPECS.GAME_HEIGHT / 4 + 24);
         mainShape.setSpriteControllers(spriteControllers);
 
         // Slots
@@ -69,7 +85,8 @@ public class Inventory{
     }
 
     public void changeResolution(){
-        // At the moment nothing tbd.
+        mainShape.getSpriteControllers()[0].spritePosOffset =
+                new Vec2f((float) -RES_SPECS.gameWidth / 4 - 24, (float) -RES_SPECS.GAME_HEIGHT / 4 + 24);
     }
 
     public Item getItem(String name){
@@ -121,9 +138,7 @@ public class Inventory{
         mainShape.visible = visible;
 
         for (Shape shape : slotShapes){
-            if (shape.hasPassiveAttribute(PassiveAttributes.INVENTORY)){
-                shape.visible = visible;
-            }
+            shape.visible = visible;
         }
 
         if (visible){
