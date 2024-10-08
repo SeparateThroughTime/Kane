@@ -44,7 +44,6 @@ public class BodySerialization implements JsonSerializer<Body>, JsonDeserializer
         JsonArray shapeArray = jsonObject.get("shapes").getAsJsonArray();
         for (JsonElement shapeElement : shapeArray){
             Shape shape = shapeSerializer.deserialize(body, shapeElement, Shape.class, context);
-            System.out.println(body);
             body.addShape(shape);
         }
 

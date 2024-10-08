@@ -1,15 +1,12 @@
 package kane.renderer;
 
 import static kane.Kane.GAME;
-import static kane.genericGame.hud.Inventory.INVENTORY;
 import static kane.renderer.ResolutionSpecification.RES_SPECS;
 
-import java.awt.Color;
 import java.util.ArrayList;
 
 import kane.genericGame.ActiveAttributes;
-import kane.genericGame.Game;
-import kane.genericGame.GuiElement;
+import kane.genericGame.hud.HudElement;
 import kane.genericGame.gameEvent.camera.BindCameraToMap;
 import kane.genericGame.gameEvent.camera.MoveCameraDown;
 import kane.genericGame.gameEvent.camera.MoveCameraLeft;
@@ -18,14 +15,9 @@ import kane.genericGame.gameEvent.camera.MoveCameraUp;
 import kane.genericGame.gameEvent.camera.SlowCameraX;
 import kane.genericGame.gameEvent.camera.SlowCameraY;
 import kane.genericGame.hud.HudBar;
-import kane.genericGame.hud.Inventory;
 import kane.math.Vec2f;
 import kane.physics.AABB;
 import kane.physics.Body;
-import kane.physics.Material;
-import kane.physics.Shape;
-import kane.physics.shapes.Box;
-import kane.physics.shapes.Point;
 
 public class Camera extends Body{
 
@@ -40,13 +32,13 @@ public class Camera extends Body{
     public int movementSpeedY;
     private final ArrayList<HudBar> hudBars = new ArrayList<>();
 
-    public GuiElement mainShape;
-    public GuiElement leftBox;
-    public GuiElement rightBox;
-    public GuiElement lowerBox;
-    public GuiElement upperBox;
-    public GuiElement midXBox;
-    public GuiElement midYBox;
+    public HudElement mainShape;
+    public HudElement leftBox;
+    public HudElement rightBox;
+    public HudElement lowerBox;
+    public HudElement upperBox;
+    public HudElement midXBox;
+    public HudElement midYBox;
 
     private Camera(boolean forGame){
         super((int) RES_SPECS.halfGameWidth, (int) RES_SPECS.halfGameHeight);
@@ -89,7 +81,7 @@ public class Camera extends Body{
     }
 
     private void createMidYBox(){
-        midYBox = new GuiElement(new Vec2f(0, 0), new Vec2f(50, 12.5f), 0, true);
+        midYBox = new HudElement(new Vec2f(0, 0), new Vec2f(50, 12.5f), 0, true);
         addShape(midYBox);
         GAME.addGuiElement(midYBox);
         midYBox.collision = false;
@@ -98,7 +90,7 @@ public class Camera extends Body{
     }
 
     private void createMidXBox(){
-        midXBox = new GuiElement(new Vec2f(0, 0), new Vec2f(12.5f, 50), 0, true);
+        midXBox = new HudElement(new Vec2f(0, 0), new Vec2f(12.5f, 50), 0, true);
         addShape(midXBox);
         GAME.addGuiElement(midXBox);
         midXBox.collision = false;
@@ -107,7 +99,7 @@ public class Camera extends Body{
     }
 
     private void createUpperBox(){
-        upperBox = new GuiElement(new Vec2f(0, 31.25f), new Vec2f(0.5f, 18.75f), 0, true);
+        upperBox = new HudElement(new Vec2f(0, 31.25f), new Vec2f(0.5f, 18.75f), 0, true);
         addShape(upperBox);
         GAME.addGuiElement(upperBox);
         upperBox.collision = false;
@@ -116,7 +108,7 @@ public class Camera extends Body{
     }
 
     private void createLowerBox(){
-        lowerBox = new GuiElement(new Vec2f(0, -32.25f), new Vec2f(50, 18.75f), 0, true);
+        lowerBox = new HudElement(new Vec2f(0, -32.25f), new Vec2f(50, 18.75f), 0, true);
         addShape(lowerBox);
         GAME.addGuiElement(lowerBox);
         lowerBox.collision = false;
@@ -125,7 +117,7 @@ public class Camera extends Body{
     }
 
     private void createRightBox(){
-        rightBox = new GuiElement(new Vec2f(31.25f, 0), new Vec2f(18.75f, 50), 0, true);
+        rightBox = new HudElement(new Vec2f(31.25f, 0), new Vec2f(18.75f, 50), 0, true);
         addShape(rightBox);
         GAME.addGuiElement(rightBox);
         rightBox.collision = false;
@@ -134,7 +126,7 @@ public class Camera extends Body{
     }
 
     private void createLeftBox(){
-        leftBox = new GuiElement(new Vec2f(-31.25f, 0), new Vec2f(18.75f, 50), 0, true);
+        leftBox = new HudElement(new Vec2f(-31.25f, 0), new Vec2f(18.75f, 50), 0, true);
         addShape(leftBox);
         GAME.addGuiElement(leftBox);
         leftBox.collision = false;
@@ -143,7 +135,7 @@ public class Camera extends Body{
     }
 
     private void createMainShape(){
-        mainShape = new GuiElement(new Vec2f(0, 0), new Vec2f(0, 0), 0, true);
+        mainShape = new HudElement(new Vec2f(0, 0), new Vec2f(0, 0), 0, true);
         addShape(mainShape);
         GAME.addGuiElement(mainShape);
         mainShape.collision = false;

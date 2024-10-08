@@ -1,6 +1,5 @@
 package kane.genericGame.hud;
 
-import kane.genericGame.GuiElement;
 import kane.genericGame.Item;
 import kane.genericGame.PassiveAttributes;
 import kane.genericGame.item.NONE;
@@ -23,24 +22,24 @@ public class Inventory{
     public static final int NUM_SLOTS = 8;
 
     private final ArrayList<Item> items;
-    private final GuiElement mainShape;
-    private final GuiElement[] slotShapes;
+    private final HudElement mainShape;
+    private final HudElement[] slotShapes;
 
     private Inventory(){
 
-        mainShape = new GuiElement(new Vec2f(0, 0), new Vec2f(0, 0), 3, false);
+        mainShape = new HudElement(new Vec2f(0, 0), new Vec2f(0, 0), 3, false);
         GAME.addGuiElement(mainShape);
 
-        slotShapes = new GuiElement[8];
-        slotShapes[0] = new GuiElement(new Vec2f(-24, 8), new Vec2f(5.33333f, 5.33333f), 4, false);
-        slotShapes[1] = new GuiElement(new Vec2f(-8, 8), new Vec2f(5.33333f, 5.33333f), 4, false);
-        slotShapes[2] = new GuiElement(new Vec2f(8, 8), new Vec2f(5.33333f, 5.33333f), 4, false);
-        slotShapes[3] = new GuiElement(new Vec2f(24, 8), new Vec2f(5.33333f, 5.33333f), 4, false);
-        slotShapes[4] = new GuiElement(new Vec2f(-24, -8), new Vec2f(5.33333f, 5.33333f), 4, false);
-        slotShapes[5] = new GuiElement(new Vec2f(-8, -8), new Vec2f(5.33333f, 5.33333f), 4, false);
-        slotShapes[6] = new GuiElement(new Vec2f(8, -8), new Vec2f(5.33333f, 5.33333f), 4, false);
-        slotShapes[7] = new GuiElement(new Vec2f(24, -8), new Vec2f(5.33333f, 5.33333f), 4, false);
-        for (GuiElement slotShape : slotShapes){
+        slotShapes = new HudElement[8];
+        slotShapes[0] = new HudElement(new Vec2f(-24, 8), new Vec2f(5.33333f, 5.33333f), 4, false);
+        slotShapes[1] = new HudElement(new Vec2f(-8, 8), new Vec2f(5.33333f, 5.33333f), 4, false);
+        slotShapes[2] = new HudElement(new Vec2f(8, 8), new Vec2f(5.33333f, 5.33333f), 4, false);
+        slotShapes[3] = new HudElement(new Vec2f(24, 8), new Vec2f(5.33333f, 5.33333f), 4, false);
+        slotShapes[4] = new HudElement(new Vec2f(-24, -8), new Vec2f(5.33333f, 5.33333f), 4, false);
+        slotShapes[5] = new HudElement(new Vec2f(-8, -8), new Vec2f(5.33333f, 5.33333f), 4, false);
+        slotShapes[6] = new HudElement(new Vec2f(8, -8), new Vec2f(5.33333f, 5.33333f), 4, false);
+        slotShapes[7] = new HudElement(new Vec2f(24, -8), new Vec2f(5.33333f, 5.33333f), 4, false);
+        for (HudElement slotShape : slotShapes){
             GAME.addGuiElement(slotShape);
         }
 

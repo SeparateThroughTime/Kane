@@ -1,6 +1,7 @@
 package kane.genericGame;
 
 import com.google.gson.Gson;
+import kane.genericGame.hud.HudElement;
 import kane.genericGame.hud.HudBar;
 import kane.genericGame.userInteraction.*;
 import kane.physics.Body;
@@ -42,7 +43,7 @@ public abstract class Game implements KeyboardInterface, MouseInterface, Contact
 
     public HudBar healthBar;
     public Mob player;
-    public GuiElement[] guiElements = new GuiElement[100];
+    public HudElement[] hudElements = new HudElement[100];
     public int numElements = 0;
 
     private float sanity;
@@ -140,8 +141,8 @@ public abstract class Game implements KeyboardInterface, MouseInterface, Contact
         RENDERER.changeResolution();
         CAMERA.changeResolution();
 
-        for (GuiElement guiElement : guiElements){
-            guiElement.changeResolution();
+        for (HudElement hudElement : hudElements){
+            hudElement.changeResolution();
         }
         INVENTORY.changeResolution();
     }
@@ -261,6 +262,7 @@ public abstract class Game implements KeyboardInterface, MouseInterface, Contact
         return sanity;
     }
 
-    public void addGuiElement(GuiElement guiElement){guiElements[numElements++] = guiElement;}
+    public void addGuiElement(HudElement hudElement){
+        hudElements[numElements++] = hudElement;}
 
 }

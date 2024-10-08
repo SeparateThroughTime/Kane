@@ -1,4 +1,4 @@
-package kane.genericGame;
+package kane.genericGame.hud;
 
 import kane.math.Vec2f;
 import kane.physics.Material;
@@ -9,12 +9,12 @@ import java.awt.*;
 
 import static kane.renderer.ResolutionSpecification.RES_SPECS;
 
-public class GuiElement extends Box{
+public class HudElement extends Box{
     public final Vec2f posInPercent;
     public final Vec2f radInPercent;
     public final boolean stretchX;
 
-    public GuiElement(Vec2f pos,Vec2f rad, int renderLayer, boolean stretchX){
+    public HudElement(Vec2f pos, Vec2f rad, int renderLayer, boolean stretchX){
         super(pos.x, pos.y, Camera.CAMERA, rad, Color.CYAN, Material.INTERFACE, renderLayer);
         this.posInPercent = pos;
         this.radInPercent = rad;

@@ -1,9 +1,7 @@
 package kane.genericGame.hud;
 
-import kane.genericGame.GuiElement;
 import kane.genericGame.PassiveAttributes;
 import kane.math.Vec2f;
-import kane.physics.Shape;
 import kane.renderer.Sprite;
 import kane.renderer.SpriteController;
 import kane.renderer.SpriteState;
@@ -28,11 +26,11 @@ public class HudBar{
         return hudBars.size();
     }
 
-    private final GuiElement hudShape;
+    private final HudElement hudShape;
 
     public HudBar(String filepath){
         int hudPos = hudBars.size();
-        hudShape = new GuiElement(new Vec2f(-50 + HudBar.HUD_HEIGHT_PERCENT + HudBar.HUD_WIDTH_PERCENT / 2,
+        hudShape = new HudElement(new Vec2f(-50 + HudBar.HUD_HEIGHT_PERCENT + HudBar.HUD_WIDTH_PERCENT / 2,
                 50 - HudBar.HUD_HEIGHT_PERCENT * (hudPos + 1) * 1.5f), new Vec2f(HudBar.HUD_WIDTH_PERCENT / 2,
                 HudBar.HUD_HEIGHT_PERCENT / 2), 3, false);
 
