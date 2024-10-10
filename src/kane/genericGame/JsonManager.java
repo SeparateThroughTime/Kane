@@ -2,9 +2,11 @@ package kane.genericGame;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.stream.JsonReader;
 import kane.exceptions.LoadJsonException;
 import kane.exceptions.WriteJsonException;
+import kane.genericGame.hud.HudElement;
 import kane.math.Vec2f;
 import kane.physics.Body;
 import kane.physics.Shape;
@@ -23,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 
 public class JsonManager{
@@ -46,6 +49,7 @@ public class JsonManager{
         gsonBuilder.registerTypeAdapter(SpriteController.class, new SpriteControllerSerialization());
         gsonBuilder.registerTypeAdapter(Sprite.class, new SpriteSerialization());
         gsonBuilder.registerTypeAdapter(Vec2f.class, new Vec2fSerialization());
+        gsonBuilder.registerTypeAdapter(HudElement.class, new HudElementSerialization());
         gson = gsonBuilder.setPrettyPrinting().create();
     }
 
@@ -55,15 +59,35 @@ public class JsonManager{
         }
     }
 
-    public void write(String filepath, Mob object) throws WriteJsonException{
+    private void writeObj(String filepath, Object object) throws WriteJsonException{
         try{
-            FileWriter writer = new FileWriter("jsonFile.json");
+            FileWriter writer = new FileWriter(filepath);
             gson.toJson(object, writer);
             writer.flush();
             writer.close();
         } catch (IOException e){
             throw new WriteJsonException(filepath, e);
         }
+    }
+
+    public void write(String filepath, Mob object) throws WriteJsonException{
+        writeObj(filepath, object);
+    }
+
+    public void write(String filepath, Body body) throws WriteJsonException{
+        writeObj(filepath, body);
+    }
+
+    public void write(String filepath, HudElement hudElement) throws WriteJsonException{
+        writeObj(filepath, hudElement);
+    }
+
+    public void write(String filepath, HudElement[] hudElements) throws WriteJsonException{
+        writeObj(filepath, hudElements);
+    }
+
+    public void write(String filepath, SpriteController[] spriteControllers) throws WriteJsonException{
+        writeObj(filepath, spriteControllers);
     }
 
     private Object load(String filepath, Type type) throws LoadJsonException{
@@ -81,5 +105,21 @@ public class JsonManager{
 
     public Body loadBody(String filepath) throws LoadJsonException{
         return (Body) load(filepath, Body.class);
+    }
+
+    public HudElement loadHudElement(String filepath) throws LoadJsonException{
+        return (HudElement) load(filepath, HudElement.class);
+    }
+
+    public HudElement[] loadHudElements(String filepath) throws  LoadJsonException{
+        JsonArray jsonArray = (JsonArray) load(filepath, JsonArray.class);
+        HudElement[] hudElements = gson.fromJson(jsonArray, HudElement[].class);
+        return hudElements;
+    }
+
+    public SpriteController[] loadSpriteControllers(String filepath) throws  LoadJsonException{
+        JsonArray jsonArray = (JsonArray) load(filepath, JsonArray.class);
+        SpriteController[] spriteControllers = gson.fromJson(jsonArray, SpriteController[].class);
+        return spriteControllers;
     }
 }

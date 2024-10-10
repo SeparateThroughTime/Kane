@@ -12,11 +12,11 @@ import kane.physics.ShapeType;
 public class Polygon extends Shape{
 
     private final Vec2f[] points;
-    private final Vec2f[] pointsAlign;
+    public final Vec2f[] pointsAlign;
     private final int numPoints;
     private float angle;
 
-    public Polygon(int relPosX, int RelPosY, Body body, Color color, Vec2f[] points, Material material,
+    public Polygon(float relPosX, float RelPosY, Body body, Color color, Vec2f[] points, Material material,
                    int renderLayer){
         super(relPosX, RelPosY, ShapeType.POLYGON, body, color, material, renderLayer, points.length + 1,
                 points.length);
@@ -29,6 +29,10 @@ public class Polygon extends Shape{
         }
         this.angle = 0;
         calculateCenterOfMass();
+
+        if (body.addShape(this) == null) {
+            throw new RuntimeException("Shape creation failed: Body hast too many shapes.");
+        };
     }
 
     public Polygon(int relPosX, int RelPosY, Body body, Color color, int numPoints, float radius, Material material,
@@ -45,6 +49,10 @@ public class Polygon extends Shape{
         }
         this.angle = 0;
         calculateCenterOfMass();
+
+        if (body.addShape(this) == null) {
+            throw new RuntimeException("Shape creation failed: Body hast too many shapes.");
+        };
     }
 
     private void calculateCenterOfMass(){
@@ -202,6 +210,10 @@ public class Polygon extends Shape{
             Vec2f point = points[i];
             point.set(point.x, -point.y);
         }
+    }
+
+    public float getAngle(){
+        return angle;
     }
 
 }

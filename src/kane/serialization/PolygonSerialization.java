@@ -14,16 +14,36 @@ public class PolygonSerialization implements JsonSerializer<Polygon>, JsonDeseri
 
     @Override
     public JsonElement serialize(Polygon src, Type typeOfSrc, JsonSerializationContext context){
-        return null;
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("shapeType", "POLYGON");
+        jsonObject.add("points", context.serialize(src.pointsAlign));
+        jsonObject.addProperty("angle", src.getAngle());
+
+        ShapeSerialization shapeSerializer = new ShapeSerialization();
+        shapeSerializer.serialize(jsonObject, src, typeOfSrc, context);
+        return jsonObject;
     }
 
     @Override
     public Polygon deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException{
-        return null;
+        throw new UnsupportedOperationException("Tried to deserialize a Polygon without body.");
     }
 
     public Shape deserialize(Vec2f relPos, Body body, Color color, Material material, int renderLayer, JsonElement json, Type typeOfT, JsonDeserializationContext context){
-        return null;
+        JsonObject jsonObject = json.getAsJsonObject();
+
+        JsonArray pointArray = jsonObject.get("points").getAsJsonArray();
+        Vec2f[] points = new Vec2f[pointArray.size()];
+        Vec2fSerialization vec2fDeserializer = new Vec2fSerialization();
+        for (int i = 0; i < pointArray.size(); i++) {
+            points[i] = vec2fDeserializer.deserialize(pointArray.get(i), Vec2f.class, context);
+        }
+
+        float angle = jsonObject.get("angle").getAsFloat();
+
+        Polygon polygon = new Polygon(relPos.x, relPos.y, body, color, points, material, renderLayer);
+        polygon.rotate(angle);
+        return polygon;
     }
 }

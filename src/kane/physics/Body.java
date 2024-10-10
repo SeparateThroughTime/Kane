@@ -28,7 +28,7 @@ public class Body{
     private boolean removed;
 
     public Shape[] shapes;
-    public static final int MAX_SHAPES = 20;
+    public static final int MAX_SHAPES = 35;
     public int numShapes;
 
     public HashMap<SoundType, SoundSource> soundSources;

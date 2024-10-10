@@ -32,9 +32,9 @@ public class HudElementSerialization implements JsonSerializer<HudElement>, Json
         Vec2f radInPercent = context.deserialize(jsonObject.get("radInPercent"), Vec2f.class);
         boolean stretchX = jsonObject.get("stretchX").getAsBoolean();
         int renderLayer = jsonObject.get("renderLayer").getAsInt();
-        ActiveAttributes[] activeAttributes = context.deserialize(jsonObject.get("activeAttributes"), ActiveAttributes.class);
-        PassiveAttributes[] passiveAttributes = context.deserialize(jsonObject.get("passiveAttributes"), PassiveAttributes.class);
-        SpriteController[] spriteControllers = context.deserialize(jsonObject.get("spriteControllers"), SpriteController.class);
+        ActiveAttributes[] activeAttributes = context.deserialize(jsonObject.get("activeAttributes"), ActiveAttributes[].class);
+        PassiveAttributes[] passiveAttributes = context.deserialize(jsonObject.get("passiveAttributes"), PassiveAttributes[].class);
+        SpriteController[] spriteControllers = context.deserialize(jsonObject.get("spriteControllers"), SpriteController[].class);
 
         HudElement hudElement = new HudElement(posInPercent, radInPercent, renderLayer, stretchX);
 
@@ -44,7 +44,7 @@ public class HudElementSerialization implements JsonSerializer<HudElement>, Json
         for (PassiveAttributes attribute : passiveAttributes){
             hudElement.addPassiveAttribute(attribute);
         }
-        if (spriteControllers != null){
+        if (spriteControllers.length > 0){
             hudElement.setSpriteControllers(spriteControllers);
         }
 

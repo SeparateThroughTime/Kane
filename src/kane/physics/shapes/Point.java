@@ -10,8 +10,12 @@ import java.awt.*;
 
 public class Point extends Shape{
 
-    public Point(int relPosX, int relPosY, Body body, Color color, Material material, int renderLayer){
+    public Point(float relPosX, float relPosY, Body body, Color color, Material material, int renderLayer){
         super(relPosX, relPosY, ShapeType.POINT, body, color, material, renderLayer, 2, 1);
+
+        if (body.addShape(this) == null) {
+            throw new RuntimeException("Shape creation failed: Body hast too many shapes.");
+        };
     }
 
     @Override

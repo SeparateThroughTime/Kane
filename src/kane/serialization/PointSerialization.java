@@ -14,7 +14,12 @@ import java.lang.reflect.Type;
 public class PointSerialization implements JsonSerializer<Point>, JsonDeserializer<Point>{
     @Override
     public JsonElement serialize(Point src, Type typeOfSrc, JsonSerializationContext context){
-        return null;
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("shapeType", "POINT");
+
+        ShapeSerialization shapeSerializer = new ShapeSerialization();
+        shapeSerializer.serialize(jsonObject, src, typeOfSrc, context);
+        return jsonObject;
     }
 
     @Override
@@ -24,6 +29,6 @@ public class PointSerialization implements JsonSerializer<Point>, JsonDeserializ
     }
 
     public Shape deserialize(Vec2f relPos, Body body, Color color, Material material, int renderLayer, JsonElement json, Type typeOfT, JsonDeserializationContext context){
-        return null;
+        return new Point(relPos.x, relPos.y, body, color, material, renderLayer);
     }
 }

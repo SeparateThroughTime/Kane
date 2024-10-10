@@ -2,10 +2,11 @@ package kane.renderer;
 
 import static kane.Kane.GAME;
 import static kane.renderer.ResolutionSpecification.RES_SPECS;
+import static kane.genericGame.JsonManager.JSON_MANAGER;
 
 import java.util.ArrayList;
 
-import kane.genericGame.ActiveAttributes;
+import kane.exceptions.LoadJsonException;
 import kane.genericGame.hud.HudElement;
 import kane.genericGame.gameEvent.camera.BindCameraToMap;
 import kane.genericGame.gameEvent.camera.MoveCameraDown;
@@ -58,18 +59,29 @@ public class Camera extends Body{
     public static void initializeCamera(boolean forGame){
         if (CAMERA == null){
             CAMERA = new Camera(forGame);
-            CAMERA.createShapes();
+            CAMERA.loadShapes();
         }
     }
 
-    public void createShapes(){
-        createMainShape();
-        createLeftBox();
-        createRightBox();
-        createLowerBox();
-        createUpperBox();
-        createMidXBox();
-        createMidYBox();
+    public void loadShapes(){
+        try{
+            HudElement[] loadedShapes = JSON_MANAGER.loadHudElements("json\\hud\\camera.json");
+            mainShape = loadedShapes[0];
+            leftBox = loadedShapes[1];
+            rightBox = loadedShapes[2];
+            lowerBox = loadedShapes[3];
+            upperBox = loadedShapes[4];
+            midXBox = loadedShapes[5];
+            midYBox = loadedShapes[6];
+
+
+            for (HudElement element : loadedShapes){
+                element.collision = false;
+                element.visible = false;
+            }
+        } catch (LoadJsonException e){
+            e.printStackTrace();
+        }
     }
 
     private void initWindowRad(){
@@ -78,68 +90,6 @@ public class Camera extends Body{
 
     private void createCamera(){
         initWindowRad();
-    }
-
-    private void createMidYBox(){
-        midYBox = new HudElement(new Vec2f(0, 0), new Vec2f(50, 12.5f), 0, true);
-        addShape(midYBox);
-        GAME.addGuiElement(midYBox);
-        midYBox.collision = false;
-        midYBox.addActiveAttribute(ActiveAttributes.CAMERA_MID_Y);
-        midYBox.visible = false;
-    }
-
-    private void createMidXBox(){
-        midXBox = new HudElement(new Vec2f(0, 0), new Vec2f(12.5f, 50), 0, true);
-        addShape(midXBox);
-        GAME.addGuiElement(midXBox);
-        midXBox.collision = false;
-        midXBox.addActiveAttribute(ActiveAttributes.CAMERA_MID_X);
-        midXBox.visible = false;
-    }
-
-    private void createUpperBox(){
-        upperBox = new HudElement(new Vec2f(0, 31.25f), new Vec2f(0.5f, 18.75f), 0, true);
-        addShape(upperBox);
-        GAME.addGuiElement(upperBox);
-        upperBox.collision = false;
-        upperBox.addActiveAttribute(ActiveAttributes.CAMERA_UP);
-        upperBox.visible = false;
-    }
-
-    private void createLowerBox(){
-        lowerBox = new HudElement(new Vec2f(0, -32.25f), new Vec2f(50, 18.75f), 0, true);
-        addShape(lowerBox);
-        GAME.addGuiElement(lowerBox);
-        lowerBox.collision = false;
-        lowerBox.addActiveAttribute(ActiveAttributes.CAMERA_DOWN);
-        lowerBox.visible = false;
-    }
-
-    private void createRightBox(){
-        rightBox = new HudElement(new Vec2f(31.25f, 0), new Vec2f(18.75f, 50), 0, true);
-        addShape(rightBox);
-        GAME.addGuiElement(rightBox);
-        rightBox.collision = false;
-        rightBox.addActiveAttribute(ActiveAttributes.CAMERA_RIGHT);
-        rightBox.visible = false;
-    }
-
-    private void createLeftBox(){
-        leftBox = new HudElement(new Vec2f(-31.25f, 0), new Vec2f(18.75f, 50), 0, true);
-        addShape(leftBox);
-        GAME.addGuiElement(leftBox);
-        leftBox.collision = false;
-        leftBox.addActiveAttribute(ActiveAttributes.CAMERA_LEFT);
-        leftBox.visible = false;
-    }
-
-    private void createMainShape(){
-        mainShape = new HudElement(new Vec2f(0, 0), new Vec2f(0, 0), 0, true);
-        addShape(mainShape);
-        GAME.addGuiElement(mainShape);
-        mainShape.collision = false;
-        mainShape.visible = false;
     }
 
     public void update(){

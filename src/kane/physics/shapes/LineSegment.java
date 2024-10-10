@@ -19,6 +19,10 @@ public class LineSegment extends Shape{
         super(0, 0, ShapeType.LINESEGMENT, body, color, material, renderLayer, 2, 1);
         this.relPosA = relPosA;
         this.relPosB = relPosB;
+
+        if (body.addShape(this) == null) {
+            throw new RuntimeException("Shape creation failed: Body hast too many shapes.");
+        };
     }
 
     @Override

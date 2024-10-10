@@ -195,6 +195,7 @@ public class Mob extends Body{
     public void startWalkingAI(){
         switch (ai){
             case GUMBA:
+                putActiveActions(MobActions.GUMBA_WALK, true);
                 walkingAI = new GumbaWalk(this);
                 GAME.addEvent(walkingAI);
                 break;

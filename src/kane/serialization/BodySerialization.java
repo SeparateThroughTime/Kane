@@ -43,8 +43,7 @@ public class BodySerialization implements JsonSerializer<Body>, JsonDeserializer
         ShapeSerialization shapeSerializer = new ShapeSerialization();
         JsonArray shapeArray = jsonObject.get("shapes").getAsJsonArray();
         for (JsonElement shapeElement : shapeArray){
-            Shape shape = shapeSerializer.deserialize(body, shapeElement, Shape.class, context);
-            body.addShape(shape);
+            shapeSerializer.deserialize(body, shapeElement, Shape.class, context);
         }
 
         for(SoundType soundType : SoundType.values()){

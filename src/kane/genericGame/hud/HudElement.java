@@ -1,5 +1,7 @@
 package kane.genericGame.hud;
 
+import kane.Kane;
+import kane.genericGame.Game;
 import kane.math.Vec2f;
 import kane.physics.Material;
 import kane.physics.shapes.Box;
@@ -15,13 +17,16 @@ public class HudElement extends Box{
     public final boolean stretchX;
 
     public HudElement(Vec2f pos, Vec2f rad, int renderLayer, boolean stretchX){
-        super(pos.x, pos.y, Camera.CAMERA, rad, Color.CYAN, Material.INTERFACE, renderLayer);
+        super(pos.x, pos.y, Camera.CAMERA, new Vec2f(rad), Color.CYAN, Material.INTERFACE, renderLayer);
         this.posInPercent = pos;
         this.radInPercent = rad;
         this.stretchX = stretchX;
+        this.collision = false;
 
         this.relPos.set(transformToGameUnit(this.posInPercent));
         this.rad.set(transformToGameUnit(this.radInPercent));
+
+        Kane.GAME.addHudElement(this);
 
     }
 
@@ -41,6 +46,5 @@ public class HudElement extends Box{
         this.relPos.set(transformToGameUnit(this.posInPercent));
         this.rad.set(transformToGameUnit(this.radInPercent));
     }
-
 
 }

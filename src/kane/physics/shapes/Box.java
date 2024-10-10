@@ -15,11 +15,19 @@ public class Box extends Shape{
     public Box(float relPosX, float relPosY, Body body, Vec2f rad, Color color, Material material, int renderLayer){
         super(relPosX, relPosY, ShapeType.BOX, body, color, material, renderLayer, 4, 2);
         this.rad = rad;
+
+        if (body.addShape(this) == null) {
+            throw new RuntimeException("Shape creation failed: Body hast too many shapes.");
+        };
     }
 
     public Box(Vec2f pos, Body body, Vec2f rad, Color color, Material material, int renderLayer){
         super(pos.x, pos.y, ShapeType.BOX, body, color, material, renderLayer, 4, 2);
         this.rad = rad;
+
+        if (body.addShape(this) == null) {
+            throw new RuntimeException("Shape creation failed: Body hast too many shapes.");
+        };
     }
 
     @Override

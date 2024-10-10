@@ -262,7 +262,7 @@ public abstract class Game implements KeyboardInterface, MouseInterface, Contact
         return sanity;
     }
 
-    public void addGuiElement(HudElement hudElement){
+    public void addHudElement(HudElement hudElement){
         hudElements[numElements++] = hudElement;}
 
 }

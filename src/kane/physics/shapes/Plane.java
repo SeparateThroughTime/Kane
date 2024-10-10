@@ -18,6 +18,10 @@ public class Plane extends Shape{
         this.normal = normal.normalize();
         this.distance = distance;
         this.len = len;
+
+        if (body.addShape(this) == null) {
+            throw new RuntimeException("Shape creation failed: Body hast too many shapes.");
+        };
     }
 
     public Vec2f getPoint(){
@@ -26,6 +30,9 @@ public class Plane extends Shape{
 
     public float getLen(){
         return len;
+    }
+    public float getDistance(){
+        return distance;
     }
 
     public Vec2f getNormal(){

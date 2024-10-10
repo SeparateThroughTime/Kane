@@ -1,5 +1,6 @@
 package kane.genericGame.hud;
 
+import kane.exceptions.LoadJsonException;
 import kane.genericGame.Item;
 import kane.genericGame.PassiveAttributes;
 import kane.genericGame.item.NONE;
@@ -13,7 +14,7 @@ import kane.renderer.SpriteState;
 import java.util.ArrayList;
 
 import static kane.renderer.ResolutionSpecification.RES_SPECS;
-import static kane.Kane.GAME;
+import static kane.genericGame.JsonManager.JSON_MANAGER;
 
 public class Inventory{
 
@@ -27,26 +28,35 @@ public class Inventory{
 
     private Inventory(){
 
-        mainShape = new HudElement(new Vec2f(0, 0), new Vec2f(0, 0), 3, false);
-        GAME.addGuiElement(mainShape);
+        try{
+            HudElement[] loadedShapes = JSON_MANAGER.loadHudElements("json\\hud\\inventory.json");
 
-        slotShapes = new HudElement[8];
-        slotShapes[0] = new HudElement(new Vec2f(-24, 8), new Vec2f(5.33333f, 5.33333f), 4, false);
-        slotShapes[1] = new HudElement(new Vec2f(-8, 8), new Vec2f(5.33333f, 5.33333f), 4, false);
-        slotShapes[2] = new HudElement(new Vec2f(8, 8), new Vec2f(5.33333f, 5.33333f), 4, false);
-        slotShapes[3] = new HudElement(new Vec2f(24, 8), new Vec2f(5.33333f, 5.33333f), 4, false);
-        slotShapes[4] = new HudElement(new Vec2f(-24, -8), new Vec2f(5.33333f, 5.33333f), 4, false);
-        slotShapes[5] = new HudElement(new Vec2f(-8, -8), new Vec2f(5.33333f, 5.33333f), 4, false);
-        slotShapes[6] = new HudElement(new Vec2f(8, -8), new Vec2f(5.33333f, 5.33333f), 4, false);
-        slotShapes[7] = new HudElement(new Vec2f(24, -8), new Vec2f(5.33333f, 5.33333f), 4, false);
-        for (HudElement slotShape : slotShapes){
-            GAME.addGuiElement(slotShape);
+            mainShape = loadedShapes[0];
+            mainShape.visible = false;
+            mainShape.setCurrentSpriteState(SpriteState.STATIC);
+            changeResolution();
+
+            int numSlots = loadedShapes.length - 1;
+            slotShapes = new HudElement[numSlots];
+            System.arraycopy(loadedShapes, 1, slotShapes, 0, numSlots);
+            for (HudElement shape : slotShapes){
+                shape.visible = false;
+                shape.setCurrentSpriteState(SpriteState.STATIC);
+            }
+
+        } catch (LoadJsonException e){
+           throw new RuntimeException(e);
         }
 
-        items = new ArrayList<>();
 
-        createInventory();
+        items = new ArrayList<>();
         createItems();
+
+//        try{
+//            JSON_MANAGER.write("json\\hud\\inventory.json", new HudElement[] {mainShape, slotShapes[0], slotShapes[1], slotShapes[2], slotShapes[3], slotShapes[4], slotShapes[5], slotShapes[6], slotShapes[7]});
+//        } catch (WriteJsonException e){
+//            throw new RuntimeException(e);
+//        }
     }
 
     public static void initializeInventory(){
@@ -70,8 +80,7 @@ public class Inventory{
         SpriteController[] spriteControllers = new SpriteController[1];
         spriteControllers[0] = new SpriteController(sprite);
         spriteControllers[0].setCurrentSpriteState(SpriteState.STATIC);
-        spriteControllers[0].spritePosOffset =
-                new Vec2f((float) -RES_SPECS.gameWidth / 4 - 24, (float) -RES_SPECS.GAME_HEIGHT / 4 + 24);
+        changeResolution();
         mainShape.setSpriteControllers(spriteControllers);
 
         // Slots
@@ -137,7 +146,7 @@ public class Inventory{
         mainShape.visible = visible;
 
         for (Shape shape : slotShapes){
-            shape.visible = visible;
+            shape.visible = false;
         }
 
         if (visible){

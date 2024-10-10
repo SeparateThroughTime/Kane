@@ -75,8 +75,10 @@ import static kane.sound.SoundEngine.SOUND;
 import static kane.genericGame.JsonManager.JSON_MANAGER;
 
 import java.awt.Color;
+import java.util.Arrays;
 
 import kane.exceptions.LoadJsonException;
+import kane.exceptions.WriteJsonException;
 import kane.genericGame.*;
 import kane.genericGame.gameEvent.mob.DamageHandler;
 import kane.genericGame.hud.HudBar;
@@ -127,79 +129,38 @@ public class Kane extends Game{
         Inventory.initializeInventory();
 
         // Create World
-        Body body = new Body(0, 0);
-        LineSegment line =
-                new LineSegment(new Vec2f(30, 0), new Vec2f(30, RES_SPECS.GAME_HEIGHT), body, Color.BLUE, Material.STATIC, 2);
-        body.addShape(line);
-        line.addToRenderer();
-        body.shapes[0].addPassiveAttribute(PassiveAttributes.PHYSICAL);
-
-        body = new Body(0, 0);
-        line = new LineSegment(new Vec2f(0, 30), new Vec2f(mapLen, 30), body, Color.BLUE, Material.STATIC, 2);
-        body.addShape(line);
-        line.addToRenderer();
-        body.shapes[0].addPassiveAttribute(PassiveAttributes.PHYSICAL);
-
-        body = new Body(0, 0);
-        line = new LineSegment(new Vec2f(mapLen - 30, 0), new Vec2f(mapLen - 30, RES_SPECS.GAME_HEIGHT), body,
-                Color.BLUE, Material.STATIC, 2);
-        body.addShape(line);
-        line.addToRenderer();
-        body.shapes[0].addPassiveAttribute(PassiveAttributes.PHYSICAL);
+        try{
+            Body body = JSON_MANAGER.loadBody("json\\levels\\test\\world.json");
+            LineSegment a = (LineSegment) (body.shapes[0]);
+            a.addToRenderer();
+            a = (LineSegment) (body.shapes[1]);
+            a.addToRenderer();
+            a = (LineSegment) (body.shapes[2]);
+            a.addToRenderer();
+        } catch (LoadJsonException e){
+            throw new RuntimeException(e);
+        }
 
         // Set player Item
         currentItem = INVENTORY.getItem("None");
 
-        // Sword
-        sword = new Body(200, 130);
-        Vec2f[] points = new Vec2f[4];
-        points[0] = new Vec2f(-16, -16);
-        points[1] = new Vec2f(16, -16);
-        points[2] = new Vec2f(16, 16);
-        points[3] = new Vec2f(-16, 16);
-        sword.addShape(new Polygon(0, 0, sword, Color.YELLOW, points, Material.DYNAMIC, 2));
-        sword.shapes[0].addActiveAttribute(ActiveAttributes.SWORD);
-        Sprite sprite = new Sprite("sprites\\items\\sword.png", 16, 16);
-        sprite.addState(SpriteState.STATIC, new int[]{0});
-        SpriteController[] spriteControllers2 = new SpriteController[1];
-        spriteControllers2[0] = new SpriteController(sprite);
-        spriteControllers2[0].spritePosOffset = new Vec2f(-16, -16);
-        spriteControllers2[0].setCurrentSpriteState(SpriteState.STATIC);
-        sword.shapes[0].setSpriteControllers(spriteControllers2);
+        // Create Sword
+        try{
+            sword = JSON_MANAGER.loadBody("json\\levels\\test\\sword.json");
+            sword.pos.set(200, 130);
+            sword.setCurrentSpriteState(SpriteState.STATIC);
+        } catch (LoadJsonException e){
+            throw new RuntimeException(e);
+        }
 
         // Create Blob
-        Mob blob = new Mob(300, 130, 3, 1, MobDirection.LEFT);
-        points = new Vec2f[4];
-        blob.addShape(new Box(0, 0, blob, new Vec2f(32, 16), Color.YELLOW, Material.DYNAMIC, 2));
-        blob.shapes[0].addPassiveAttribute(PassiveAttributes.MOB_ALL);
-        blob.shapes[0].addPassiveAttribute(PassiveAttributes.PHYSICAL);
-        blob.addShape(new Box(31, 0, blob, new Vec2f(1, 15), Color.YELLOW, Material.EVENT, 2));
-        blob.shapes[1].addPassiveAttribute(PassiveAttributes.MOB_RIGHT);
-        blob.shapes[1].collision = false;
-        blob.shapes[1].visible = false;
-        blob.addShape(new Box(-31, 0, blob, new Vec2f(1, 15), Color.YELLOW, Material.EVENT, 2));
-        blob.shapes[2].addPassiveAttribute(PassiveAttributes.MOB_LEFT);
-        blob.shapes[2].collision = false;
-        blob.shapes[2].visible = false;
-        blob.addShape(new Box(0, -2, blob, new Vec2f(32, 15), Color.YELLOW, Material.EVENT, 2));
-        blob.shapes[3].addActiveAttribute(ActiveAttributes.ATTACKING_FIELD);
-        blob.shapes[3].collision = false;
-        blob.shapes[3].visible = false;
-        sprite = new Sprite("sprites\\Mobs\\Blob\\Blob.png", 32, 32);
-        sprite.addState(SpriteState.STATIC, new int[]{0});
-        spriteControllers2 = new SpriteController[1];
-        spriteControllers2[0] = new SpriteController(sprite);
-        spriteControllers2[0].spritePosOffset = new Vec2f(-32, -16);
-        spriteControllers2[0].setCurrentSpriteState(SpriteState.STATIC);
-        blob.shapes[0].setSpriteControllers(spriteControllers2);
-        blob.putActiveActions(MobActions.GUMBA_WALK, true);
-        blob.setAI(AIs.GUMBA);
-        blob.setWalkAcc(new Vec2f(40 / DELTATIME, 0));
-        blob.setJumpAcc(new Vec2f(0, 200 / DELTATIME));
-        blob.setWalkSpeed(50);
-        //        blob.addSoundSource("sound//mobs//blob//death.ogg", SoundType.DEATH);
-        //        blob.addSoundSource("sound//mobs//blob//damage.ogg", SoundType.DAMAGE);
-        //        blob.addSoundSource("sound//player//walk.ogg", SoundType.WALK);
+        try{
+            Mob blob = JSON_MANAGER.loadMob("json\\levels\\test\\blob.json");
+            blob.pos.set(300, 130);
+            blob.setCurrentSpriteState(SpriteState.STATIC);
+        } catch (LoadJsonException e){
+            throw new RuntimeException(e);
+        }
 
 
         // Create Background

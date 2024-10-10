@@ -15,7 +15,7 @@ public class Physics{
     public static Physics PHYSICS;
 
     public static final float AABB_TOLERANCE = 20;
-    public static final int MAX_BODIES = 1000;
+    public static final int MAX_BODIES = 500;
     public Body[] bodies;
     public int numBodies;
 
@@ -26,7 +26,7 @@ public class Physics{
     private final boolean[][][][] aabbOverlaps;
     private final int[][][][] shapePairIds;
 
-    public final int MAX_SHAPEPAIRS = 100000;
+    public final int MAX_SHAPEPAIRS = 10000;
     public ShapePair[] shapePairs;
     public int numShapePairs;
 

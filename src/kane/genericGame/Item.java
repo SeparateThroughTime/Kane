@@ -1,6 +1,10 @@
 package kane.genericGame;
 
+import kane.exceptions.LoadJsonException;
 import kane.renderer.SpriteController;
+import kane.renderer.SpriteState;
+
+import static kane.genericGame.JsonManager.JSON_MANAGER;
 
 public abstract class Item{
     int amount;
@@ -8,10 +12,17 @@ public abstract class Item{
     SpriteController[] itemSpriteControllers;
     SpriteController[] playerSpriteControllers;
 
-    public Item(String name, SpriteController[] itemSpriteControllers, SpriteController[] playerSpriteControllers){
+    public Item(String name, String itemSpriteControllerFilepath, String playerSpriteControllerFilepath){
         this.name = name;
-        this.itemSpriteControllers = itemSpriteControllers;
-        this.playerSpriteControllers = playerSpriteControllers;
+        try{
+            this.itemSpriteControllers = JSON_MANAGER.loadSpriteControllers(itemSpriteControllerFilepath);
+            this.playerSpriteControllers = JSON_MANAGER.loadSpriteControllers(playerSpriteControllerFilepath);
+        } catch (LoadJsonException e){
+            throw new RuntimeException(e);
+        }
+
+        this.itemSpriteControllers[0].setCurrentSpriteState(SpriteState.STATIC);
+
     }
 
     public abstract void attack();

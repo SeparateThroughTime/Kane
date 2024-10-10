@@ -3,6 +3,7 @@ package kane.serialization;
 import com.google.gson.*;
 import kane.genericGame.ActiveAttributes;
 import kane.genericGame.PassiveAttributes;
+import kane.genericGame.hud.HudElement;
 import kane.math.ArrayOperations;
 import kane.math.Vec2f;
 import kane.physics.Body;
@@ -20,6 +21,11 @@ import java.lang.reflect.Type;
 public class ShapeSerialization implements JsonSerializer<Shape>, JsonDeserializer<Shape>{
     @Override
     public JsonElement serialize(Shape src, Type typeOfSrc, JsonSerializationContext context){
+        if (src.getClass().equals(HudElement.class)){
+            HudElementSerialization hudElementSerializer = new HudElementSerialization();
+            return hudElementSerializer.serialize((HudElement) src, typeOfSrc, context);
+        }
+
         throw new UnsupportedOperationException("Tried to serialize abstract Shape as JSON");
     }
 
@@ -89,7 +95,7 @@ public class ShapeSerialization implements JsonSerializer<Shape>, JsonDeserializ
         for (PassiveAttributes attribute : passiveAttributes){
             shape.addPassiveAttribute(attribute);
         }
-        if (spriteControllers != null){
+        if (spriteControllers.length > 0){
             shape.setSpriteControllers(spriteControllers);
         }
 

@@ -14,7 +14,13 @@ import java.lang.reflect.Type;
 public class CircleSerialization implements JsonSerializer<Circle>, JsonDeserializer<Circle>{
     @Override
     public JsonElement serialize(Circle src, Type typeOfSrc, JsonSerializationContext context){
-        return null;
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("shapeType", "CIRCLE");
+        jsonObject.addProperty("rad", src.rad);
+
+        ShapeSerialization shapeSerializer = new ShapeSerialization();
+        shapeSerializer.serialize(jsonObject, src, typeOfSrc, context);
+        return jsonObject;
     }
 
     @Override
@@ -24,6 +30,8 @@ public class CircleSerialization implements JsonSerializer<Circle>, JsonDeserial
     }
 
     public Shape deserialize(Vec2f relPos, Body body, Color color, Material material, int renderLayer, JsonElement json, Type typeOfT, JsonDeserializationContext context){
-        return null;
+        JsonObject jsonObject = json.getAsJsonObject();
+        float rad = jsonObject.get("rad").getAsFloat();
+        return new Circle(rad, relPos.x, relPos.y, color, body, material, renderLayer);
     }
 }

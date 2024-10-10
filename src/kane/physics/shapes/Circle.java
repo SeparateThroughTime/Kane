@@ -12,9 +12,13 @@ import kane.physics.ShapeType;
 public class Circle extends Shape{
     public final float rad;
 
-    public Circle(float rad, int relPosX, int relPosY, Color color, Body body, Material material, int renderLayer){
+    public Circle(float rad, float relPosX, float relPosY, Color color, Body body, Material material, int renderLayer){
         super(relPosX, relPosY, ShapeType.CIRCLE, body, color, material, renderLayer, 0, 0);
         this.rad = rad;
+
+        if (body.addShape(this) == null) {
+            throw new RuntimeException("Shape creation failed: Body hast too many shapes.");
+        };
     }
 
 
