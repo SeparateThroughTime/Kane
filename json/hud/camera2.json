@@ -1,0 +1,119 @@
+[
+  {
+    "posInPercent": {
+      "x": 0.0,
+      "y": 0.0
+    },
+    "radInPercent": {
+      "x": 0.0,
+      "y": 0.0
+    },
+    "stretchX": true,
+    "renderLayer": 0,
+    "activeAttributes": [],
+    "passiveAttributes": [],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": -31.25,
+      "y": 0.0
+    },
+    "radInPercent": {
+      "x": 18.75,
+      "y": 50.0
+    },
+    "stretchX": true,
+    "renderLayer": 0,
+    "activeAttributes": [
+      "CAMERA_LEFT"
+    ],
+    "passiveAttributes": [],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": 31.25,
+      "y": 0.0
+    },
+    "radInPercent": {
+      "x": 18.75,
+      "y": 50.0
+    },
+    "stretchX": true,
+    "renderLayer": 0,
+    "activeAttributes": [
+      "CAMERA_RIGHT"
+    ],
+    "passiveAttributes": [],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": 0.0,
+      "y": -32.25
+    },
+    "radInPercent": {
+      "x": 50.0,
+      "y": 18.75
+    },
+    "stretchX": true,
+    "renderLayer": 0,
+    "activeAttributes": [
+      "CAMERA_DOWN"
+    ],
+    "passiveAttributes": [],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": 0.0,
+      "y": 31.25
+    },
+    "radInPercent": {
+      "x": 0.5,
+      "y": 18.75
+    },
+    "stretchX": true,
+    "renderLayer": 0,
+    "activeAttributes": [
+      "CAMERA_UP"
+    ],
+    "passiveAttributes": [],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": 0.0,
+      "y": 0.0
+    },
+    "radInPercent": {
+      "x": 12.5,
+      "y": 50.0
+    },
+    "stretchX": true,
+    "renderLayer": 0,
+    "activeAttributes": [
+      "CAMERA_MID_X"
+    ],
+    "passiveAttributes": [],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": 0.0,
+      "y": 0.0
+    },
+    "radInPercent": {
+      "x": 50.0,
+      "y": 12.5
+    },
+    "stretchX": true,
+    "renderLayer": 0,
+    "activeAttributes": [
+      "CAMERA_MID_Y"
+    ],
+    "passiveAttributes": [],
+    "spriteControllers": []
+  }
+]

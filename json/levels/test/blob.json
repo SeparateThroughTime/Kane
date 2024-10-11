@@ -1,0 +1,153 @@
+{
+  "maxHealth": 3,
+  "damage": 1,
+  "direction": "LEFT",
+  "walkAcc": {
+    "x": 2399.9998,
+    "y": 0.0
+  },
+  "walkSpeed": 50,
+  "jumpAcc": {
+    "x": 0.0,
+    "y": 11999.999
+  },
+  "ai": "GUMBA",
+  "shapes": [
+    {
+      "shapeType": "BOX",
+      "rad": {
+        "x": 32.0,
+        "y": 16.0
+      },
+      "renderLayer": 2,
+      "relPos": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "color": {
+        "red": 255,
+        "green": 255,
+        "blue": 0,
+        "alpha": 255
+      },
+      "collision": true,
+      "visible": true,
+      "material": {
+        "density": 1.0,
+        "friction": 0.9
+      },
+      "activeAttributes": [],
+      "passiveAttributes": [
+        "MOB_ALL",
+        "PHYSICAL"
+      ],
+      "spriteControllers": [
+        {
+          "spritePosOffset": {
+            "x": -32.0,
+            "y": -16.0
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "sprite": {
+            "frameWidth": 32,
+            "frameHeight": 32,
+            "filepath": "sprites\\Mobs\\Blob\\Blob.png",
+            "STATIC-SpriteState": [
+              0
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "shapeType": "BOX",
+      "rad": {
+        "x": 1.0,
+        "y": 15.0
+      },
+      "renderLayer": 2,
+      "relPos": {
+        "x": 31.0,
+        "y": 0.0
+      },
+      "color": {
+        "red": 255,
+        "green": 255,
+        "blue": 0,
+        "alpha": 255
+      },
+      "collision": false,
+      "visible": false,
+      "material": {
+        "density": 0.0,
+        "friction": 0.0
+      },
+      "activeAttributes": [],
+      "passiveAttributes": [
+        "MOB_RIGHT"
+      ],
+      "spriteControllers": []
+    },
+    {
+      "shapeType": "BOX",
+      "rad": {
+        "x": 1.0,
+        "y": 15.0
+      },
+      "renderLayer": 2,
+      "relPos": {
+        "x": -31.0,
+        "y": 0.0
+      },
+      "color": {
+        "red": 255,
+        "green": 255,
+        "blue": 0,
+        "alpha": 255
+      },
+      "collision": false,
+      "visible": false,
+      "material": {
+        "density": 0.0,
+        "friction": 0.0
+      },
+      "activeAttributes": [],
+      "passiveAttributes": [
+        "MOB_LEFT"
+      ],
+      "spriteControllers": []
+    },
+    {
+      "shapeType": "BOX",
+      "rad": {
+        "x": 32.0,
+        "y": 15.0
+      },
+      "renderLayer": 2,
+      "relPos": {
+        "x": 0.0,
+        "y": -2.0
+      },
+      "color": {
+        "red": 255,
+        "green": 255,
+        "blue": 0,
+        "alpha": 255
+      },
+      "collision": false,
+      "visible": false,
+      "material": {
+        "density": 0.0,
+        "friction": 0.0
+      },
+      "activeAttributes": [
+        "ATTACKING_FIELD"
+      ],
+      "passiveAttributes": [],
+      "spriteControllers": []
+    }
+  ]
+}

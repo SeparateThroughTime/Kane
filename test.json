@@ -1,0 +1,138 @@
+[
+  {
+    "posInPercent": {
+      "x": -24.0,
+      "y": 8.0
+    },
+    "radInPercent": {
+      "x": 5.33333,
+      "y": 5.33333
+    },
+    "stretchX": false,
+    "renderLayer": 4,
+    "activeAttributes": [],
+    "passiveAttributes": [
+      "INVENTORY"
+    ],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": -8.0,
+      "y": 8.0
+    },
+    "radInPercent": {
+      "x": 5.33333,
+      "y": 5.33333
+    },
+    "stretchX": false,
+    "renderLayer": 4,
+    "activeAttributes": [],
+    "passiveAttributes": [
+      "INVENTORY"
+    ],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": 8.0,
+      "y": 8.0
+    },
+    "radInPercent": {
+      "x": 5.33333,
+      "y": 5.33333
+    },
+    "stretchX": false,
+    "renderLayer": 4,
+    "activeAttributes": [],
+    "passiveAttributes": [
+      "INVENTORY"
+    ],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": 24.0,
+      "y": 8.0
+    },
+    "radInPercent": {
+      "x": 5.33333,
+      "y": 5.33333
+    },
+    "stretchX": false,
+    "renderLayer": 4,
+    "activeAttributes": [],
+    "passiveAttributes": [
+      "INVENTORY"
+    ],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": -24.0,
+      "y": -8.0
+    },
+    "radInPercent": {
+      "x": 5.33333,
+      "y": 5.33333
+    },
+    "stretchX": false,
+    "renderLayer": 4,
+    "activeAttributes": [],
+    "passiveAttributes": [
+      "INVENTORY"
+    ],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": -8.0,
+      "y": -8.0
+    },
+    "radInPercent": {
+      "x": 5.33333,
+      "y": 5.33333
+    },
+    "stretchX": false,
+    "renderLayer": 4,
+    "activeAttributes": [],
+    "passiveAttributes": [
+      "INVENTORY"
+    ],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": 8.0,
+      "y": -8.0
+    },
+    "radInPercent": {
+      "x": 5.33333,
+      "y": 5.33333
+    },
+    "stretchX": false,
+    "renderLayer": 4,
+    "activeAttributes": [],
+    "passiveAttributes": [
+      "INVENTORY"
+    ],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": 24.0,
+      "y": -8.0
+    },
+    "radInPercent": {
+      "x": 5.33333,
+      "y": 5.33333
+    },
+    "stretchX": false,
+    "renderLayer": 4,
+    "activeAttributes": [],
+    "passiveAttributes": [
+      "INVENTORY"
+    ],
+    "spriteControllers": []
+  }
+]

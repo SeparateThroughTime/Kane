@@ -22,11 +22,6 @@ public class MobSerialization implements JsonSerializer<Mob>, JsonDeserializer<M
         jsonObject.add("jumpAcc", context.serialize(src.getJumpAcc()));
         jsonObject.add("ai", context.serialize(src.getAi()));
 
-        BodySerialization bodySerializer = new BodySerialization();
-        bodySerializer.serialize(jsonObject, src, Body.class, context);
-        jsonObject.add("Body", bodySerializer.serialize((Body) src, Body.class, context));
-
-
         return jsonObject;
     }
 
@@ -50,8 +45,10 @@ public class MobSerialization implements JsonSerializer<Mob>, JsonDeserializer<M
             mob.setAI(ai);
         }
 
+
+
         BodySerialization bodySerializer = new BodySerialization();
-        bodySerializer.deserialize(mob, jsonObject.get("Body"), Body.class, context);
+        bodySerializer.deserialize(mob, jsonObject, Body.class, context);
         mob.setDirection(direction);
 
         return mob;

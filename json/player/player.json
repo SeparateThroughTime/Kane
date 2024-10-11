@@ -1,0 +1,258 @@
+{
+  "maxHealth": 3,
+  "damage": 1,
+  "direction": "RIGHT",
+  "walkAcc": {
+    "x": 2399.9998,
+    "y": 0.0
+  },
+  "walkSpeed": 300,
+  "jumpAcc": {
+    "x": 0.0,
+    "y": 47999.996
+  },
+  "shapes": [
+    {
+      "shapeType": "BOX",
+      "rad": {
+        "x": 16.0,
+        "y": 32.0
+      },
+      "renderLayer": 2,
+      "relPos": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "color": {
+        "red": 255,
+        "green": 255,
+        "blue": 255,
+        "alpha": 255
+      },
+      "collision": true,
+      "visible": true,
+      "material": {
+        "density": 1.0,
+        "friction": 0.9
+      },
+      "activeAttributes": [],
+      "passiveAttributes": [
+        "PLAYER_ALL",
+        "MOB_ALL",
+        "PHYSICAL"
+      ],
+      "spriteControllers": [
+        {
+          "spritePosOffset": {
+            "x": -32.0,
+            "y": -32.0
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "sprite": {
+            "frameWidth": 32,
+            "frameHeight": 32,
+            "filepath": "sprites\\player\\playerHead.png",
+            "RUNNING_LEFT-SpriteState": [
+              1
+            ],
+            "RUNNING_RIGHT-SpriteState": [
+              0
+            ],
+            "STANDING_LEFT-SpriteState": [
+              1
+            ],
+            "STANDING_RIGHT-SpriteState": [
+              0
+            ],
+            "HIT_LEFT-SpriteState": [
+              1
+            ],
+            "HIT_RIGHT-SpriteState": [
+              0
+            ],
+            "JUMP_LEFT-SpriteState": [
+              1
+            ],
+            "JUMP_RIGHT-SpriteState": [
+              0
+            ],
+            "FALL_LEFT-SpriteState": [
+              1
+            ],
+            "FALL_RIGHT-SpriteState": [
+              0
+            ]
+          }
+        },
+        {
+          "spritePosOffset": {
+            "x": -32.0,
+            "y": -32.0
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "sprite": {
+            "frameWidth": 32,
+            "frameHeight": 32,
+            "filepath": "sprites\\player\\playerUpper.png",
+            "RUNNING_LEFT-SpriteState": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "RUNNING_RIGHT-SpriteState": [
+              6,
+              7,
+              8,
+              9
+            ],
+            "STANDING_LEFT-SpriteState": [
+              0
+            ],
+            "STANDING_RIGHT-SpriteState": [
+              5
+            ],
+            "HIT_LEFT-SpriteState": [
+              0
+            ],
+            "HIT_RIGHT-SpriteState": [
+              5
+            ],
+            "JUMP_LEFT-SpriteState": [
+              0
+            ],
+            "JUMP_RIGHT-SpriteState": [
+              5
+            ],
+            "FALL_LEFT-SpriteState": [
+              0
+            ],
+            "FALL_RIGHT-SpriteState": [
+              5
+            ]
+          }
+        },
+        {
+          "spritePosOffset": {
+            "x": -32.0,
+            "y": -32.0
+          },
+          "scale": {
+            "x": 1.0,
+            "y": 1.0
+          },
+          "sprite": {
+            "frameWidth": 32,
+            "frameHeight": 32,
+            "filepath": "sprites\\player\\playerLower.png",
+            "RUNNING_LEFT-SpriteState": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "RUNNING_RIGHT-SpriteState": [
+              6,
+              7,
+              8,
+              9
+            ],
+            "STANDING_LEFT-SpriteState": [
+              0
+            ],
+            "STANDING_RIGHT-SpriteState": [
+              5
+            ],
+            "HIT_LEFT-SpriteState": [
+              0
+            ],
+            "HIT_RIGHT-SpriteState": [
+              5
+            ],
+            "JUMP_LEFT-SpriteState": [
+              0
+            ],
+            "JUMP_RIGHT-SpriteState": [
+              5
+            ],
+            "FALL_LEFT-SpriteState": [
+              0
+            ],
+            "FALL_RIGHT-SpriteState": [
+              5
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "shapeType": "BOX",
+      "rad": {
+        "x": 15.0,
+        "y": 10.0
+      },
+      "renderLayer": 2,
+      "relPos": {
+        "x": 0.0,
+        "y": -22.0
+      },
+      "color": {
+        "red": 255,
+        "green": 255,
+        "blue": 255,
+        "alpha": 255
+      },
+      "collision": false,
+      "visible": false,
+      "material": {
+        "density": 0.0,
+        "friction": 0.0
+      },
+      "activeAttributes": [
+        "MOB_FEETS",
+        "ATTACKING_FIELD"
+      ],
+      "passiveAttributes": [],
+      "spriteControllers": []
+    },
+    {
+      "shapeType": "BOX",
+      "rad": {
+        "x": 8.0,
+        "y": 32.0
+      },
+      "renderLayer": 2,
+      "relPos": {
+        "x": 32.0,
+        "y": 0.0
+      },
+      "color": {
+        "red": 255,
+        "green": 0,
+        "blue": 0,
+        "alpha": 255
+      },
+      "collision": false,
+      "visible": false,
+      "material": {
+        "density": 0.0,
+        "friction": 0.0
+      },
+      "activeAttributes": [],
+      "passiveAttributes": [
+        "ATTACKING_FIELD"
+      ],
+      "spriteControllers": []
+    }
+  ],
+  "WALK-Sound": "sound//player//walk.ogg",
+  "ATTACK-Sound": "sound//player//attack.ogg",
+  "JUMP-Sound": "sound//player//jump.ogg",
+  "DAMAGE-Sound": "sound//player//damage.ogg"
+}

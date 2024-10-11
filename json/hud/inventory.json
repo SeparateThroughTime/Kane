@@ -1,0 +1,174 @@
+[
+  {
+    "posInPercent": {
+      "x": 0.0,
+      "y": 0.0
+    },
+    "radInPercent": {
+      "x": 0.0,
+      "y": 0.0
+    },
+    "stretchX": false,
+    "renderLayer": 3,
+    "activeAttributes": [],
+    "passiveAttributes": [
+      "INVENTORY"
+    ],
+    "spriteControllers": [
+      {
+        "spritePosOffset": {
+          "x": -224.0,
+          "y": -126.0
+        },
+        "scale": {
+          "x": 1.0,
+          "y": 1.0
+        },
+        "sprite": {
+          "frameWidth": 224,
+          "frameHeight": 128,
+          "filepath": "sprites\\interface\\Inventory.png",
+          "STATIC-SpriteState": [
+            0
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "posInPercent": {
+      "x": -24.0,
+      "y": 8.0
+    },
+    "radInPercent": {
+      "x": 5.33333,
+      "y": 5.33333
+    },
+    "stretchX": false,
+    "renderLayer": 4,
+    "activeAttributes": [],
+    "passiveAttributes": [
+      "INVENTORY"
+    ],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": -8.0,
+      "y": 8.0
+    },
+    "radInPercent": {
+      "x": 5.33333,
+      "y": 5.33333
+    },
+    "stretchX": false,
+    "renderLayer": 4,
+    "activeAttributes": [],
+    "passiveAttributes": [
+      "INVENTORY"
+    ],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": 8.0,
+      "y": 8.0
+    },
+    "radInPercent": {
+      "x": 5.33333,
+      "y": 5.33333
+    },
+    "stretchX": false,
+    "renderLayer": 4,
+    "activeAttributes": [],
+    "passiveAttributes": [
+      "INVENTORY"
+    ],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": 24.0,
+      "y": 8.0
+    },
+    "radInPercent": {
+      "x": 5.33333,
+      "y": 5.33333
+    },
+    "stretchX": false,
+    "renderLayer": 4,
+    "activeAttributes": [],
+    "passiveAttributes": [
+      "INVENTORY"
+    ],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": -24.0,
+      "y": -8.0
+    },
+    "radInPercent": {
+      "x": 5.33333,
+      "y": 5.33333
+    },
+    "stretchX": false,
+    "renderLayer": 4,
+    "activeAttributes": [],
+    "passiveAttributes": [
+      "INVENTORY"
+    ],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": -8.0,
+      "y": -8.0
+    },
+    "radInPercent": {
+      "x": 5.33333,
+      "y": 5.33333
+    },
+    "stretchX": false,
+    "renderLayer": 4,
+    "activeAttributes": [],
+    "passiveAttributes": [
+      "INVENTORY"
+    ],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": 8.0,
+      "y": -8.0
+    },
+    "radInPercent": {
+      "x": 5.33333,
+      "y": 5.33333
+    },
+    "stretchX": false,
+    "renderLayer": 4,
+    "activeAttributes": [],
+    "passiveAttributes": [
+      "INVENTORY"
+    ],
+    "spriteControllers": []
+  },
+  {
+    "posInPercent": {
+      "x": 24.0,
+      "y": -8.0
+    },
+    "radInPercent": {
+      "x": 5.33333,
+      "y": 5.33333
+    },
+    "stretchX": false,
+    "renderLayer": 4,
+    "activeAttributes": [],
+    "passiveAttributes": [
+      "INVENTORY"
+    ],
+    "spriteControllers": []
+  }
+]

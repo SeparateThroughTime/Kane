@@ -1,0 +1,20 @@
+[
+  {
+    "spritePosOffset": {
+      "x": -128.0,
+      "y": -32.0
+    },
+    "scale": {
+      "x": 2.0,
+      "y": 2.0
+    },
+    "sprite": {
+      "frameWidth": 16,
+      "frameHeight": 16,
+      "filepath": "sprites\\\\items\\\\sword.png",
+      "STATIC-SpriteState": [
+        0
+      ]
+    }
+  }
+]
